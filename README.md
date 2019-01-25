@@ -8,6 +8,12 @@ using the built-in scripting workspace.
 
 The scripts are currently compatible with RayStation 6.0.
 
+## Contents
+
+All executable scripts are found in the root folder.
+
+Sub-folders contain libraries & resources used by the root folder scripts.
+
 ## Authors
 
 * Christoffer Lervåg (christoffer.lervag [@nospam.com] @helse-mr.no)
