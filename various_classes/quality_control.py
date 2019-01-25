@@ -82,6 +82,7 @@ class QualityControl(object):
       ts_structure_set.ptv_derived_test()
       ts_structure_set.prosthesis_titanium_test()
       ts_structure_set.external_ptv_bounding_test()
+      ts_structure_set.couch_test()
       # POI geometry tests:
       for ts_poi_geometry in ts_structure_set.ts_poi_geometries:
         ts_poi_geometry.is_defined_test()
@@ -116,7 +117,6 @@ class QualityControl(object):
       ts_beam_set.label_target_volume_test()
       ts_beam_set.dose_grid_test()
       ts_beam_set.max_leaf_distance_test()
-      ts_beam_set.stereotactic_coach_test()
       ts_beam_set.guard_leaf_test()
       ts_beam_set.name_of_beam_iso_test()
       ts_beam_set.prostate_normalisation_test()
@@ -147,16 +147,13 @@ class QualityControl(object):
         ts_prescription.prescription_poi_target_volume_test()
         ts_prescription.prescription_dose_test()
         ts_prescription.prescription_real_dose_test()
-        #ts_prescription.vmat_mu_test()
         ts_prescription.clinical_max_test()
         ts_prescription.stereotactic_prescription_technique_test()
-        #ts_prescription.stereotactic_mu_test()
       # Objectives/constraints tests:
       ts_optimization = ts_beam_set.ts_optimization
       if ts_optimization:
         ts_optimization.constraints_test()
         ts_optimization.objectives_background_dose_test()
-        #ts_optimization.stereotactic_mu_constraints()
       # Beam tests:
       for ts_beam in ts_beam_set.ts_beams:
         ts_beam.name_test()
@@ -173,6 +170,7 @@ class QualityControl(object):
         ts_beam.mu_segment_3dcrt_test()
         ts_beam.stereotactic_beam_distribution_mu_test()
         ts_beam.stereotactic_mu_constraints()
+        ts_beam.segment_test()
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:
           ts_segment.mlc_corner_validity_test()

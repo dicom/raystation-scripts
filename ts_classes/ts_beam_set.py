@@ -327,22 +327,6 @@ class TSBeamSet(object):
         else:
           return t.fail()
 
- #Tests if a couch is defined, and for stereotactic plans that a couch is not defined (because in those cases a different couch top is used).
-  def stereotactic_coach_test(self):
-    t = TEST.Test("Struktursettet må ha definert en bordtopp-ROI (Couch)", True, self.couch)
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.technique:
-        if self.ts_label.label.technique.upper() != 'S':
-          # Run test if this structure set corresponds to the examination used for the treatment plan:
-          if structure_set == self.ts_plan.plan.GetStructureSet():
-            match = False
-            for rg in structure_set.RoiGeometries:
-              if rg.OfRoi.Name == ROIS.couch.name and rg.OfRoi.RoiMaterial.OfMaterial.MassDensity == 0.121 and rg.HasContours() :
-                match = True
-            if match:
-              return t.succeed()
-            else:
-              return t.fail()
 
   #Tests if the couch top is placed close to the patient
   def couch_close_to_patient_test(self):
@@ -594,45 +578,44 @@ class TSBeamSet(object):
   #An exception is for prostate plans with pelvic lymph nodes, here you want to use this volume. Another exception is for non-VMAT breast plans, where the isocenter is often placed more cranially.
   def isocenter_centered_long_test(self):
     t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning, avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm", '<1 cm', self.isocenter)
-    diff = 0
-    ss = self.ts_structure_set().structure_set
-    target0 = None
-    target1 = None
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-        # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
-        po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-        if po:
-          for objective in po.Objective.ConstituentFunctions:
-            if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
-              current_target = roi.GetBoundingBox()
-              if target0 == None or current_target[0].z < target0:
-                target0 = current_target[0].z
-              if target1 == None or current_target[1].z > target1:
-                target1 = current_target[1].z
-
-    if self.beam_set.DeliveryTechnique == 'Arc':
-      if target0 and target1:
-        target_center_z = target0 + 0.5*abs(target0 - target1)
-        for beam in self.beam_set.Beams:
-          photon_iso = beam.Isocenter.Position
-          diff = abs(photon_iso.z - target_center_z)
-
-    elif self.beam_set.DeliveryTechnique != 'Arc':
-      if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
-        if self.beam_set.Modality == 'Photons':
+    if self.beam_set.Modality == 'Photons':
+      diff = 0
+      ss = self.ts_structure_set().structure_set
+      target0 = None
+      target1 = None
+      for roi in ss.RoiGeometries:
+        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
+          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
+          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
+          if po:
+            for objective in po.Objective.ConstituentFunctions:
+              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
+                current_target = roi.GetBoundingBox()
+                if target0 == None or current_target[0].z < target0:
+                  target0 = current_target[0].z
+                if target1 == None or current_target[1].z > target1:
+                  target1 = current_target[1].z
+      if self.beam_set.DeliveryTechnique == 'Arc':
+        if target0 and target1:
+          target_center_z = target0 + 0.5*abs(target0 - target1)
           for beam in self.beam_set.Beams:
             photon_iso = beam.Isocenter.Position
-            for rg in self.ts_structure_set().structure_set.RoiGeometries:
-              if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name:
-                target = rg.GetBoundingBox()
-                target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
-                diff = abs(photon_iso.z - target_center_z)
-    if diff:
-      if diff > 1:
-        return t.fail(round(diff, 2))
-      else:
-        return t.succeed()
+            diff = abs(photon_iso.z - target_center_z)
+      elif self.beam_set.DeliveryTechnique != 'Arc':
+        if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
+          if self.beam_set.Modality == 'Photons':
+            for beam in self.beam_set.Beams:
+              photon_iso = beam.Isocenter.Position
+              for rg in self.ts_structure_set().structure_set.RoiGeometries:
+                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name:
+                  target = rg.GetBoundingBox()
+                  target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
+                  diff = abs(photon_iso.z - target_center_z)
+      if diff:
+        if diff > 1:
+          return t.fail(round(diff, 2))
+        else:
+          return t.succeed()
 
   def asymmetric_jaw_opening_long_test(self):
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)

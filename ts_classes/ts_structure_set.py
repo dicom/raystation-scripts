@@ -62,19 +62,22 @@ class TSStructureSet(object):
       else:
         return t.fail()
 
-  #Test for presence of couch
+  # Test for presence of couch for photon plans.
+  # Skips the test for stereotactic brain plans, where external is used to define the couch instead.
   def couch_test(self):
     t = TEST.Test("Struktursettet må ha definert en bordtopp-ROI (Couch)", True, self.couch)
       # Run test if this structure set corresponds to the examination used for the treatment plan:
     if self.structure_set == self.ts_case.ts_plan.plan.GetStructureSet():
-      match = False
-      for rg in self.structure_set.RoiGeometries:
-        if rg.OfRoi.Name == ROIS.couch.name and rg.OfRoi.RoiMaterial.OfMaterial.MassDensity == 0.121 :
-          match = True
-      if match:
-        return t.succeed()
-      else:
-        return t.fail()
+      if self.ts_case.ts_plan.ts_beam_sets[0].beam_set.Modality == 'Photons':
+        if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique.upper() != 'S' and self.ts_case.ts_plan.ts_beam_set.ts_label.label.region not in RC.brain_codes:
+          match = False
+          for rg in self.structure_set.RoiGeometries:
+            if rg.OfRoi.Name == ROIS.couch.name and rg.OfRoi.RoiMaterial.OfMaterial.MassDensity == 0.121 and rg.HasContours():
+              match = True
+          if match:
+            return t.succeed()
+          else:
+            return t.fail()
 
 
  #Tests if there is a ROI called 'Prosthesis' and if the material is Titanium.

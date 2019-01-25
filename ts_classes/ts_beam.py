@@ -41,6 +41,13 @@ class TSBeam(object):
     self.gantry_spacing = TEST.Parameter('Gantry spacing', '', self.param)
     self.isocenter = TEST.Parameter('Isosenter', '', self.param)
 
+  # Gives true/false if the beam has segments or not.
+  def has_segment(self):
+    if len(list(self.beam.Segments)) > 0:
+      return True
+    else:
+      return False
+
   # Tests presence of name.
   def name_test(self):
     t = TEST.Test("Skal ha angitt et feltnavn", True, self.name)
@@ -131,8 +138,13 @@ class TSBeam(object):
       else:
         return t.succeed()
 
-
-
+  # Tests if the beam has segments.
+  def segment_test(self):
+    t = TEST.Test("Segment skal være definert.", True, self.segments)
+    if self.has_segment():
+      return t.succeed()
+    else:
+      return t.fail()
 
   # Tests if the jaw opening on a vmat plan is big enough to risk exposing the electronics of the QA detector.
   # The "limit" towards the electronics is 15 cm away from the gantry from the isocenter.
@@ -143,40 +155,43 @@ class TSBeam(object):
     # Perform the test only for VMAT beams:
     if self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'HFS':
       if self.beam.ArcRotationDirection != 'None':
-        jaws = self.beam.Segments[0].JawPositions
-        if jaws[2] < -14.3:
-          return t.fail(abs(jaws[2]))
-        else:
-          return t.succeed()
+        if self.has_segment():
+          jaws = self.beam.Segments[0].JawPositions
+          if jaws[2] < -14.3:
+            return t.fail(abs(jaws[2]))
+          else:
+            return t.succeed()
     elif self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'FFS':
       if self.beam.ArcRotationDirection != 'None':
-        jaws = self.beam.Segments[0].JawPositions
-        if jaws[3] > 14.3:
-          return t.fail(jaws[3])
-        else:
-          return t.succeed()
+        if self.has_segment():
+          jaws = self.beam.Segments[0].JawPositions
+          if jaws[3] > 14.3:
+            return t.fail(jaws[3])
+          else:
+            return t.succeed()
 
   #Tests if the maximum jaw opening is more than 10.5 cm for both Y1 and Y2 jaws for an VMAT arc, to be able to measure it with the ArcCHECK-phantom
   def asymmetric_jaw_opening_for_vmat_qa_detector_test(self):
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
     # Perform the test only for VMAT beams:
     if self.beam.ArcRotationDirection != 'None':
-      maxJawY1 = self.beam.Segments[0].JawPositions[2]
-      maxJawY2 = self.beam.Segments[0].JawPositions[3]
-      for segment in self.beam.Segments:
-        if segment.JawPositions[2] < maxJawY1:
-          maxJawY1 = segment.JawPositions[2]
-        if segment.JawPositions[3] > maxJawY1:
-          maxJawY2 = segment.JawPositions[3]
+      if self.has_segment():
+        maxJawY1 = self.beam.Segments[0].JawPositions[2]
+        maxJawY2 = self.beam.Segments[0].JawPositions[3]
+        for segment in self.beam.Segments:
+          if segment.JawPositions[2] < maxJawY1:
+            maxJawY1 = segment.JawPositions[2]
+          if segment.JawPositions[3] > maxJawY1:
+            maxJawY2 = segment.JawPositions[3]
 
-      if maxJawY1 < -10.5 and maxJawY2 > 10.5:
-        return t.succeed()
-      elif maxJawY1 < -10.5:
-        return t.fail(abs(maxJawY1))
-      elif maxJawY2 > 10.5:
-        return t.fail(maxJawY2)
-      else:
-        return t.succeed()
+        if maxJawY1 < -10.5 and maxJawY2 > 10.5:
+          return t.succeed()
+        elif maxJawY1 < -10.5:
+          return t.fail(abs(maxJawY1))
+        elif maxJawY2 > 10.5:
+          return t.fail(maxJawY2)
+        else:
+          return t.succeed()
 
   #Tests if the maximal jaw opening is less than 15 cm for filter free energies.
   def wide_jaw_opening_for_filter_free_energies(self):
@@ -184,18 +199,19 @@ class TSBeam(object):
     # Perform the test only for VMAT beams:
     if self.beam.ArcRotationDirection != 'None':
       if self.ts_beam_set.beam_set.MachineReference.MachineName == 'ALVersa_FFF':
-        maxJawY1 = self.beam.Segments[0].JawPositions[2]
-        maxJawY2 = self.beam.Segments[0].JawPositions[3]
-        for segment in self.beam.Segments:
-          if segment.JawPositions[2] < maxJawY1:
-            maxJawY1 = segment.JawPositions[2]
-          if segment.JawPositions[3] > maxJawY1:
-            maxJawY2 = segment.JawPositions[3]
+        if self.has_segment():
+          maxJawY1 = self.beam.Segments[0].JawPositions[2]
+          maxJawY2 = self.beam.Segments[0].JawPositions[3]
+          for segment in self.beam.Segments:
+            if segment.JawPositions[2] < maxJawY1:
+              maxJawY1 = segment.JawPositions[2]
+            if segment.JawPositions[3] > maxJawY1:
+              maxJawY2 = segment.JawPositions[3]
 
-          if abs(maxJawY1+maxJawY2) >15:
-            return t.fail(abs(maxJawY1+maxJawY2))
-        else:
-          return t.succeed()
+            if abs(maxJawY1+maxJawY2) >15:
+              return t.fail(abs(maxJawY1+maxJawY2))
+            else:
+              return t.succeed()
 
   #Tests if the field is asymmetric, i.e. ifthe maximum jaw opening is more than 7.5 cm for Y1 and Y2 jaws for an VMAT arc, for filter free energies,
   def asymmetric_jaw_opening_for_filter_free_energies(self):
@@ -203,19 +219,20 @@ class TSBeam(object):
     # Perform the test only for VMAT beams:
     if self.beam.ArcRotationDirection != 'None':
       if self.ts_beam_set.beam_set.MachineReference.MachineName == 'ALVersa_FFF':
-        maxJawY1 = self.beam.Segments[0].JawPositions[2]
-        maxJawY2 = self.beam.Segments[0].JawPositions[3]
-        for segment in self.beam.Segments:
-          if segment.JawPositions[2] < maxJawY1:
-            maxJawY1 = segment.JawPositions[2]
-          if segment.JawPositions[3] > maxJawY1:
-            maxJawY2 = segment.JawPositions[3]
-        if maxJawY1 < -7.5:
-          return t.fail(maxJawY1)
-        elif maxJawY2 > 7.5:
-          return t.fail(maxJawY2)
-        else:
-          return t.succeed()
+        if self.has_segment():
+          maxJawY1 = self.beam.Segments[0].JawPositions[2]
+          maxJawY2 = self.beam.Segments[0].JawPositions[3]
+          for segment in self.beam.Segments:
+            if segment.JawPositions[2] < maxJawY1:
+              maxJawY1 = segment.JawPositions[2]
+            if segment.JawPositions[3] > maxJawY1:
+              maxJawY2 = segment.JawPositions[3]
+          if maxJawY1 < -7.5:
+            return t.fail(maxJawY1)
+          elif maxJawY2 > 7.5:
+            return t.fail(maxJawY2)
+          else:
+            return t.succeed()
 
   # Tests that for arcs that a gantry spacing of 4 is used.
   def arc_gantry_spacing_test(self):
@@ -266,7 +283,7 @@ class TSBeam(object):
           else:
             return t.succeed()
 
-# Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
+  # Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
   def stereotactic_mu_constraints(self):
     t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy), disse bør også ta hensyn til buelengden. Begrensningen på MU for denne buen er > 1.15 * forventningsverdien.", True, self.mu)
     beam_start = 0
