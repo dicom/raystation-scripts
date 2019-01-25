@@ -10,6 +10,6 @@ The scripts are currently compatible with RayStation 6.0.
 
 ## Authors
 
-Christoffer Lervåg (christoffer.lervag [@nospam.com] @helse-mr.no)
-Marit Funderud (marit.funderud [@nospam.com] @helse-mr.no)
-Helse Møre og Romsdal HF - Norway
+* Christoffer Lervåg (christoffer.lervag [@nospam.com] @helse-mr.no)
+* Marit Funderud (marit.funderud [@nospam.com] @helse-mr.no)
+* Helse Møre og Romsdal HF - Norway
