@@ -1,0 +1,359 @@
+Kode	Kategori	Tekst	Fulltekst	Kompakt
+-1		Ingen markering	Ingen markering	Ingen
+1	Overflatisk	Hode/Hals, ins.	Overflatisk: Hode/Hals, ins.	Hode/Hals ins.
+2	Overflatisk	Hode/Hals, mult.lok.	Overflatisk: Hode/Hals, mult.lok.	Hode/Hals mult
+3	Overflatisk	Ansikt, ins.	Overflatisk: Ansikt, ins.	Ansikt ins.
+4	Overflatisk	Ansikt, mult. lok.	Overflatisk: Ansikt, mult. lok.	Ansikt mult.
+5	Overflatisk	Hodebunn	Overflatisk: Hodebunn	Hodebunn
+6	Overflatisk	Panne	Overflatisk: Panne	Panne
+7	Overflatisk	Tinning, v.s.	Overflatisk: Tinning, v.s.	Tinning ve
+8	Overflatisk	Tinning, h.s.	Overflatisk: Tinning, h.s.	Tinning hø
+9	Overflatisk	Øyelokk, øvre v.s.	Overflatisk: Øyelokk, øvre v.s.	V.Øyelokk øvre
+10	Overflatisk	Øyelokk, øvre h.s.	Overflatisk: Øyelokk, øvre h.s.	H.Øyelokk øvre
+11	Overflatisk	Øyelokk, nedre v.s.	Overflatisk: Øyelokk, nedre v.s.	V.Øyelokk nedr
+12	Overflatisk	Øyelokk, nedre h.s.	Overflatisk: Øyelokk, nedre h.s.	H.Øyelokk nedr
+13	Overflatisk	Øye, nær v.s.	Overflatisk: Øye, nær v.s.	Øye nær ve
+14	Overflatisk	Øye, nær h.s.	Overflatisk: Øye, nær h.s.	Øye nær hø
+15	Overflatisk	Øyne, mellom	Overflatisk: Øyne, mellom	Øyne mellom
+16	Overflatisk	Nese	Overflatisk: Nese	Nese
+17	Overflatisk	Øre, v.s.	Overflatisk: Øre, v.s.	Øre ve
+18	Overflatisk	Øre, h.s.	Overflatisk: Øre, h.s.	Øre hø
+19	Overflatisk	Kinn, v.s.	Overflatisk: Kinn, v.s.	Kinn ve
+20	Overflatisk	Kinn, h.s.	Overflatisk: Kinn, h.s.	Kinn hø
+21	Overflatisk	Mandibularreg.,v.s.	Overflatisk: Mandibularreg.,v.s.	V.Mandibula
+22	Overflatisk	Mandibularreg.,h.s.	Overflatisk: Mandibularreg.,h.s.	H.Mandibula
+23	Overflatisk	Hake	Overflatisk: Hake	Hake
+24	Overflatisk	Hals	Overflatisk: Hals	Hals
+25	Overflatisk	Hals, v.s.	Overflatisk: Hals, v.s.	Hals ve
+26	Overflatisk	Hals, h.s.	Overflatisk: Hals, h.s.	Hals hø
+27	Overflatisk	Nakke, v.s.	Overflatisk: Nakke, v.s.	Nakke ve
+28	Overflatisk	Nakke, h.s.	Overflatisk: Nakke, h.s.	Nakke hø
+29	Overflatisk	Nakke	Overflatisk: Nakke	Nakke
+30	Overflatisk	Overkropp, ins.	Overflatisk: Overkropp, ins.	Overkropp ins.
+31	Overflatisk	Overkropp, mult.lok.	Overflatisk: Overkropp, mult.lok.	Overkropp mult
+32	Overflatisk	Supraclav, h.s.	Overflatisk: Supraclav, h.s.	Supraclav hø
+33	Overflatisk	Supraclav, v.s.	Overflatisk: Supraclav, v.s.	Supraclav ve
+34	Overflatisk	Thorax, med. foran	Overflatisk: Thorax, med. foran	Thorax foran
+35	Overflatisk	Thorax, v.s. foran	Overflatisk: Thorax, v.s. foran	Thorax ve for.
+36	Overflatisk	Thorax, h.s. foran	Overflatisk: Thorax, h.s. foran	Thorax hø for.
+37	Overflatisk	Thorax, v.s. bak	Overflatisk: Thorax, v.s. bak	Thorax ve bak
+38	Overflatisk	Thorax, h.s. bak	Overflatisk: Thorax, h.s. bak	Thorax hø bak
+39	Overflatisk	Thorax, med. bak	Overflatisk: Thorax, med. bak	Thorax bak
+40	Overflatisk	Thorax, h. side	Overflatisk: Thorax, h. side	Thorax h. side
+41	Overflatisk	Thorax, v. side	Overflatisk: Thorax, v. side	Thorax v. side
+42	Overflatisk	Axille, h.s.	Overflatisk: Axille, h.s.	Axille hø
+43	Overflatisk	Axille, v.s.	Overflatisk: Axille, v.s.	Axille ve
+44	Overflatisk	Skulder, h.s.	Overflatisk: Skulder, h.s.	Skulder hø
+45	Overflatisk	Skulder, v.s.	Overflatisk: Skulder, v.s.	Skulder ve
+46	Overflatisk	Overekstr., ins. h.s.	Overflatisk: Overekstr., ins. h.s.	H.Overekstr.
+47	Overflatisk	Overekstr., ins. v.s.	Overflatisk: Overekstr., ins. v.s.	V.Overekstr.
+48	Overflatisk	Overekstr., m.lok. h.s.	Overflatisk: Overekstr., m.lok. h.s.	H.Overekstr.
+49	Overflatisk	Overekstr., m.lok. v.s.	Overflatisk: Overekstr., m.lok. v.s.	V.Overekstr.
+50	Overflatisk	Overarm, h.s.	Overflatisk: Overarm, h.s.	Overarm hø
+51	Overflatisk	Overarm, v.s.	Overflatisk: Overarm, v.s.	Overarm ve
+52	Overflatisk	Albu, h.s.	Overflatisk: Albu, h.s.	Albu hø
+53	Overflatisk	Albu, v.s.	Overflatisk: Albu, v.s.	Albu ve
+54	Overflatisk	Underarm, h.s.	Overflatisk: Underarm, h.s.	Underarm hø
+55	Overflatisk	Underarm, v.s.	Overflatisk: Underarm, v.s.	Underarm ve
+56	Overflatisk	Hand, h.s.	Overflatisk: Hand, h.s.	Hand hø
+57	Overflatisk	Hand, v.s.	Overflatisk: Hand, v.s.	Hand ve
+60	Overflatisk	Underkropp, ins.	Overflatisk: Underkropp, ins.	Underkropp ins
+61	Overflatisk	Underkropp, mult.lok.	Overflatisk: Underkropp, mult.lok.	Underkropp mul
+62	Overflatisk	Abdomen	Overflatisk: Abdomen	Abdomen
+63	Overflatisk	Abdomen, v.s.	Overflatisk: Abdomen, v.s.	Abdomen ve
+64	Overflatisk	Abdomen, h.s.	Overflatisk: Abdomen, h.s.	Abdomen hø
+65	Overflatisk	Flanke, v.s.	Overflatisk: Flanke, v.s.	Flanke ve
+66	Overflatisk	Flanke, h.s.	Overflatisk: Flanke, h.s.	Flanke hø
+67	Overflatisk	Lumbalreg. v.s.	Overflatisk: Lumbalreg. v.s.	Lumbalreg. ve
+68	Overflatisk	Lumbalreg. h.s.	Overflatisk: Lumbalreg. h.s.	Lumbalreg. hø
+69	Overflatisk	Lumbalreg.	Overflatisk: Lumbalreg.	Lumbalreg.
+70	Overflatisk	Lyske, h.s.	Overflatisk: Lyske, h.s.	Lyske hø
+71	Overflatisk	Lyske, v.s.	Overflatisk: Lyske, v.s.	Lyske ve
+72	Overflatisk	Kjønnsorgan, ytre	Overflatisk: Kjønnsorgan, ytre	Kjønnsorgan
+73	Overflatisk	Perineum	Overflatisk: Perineum	Perineum
+74	Overflatisk	Analreg.	Overflatisk: Analreg.	Analreg.
+75	Overflatisk	Crena ani	Overflatisk: Crena ani	Crena ani
+76	Overflatisk	Sete, h.s.	Overflatisk: Sete, h.s.	Sete hø
+77	Overflatisk	Sete, v.s.	Overflatisk: Sete, v.s.	Sete ve
+78	Overflatisk	Hofte, h.s.	Overflatisk: Hofte, h.s.	Hofte hø
+79	Overflatisk	Hofte, v.s.	Overflatisk: Hofte, v.s.	Hofte ve
+80	Overflatisk	Underekstr., h.s. ins.	Overflatisk: Underekstr., h.s. ins.	Underekstr. hø
+81	Overflatisk	Underekstr., v.s. ins.	Overflatisk: Underekstr., v.s. ins.	Underekstr. ve
+82	Overflatisk	Underekstr., h.s. m.lok.	Overflatisk: Underekstr., h.s. m.lok.	Underekstr. hø
+83	Overflatisk	Underekstr., v.s. m.lok.	Overflatisk: Underekstr., v.s. m.lok.	Underekstr. ve
+84	Overflatisk	Lår, h.s.	Overflatisk: Lår, h.s.	Lår hø
+85	Overflatisk	Lår, v.s.	Overflatisk: Lår, v.s.	Lår ve
+86	Overflatisk	Kne, h.s.	Overflatisk: Kne, h.s.	Kne hø
+87	Overflatisk	Kne, v.s.	Overflatisk: Kne, v.s.	Kne ve
+88	Overflatisk	Legg, h.s.	Overflatisk: Legg, h.s.	Legg hø
+89	Overflatisk	Legg, v.s.	Overflatisk: Legg, v.s.	Legg ve
+90	Overflatisk	Fot, h.s.	Overflatisk: Fot, h.s.	Fot hø
+91	Overflatisk	Fot, v.s.	Overflatisk: Fot, v.s.	Fot ve
+99	Overflatisk	Kroppen, hele	Overflatisk: Kroppen, hele	Kroppen hele
+100	Bløtvev	Hode/Hals ins.	Bløtvev: Hode/Hals ins.	Hode/Hals ins.
+101	Bløtvev	Ansiktshalvdel, v.s.	Bløtvev: Ansiktshalvdel, v.s.	V.Ansiktshalv.
+102	Bløtvev	Ansiktshalvdel, h.s.	Bløtvev: Ansiktshalvdel, h.s.	H.Ansiktshalv.
+110	Bløtvev	Sella turcica	Bløtvev: Sella turcica	Sella turcica
+111	Bløtvev	Orbita, v.s.	Bløtvev: Orbita, v.s.	Orbita ve
+112	Bløtvev	Orbita, bilat.	Bløtvev: Orbita, bilat.	Orbita bilat.
+114	Bløtvev	Orbita, h.s.	Bløtvev: Orbita, h.s.	Orbita hø
+116	Bløtvev	Maxille, bilat.	Bløtvev: Maxille, bilat.	Maxille bilat.
+117	Bløtvev	Maxille, v.s.	Bløtvev: Maxille, v.s.	Maxille ve
+118	Bløtvev	Maxille, h.s.	Bløtvev: Maxille, h.s.	Maxille hø
+120	Bløtvev	Epipharynx	Bløtvev: Epipharynx	Epipharynx
+121	Bløtvev	Nesekav./Epipharynx	Bløtvev: Nesekav./Epipharynx	Nesekav./Epiph
+122	Bløtvev	Parotis, bilat.	Bløtvev: Parotis, bilat.	Parotis bilat.
+123	Bløtvev	Parotis, v.s.	Bløtvev: Parotis, v.s.	Parotis ve
+124	Bløtvev	Parotis, h.s.	Bløtvev: Parotis, h.s.	Parotis hø
+125	Bløtvev	Øre, v.s.	Bløtvev: Øre, v.s.	Øre ve
+126	Bløtvev	Øre, h.s.	Bløtvev: Øre, h.s.	Øre hø
+128	Bløtvev	Tonsille, bilat.	Bløtvev: Tonsille, bilat.	Tonsille bilat
+129	Bløtvev	Tonsille, v.s.	Bløtvev: Tonsille, v.s.	Tonsille ve
+130	Bløtvev	Tonsille, h.s.	Bløtvev: Tonsille, h.s.	Tonsille hø
+140	Bløtvev	Oris, bilat.	Bløtvev: Oris, bilat.	Oris bilat.
+141	Bløtvev	Oris, v.s.	Bløtvev: Oris, v.s.	Oris ve
+142	Bløtvev	Oris, h.s.	Bløtvev: Oris, h.s.	Oris hø
+144	Bløtvev	Gingiva, bilat.	Bløtvev: Gingiva, bilat.	Gingiva bilat.
+145	Bløtvev	Gingiva, v.s.	Bløtvev: Gingiva, v.s.	Gingiva ve
+146	Bløtvev	Gingiva, h.s.	Bløtvev: Gingiva, h.s.	Gingiva hø
+148	Bløtvev	Gane	Bløtvev: Gane	Gane
+150	Bløtvev	Munngolv	Bløtvev: Munngolv	Munngolv
+151	Bløtvev	Bucca, v.s.	Bløtvev: Bucca, v.s.	Bucca ve
+152	Bløtvev	Bucca, h.s.	Bløtvev: Bucca, h.s.	Bucca hø
+154	Bløtvev	Tunge	Bløtvev: Tunge	Tunge
+155	Bløtvev	Tunge, v.s	Bløtvev: Tunge, v.s	Tunge ve
+156	Bløtvev	Tunge, h.s	Bløtvev: Tunge, h.s	Tunge hø
+158	Bløtvev	Underleppe	Bløtvev: Underleppe	Underleppe
+160	Bløtvev	Overleppe	Bløtvev: Overleppe	Overleppe
+162	Bløtvev	Hypopharynx	Bløtvev: Hypopharynx	Hypopharynx
+164	Bløtvev	Larynx	Bløtvev: Larynx	Larynx
+166	Bløtvev	Oropharynx	Bløtvev: Oropharynx	Oropharynx
+170	Bløtvev	Mandibula/Ø.hals,bilat	Bløtvev: Mandibula/Ø.hals,bilat	Mandibula bil.
+171	Bløtvev	Mandibula/Ø.hals, v.s	Bløtvev: Mandibula/Ø.hals, v.s	V.Mandibula
+172	Bløtvev	Mandibula/Ø.hals, h.s	Bløtvev: Mandibula/Ø.hals, h.s	H.Mandibula
+174	Bløtvev	Hals, bilat.	Bløtvev: Hals, bilat.	Hals bilat.
+175	Bløtvev	Hals, v.s.	Bløtvev: Hals, v.s.	Hals ve
+176	Bløtvev	Hals, h.s.	Bløtvev: Hals, h.s.	Hals hø
+178	Bløtvev	Hals/Supracl., bilat.	Bløtvev: Hals/Supracl., bilat.	Hals/Supracl. 
+179	Bløtvev	Hals/Supraclav, v.s.	Bløtvev: Hals/Supraclav, v.s.	V.Hals/Supracl
+180	Bløtvev	Hals/Supraclav, h.s.	Bløtvev: Hals/Supraclav, h.s.	H.Hals/Supracl
+200	Bløtvev	Overkropp, ins.	Bløtvev: Overkropp, ins.	Overkropp ins.
+201	Bløtvev	Overkropp, mult.lok.	Bløtvev: Overkropp, mult.lok.	Overkropp mult
+202	Bløtvev	Overkropp (hele)	Bløtvev: Overkropp (hele)	Overkropp hele
+203	Bløtvev	Supraclav, v.s.	Bløtvev: Supraclav, v.s.	Supraclav ve
+204	Bløtvev	Supraclav, h.s.	Bløtvev: Supraclav, h.s.	Supraclav hø
+205	Bløtvev	Supraclav, bilat.	Bløtvev: Supraclav, bilat.	Supraclav bila
+206	Bløtvev	Supra-/Infracl, bilat	Bløtvev: Supra-/Infracl, bilat	Supra-/Infracl
+207	Bløtvev	Supracl/Infracl., v.s.	Bløtvev: Supracl/Infracl., v.s.	V.Supracl/Infr
+208	Bløtvev	Supracl/Infracl., h.s.	Bløtvev: Supracl/Infracl., h.s.	H.Supracl/Infr
+209	Bløtvev	Supracl/Parast., v.s.	Bløtvev: Supracl/Parast., v.s.	V.Supracl/Para
+210	Bløtvev	Supracl/Parast., h.s.	Bløtvev: Supracl/Parast., h.s.	H.Supracl/Para
+211	Bløtvev	Supracl/Parast, bilat	Bløtvev: Supracl/Parast, bilat	Supracl/Parast
+212	Bløtvev	Supracl/Axille, bilat	Bløtvev: Supracl/Axille, bilat	Supracl/Axille
+213	Bløtvev	Supracl/Axille, v.s.	Bløtvev: Supracl/Axille, v.s.	V.Supracl/Ax
+214	Bløtvev	Supracl/Axille, h.s.	Bløtvev: Supracl/Axille, h.s.	H.Supracl/Ax
+215	Bløtvev	Reg. lymfekn., v.s.	Bløtvev: Reg. lymfekn., v.s.	V.Reg. lymfekn
+216	Bløtvev	Reg. lymfekn., h.s.	Bløtvev: Reg. lymfekn., h.s.	H.Reg. lymfekn
+217	Bløtvev	Reg. lymfekn., bilat.	Bløtvev: Reg. lymfekn., bilat.	Reg. lymfekn.
+218	Bløtvev	Mediast/Supracl, bilat	Bløtvev: Mediast/Supracl, bilat	Mediast/Suprac
+219	Bløtvev	Mediast/Supracl., v.s.	Bløtvev: Mediast/Supracl., v.s.	V.Mediast/Supr
+220	Bløtvev	Mediast/Supracl., h.s.	Bløtvev: Mediast/Supracl., h.s.	H.Mediast/Supr
+221	Bløtvev	Parasternal, v.s.	Bløtvev: Parasternal, v.s.	Parasternal ve
+222	Bløtvev	Parasternal, h.s.	Bløtvev: Parasternal, h.s.	Parasternal hø
+223	Bløtvev	Parasternal, bilat.	Bløtvev: Parasternal, bilat.	Parasternal bi
+224	Bløtvev	Hilus/Mediast., bilat.	Bløtvev: Hilus/Mediast., bilat.	Hilus/Mediast.
+225	Bløtvev	Hilus/Mediast., v.s.	Bløtvev: Hilus/Mediast., v.s.	V.Hilus/Medias
+226	Bløtvev	Hilus/Mediast., h.s.	Bløtvev: Hilus/Mediast., h.s.	H.Hilus/Medias
+227	Bløtvev	Kappefelt	Bløtvev: Kappefelt	Kappefelt
+228	Bløtvev	Mediastinum	Bløtvev: Mediastinum	Mediastinum
+229	Bløtvev	Halvsid.kappef., v.s.	Bløtvev: Halvsid.kappef., v.s.	V.Halvsid.kap.
+230	Bløtvev	Halvsid.kappef., h.s.	Bløtvev: Halvsid.kappef., h.s.	H.Halvsid.kap.
+231	Bløtvev	Thorax, foran v.s.	Bløtvev: Thorax, foran v.s.	V.Thorax foran
+232	Bløtvev	Thorax, foran h.s.	Bløtvev: Thorax, foran h.s.	H.Thorax foran
+233	Bløtvev	Thorax, foran bilat.	Bløtvev: Thorax, foran bilat.	Thorax foran b
+234	Bløtvev	Thorax, bak bilat.	Bløtvev: Thorax, bak bilat.	Thorax bak bil
+235	Bløtvev	Thorax, bak v.s.	Bløtvev: Thorax, bak v.s.	Thorax bak ve
+236	Bløtvev	Thorax, bak h.s.	Bløtvev: Thorax, bak h.s.	Thorax bak hø
+237	Bløtvev	Thorax, på sida v.s.	Bløtvev: Thorax, på sida v.s.	V.Thorax side
+238	Bløtvev	Thorax, på sida h.s.	Bløtvev: Thorax, på sida h.s.	H.Thorax side
+239	Bløtvev	Mamma/Thoraxvegg, v.s.	Bløtvev: Mamma/Thoraxvegg, v.s.	V.Mamma/TV
+240	Bløtvev	Mamma/Thoraxvegg, h.s.	Bløtvev: Mamma/Thoraxvegg, h.s.	H.Mamma/TV
+241	Bløtvev	Thoraxv/Reg.lymfkn., v.s.	Bløtvev: Thoraxv/Reg.lymfkn., v.s.	V.Thoraxv/LK
+242	Bløtvev	Thoraxv/Reg.lymfkn., h.s.	Bløtvev: Thoraxv/Reg.lymfkn., h.s.	H.Thoraxv/LK
+243	Bløtvev	Mamma/Reg.lymfekn., v.s.	Bløtvev: Mamma/Reg.lymfekn., v.s.	V.Mamma/LK
+244	Bløtvev	Mamma/Reg.lymfekn., h.s.	Bløtvev: Mamma/Reg.lymfekn., h.s.	H.Mamma/LK
+245	Bløtvev	Lunger, begge /Mediast	Bløtvev: Lunger, begge /Mediast	Lunger/Mediast
+246	Bløtvev	Lunger, begge	Bløtvev: Lunger, begge	Lunger begge
+247	Bløtvev	Lunge, v.s.	Bløtvev: Lunge, v.s.	Lunge ve
+248	Bløtvev	Lunge, h.s.	Bløtvev: Lunge, h.s.	Lunge hø
+249	Bløtvev	Lunge, del av v.s.	Bløtvev: Lunge, del av v.s.	V.Lunge del
+250	Bløtvev	Lunge, del av h.s.	Bløtvev: Lunge, del av h.s.	H.Lunge del
+251	Bløtvev	Axille, v.s.	Bløtvev: Axille, v.s.	Axille ve
+252	Bløtvev	Axille, h.s.	Bløtvev: Axille, h.s.	Axille hø
+253	Bløtvev	Skulder, v.s	Bløtvev: Skulder, v.s	Skulder ve
+254	Bløtvev	Skulder, h.s	Bløtvev: Skulder, h.s	Skulder hø
+255	Bløtvev	Oesophagus	Bløtvev: Oesophagus	Oesophagus
+256	Bløtvev	Mamille, v.s.	Bløtvev: Mamille, v.s.	V.Mamille
+257	Bløtvev	Mamille, h.s	Bløtvev: Mamille, h.s	H.Mamille
+258	Bløtvev	Thymus	Bløtvev: Thymus	Thymus
+259	Bløtvev	Ventrikkel	Bløtvev: Ventrikkel	Ventrikkel
+260	Bløtvev	Pankreas	Bløtvev: Pankreas	Pankreas
+261	Bløtvev	Overekstr., v.s. ins.	Bløtvev: Overekstr., v.s. ins.	Overekstr. ve 
+262	Bløtvev	Overekstr., h.s. ins.	Bløtvev: Overekstr., h.s. ins.	Overekstr. hø 
+263	Bløtvev	Overekstr., mult. lok. v.s.	Bløtvev: Overekstr., mult. lok. v.s.	Overekstr. ve 
+264	Bløtvev	Overekstr., mult. lok. h.s.	Bløtvev: Overekstr., mult. lok. h.s.	Overekstr. hø
+265	Bløtvev	Overarm, v.s.	Bløtvev: Overarm, v.s.	Overarm ve
+266	Bløtvev	Overarm, h.s.	Bløtvev: Overarm, h.s.	Overarm hø
+267	Bløtvev	Albu, v.s.	Bløtvev: Albu, v.s.	Albu ve
+268	Bløtvev	Albu, h.s.	Bløtvev: Albu, h.s.	Albu hø
+269	Bløtvev	Underarm, v.s.	Bløtvev: Underarm, v.s.	Underarm ve
+270	Bløtvev	Underarm, h.s.	Bløtvev: Underarm, h.s.	Underarm hø
+271	Bløtvev	Hand, v.s.	Bløtvev: Hand, v.s.	Hand ve
+272	Bløtvev	Hand, h.s.	Bløtvev: Hand, h.s.	Hand hø
+300	Bløtvev	Underkropp, ins.	Bløtvev: Underkropp, ins.	Underkropp ins
+301	Bløtvev	Underkropp, mult.lok.	Bløtvev: Underkropp, mult.lok.	Underkropp mul
+302	Bløtvev	Underkropp (hele)	Bløtvev: Underkropp (hele)	Underkropp hel
+303	Bløtvev	Skorstein	Bløtvev: Skorstein	Skorstein
+304	Bløtvev	Abdomen	Bløtvev: Abdomen	Abdomen
+305	Bløtvev	Abdomen, v.s.	Bløtvev: Abdomen, v.s.	Abdomen ve
+306	Bløtvev	Abdomen, h.s.	Bløtvev: Abdomen, h.s.	Abdomen hø
+307	Bløtvev	Lever	Bløtvev: Lever	Lever
+308	Bløtvev	Nyre, h.s.	Bløtvev: Nyre, h.s.	Nyre hø
+309	Bløtvev	Nyre, v.s.	Bløtvev: Nyre, v.s.	Nyre ve
+310	Bløtvev	Milt	Bløtvev: Milt	Milt
+311	Bløtvev	Ovaria	Bløtvev: Ovaria	Ovaria
+312	Bløtvev	Bekken	Bløtvev: Bekken	Bekken
+313	Bløtvev	Bekken, v.s.	Bløtvev: Bekken, v.s.	Bekken ve
+314	Bløtvev	Bekken, h.s.	Bløtvev: Bekken, h.s.	Bekken hø
+315	Bløtvev	Flanke, v.s.	Bløtvev: Flanke, v.s.	Flanke ve
+316	Bløtvev	Flanke, h.s.	Bløtvev: Flanke, h.s.	Flanke hø
+318	Bløtvev	Lumbal	Bløtvev: Lumbal	Lumbal
+320	Bløtvev	Lumbal/Iliacal,bilat	Bløtvev: Lumbal/Iliacal,bilat	Lumbal/Iliacal
+321	Bløtvev	Lumbal/Iliacal v.s.	Bløtvev: Lumbal/Iliacal v.s.	V.Lumbal/Iliac
+322	Bløtvev	Lumbal/Iliacal h.s.	Bløtvev: Lumbal/Iliacal h.s.	H.Lumbal/Iliac
+324	Bløtvev	Lumb/Iliac/Lyske	Bløtvev: Lumb/Iliac/Lyske	Lumb/Iliac/Lys
+325	Bløtvev	Lumb/Iliac/Lyske v.s.	Bløtvev: Lumb/Iliac/Lyske v.s.	V.Lum/Iliac/Ly
+326	Bløtvev	Lumb/Iliac/Lyske h.s.	Bløtvev: Lumb/Iliac/Lyske h.s.	H.Lum/Iliac/Ly
+328	Bløtvev	Iliacal	Bløtvev: Iliacal	Iliacal
+329	Bløtvev	Iliacal, v.s.	Bløtvev: Iliacal, v.s.	Iliacal ve
+330	Bløtvev	Iliacal, h.s.	Bløtvev: Iliacal, h.s.	Iliacal hø
+332	Bløtvev	Iliacal/Lyske	Bløtvev: Iliacal/Lyske	Iliacal/Lyske
+333	Bløtvev	Iliacal/Lyske, v.s.	Bløtvev: Iliacal/Lyske, v.s.	V.Iliacal/Lysk
+334	Bløtvev	Iliacal/Lyske, h.s.	Bløtvev: Iliacal/Lyske, h.s.	H.Iliacal/Lysk
+335	Bløtvev	Lyske, v.s.	Bløtvev: Lyske, v.s.	Lyske ve
+336	Bløtvev	Lyske, h.s.	Bløtvev: Lyske, h.s.	Lyske hø
+338	Bløtvev	Ytre kjønnsorgan	Bløtvev: Ytre kjønnsorgan	Ytre kjønnsorg
+340	Bløtvev	Anus/Rectum	Bløtvev: Anus/Rectum	Anus/Rectum
+341	Bløtvev	Vesica	Bløtvev: Vesica	Vesica
+342	Bløtvev	Prostata	Bløtvev: Prostata	Prostata
+343	Bløtvev	Prostata og vesicler	Bløtvev: Prostata og vesicler	Prostata/Ves.
+344	Bløtvev	Vagina	Bløtvev: Vagina	Vagina
+345	Bløtvev	Uterus	Bløtvev: Uterus	Uterus
+346	Bløtvev	Vagina/Uterus	Bløtvev: Vagina/Uterus	Vagina/Uterus
+347	Bløtvev	Cervix	Bløtvev: Cervix	Cervix
+348	Bløtvev	Prostataseng,	Bløtvev: Prostataseng,	Prostataseng
+349	Bløtvev	Urethra	Bløtvev: Urethra	Urethra
+351	Bløtvev	Binyre, v.s.	Bløtvev: Binyre, v.s.	Binyre ve
+352	Bløtvev	Binyre, h.s.	Bløtvev: Binyre, h.s.	Binyre hø
+353	Bløtvev	Sete, v.s.	Bløtvev: Sete, v.s.	Sete ve
+354	Bløtvev	Sete, h.s.	Bløtvev: Sete, h.s.	Sete hø
+373	Bløtvev	Hofte, v.s.	Bløtvev: Hofte, v.s.	Hofte ve
+374	Bløtvev	Hofte, h.s.	Bløtvev: Hofte, h.s.	Hofte hø
+375	Bløtvev	Underekstr., ins. v.s.	Bløtvev: Underekstr., ins. v.s.	V.Underekstr.
+376	Bløtvev	Underekstr., ins. h.s.	Bløtvev: Underekstr., ins. h.s.	H.Underekstr.
+377	Bløtvev	Underekstr.mul.lok., v.s.	Bløtvev: Underekstr.mul.lok., v.s.	V.Underekstr.
+378	Bløtvev	Underekstr.mul.lok., h.s.	Bløtvev: Underekstr.mul.lok., h.s.	H.Underekstr.
+385	Bløtvev	Lår, v.s.	Bløtvev: Lår, v.s.	Lår ve
+386	Bløtvev	Lår, h.s.	Bløtvev: Lår, h.s.	Lår hø
+387	Bløtvev	Kne, v.s.	Bløtvev: Kne, v.s.	Kne ve
+388	Bløtvev	Kne, h.s.	Bløtvev: Kne, h.s.	Kne hø
+389	Bløtvev	Legg, v.s.	Bløtvev: Legg, v.s.	Legg ve
+390	Bløtvev	Legg, h.s.	Bløtvev: Legg, h.s.	Legg hø
+393	Bløtvev	Fot, v.s.	Bløtvev: Fot, v.s.	Fot ve
+394	Bløtvev	Fot, h.s.	Bløtvev: Fot, h.s.	Fot hø
+400	CNS	Hele sentralnervesys	CNS: Hele sentralnervesys	CNS hele
+401	CNS	Hele hjernen	CNS: Hele hjernen	Hele hjernen
+402	CNS	Hjernen,ø.cerv.med.	CNS: Hjernen,ø.cerv.med.	Hjernen/Ø.cerv
+403	CNS	Hjernehalvdel, v.s.	CNS: Hjernehalvdel, v.s.	V.Hjernehalv.
+404	CNS	Hjernehalvdel, h.s.	CNS: Hjernehalvdel, h.s.	H.Hjernehalv.
+405	CNS	Frontalreg., v.s.	CNS: Frontalreg., v.s.	Frontalreg. ve
+406	CNS	Frontalreg., h.s.	CNS: Frontalreg., h.s.	Frontalreg. hø
+407	CNS	Temporalreg., v.s.	CNS: Temporalreg., v.s.	V.Temporalreg
+408	CNS	Temporalreg., h.s.	CNS: Temporalreg., h.s.	H.Temporalreg
+409	CNS	Parietalreg., v.s.	CNS: Parietalreg., v.s.	V.Parietalreg
+410	CNS	Parietalreg., h.s.	CNS: Parietalreg., h.s.	H.Parietalreg
+411	CNS	Occipitalreg., v.s.	CNS: Occipitalreg., v.s.	V.Occipitalreg
+412	CNS	Occipitalreg., h.s.	CNS: Occipitalreg., h.s.	H.Occipitalreg
+413	CNS	Hjernestammen	CNS: Hjernestammen	Hjernestammen
+414	CNS	Cerebellum	CNS: Cerebellum	Cerebellum
+415	CNS	Hjernen,begrensa del	CNS: Hjernen,begrensa del	Hjernen (del)
+416	CNS	Cervicalmedulla	CNS: Cervicalmedulla	Cervical med.
+417	CNS	Cervical/Thoracalmed	CNS: Cervical/Thoracalmed	Cervical/Thora
+418	CNS	Thoracalmedulla	CNS: Thoracalmedulla	Thoracal med.
+419	CNS	Hele medulla	CNS: Hele medulla	Hele medulla
+501	Skjelett	Neurocranium	Skjelett: Neurocranium	Neurocranium
+502	Skjelett	Skallebasis	Skjelett: Skallebasis	Skallebasis
+503	Skjelett	Tinningsbenpyr. v.s.	Skjelett: Tinningsbenpyr. v.s.	V.Tinningsben
+504	Skjelett	Tinningsbenpyr. h.s.	Skjelett: Tinningsbenpyr. h.s.	H.Tinningsben
+505	Skjelett	Ansiktsskjelett	Skjelett: Ansiktsskjelett	Ansiktsskj.
+506	Skjelett	Mandibula	Skjelett: Mandibula	Mandibula
+512	Skjelett	Hele bekkenet	Skjelett: Hele bekkenet	Hele bekkenet
+513	Skjelett	Bekken, v.s.	Skjelett: Bekken, v.s.	Bekken ve
+514	Skjelett	Bekken, h.s.	Skjelett: Bekken, h.s.	Bekken hø
+517	Skjelett	Cervicalcolumna	Skjelett: Cervicalcolumna	Cervical
+518	Skjelett	Cervical/Thoracalcol	Skjelett: Cervical/Thoracalcol	Cervical/Thora
+519	Skjelett	Øvre thoracalcolumna	Skjelett: Øvre thoracalcolumna	Øvre thoracal
+520	Skjelett	Thoracalcolumna	Skjelett: Thoracalcolumna	Thoracal
+521	Skjelett	Nedre thoracalcol.	Skjelett: Nedre thoracalcol.	Nedre thoracal
+522	Skjelett	Thoracal/Lumbalcol.	Skjelett: Thoracal/Lumbalcol.	Thoracal/Lumba
+523	Skjelett	Lumbalcolumna	Skjelett: Lumbalcolumna	Lumbal
+524	Skjelett	Lumbalcolumna/Sacrum	Skjelett: Lumbalcolumna/Sacrum	Lumbal/Sacrum
+525	Skjelett	Sacrum	Skjelett: Sacrum	Sacrum
+526	Skjelett	Hele columna	Skjelett: Hele columna	Hele columna
+527	Skjelett	Coccyx	Skjelett: Coccyx	Coccyx
+530	Skjelett	Sternum	Skjelett: Sternum	Sternum
+531	Skjelett	Costa, foran v.s.	Skjelett: Costa, foran v.s.	Costa foran ve
+532	Skjelett	Costa, foran h.s.	Skjelett: Costa, foran h.s.	Costa foran hø
+533	Skjelett	Clavicula, v.s.	Skjelett: Clavicula, v.s.	Clavicula ve
+534	Skjelett	Clavicula, h.s.	Skjelett: Clavicula, h.s.	Clavicula hø
+535	Skjelett	Costa, bak v.s.	Skjelett: Costa, bak v.s.	Costa bak ve
+536	Skjelett	Costa, bak h.s.	Skjelett: Costa, bak h.s.	Costa bak hø
+537	Skjelett	Costa, på sida v.s.	Skjelett: Costa, på sida v.s.	V.Costa side
+538	Skjelett	Costa, på sida h.s.	Skjelett: Costa, på sida h.s.	H.Costa side
+541	Skjelett	Os ilium, v.s.	Skjelett: Os ilium, v.s.	Os ilium ve
+542	Skjelett	Os ilium, h.s.	Skjelett: Os ilium, h.s.	Os ilium hø
+543	Skjelett	Os pubis, v.s.	Skjelett: Os pubis, v.s.	Os pubis ve
+544	Skjelett	Os pubis, h.s.	Skjelett: Os pubis, h.s.	Os pubis hø
+545	Skjelett	Os ischie, v.s.	Skjelett: Os ischie, v.s.	Os ischie ve
+546	Skjelett	Os ischie, h.s.	Skjelett: Os ischie, h.s.	Os ischie hø
+549	Skjelett	Scapula, v.s.	Skjelett: Scapula, v.s.	Scapula ve
+550	Skjelett	Scapula, h.s.	Skjelett: Scapula, h.s.	Scapula hø
+553	Skjelett	Skulder, v.s.	Skjelett: Skulder, v.s.	Skulder ve
+554	Skjelett	Skulder, h.s.	Skjelett: Skulder, h.s.	Skulder hø
+561	Skjelett	Overekstr., ins. v.s.	Skjelett: Overekstr., ins. v.s.	V.Overekstr.
+562	Skjelett	Overekstr., ins. h.s.	Skjelett: Overekstr., ins. h.s.	H.Overekstr.
+563	Skjelett	Overekstr., m.lok. v.s.	Skjelett: Overekstr., m.lok. v.s.	V.Overekstr.
+564	Skjelett	Overekstr., m.lok. h.s.	Skjelett: Overekstr., m.lok. h.s.	H.Overekstr.
+565	Skjelett	Overarm, v.s.	Skjelett: Overarm, v.s.	Overarm ve
+566	Skjelett	Overarm, h.s.	Skjelett: Overarm, h.s.	Overarm hø
+567	Skjelett	Albu, v.s.	Skjelett: Albu, v.s.	Albu ve
+568	Skjelett	Albu, h.s.	Skjelett: Albu, h.s.	Albu hø
+569	Skjelett	Underarm, v.s.	Skjelett: Underarm, v.s.	Underarm ve
+570	Skjelett	Underarm, h.s.	Skjelett: Underarm, h.s.	Underarm hø
+571	Skjelett	Hand, v.s.	Skjelett: Hand, v.s.	Hand ve
+572	Skjelett	Hand, h.s.	Skjelett: Hand, h.s.	Hand hø
+573	Skjelett	Hofte, v.s.	Skjelett: Hofte, v.s.	Hofte ve
+574	Skjelett	Hofte, h.s.	Skjelett: Hofte, h.s.	Hofte hø
+575	Skjelett	Underekstr., ins. v.s.	Skjelett: Underekstr., ins. v.s.	V.Underekstr.
+576	Skjelett	Underekstr., ins. h.s.	Skjelett: Underekstr., ins. h.s.	H.Underekstr.
+577	Skjelett	Underekstr., m.lok. v.s.	Skjelett: Underekstr., m.lok. v.s.	V.Underekstr.
+578	Skjelett	Underekstr., m.lok. h.s.	Skjelett: Underekstr., m.lok. h.s.	H.Underekstr.
+585	Skjelett	Lår, v.s.	Skjelett: Lår, v.s.	Lår ve
+586	Skjelett	Lår, h.s.	Skjelett: Lår, h.s.	Lår hø
+587	Skjelett	Kne, v.s.	Skjelett: Kne, v.s.	Kne ve
+588	Skjelett	Kne, h.s.	Skjelett: Kne, h.s.	Kne hø
+589	Skjelett	Legg, v.s.	Skjelett: Legg, v.s.	Legg ve
+590	Skjelett	Legg, h.s.	Skjelett: Legg, h.s.	Legg hø
+593	Skjelett	Fot, v.s.	Skjelett: Fot, v.s.	Fot ve
+594	Skjelett	Fot, h.s.	Skjelett: Fot, h.s.	Fot hø
+900	Bløtvev	Hele kroppen	Bløtvev: Hele kroppen	Hele kroppen
