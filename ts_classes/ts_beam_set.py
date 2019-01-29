@@ -19,6 +19,7 @@ import test as TEST
 import raystation_utilities as RSU
 import rois as ROIS
 import region_codes as RC
+import structure_set_functions as SSF
 
 # This class contains tests for the RayStation BeamSet object:
 class TSBeamSet(object):
@@ -45,26 +46,44 @@ class TSBeamSet(object):
     self.fractions = TEST.Parameter('Fraksjoner', beam_set.FractionationPattern.NumberOfFractions, self.param)
     self.collimator_angles = TEST.Parameter('Kollimator vinkler', '', self.param)
     self.defined_prescription = TEST.Parameter('Prescription', '', self.param)
-    self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
-    self.max_leaf_dist = TEST.Parameter('Parameter', '', self.param)
     self.couch = TEST.Parameter('Bordtopp', '', self.param)
     self.mlc = TEST.Parameter('MLC', '', self.param)
-    self.name = TEST.Parameter('Navn', '', self.param)
-    self.breast = TEST.Parameter('Geometri', '', self.param)
     self.norm_dose = TEST.Parameter('Dose', '', self.param)
     self.isocenter = TEST.Parameter('Isosenter','', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
+    self.name = TEST.Parameter('Navn', '', self.param)
 
+  # Gives true/false if the beam set has beams of not
+  def has_beam(self):
+    if len(list(self.beam_set.Beams)) > 0:
+      return True
+    else:
+      return False
+
+  # Gives true/false if the beam set has dose or not
+  def has_dose(self):
+    if self.beam_set.FractionDose.DoseValues:
+      return True
+    else:
+      return False
+
+  # Gives true/false if the beam set has a prescription defined
+  def has_prescription(self):
+    if self.beam_set.Prescription.PrimaryDosePrescription:
+      return True
+    else:
+      return False
+
+  # Gives true/false if the delivery technique is VMAT or not
+  def is_vmat(self):
+    if self.beam_set.DeliveryTechnique == 'Arc' and self.beam_set.Modality == 'Photons':
+      return True
+    else:
+      return False
 
   # Gives the fraction dose (in Gy):
   def fraction_dose(self):
     return (self.beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
-
-  # Gives the ts_structure_set which corresponds with this beam set:
-  #def ts_structure_set(self):
-  #  for ts_struct in self.ts_plan.ts_case.ts_structure_sets:
-  #    if ts_struct.structure_set.OnExamination == self.beam_set.GetPlanningExamination():
-   #     return ts_struct
 
     # Gives the ts_structure_set which corresponds with this beam set:
   def ts_structure_set(self):
@@ -72,81 +91,40 @@ class TSBeamSet(object):
       if ts_struct.structure_set.OnExamination == self.beam_set.GetPlanningExamination():
         return ts_struct
 
-  # Tests presence of unmerged beams.
-  def unmerged_beams_test(self):
-    t = TEST.Test('Når Beam-settet inneholder felt som har identisk gantry- og kollimator-vinkel, skal i utgangspunktet disse være sammeslått (merge).', True, self.param)
-    gantry_and_coll_angles = set([])
-    has_unmerged_beams = None
-    for beam in self.beam_set.Beams:
-      beam_angles = str(beam.GantryAngle) + '-' + str(beam.InitialCollimatorAngle)
-      if beam_angles in gantry_and_coll_angles:
-        has_unmerged_beams = True
-      else:
-        gantry_and_coll_angles.add(beam_angles)
-    if has_unmerged_beams:
-      return t.fail(True)
-    else:
-      return t.succeed()
-
-  # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC)
-  def technique_test(self):
-    t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
-    if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT'):
-      return t.fail(self.beam_set.DeliveryTechnique)
-    else:
-      return t.succeed()
-
-  # Tests that the machine is among the 2 white listed: ALVersa & ALVersa_FFF
-  def machine_test(self):
-    t = TEST.Test("Behandlingsapparat skal være en av disse", ['ALVersa', 'ALVersa_FFF'], self.machine)
-    if not self.beam_set.MachineReference.MachineName in ('ALVersa', 'ALVersa_FFF'):
-      return t.fail(self.beam_set.MachineReference.MachineName)
-    else:
-      return t.succeed()
-
-  # Tests the presence of "Create setup beams" (it should be deactivated).
-  def setup_beams_test(self):
-    t = TEST.Test("'Create setup beams' skal ikke være aktivert", False, self.param)
-    if self.beam_set.PatientSetup.UseSetupBeams:
-      return t.fail(True)
-    else:
-      return t.succeed()
-
-  # Tests the presence of a dose calculation.
-  def dose_test(self):
-    t = TEST.Test("Skal være definert", True, self.dose)
-    if not self.beam_set.FractionDose.DoseValues:
-      return t.fail()
-    else:
-      return t.succeed()
-
-  # Tests that the dose status is 'clinical'.
-  def dose_is_clinical_test(self):
-    t = TEST.Test("Beregning skal være markert som 'klinisk'", True, self.dose)
-    if self.beam_set.FractionDose.DoseValues:
-      if self.beam_set.FractionDose.DoseValues.IsClinical:
-        return t.succeed()
-      else:
-        return t.fail()
-
-  # Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo
-  def dose_algorithm_test(self):
-    t = TEST.Test("Algoritme skal være en av disse", ['CCDose', 'ElectronMonteCarlo'], self.dose)
-    if self.beam_set.FractionDose.DoseValues:
-      if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm in ['CCDose', 'ElectronMonteCarlo']: # other plausible value: 'Mixed'
-        return t.succeed()
-      else:
-        return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm)
-
-  # Tests that a sufficient number of histories has been used (in the case of Electron Monte Carlo calculations).
-  def number_of_histories_test(self):
-    t = TEST.Test("Antall historier skal være minst 200.000", '>=200000', self.dose)
-    if self.beam_set.FractionDose.DoseValues:
-      if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
-        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence < 200000:
-          return t.fail(beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence)
-        else:
-          return t.succeed()
+  def asymmetric_jaw_opening_long_test(self):
+    t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
+    ss = self.ts_structure_set().structure_set
+    isocenter = None
+    ctv_upper = None
+    ctv_lower = None
+    if self.is_vmat():
+      for beam in self.beam_set.Beams:
+        photon_iso = beam.Isocenter.Position
+        for roi in ss.RoiGeometries:
+          if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
+            isocenter = ss.RoiGeometries[roi.OfRoi.Name].GetCenterOfRoi()
+        if isocenter:
+          ctv_upper = isocenter.z
+          ctv_lower = isocenter.z
+        for roi in ss.RoiGeometries:
+          if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
+            ctv_box = roi.GetBoundingBox()
+            ctv_box_upper = ctv_box[1].z
+            ctv_box_lower = ctv_box[0].z
+            if abs(ctv_box_upper) < abs(ctv_upper):
+              ctv_upper = ctv_box_upper
+            if abs(ctv_box_lower) > abs(ctv_lower):
+              ctv_lower = ctv_box_lower
+          if ctv_upper and ctv_lower:
+            if abs(ctv_upper - ctv_lower) <= 21:
+              if abs(photon_iso.z - ctv_lower) > 10.5:
+                return t.fail()
+              elif abs(photon_iso.z - ctv_upper) > 10.5:
+               return t.fail()
+              else:
+                return t.succeed()
+            else:
+              return t.succeed()
 
   # Tests if the energies of the beams in the beam set are the same.
   def beam_energy_equality_test(self):
@@ -160,192 +138,39 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the energies of the beams in the beam set are the same as the expected energy.
-  def specific_energy_for_region_test(self):
-    wanted_energy = 6 # (default)
-    if self.ts_label.label.region in RC.brain_whole_codes:
-      if self.beam_set.DeliveryTechnique != 'Arc':
-        wanted_energy = 10
-    t = TEST.Test("Det skal i utgangspunktet benyttes gitt energi for denne behandlingsregionen.", wanted_energy, self.energies)
-    energies = []
-    for beam in self.beam_set.Beams:
-      energies.append(beam.MachineReference.Energy)
-    if set(energies) != set([wanted_energy]):
-      return t.fail(energies)
-    else:
-      return t.succeed()
-
-
-  # Tests if the label usage of V for VMAT seems to make sense.
-  def label_vmat_test(self):
-    t = TEST.Test("Plan-teknikk for 'VMAT' og bruk av VMAT-teknikk skal stemme overens", False, self.label)
-    if not self.ts_label.label.technique in ('S', 's'):
-      if self.beam_set.DeliveryTechnique == 'Arc' and not self.ts_label.label.technique in ('V', 'v'):
-        t.expected = 'V'
-        return t.fail(self.ts_label.label.technique)
-      elif self.beam_set.DeliveryTechnique != 'Arc' and self.ts_label.label.technique in ('V', 'v'):
-        t.expected = 'U/M/I'
-        return t.fail(self.ts_label.label.technique)
-      else:
-        return t.succeed()
-
-  # Tests if the plan has a target volume if the beam set label is U for 'Uten MV' and if the plan does not have a target volume and beam set label is M for 'Med MV'
-  def label_target_volume_test(self):
-    t = TEST.Test("Plan-teknikk og tilstedeværelse av målvolum bør stemme overens", True, self.label)
-    if self.ts_plan.ts_case.has_target_volume and self.ts_label.label.technique in ('U', 'u'):
-      return t.fail()
-    elif not self.ts_plan.ts_case.has_target_volume and self.ts_label.label.technique in ('M', 'm'):
-      return t.fail()
-    else:
-      return t.succeed()
-
-
-  # Tests what photon energy is used for beam sets which are interpreted as being curative (would like to avoid 15 MV due to neutron production in these cases).
-  def photon_energy_for_curative_fractionations_test(self):
-    t = TEST.Test("Skal normalt ikke bruke 15MV ved 'kurativ' fraksjonering (av hensyn til nøytronproduksjon)", '6 eller 10', self.energies)
-    # The test can only be performed if a prescription is defined, and if the modality is photons:
-    if self.beam_set.Prescription.PrimaryDosePrescription and self.beam_set.Modality == 'Photons':
-      energies = []
-      for beam in self.beam_set.Beams:
-        energies.append(beam.MachineReference.Energy)
-      # Define treatment as curative if fraction dose is less than 2.5 Gy (FIXME: This is of course extremely naive!!):
-      if self.fraction_dose < 2.5:
-        if 15 in energies:
-          return t.fail(15)
-        else:
-          return t.succeed()
-
-  # Tests that in cases of full arcs, if the last arc of the beam set is clockwise, which gives a more efficient patient takedown.
-  def vmat_full_arc_rotation_of_last_beam_test(self):
-    t = TEST.Test("Siste bue i en VMAT plan skal som hovedregel være med klokken når det er en full bue", 'Clockwise', self.vmat)
-    # Get the last beam:
-    if len(list(self.beam_set.Beams)) > 0:
-      beam = self.beam_set.Beams[self.beam_set.Beams.Count - 1]
-      if beam.ArcRotationDirection != 'None' and abs(beam.ArcStopGantryAngle - beam.GantryAngle) < 10:
-        if not beam.ArcRotationDirection == 'Clockwise':
-          return t.fail(beam.ArcRotationDirection)
-        else:
-          return t.succeed()
-
-  # Tests that sequential arcs have opposite rotation direction.
-  def vmat_arc_sequence_test(self):
-    t = TEST.Test("Ved flerbue-oppsett skal påfølgende buer ha motsatt rotasjonsretning", None, self.vmat)
-    previous_arc_direction = None
-    failed_beam = None
-    if self.beam_set.DeliveryTechnique == 'Arc':
-      for beam in self.beam_set.Beams:
-        if previous_arc_direction:
-          if beam.ArcRotationDirection == previous_arc_direction:
-            failed_beam = beam.Number
-        previous_arc_direction = beam.ArcRotationDirection
-      if failed_beam:
-        return t.fail(failed_beam)
-      else:
-        return t.succeed()
-
-  # Tests correspondence of nr fractions in beam set with external value (from label).
-  def nr_fractions_test(self):
-    if self.ts_label.label.nr_fractions:
-      expected = self.ts_label.label.nr_fractions
-      t = TEST.Test("Antall fraksjoner i beam set skal stemme med antall fraksjoner i beam set label", expected, self.fractions)
-      if self.beam_set.FractionationPattern.NumberOfFractions != int(expected):
-        return t.fail(self.beam_set.FractionationPattern.NumberOfFractions)
-      else:
-        return t.succeed()
-
-  # Tests if the sequence of beam collimator angles are reasonable.
-  # FIXME: I suspect there are cases where this test doesnt give the correct result...
-  # Note that this test only returns one beam in case of several beams with unreasonable values.
-  def reasonable_collimator_angles_test(self):
-    t = TEST.Test("Tilsynelatende upraktisk stort hopp i kollimatorvinkel brukt på dette feltet i forhold til det forrige. Samme feltform kan oppnås i et mer optimalt oppsett med kollimatorvinkel rotert 180 grader i forhold til gjeldende vinkel.", '', self.collimator_angles)
-    previous_beam_collimator_angle = 0
-    unreasonable_beam = None
-    expected_angle = None
-    for beam in self.beam_set.Beams:
-      coll_delta = RSU.practical_angle_delta(previous_beam_collimator_angle, beam.InitialCollimatorAngle)
-      if coll_delta > 90:
-        # In case of a suboptimal collimator angle being used, the 'correct' angle will be
-        unreasonable_beam = beam
-        expected_angle = RSU.proper_angle(round(beam.InitialCollimatorAngle - 180, 1))
-      previous_beam_collimator_angle = beam.InitialCollimatorAngle
-    if unreasonable_beam:
-      t.expected = expected_angle
-      return t.fail(round(beam.InitialCollimatorAngle, 1))
-    else:
-      return t.succeed()
-
-  #Tests if prescription in defined
+    #Tests if prescription in defined
   def defined_prescription_test(self):
     t = TEST.Test("Skal være definert.", True, self.defined_prescription)
-    if self.beam_set.Prescription.PrimaryDosePrescription:
+    if self.has_prescription():
       return t.succeed()
     else:
       return t.fail()
 
+  # Tests the presence of a dose calculation.
+  def dose_test(self):
+    t = TEST.Test("Skal være definert", True, self.dose)
+    if not self.has_dose():
+      return t.fail()
+    else:
+      return t.succeed()
 
-  # Tests if the default grid size of 0.3x0.3x0.3 cm^3 is used, unless the plan is stereotactic, then the grid size should be 0.1x0.1x0.1 cm^3 for brain and 0.2x0.2x0.2 cm^3 for lung.
-  def dose_grid_test(self):
-    t = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.3x0.3x0.3 cm^3.", True, self.grid)
-    t2 = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3.", True, self.grid)
-    ts = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.1x0.1x0.1 cm^3 ved siste final dose.", True, self.grid)
-    tsl = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3 ved siste final dose.", True, self.grid)
-    grid = self.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.FractionDose.InDoseGrid.VoxelSize
-    if self.ts_label.label.technique:
-      if self.ts_label.label.technique.upper() == 'S':
-        if self.ts_label.label.region in RC.brain_partial_codes:
-          if grid.x != 0.1 or grid.y != 0.1 or grid.z != 0.1:
-            ts.fail(grid.x)
-          else:
-            ts.succeed()
-        else:
-          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
-            tsl.fail(grid.x)
-          else:
-            tsl.succeed()
+  # Tests that the dose status is 'clinical'.
+  def dose_is_clinical_test(self):
+    t = TEST.Test("Beregning skal være markert som 'klinisk'", True, self.dose)
+    if self.has_dose():
+      if self.beam_set.FractionDose.DoseValues.IsClinical:
+        return t.succeed()
       else:
-        if self.ts_label.label.region in RC.prostate_codes:
-          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
-            t2.fail(grid.x)
-          else:
-            t2.succeed()
-        elif grid.x != 0.3 or grid.y != 0.3 or grid.z != 0.3:
-            return t.fail(grid.x)
-        else:
-          return t.succeed()
+        return t.fail()
 
- # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
-  def max_leaf_distance_test(self):
-    t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion = 0.3 cm/deg", True, self.max_leaf_dist)
-    t.expected = 0.3
-    if self.ts_label.label.technique:
-      if self.ts_label.label.technique.upper() == 'S':
-        if self.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree:
-          if self.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree <= 0.3:
-            return t.succeed()
-          else:
-            return t.fail(self.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree)
-        else:
-          return t.fail()
-
-
-  #Tests if the couch top is placed close to the patient
-  def couch_close_to_patient_test(self):
-    t = TEST.Test("Bordtopp-ROI (Couch) skal ligge inntil external", True, self.couch)
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.technique:
-        if self.ts_label.label.technique.upper() != 'S':
-          if self.ts_label.label.region not in RC.brain_codes:
-            for roi in self.ts_structure_set().structure_set.RoiGeometries:
-              if roi.OfRoi.Name == ROIS.couch.name and roi.HasContours():
-                for r in self.ts_structure_set().structure_set.RoiGeometries:
-                  if r.OfRoi.Name == ROIS.external.name and r.HasContours():
-                    couch = self.ts_structure_set().structure_set.RoiGeometries[ROIS.couch.name].GetBoundingBox()
-                    external = self.ts_structure_set().structure_set.RoiGeometries[ROIS.external.name].GetBoundingBox()
-                    if abs(couch[1].y - external[1].y) > 15 or abs(couch[1].y - external[1].y) < 5.41:
-                      return t.fail()
-
-
-
+  # Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo
+  def dose_algorithm_test(self):
+    t = TEST.Test("Algoritme skal være en av disse", ['CCDose', 'ElectronMonteCarlo'], self.dose)
+    if self.has_dose():
+      if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm in ['CCDose', 'ElectronMonteCarlo']: # other plausible value: 'Mixed'
+        return t.succeed()
+      else:
+        return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm)
 
  # Tests that, for conventional plans, the first MLC leaf behind the collimator is at the same posiition as the first MLC leaf inside the field.
   def guard_leaf_test(self):
@@ -377,6 +202,160 @@ class TSBeamSet(object):
 
         if len(failed_beams) >= 1:
           return t.fail(list(set(failed_beams)))
+        else:
+          return t.succeed()
+
+  # Tests that the isocenter coordinate is reasonably centered in the patient (in the axial slice).
+  def isocenter_centered_test(self):
+    t = TEST.Test("Skal i utgangspunktet være mest mulig sentrert i pasientens aksial-snitt", '<12 cm', self.isocenter)
+    photon_iso = None
+    if self.beam_set.Modality == 'Photons':
+      ss = self.ts_structure_set().structure_set
+      for beam in self.beam_set.Beams:
+        if not photon_iso:
+          photon_iso = beam.Isocenter.Position
+          # For photon plans, isosenter should be somewhat centered in the patient to avoid gantry collisions.
+          # Compare isocenter x and y coordinates to the center coordinates of the external ROI:
+
+          #external = RSU.ss_roi_geometry(beam_set, self.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
+          #if external:
+          if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
+            # Determine x and y coordinate:
+            patient_center_x = SSF.roi_center_x(ss, ROIS.external.name)
+            patient_center_y = SSF.roi_center_y(ss, ROIS.external.name)
+            if abs(patient_center_x) > 3:
+              patient_center_x = 0
+            #patc = external.GetCenterOfRoi()
+            #diff = ((photon_iso.x - patc.x ) ** 2 + (photon_iso.y - patc.y) ** 2) ** 0.5
+            diff = ((photon_iso.x - patient_center_x ) ** 2 + (photon_iso.y - patient_center_y) ** 2) ** 0.5
+            if diff > 12:
+              return t.fail(diff)
+            else:
+              return t.succeed()
+
+  # Tests that the isocenter coordinate is reasonably centered in the normalisation volume (in the longitudinal direction).
+  # An exception is for prostate plans with pelvic lymph nodes, here you want to use this volume. Another exception is for non-VMAT breast plans, where the isocenter is often placed more cranially.
+  def isocenter_centered_long_test(self):
+    t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning, avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm", '<1 cm', self.isocenter)
+    if self.beam_set.Modality == 'Photons':
+      diff = 0
+      ss = self.ts_structure_set().structure_set
+      target0 = None
+      target1 = None
+      for roi in ss.RoiGeometries:
+        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
+          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
+          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
+          if po:
+            for objective in po.Objective.ConstituentFunctions:
+              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
+                current_target = roi.GetBoundingBox()
+                if target0 == None or current_target[0].z < target0:
+                  target0 = current_target[0].z
+                if target1 == None or current_target[1].z > target1:
+                  target1 = current_target[1].z
+      if self.is_vmat():
+        if target0 and target1:
+          target_center_z = target0 + 0.5*abs(target0 - target1)
+          for beam in self.beam_set.Beams:
+            photon_iso = beam.Isocenter.Position
+            diff = abs(photon_iso.z - target_center_z)
+      elif self.beam_set.DeliveryTechnique != 'Arc':
+        if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
+          if self.beam_set.Modality == 'Photons':
+            for beam in self.beam_set.Beams:
+              photon_iso = beam.Isocenter.Position
+              for rg in self.ts_structure_set().structure_set.RoiGeometries:
+                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name:
+                  target = rg.GetBoundingBox()
+                  target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
+                  diff = abs(photon_iso.z - target_center_z)
+      if diff:
+        if diff > 1:
+          return t.fail(round(diff, 2))
+        else:
+          return t.succeed()
+
+  # Tests if the plan has a target volume if the beam set label is U for 'Uten MV' and if the plan does not have a target volume and beam set label is M for 'Med MV'
+  def label_target_volume_test(self):
+    t = TEST.Test("Plan-teknikk og tilstedeværelse av målvolum bør stemme overens", True, self.label)
+    if self.ts_plan.ts_case.has_target_volume and self.ts_label.label.technique in ('U', 'u'):
+      return t.fail()
+    elif not self.ts_plan.ts_case.has_target_volume and self.ts_label.label.technique in ('M', 'm'):
+      return t.fail()
+    else:
+      return t.succeed()
+
+  # Tests if the label usage of V for VMAT seems to make sense.
+  def label_vmat_test(self):
+    t = TEST.Test("Plan-teknikk for 'VMAT' og bruk av VMAT-teknikk skal stemme overens", False, self.label)
+    if not self.ts_label.label.technique in ('S', 's'):
+      if self.is_vmat() and not self.ts_label.label.technique in ('V', 'v'):
+        t.expected = 'V'
+        return t.fail(self.ts_label.label.technique)
+      elif self.beam_set.DeliveryTechnique != 'Arc' and self.ts_label.label.technique in ('V', 'v'):
+        t.expected = 'U/M/I'
+        return t.fail(self.ts_label.label.technique)
+      else:
+        return t.succeed()
+
+  # Tests that the machine is among the 2 white listed: ALVersa & ALVersa_FFF
+  def machine_test(self):
+    t = TEST.Test("Behandlingsapparat skal være en av disse", ['ALVersa', 'ALVersa_FFF'], self.machine)
+    if not self.beam_set.MachineReference.MachineName in ('ALVersa', 'ALVersa_FFF'):
+      return t.fail(self.beam_set.MachineReference.MachineName)
+    else:
+      return t.succeed()
+
+  #Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO1' etc. The plan label, for example '401V:0-70:35 1' is also allowed.
+  def name_of_beam_iso_test(self):
+    t = TEST.Test("Isosenter-navn på felt/buer skal være 'Iso' eller 'Iso1', 'Iso2' osv", True, self.name)
+    match = False
+    expected1 = 'Iso'
+    expected2 = 'ISO'
+    for beam in self.beam_set.Beams:
+      if beam.Isocenter.Annotation.Name in ('Iso','ISO'):
+        match = True
+      elif not beam.Isocenter.Annotation.Name in ('Iso','ISO'):
+        if beam.Isocenter.Annotation.Name in ('Iso1','ISO1','Iso2','ISO2','Iso3','ISO3'):
+          match = True
+      if match:
+        return t.succeed()
+      else:
+        return t.fail(beam.Isocenter.Annotation.Name.decode('utf8', 'replace'))
+
+  # Tests correspondence of nr fractions in beam set with external value (from label).
+  def nr_fractions_test(self):
+    if self.ts_label.label.nr_fractions:
+      expected = self.ts_label.label.nr_fractions
+      t = TEST.Test("Antall fraksjoner i beam set skal stemme med antall fraksjoner i beam set label", expected, self.fractions)
+      if self.beam_set.FractionationPattern.NumberOfFractions != int(expected):
+        return t.fail(self.beam_set.FractionationPattern.NumberOfFractions)
+      else:
+        return t.succeed()
+
+  # Tests that a sufficient number of histories has been used (in the case of Electron Monte Carlo calculations).
+  def number_of_histories_test(self):
+    t = TEST.Test("Antall historier skal være minst 200.000", '>=200000', self.dose)
+    if self.has_dose():
+      if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
+        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence < 200000:
+          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence)
+        else:
+          return t.succeed()
+
+  # Tests what photon energy is used for beam sets which are interpreted as being curative (would like to avoid 15 MV due to neutron production in these cases).
+  def photon_energy_for_curative_fractionations_test(self):
+    t = TEST.Test("Skal normalt ikke bruke 15MV ved 'kurativ' fraksjonering (av hensyn til nøytronproduksjon)", '6 eller 10', self.energies)
+    # The test can only be performed if a prescription is defined, and if the modality is photons:
+    if self.has_prescription() and self.beam_set.Modality == 'Photons':
+      energies = []
+      for beam in self.beam_set.Beams:
+        energies.append(beam.MachineReference.Energy)
+      # Define treatment as curative if fraction dose is less than 2.5 Gy (FIXME: This is of course extremely naive!!):
+      if self.fraction_dose < 2.5:
+        if 15 in energies:
+          return t.fail(15)
         else:
           return t.succeed()
 
@@ -438,11 +417,55 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
+  # Tests if the sequence of beam collimator angles are reasonable.
+  # FIXME: I suspect there are cases where this test doesnt give the correct result...
+  # Note that this test only returns one beam in case of several beams with unreasonable values.
+  def reasonable_collimator_angles_test(self):
+    t = TEST.Test("Tilsynelatende upraktisk stort hopp i kollimatorvinkel brukt på dette feltet i forhold til det forrige. Samme feltform kan oppnås i et mer optimalt oppsett med kollimatorvinkel rotert 180 grader i forhold til gjeldende vinkel.", '', self.collimator_angles)
+    previous_beam_collimator_angle = 0
+    unreasonable_beam = None
+    expected_angle = None
+    for beam in self.beam_set.Beams:
+      coll_delta = RSU.practical_angle_delta(previous_beam_collimator_angle, beam.InitialCollimatorAngle)
+      if coll_delta > 90:
+        # In case of a suboptimal collimator angle being used, the 'correct' angle will be
+        unreasonable_beam = beam
+        expected_angle = RSU.proper_angle(round(beam.InitialCollimatorAngle - 180, 1))
+      previous_beam_collimator_angle = beam.InitialCollimatorAngle
+    if unreasonable_beam:
+      t.expected = expected_angle
+      return t.fail(round(beam.InitialCollimatorAngle, 1))
+    else:
+      return t.succeed()
 
+  # Tests the presence of "Create setup beams" (it should be deactivated).
+  def setup_beams_test(self):
+    t = TEST.Test("'Create setup beams' skal ikke være aktivert", False, self.param)
+    if self.beam_set.PatientSetup.UseSetupBeams:
+      return t.fail(True)
+    else:
+      return t.succeed()
+
+  # Tests if the energies of the beams in the beam set are the same as the expected energy.
+  def specific_energy_for_region_test(self):
+    wanted_energy = 6 # (default)
+    if self.ts_label.label.region in RC.brain_whole_codes:
+      if self.beam_set.DeliveryTechnique != 'Arc':
+        wanted_energy = 10
+    t = TEST.Test("Det skal i utgangspunktet benyttes gitt energi for denne behandlingsregionen.", wanted_energy, self.energies)
+    energies = []
+    for beam in self.beam_set.Beams:
+      energies.append(beam.MachineReference.Energy)
+    if set(energies) != set([wanted_energy]):
+      return t.fail(energies)
+    else:
+      return t.succeed()
+
+  # Tests if the total number of MUs is below 1.4*fraction dose (cGy)
   def stereotactic_mu_test(self):
     t = TEST.Test("Bør som hovedregel være innenfor 1.4*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
-    if self.defined_prescription_test():
+    if self.has_prescription():
       t.expected = "<" + str(RSU.fraction_dose(self.beam_set) * 140)
       if self.ts_label.label.technique:
         if self.ts_label.label.technique.upper() == 'S':
@@ -453,12 +476,66 @@ class TSBeamSet(object):
           else:
             return t.succeed()
 
+  # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC)
+  def technique_test(self):
+    t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
+    if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT'):
+      return t.fail(self.beam_set.DeliveryTechnique)
+    else:
+      return t.succeed()
+
+  # Tests presence of unmerged beams.
+  def unmerged_beams_test(self):
+    t = TEST.Test('Når Beam-settet inneholder felt som har identisk gantry- og kollimator-vinkel, skal i utgangspunktet disse være sammeslått (merge).', True, self.param)
+    gantry_and_coll_angles = set([])
+    has_unmerged_beams = None
+    for beam in self.beam_set.Beams:
+      beam_angles = str(beam.GantryAngle) + '-' + str(beam.InitialCollimatorAngle)
+      if beam_angles in gantry_and_coll_angles:
+        has_unmerged_beams = True
+      else:
+        gantry_and_coll_angles.add(beam_angles)
+    if has_unmerged_beams:
+      return t.fail(True)
+    else:
+      return t.succeed()
+
+
+  # Tests that in cases of full arcs, if the last arc of the beam set is clockwise, which gives a more efficient patient takedown.
+  def vmat_full_arc_rotation_of_last_beam_test(self):
+    t = TEST.Test("Siste bue i en VMAT plan skal som hovedregel være med klokken når det er en full bue", 'Clockwise', self.vmat)
+    # Get the last beam:
+    if self.has_beam():
+      beam = self.beam_set.Beams[self.beam_set.Beams.Count - 1]
+      if self.is_vmat() and abs(beam.ArcStopGantryAngle - beam.GantryAngle) < 10:
+        if not beam.ArcRotationDirection == 'Clockwise':
+          return t.fail(beam.ArcRotationDirection)
+        else:
+          return t.succeed()
+
+  # Tests that sequential arcs have opposite rotation direction.
+  def vmat_arc_sequence_test(self):
+    t = TEST.Test("Ved flerbue-oppsett skal påfølgende buer ha motsatt rotasjonsretning", None, self.vmat)
+    previous_arc_direction = None
+    failed_beam = None
+    if self.is_vmat():
+      for beam in self.beam_set.Beams:
+        if previous_arc_direction:
+          if beam.ArcRotationDirection == previous_arc_direction:
+            failed_beam = beam.Number
+        previous_arc_direction = beam.ArcRotationDirection
+      if failed_beam:
+        return t.fail(failed_beam)
+      else:
+        return t.succeed()
+
+  # Tests if the total number of MUs is below 2.5*fraction dose (cGy)
   def vmat_mu_test(self):
     t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
-    if self.defined_prescription_test():
+    if self.has_prescription():
       t.expected = "<" + str(RSU.fraction_dose(self.beam_set) * 250)
-      if self.beam_set.DeliveryTechnique == 'Arc':
+      if self.is_vmat():
         for beam in self.beam_set.Beams:
           mu_total += beam.BeamMU
         if mu_total > RSU.fraction_dose(self.beam_set) * 250:
@@ -466,46 +543,11 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  #Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO1' etc. The plan label, for example '401V:0-70:35 1' is also allowed.
-  def name_of_beam_iso_test(self):
-    t = TEST.Test("Isosenter-navn på felt/buer skal være 'Iso' eller 'Iso1', 'Iso2' osv", True, self.name)
-    match = False
-    expected1 = 'Iso'
-    expected2 = 'ISO'
-    for beam in self.beam_set.Beams:
-      if beam.Isocenter.Annotation.Name in ('Iso','ISO'):
-        match = True
-      elif not beam.Isocenter.Annotation.Name in ('Iso','ISO'):
-        if beam.Isocenter.Annotation.Name in ('Iso1','ISO1','Iso2','ISO2','Iso3','ISO3'):
-          match = True
-      elif self.ts_label.label.nr_fractions and len(self.ts_label.label.parts) == 3 and self.ts_label.label.nr_fractions.isdigit() and self.ts_label.label.technique.isalpha() and self.ts_label.label.region and self.ts_label.label.region.isdigit() and len(self.ts_label.label.middle_parts) == 2:
-        if beam.Isocenter.Annotation.Name == (str(self.beam_set.DicomPlanLabel) + ' 1'):
-          match = True
-      if match:
-        return t.succeed()
-      else:
-        return t.fail(beam.Isocenter.Annotation.Name.decode('utf8', 'replace'))
 
-  #Tests if breast patients having a boost of 2 Gy x 8 has 'Clips' defined
-  def breast_seeds_test(self):
-    t = TEST.Test("Mammae-pasienter som skal ha ungdomsboost skal ha " + ROIS.clips.name + " definert.", True, self.breast)
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.region:
-        if self.ts_label.label.region in RC.breast_codes:
-          if self.ts_label.label.nr_fractions== '8':
-            match = False
-            for rg in structure_set.RoiGeometries:
-              if rg.OfRoi.Name == ROIS.clips.name and rg.HasContours():
-                match = True
-            if match:
-              return t.succeed()
-            else:
-              return t.fail()
-
- #Tests for prostate SIB plans, if the 'CTV 0-70' and 'CTV 0-56' volumes are normalised to the correct value, within 0.5%.
+ # Tests for prostate SIB plans, if the 'CTV 0-70' and 'CTV 0-56' volumes are normalised to the correct value, within 0.5%.
   def prostate_normalisation_test(self):
-    t_70 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum " + ROIS.ctv_70_sib.name + ".", True, self.norm_dose)
-    t_56 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum " + ROIS.ctv_56.name + ".", True, self.norm_dose)
+    t_70 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolum " + ROIS.ctv_70_sib.name + ".", True, self.norm_dose)
+    t_56 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolum " + ROIS.ctv_56.name + ".", True, self.norm_dose)
     t_56.expected = 56
     t_70.expected = 70
     for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
@@ -536,7 +578,7 @@ class TSBeamSet(object):
 
  #Tests for recti SIB plans, if the 'CTV 0-47' volume is normalised to the correct value, within 0.5%.
   def recti_normalisation_test(self):
-    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
+    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
     for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
       if self.ts_label.label.region not in RC.rectum_codes:
         if self.ts_label.label.nr_fractions == '25':
@@ -556,10 +598,10 @@ class TSBeamSet(object):
 
  #Tests for breast SIB plans, if the 'CTV 0-47' volume is normalised to the correct value, within 0.5%.
   def breast_normalisation_test(self):
-    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
+    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
     for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
       if self.ts_label.label.region in RC.breast_reg_codes:
-        if self.ts_label.label.nr_fractions== '25':
+        if self.ts_label.label.nr_fractions == '25':
           match = False
           cum_pr_dose = RSU.prescription_dose(self.beam_set)
           diff_pr_dose = RSU.differential_prescription_dose(self.ts_plan.plan, self.beam_set)
@@ -574,116 +616,6 @@ class TSBeamSet(object):
               else:
                 t_47.succeed()
 
-  # Tests that the isocenter coordinate is reasonably centered in the normalisation volume (in the longitudinal direction).
-  #An exception is for prostate plans with pelvic lymph nodes, here you want to use this volume. Another exception is for non-VMAT breast plans, where the isocenter is often placed more cranially.
-  def isocenter_centered_long_test(self):
-    t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning, avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm", '<1 cm', self.isocenter)
-    if self.beam_set.Modality == 'Photons':
-      diff = 0
-      ss = self.ts_structure_set().structure_set
-      target0 = None
-      target1 = None
-      for roi in ss.RoiGeometries:
-        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
-          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-          if po:
-            for objective in po.Objective.ConstituentFunctions:
-              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
-                current_target = roi.GetBoundingBox()
-                if target0 == None or current_target[0].z < target0:
-                  target0 = current_target[0].z
-                if target1 == None or current_target[1].z > target1:
-                  target1 = current_target[1].z
-      if self.beam_set.DeliveryTechnique == 'Arc':
-        if target0 and target1:
-          target_center_z = target0 + 0.5*abs(target0 - target1)
-          for beam in self.beam_set.Beams:
-            photon_iso = beam.Isocenter.Position
-            diff = abs(photon_iso.z - target_center_z)
-      elif self.beam_set.DeliveryTechnique != 'Arc':
-        if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
-          if self.beam_set.Modality == 'Photons':
-            for beam in self.beam_set.Beams:
-              photon_iso = beam.Isocenter.Position
-              for rg in self.ts_structure_set().structure_set.RoiGeometries:
-                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name:
-                  target = rg.GetBoundingBox()
-                  target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
-                  diff = abs(photon_iso.z - target_center_z)
-      if diff:
-        if diff > 1:
-          return t.fail(round(diff, 2))
-        else:
-          return t.succeed()
 
-  def asymmetric_jaw_opening_long_test(self):
-    t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
-    ss = self.ts_structure_set().structure_set
-    isocenter = None
-    ctv_upper = None
-    ctv_lower = None
-    if self.beam_set.DeliveryTechnique == 'Arc':
-      if self.beam_set.Modality == 'Photons':
-        for beam in self.beam_set.Beams:
-          photon_iso = beam.Isocenter.Position
-          for roi in ss.RoiGeometries:
-            if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-              isocenter = ss.RoiGeometries[roi.OfRoi.Name].GetCenterOfRoi()
-          if isocenter:
-            ctv_upper = isocenter.z
-            ctv_lower = isocenter.z
-          for roi in ss.RoiGeometries:
-            if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-              ctv_box = roi.GetBoundingBox()
-              ctv_box_upper = ctv_box[1].z
-              ctv_box_lower = ctv_box[0].z
-              if abs(ctv_box_upper) < abs(ctv_upper):
-                ctv_upper = ctv_box_upper
-              if abs(ctv_box_lower) > abs(ctv_lower):
-                ctv_lower = ctv_box_lower
-            if ctv_upper and ctv_lower:
-              if abs(ctv_upper - ctv_lower) <= 21:
-                if abs(photon_iso.z - ctv_lower) > 10.5:
-                  return t.fail()
-                elif abs(photon_iso.z - ctv_upper) > 10.5:
-                 return t.fail()
-                else:
-                  return t.succeed()
-              else:
-                return t.succeed()
-'''
-  def stereotactic_beam_distribution_mu_test(self):
-    t = TEST.Test("Antall MU bør være jevnt fordelt per bue (buelengde tatt i betraktning). MU på denne buen er > 1.15 * forventningsverdien.", True, self.mu)
-    beam_start = 0
-    beam_stop = 0
-    beam_length = 0
-    total_beam_length = 0
-    if self.beam_set.Prescription.PrimaryDosePrescription:
-      if self.ts_label.label.technique:
-        if self.ts_label.label.technique.upper() == 'S':
-          for beam in self.beam_set.Beams:
-            beam_start = beam.GantryAngle
-            beam_stop = beam.ArcStopGantryAngle
-            if beam_start > 180:
-              total_beam_length += 360 - beam_start
-            else:
-              total_beam_length += beam_start
-            if beam_stop > 180:
-              total_beam_length += 360 - beam_stop
-            else:
-              total_beam_length += beam_stop
 
-          for beam in self.beam_set.Beams:
-            if beam_start > 180:
-              beam_length += 360 - beam_start
-            else:
-              beam_length += beam_start
-            if beam_stop > 180:
-              beam_length += 360 - beam_stop
-            else:
-              beam_length += beam_stop
-            t.expected = "<" + str((beam_length/total_beam_length)*RSU.fraction_dose(self.beam_set) * 140)
-            if beam.BeamMU > (beam_length/total_beam_length)*RSU.fraction_dose(self.beam_set) * 140 * 1.15:
-              return t.fail(round(beam.BeamMU, 1))
-'''
+

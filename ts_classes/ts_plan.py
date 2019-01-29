@@ -38,7 +38,6 @@ class TSPlan(object):
     self.planned_by = TEST.Parameter('Planlagt av', self.plan.PlannedBy, self.param)
     self.isocenter = TEST.Parameter('Isocenter', '', self.param)
     self.numbers = TEST.Parameter('Beam numbers', '', self.param)
-    self.defined_roi = TEST.Parameter('Geometri','', self.param)
 
 
 
@@ -50,33 +49,6 @@ class TSPlan(object):
     else:
       return t.fail()
 
-
-  # Tests that the isocenter coordinate is reasonably centered in the patient (in the axial slice).
-  def isocenter_centered_test(self):
-    t = TEST.Test("Skal i utgangspunktet være mest mulig sentrert i pasientens aksial-snitt", '<12 cm', self.isocenter)
-    photon_iso = None
-    for beam_set in self.plan.BeamSets:
-      if beam_set.Modality == 'Photons':
-        for beam in beam_set.Beams:
-          if not photon_iso:
-            photon_iso = beam.Isocenter.Position
-            # For photon plans, isosenter should be somewhat centered in the patient to avoid gantry collisions.
-            # Compare isocenter x and y coordinates to the center coordinates of the external ROI:
-            external = RSU.ss_roi_geometry(beam_set, self.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
-            if external:
-              # Determine x and y coordinate:
-              ss = self.plan.GetStructureSet()
-              patient_center_x = SSF.roi_center_x(ss, ROIS.external.name)
-              patient_center_y = SSF.roi_center_y(ss, ROIS.external.name)
-              if abs(patient_center_x) > 3:
-                patient_center_x = 0
-              #patc = external.GetCenterOfRoi()
-              #diff = ((photon_iso.x - patc.x ) ** 2 + (photon_iso.y - patc.y) ** 2) ** 0.5
-              diff = ((photon_iso.x - patient_center_x ) ** 2 + (photon_iso.y - patient_center_y) ** 2) ** 0.5
-              if diff > 12:
-                return t.fail(diff)
-              else:
-                return t.succeed()
 
   # Tests that beam numbers are not repeated among beam sets in the treatment plan.
   def unique_beam_numbers_test(self):
@@ -94,42 +66,4 @@ class TSPlan(object):
     else:
       return t.succeed()
 
-  #Tests if all ROI's are defined, except 'LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT)
-  def breast_oar_defined_test(self):
-    failed_geometries = []
-    t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
-    t.expected = None
 
-    for rg in self.ts_beam_sets[0].ts_structure_set().structure_set.RoiGeometries:
-      if rg.HasContours() == False:
-        if self.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
-          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-        elif self.ts_beam_sets[0].beam_set.DeliveryTechnique == 'Arc':
-          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif rg.OfRoi.Name != ROIS.lad.name:
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-
-    new_failed_geometries = []
-    if len(failed_geometries) >= 1:
-      for structure_set in self.ts_case.case.PatientModel.StructureSets:
-        structure_sets = []
-        if structure_set != self.ts_beam_sets[0].ts_structure_set().structure_set:
-          structure_sets.append(structure_set)
-          for struct_set in structure_sets:
-            for rg in struct_set.RoiGeometries:
-              for roi in list(set(failed_geometries)):
-                if rg.OfRoi.Name == roi:
-                  if rg.HasContours() == True:
-                    failed_geometries.remove(roi)
-
-
-    if len(failed_geometries) >= 1:
-      return t.fail(list(set(failed_geometries)))
-    else:
-      return t.succeed()

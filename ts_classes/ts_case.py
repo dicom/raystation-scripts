@@ -16,6 +16,7 @@ import sys
 # Local script imports:
 import test as TEST
 import region_codes as RC
+import rois as ROIS
 #import raystation_utilities as RSU
 
 # This class contains tests for the RayStation Case object:
@@ -38,6 +39,7 @@ class TSCase(object):
     self.param = TEST.Parameter('Case', self.case.CaseName.decode('utf8', 'replace'), self.parent_param)
     self.localization_point = TEST.Parameter('REF', '', self.param)
     self.examination = TEST.Parameter('Examination', '', self.param)
+    self.defined_roi = TEST.Parameter('Geometri','', self.param)
     # Attributes:
     self.has_target_volume = self.target_volume()
 
@@ -52,11 +54,51 @@ class TSCase(object):
        match = True
     return match
 
+  #Tests if all ROI's are defined, except 'LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT)
+  def breast_oar_defined_test(self):
+    failed_geometries = []
+    t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
+    t.expected = None
+
+    for rg in self.ts_structure_sets[0].structure_set.RoiGeometries:
+      if rg.HasContours() == False:
+        if self.ts_plan.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
+          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_plan.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and (int(self.ts_plan.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+        elif self.ts_plan.ts_beam_sets[0].beam_set.DeliveryTechnique == 'Arc':
+          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_plan.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif rg.OfRoi.Name != ROIS.lad.name:
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+
+    new_failed_geometries = []
+    if len(failed_geometries) >= 1:
+      for structure_set in self.case.PatientModel.StructureSets:
+        structure_sets = []
+        if structure_set != self.ts_plan.ts_beam_sets[0].ts_structure_set().structure_set:
+          structure_sets.append(structure_set)
+          for struct_set in structure_sets:
+            for rg in struct_set.RoiGeometries:
+              for roi in list(set(failed_geometries)):
+                if rg.OfRoi.Name == roi:
+                  if rg.HasContours() == True:
+                    failed_geometries.remove(roi)
+
+
+    if len(failed_geometries) >= 1:
+      return t.fail(list(set(failed_geometries)))
+    else:
+      return t.succeed()
+
  #Tests if the same localization point is set in the free breathing CT and DIBH CT.
   def localization_points_for_gating_test(self):
     t = TEST.Test("Skal være samme referansepunkt i både fripust CT og dyp innpust CT for planer som har gating-regionkode", True, self.localization_point)
     points = []
-    if self.ts_plan.ts_beam_sets[0].ts_label.label.region and self.ts_plan.ts_beam_sets[0].ts_label.label.region in ['241','242','243','244']:
+    if self.ts_plan.ts_beam_sets[0].ts_label.label.region and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
       for ts_structure_set in self.ts_structure_sets:
         points.append(ts_structure_set.structure_set.LocalizationPoiGeometry.Point)
       if len(points) >= 2:

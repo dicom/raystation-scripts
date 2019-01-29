@@ -16,6 +16,8 @@ import sys
 # Local script imports:
 import test as TEST
 import raystation_utilities as RSU
+import structure_set_functions as SSF
+import rois as ROIS
 
 # This class contains tests for the RayStation Prescription object:
 class TSPrescription(object):
@@ -38,6 +40,33 @@ class TSPrescription(object):
     self.maks = TEST.Parameter('Klinisk maksdose', '', self.param)
 
 
+  def clinical_max_test(self):
+    t = TEST.Test("Skal i utgangspunktet være mindre enn 105% av normeringsdosen", True, self.maks)
+    ts = TEST.Test("Skal i utgangspunktet være mindre enn 150% av normeringsdosen", True, self.maks)
+    diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
+    ss = self.ts_beam_set.ts_structure_set().structure_set
+    if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
+      external = RSU.ss_roi_geometry(self.ts_beam_set.beam_set, self.ts_beam_set.ts_plan.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
+      volume = external.GetRoiVolume()
+      # Determine the fraction corresponding to a 2cc volume:
+      fraction = 2 / volume
+      #clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+      if self.ts_beam_set.ts_label.label.technique:
+        if not self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if clinical_max_dose > diff_pr_dose * 1.05:
+            t.expected = "<" + str(round(diff_pr_dose * 1.05, 2))
+            return t.fail(round(clinical_max_dose, 2))
+          else:
+            return t.succeed()
+        elif self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [0])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if clinical_max_dose > diff_pr_dose * 1.50:
+            ts.expected = "<" + str(round(diff_pr_dose * 1.50, 2))
+            ts.fail(round(clinical_max_dose, 2))
+          else:
+            ts.succeed()
+
   def ctv_prescription_test(self):
     t = TEST.Test("Skal i utgangspunktet benytte CTV til normalisering.", True, self.roi)
     ts = TEST.Test("Skal i utgangspunktet benytte PTV til normalisering.", True, self.roi)
@@ -52,19 +81,6 @@ class TSPrescription(object):
           return t.succeed()
         else:
           return t.fail(self.prescription.PrimaryDosePrescription.OnStructure.Type)
-
-  def stereotactic_prescription_technique_test(self):
-    t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryDosePrescription.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
-      if self.ts_beam_set.ts_label.label.technique:
-        if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          return t.succeed()
-        else:
-          return t.fail()
-      else:
-        return t.fail(self.prescription.PrimaryDosePrescription.PrescriptionType)
-
-
 
   # FIXME: Egen prescription test for stereotaksi og om planen har målvolum eller ikke.
   def prescription_type_test(self):
@@ -104,8 +120,6 @@ class TSPrescription(object):
       else:
         return t.succeed()
 
-
-
   def prescription_real_dose_test(self):
     t = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum (eller punkt)", True, self.dose)
     cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
@@ -134,78 +148,16 @@ class TSPrescription(object):
       else:
         return t.succeed()
 
-  def prescription_mu_test(self):
-    t = TEST.Test("Skal stå i forhold til fraksjonsdosen for beam-settet [NB: Tar ikke geometriske egenskaper som tverrsnitt eller feltoppsett i betraktning]", True, self.mu)
-    mu_total = 0
-    for beam in self.ts_beam_set.beam_set.Beams:
-      mu_total += beam.BeamMU
-      if self.ts_beam_set.beam_set.DeliveryTechnique != 'Arc':
-        # Naive approximation only relevant for conventional plans (not VMAT):
-        # Sum of monitor units compared to fraction dose (+/- 15% of 100Mu/Gy):
-        percent_dev = (mu_total - RSU.fraction_dose(self.ts_beam_set.beam_set) * 100) / (RSU.fraction_dose(self.ts_beam_set.beam_set) * 100) * 100
-        t.expected = RSU.fraction_dose(self.ts_beam_set.beam_set) * 100
-        if abs(percent_dev) > 15:
-          return t.fail(round(mu_total, 1))
-        else:
-          return t.succeed()
-
-
-
-
-
-
-  def vmat_mu_test(self):
-    t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
-    mu_total = 0
-    t.expected = "<" + str(RSU.fraction_dose(self.ts_beam_set.beam_set) * 250)
-    for beam in self.ts_beam_set.beam_set.Beams:
-      mu_total += beam.BeamMU
-      if self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
-        if mu_total > RSU.fraction_dose(self.ts_beam_set.beam_set) * 250:
-          return t.fail(round(mu_total, 1))
-        else:
-          return t.succeed()
-
-
-  def stereotactic_mu_test(self):
-    t = TEST.Test("Bør som hovedregel være innenfor 1.4*fraksjonsdose (cGy)", True, self.mu)
-    mu_total = 0
-    if self.ts_beam_set.beam_set.Prescription.PrimaryDosePrescription:
-      t.expected = "<" + str(RSU.fraction_dose(self.ts_beam_set.beam_set) * 140)
+  def stereotactic_prescription_technique_test(self):
+    t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
+    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryDosePrescription.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
       if self.ts_beam_set.ts_label.label.technique:
         if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          for beam in self.ts_beam_set.beam_set.Beams:
-            mu_total += beam.BeamMU
-          if mu_total > RSU.fraction_dose(self.ts_beam_set.beam_set) * 140:
-            return t.fail(round(mu_total, 1))
-          else:
-            return t.succeed()
-
-  def clinical_max_test(self):
-    t = TEST.Test("Skal i utgangspunktet være mindre enn 105% av normeringsdosen", True, self.maks)
-    ts = TEST.Test("Skal i utgangspunktet være mindre enn 150% av normeringsdosen", True, self.maks)
-    diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
-    external = RSU.ss_roi_geometry(self.ts_beam_set.beam_set, self.ts_beam_set.ts_plan.ts_case.case.PatientModel.RegionsOfInterest['External'])
-    if external:
-      volume = external.GetRoiVolume()
-      # Determine the fraction corresponding to a 2cc volume:
-      fraction = 2 / volume
-      #clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-      if self.ts_beam_set.ts_label.label.technique:
-        if not self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-          if clinical_max_dose > diff_pr_dose * 1.05:
-            t.expected = "<" + str(round(diff_pr_dose * 1.05, 2))
-            return t.fail(round(clinical_max_dose, 2))
-          else:
-            return t.succeed()
-        elif self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [0])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-          if clinical_max_dose > diff_pr_dose * 1.50:
-            ts.expected = "<" + str(round(diff_pr_dose * 1.50, 2))
-            ts.fail(round(clinical_max_dose, 2))
-          else:
-            ts.succeed()
+          return t.succeed()
+        else:
+          return t.fail()
+      else:
+        return t.fail(self.prescription.PrimaryDosePrescription.PrescriptionType)
 
 
 

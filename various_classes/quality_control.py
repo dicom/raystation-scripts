@@ -74,6 +74,7 @@ class QualityControl(object):
     # Case tests:
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
+    ts_case.breast_oar_defined_test()
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
       ts_structure_set.localization_point_test()
@@ -83,6 +84,8 @@ class QualityControl(object):
       ts_structure_set.prosthesis_titanium_test()
       ts_structure_set.external_ptv_bounding_test()
       ts_structure_set.couch_test()
+      ts_structure_set.couch_close_to_patient_test()
+      ts_structure_set.breast_seeds_test()
       # POI geometry tests:
       for ts_poi_geometry in ts_structure_set.ts_poi_geometries:
         ts_poi_geometry.is_defined_test()
@@ -92,9 +95,8 @@ class QualityControl(object):
         ts_roi_geometry.derived_roi_geometry_is_updated_test()
     # Plan tests:
     ts_plan.planned_by_test()
-    ts_plan.isocenter_centered_test()
     ts_plan.unique_beam_numbers_test()
-    ts_plan.breast_oar_defined_test()
+
     # Beam set tests:
     for ts_beam_set in ts_plan.ts_beam_sets:
       ts_beam_set.unmerged_beams_test()
@@ -115,19 +117,16 @@ class QualityControl(object):
       ts_beam_set.nr_fractions_test()
       ts_beam_set.label_vmat_test()
       ts_beam_set.label_target_volume_test()
-      ts_beam_set.dose_grid_test()
-      ts_beam_set.max_leaf_distance_test()
       ts_beam_set.guard_leaf_test()
       ts_beam_set.name_of_beam_iso_test()
       ts_beam_set.prostate_normalisation_test()
       ts_beam_set.recti_normalisation_test()
       ts_beam_set.isocenter_centered_long_test()
-      ts_beam_set.couch_close_to_patient_test()
       #ts_beam_set.prescription_mu_breast_regional_caudal_test()
       #ts_beam_set.prescription_mu_breast_regional_cranial_test()
       ts_beam_set.prescription_mu_test()
       ts_beam_set.asymmetric_jaw_opening_long_test()
-      ts_beam_set.breast_seeds_test()
+      ts_beam_set.isocenter_centered_test()
       ts_beam_set.stereotactic_mu_test()
       ts_beam_set.vmat_mu_test()
       # Label tests:
@@ -154,6 +153,8 @@ class QualityControl(object):
       if ts_optimization:
         ts_optimization.constraints_test()
         ts_optimization.objectives_background_dose_test()
+        ts_optimization.constrain_leaf_motion_test()
+        ts_optimization.dose_grid_test()
       # Beam tests:
       for ts_beam in ts_beam_set.ts_beams:
         ts_beam.name_test()
@@ -169,7 +170,8 @@ class QualityControl(object):
         ts_beam.wide_jaw_opening_for_filter_free_energies()
         ts_beam.mu_segment_3dcrt_test()
         ts_beam.stereotactic_beam_distribution_mu_test()
-        ts_beam.stereotactic_mu_constraints()
+        ts_beam.stereotactic_mu_constraints_for_multiple_beams()
+        ts_beam.stereotactic_mu_constraints_for_single_beam()
         ts_beam.segment_test()
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:

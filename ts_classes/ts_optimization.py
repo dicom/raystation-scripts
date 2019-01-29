@@ -16,6 +16,7 @@ import sys
 # Local script imports:
 import test as TEST
 import raystation_utilities as RSU
+import region_codes as RC
 
 # This class contains tests for the RayStation Optimization object:
 class TSOptimization(object):
@@ -33,6 +34,8 @@ class TSOptimization(object):
     self.param = TEST.Parameter('Optimalisering', '', self.parent_param)
     self.background_dose = TEST.Parameter('Bakgrunnsdose', '', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
+    self.parameter = TEST.Parameter('Parameter', '', self.param)
+    self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
 
 
   # Tests for presence of constraints.
@@ -82,52 +85,52 @@ class TSOptimization(object):
           return t.fail(str(len(target_fails)) + ": " + str(target_fails))
         else:
           return t.succeed()
-'''
-# Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
-  def stereotactic_mu_constraints(self):
-    t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
-    if self.ts_beam_set.beam_set.Prescription.PrimaryDosePrescription:
-      if self.ts_beam_set.ts_label.label.technique:
-        if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          if self.ts_beam_set.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcMU:
-            for index, beam in enumerate(self.ts_beam_set.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].BeamSettings):
-              beam_start = 0
-              beam_stop = 0
-              beam_length = 0
-              total_beam_length = 0
-              for beam in self.ts_beam_set.beam_set.Beams:
-                beam_start = beam.GantryAngle
-                beam_stop = beam.ArcStopGantryAngle
-                if beam_start > 180:
-                  total_beam_length += 360 - beam_start
-                else:
-                  total_beam_length += beam_start
-                if beam_stop > 180:
-                  total_beam_length += 360 - beam_stop
-                else:
-                  total_beam_length += beam_stop
 
-              beam_start = self.beam.GantryAngle
-              beam_stop = self.beam.ArcStopGantryAngle
-              if beam_start > 180:
-                beam_length += 360 - beam_start
-              else:
-                beam_length += beam_start
-              if beam_stop > 180:
-                beam_length += 360 - beam_stop
-              else:
-                beam_length += beam_stop
-              t.expected = "<" + str(round((beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140))
-              if self.beam.BeamMU > (beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140 *1.15:
+ # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
+  def constrain_leaf_motion_test(self):
+    t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion <= 0.3 cm/deg", True, self.parameter)
+    match = True
+    if self.ts_beam_set.ts_label.label.technique:
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+        if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree:
+          if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree > 0.3:
+            match = False
+        else:
+          match = False
+    if match:
+      return t.succeed()
+    else:
+      return t.fail()
 
-              if self.ts_beam_set.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[index].ArcConversionPropertiesPerBeam.MaxArcMU <= ((beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140):
-                return t.succeed()
-              else:
-                return t.fail(self.ts_beam_set.ts_plan.plan.PlanOptimizations[0].OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[index].ArcConversionPropertiesPerBeam.MaxArcMU)
-'''
-
-
-
+  # Tests if the default grid size of 0.3x0.3x0.3 cm^3 is used, unless the plan is stereotactic, then the grid size should be 0.1x0.1x0.1 cm^3 for brain and 0.2x0.2x0.2 cm^3 for lung.
+  def dose_grid_test(self):
+    t = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.3x0.3x0.3 cm^3.", True, self.grid)
+    t2 = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3.", True, self.grid)
+    ts = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.1x0.1x0.1 cm^3 ved siste final dose.", True, self.grid)
+    tsl = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3 ved siste final dose.", True, self.grid)
+    grid = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.FractionDose.InDoseGrid.VoxelSize
+    if self.ts_beam_set.ts_label.label.technique:
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+        if self.ts_beam_set.ts_label.label.region in RC.brain_partial_codes:
+          if grid.x != 0.1 or grid.y != 0.1 or grid.z != 0.1:
+            ts.fail(grid.x)
+          else:
+            ts.succeed()
+        else:
+          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
+            tsl.fail(grid.x)
+          else:
+            tsl.succeed()
+      else:
+        if self.ts_label.label.region in RC.prostate_codes:
+          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
+            t2.fail(grid.x)
+          else:
+            t2.succeed()
+        elif grid.x != 0.3 or grid.y != 0.3 or grid.z != 0.3:
+            return t.fail(grid.x)
+        else:
+          return t.succeed()
 
 
 
