@@ -76,7 +76,7 @@ class TSStructureSet(object):
     if self.structure_set == self.ts_case.ts_plan.plan.GetStructureSet():
       match = False
       if self.ts_case.ts_plan.ts_beam_sets[0].beam_set.Modality == 'Photons':
-        if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique.upper() == 'S' and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.brain_codes:
+        if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique.upper() == 'S' and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.brain_codes:
           match = True
         else:
           for rg in self.structure_set.RoiGeometries:
