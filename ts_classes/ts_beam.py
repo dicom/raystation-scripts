@@ -186,7 +186,7 @@ class TSBeam(object):
 
   # Tests the number of segments used on a static beam.
   def number_of_segments_of_static_beam_test(self):
-    t = TEST.Test("Skal i utgangspunktet være tilbakeholden med å bruke mange segmenter (ved IMRT)", '=<8', self.segments)
+    t = TEST.Test("Skal i utgangspunktet være tilbakeholden med å bruke mange segmenter (ved IMRT)", '<8', self.segments)
     if self.beam.ArcRotationDirection == 'None':
       nr_segments = RSU.soc_length(self.beam.Segments)
       if nr_segments >= 8:

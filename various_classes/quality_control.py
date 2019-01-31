@@ -74,7 +74,7 @@ class QualityControl(object):
     # Case tests:
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
-    ts_case.breast_oar_defined_test()
+
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
       ts_structure_set.localization_point_test()
@@ -96,6 +96,7 @@ class QualityControl(object):
     # Plan tests:
     ts_plan.planned_by_test()
     ts_plan.unique_beam_numbers_test()
+    ts_plan.breast_oar_defined_test()
 
     # Beam set tests:
     for ts_beam_set in ts_plan.ts_beam_sets:
@@ -122,8 +123,8 @@ class QualityControl(object):
       ts_beam_set.prostate_normalisation_test()
       ts_beam_set.recti_normalisation_test()
       ts_beam_set.isocenter_centered_long_test()
-      #ts_beam_set.prescription_mu_breast_regional_caudal_test()
-      #ts_beam_set.prescription_mu_breast_regional_cranial_test()
+      ts_beam_set.prescription_mu_breast_regional_caudal_test()
+      ts_beam_set.prescription_mu_breast_regional_cranial_test()
       ts_beam_set.prescription_mu_test()
       ts_beam_set.asymmetric_jaw_opening_long_test()
       ts_beam_set.isocenter_centered_test()

@@ -38,8 +38,48 @@ class TSPlan(object):
     self.planned_by = TEST.Parameter('Planlagt av', self.plan.PlannedBy, self.param)
     self.isocenter = TEST.Parameter('Isocenter', '', self.param)
     self.numbers = TEST.Parameter('Beam numbers', '', self.param)
+    self.defined_roi = TEST.Parameter('Geometri','', self.param)
 
 
+  #Tests if all ROI's are defined, except 'LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT)
+  def breast_oar_defined_test(self):
+    failed_geometries = []
+    t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
+    t.expected = None
+
+    for rg in self.ts_beam_sets[0].ts_structure_set().structure_set.RoiGeometries:
+      if rg.HasContours() == False:
+        if self.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
+          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+        elif self.ts_beam_sets[0].beam_set.DeliveryTechnique == 'Arc':
+          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          elif rg.OfRoi.Name != ROIS.lad.name:
+            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+
+    new_failed_geometries = []
+    if len(failed_geometries) >= 1:
+      for structure_set in self.ts_case.case.PatientModel.StructureSets:
+        structure_sets = []
+        if structure_set != self.ts_beam_sets[0].ts_structure_set().structure_set:
+          structure_sets.append(structure_set)
+          for struct_set in structure_sets:
+            for rg in struct_set.RoiGeometries:
+              for roi in list(set(failed_geometries)):
+                if rg.OfRoi.Name == roi:
+                  if rg.HasContours() == True:
+                    failed_geometries.remove(roi)
+
+
+    if len(failed_geometries) >= 1:
+      return t.fail(list(set(failed_geometries)))
+    else:
+      return t.succeed()
 
   # Tests the presence of a planned by label.
   def planned_by_test(self):

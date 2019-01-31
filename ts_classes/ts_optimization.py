@@ -38,6 +38,22 @@ class TSOptimization(object):
     self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
 
 
+  # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
+  def constrain_leaf_motion_test(self):
+    t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion <= 0.3 cm/deg", True, self.parameter)
+    match = True
+    if self.ts_beam_set.ts_label.label.technique:
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+        if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree:
+          if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree > 0.3:
+            match = False
+        else:
+          match = False
+    if match:
+      return t.succeed()
+    else:
+      return t.fail()
+
   # Tests for presence of constraints.
   def constraints_test(self):
     t = TEST.Test("Det skal i utgangspunktet ikke brukes constraints (det er mer effektivt og presist å bruke objectives - eventuelt med høy vekt for å simulere en constraint)", None, self.param)
@@ -49,6 +65,36 @@ class TSOptimization(object):
       return t.fail(str(constraints))
     else:
       return t.succeed()
+
+  # Tests if the default grid size of 0.3x0.3x0.3 cm^3 is used, unless the plan is stereotactic, then the grid size should be 0.1x0.1x0.1 cm^3 for brain and 0.2x0.2x0.2 cm^3 for lung.
+  def dose_grid_test(self):
+    t = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.3x0.3x0.3 cm^3.", True, self.grid)
+    t2 = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3.", True, self.grid)
+    ts = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.1x0.1x0.1 cm^3 ved siste final dose.", True, self.grid)
+    tsl = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3 ved siste final dose.", True, self.grid)
+    grid = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.FractionDose.InDoseGrid.VoxelSize
+    if self.ts_beam_set.ts_label.label.technique:
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+        if self.ts_beam_set.ts_label.label.region in RC.brain_partial_codes:
+          if grid.x != 0.1 or grid.y != 0.1 or grid.z != 0.1:
+            ts.fail(grid.x)
+          else:
+            ts.succeed()
+        else:
+          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
+            tsl.fail(grid.x)
+          else:
+            tsl.succeed()
+      else:
+        if self.ts_beam_set.ts_label.label.region in RC.prostate_codes:
+          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
+            t2.fail(grid.x)
+          else:
+            t2.succeed()
+        elif grid.x != 0.3 or grid.y != 0.3 or grid.z != 0.3:
+            return t.fail(grid.x)
+        else:
+          return t.succeed()
 
   # Tests for proper usage of background dose for three kinds of ROIs: Target volume, external and organ.
   # Our expectation is that background dose is used on OARs, but not on targets or external volumes.
@@ -86,51 +132,9 @@ class TSOptimization(object):
         else:
           return t.succeed()
 
- # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
-  def constrain_leaf_motion_test(self):
-    t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion <= 0.3 cm/deg", True, self.parameter)
-    match = True
-    if self.ts_beam_set.ts_label.label.technique:
-      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-        if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree:
-          if self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree > 0.3:
-            match = False
-        else:
-          match = False
-    if match:
-      return t.succeed()
-    else:
-      return t.fail()
 
-  # Tests if the default grid size of 0.3x0.3x0.3 cm^3 is used, unless the plan is stereotactic, then the grid size should be 0.1x0.1x0.1 cm^3 for brain and 0.2x0.2x0.2 cm^3 for lung.
-  def dose_grid_test(self):
-    t = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.3x0.3x0.3 cm^3.", True, self.grid)
-    t2 = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3.", True, self.grid)
-    ts = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.1x0.1x0.1 cm^3 ved siste final dose.", True, self.grid)
-    tsl = TEST.Test("Skal i utgangspunktet bruke dosegrid: 0.2x0.2x0.2 cm^3 ved siste final dose.", True, self.grid)
-    grid = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.FractionDose.InDoseGrid.VoxelSize
-    if self.ts_beam_set.ts_label.label.technique:
-      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-        if self.ts_beam_set.ts_label.label.region in RC.brain_partial_codes:
-          if grid.x != 0.1 or grid.y != 0.1 or grid.z != 0.1:
-            ts.fail(grid.x)
-          else:
-            ts.succeed()
-        else:
-          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
-            tsl.fail(grid.x)
-          else:
-            tsl.succeed()
-      else:
-        if self.ts_label.label.region in RC.prostate_codes:
-          if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
-            t2.fail(grid.x)
-          else:
-            t2.succeed()
-        elif grid.x != 0.3 or grid.y != 0.3 or grid.z != 0.3:
-            return t.fail(grid.x)
-        else:
-          return t.succeed()
+
+
 
 
 
