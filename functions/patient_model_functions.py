@@ -367,6 +367,8 @@ def translate_couch(pm, ss, examination, external, couch_thickness = 5.55):
   #couch_thickness = 5.55
   ext_box = ss.RoiGeometries[external].GetBoundingBox()
   ext_center = SSF.roi_center_x(ss, external)
+  if abs(ext_center) > 5:
+    ext_center = 0
   couch_center_x = SSF.roi_center_x(ss, ROIS.couch.name)
   couch_box = ss.RoiGeometries[ROIS.couch.name].GetBoundingBox()
   y_translation = -(abs(couch_box[1].y - ext_box[1].y)-couch_thickness)
