@@ -50,17 +50,19 @@ class TSPlan(object):
     for rg in self.ts_beam_sets[0].ts_structure_set().structure_set.RoiGeometries:
       if rg.HasContours() == False:
         if self.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
-          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
+            if rg.OfRoi.Name == ROIS.lad.name and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
+              failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+            elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
+              failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+            elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
+              failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
         elif self.ts_beam_sets[0].beam_set.DeliveryTechnique == 'Arc':
-          if rg.OfRoi.Name == ROIS.lad.name and (int(self.ts_beam_sets[0].ts_label.label.region) in RC.breast_l_codes):
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
-          elif rg.OfRoi.Name != ROIS.lad.name:
-            failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+          if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
+            if rg.OfRoi.Name == ROIS.lad.name and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
+              failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
+            elif rg.OfRoi.Name != ROIS.lad.name:
+              failed_geometries.append(str(rg.OfRoi.Name.decode('utf8', 'replace')))
 
     new_failed_geometries = []
     if len(failed_geometries) >= 1:
