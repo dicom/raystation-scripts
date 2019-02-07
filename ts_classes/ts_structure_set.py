@@ -51,7 +51,7 @@ class TSStructureSet(object):
     #self.breast = TEST.Parameter('Geometri', '', self.param)
 
 
-  #Tests if breast patients having a boost of 2 Gy x 8 has 'Clips' defined
+  # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined
   def breast_seeds_test(self):
     t = TEST.Test("Mammae-pasienter som skal ha ungdomsboost skal ha " + ROIS.clips.name + " definert.", True, self.geometry)
     if self.structure_set == self.ts_case.ts_plan.plan.GetStructureSet():
@@ -60,7 +60,7 @@ class TSStructureSet(object):
           for beam_set in self.ts_case.ts_plan.ts_beam_sets:
             if beam_set.ts_label.label.nr_fractions == '8':
               match = False
-              for rg in structure_set.RoiGeometries:
+              for rg in self.structure_set.RoiGeometries:
                 if rg.OfRoi.Name == ROIS.clips.name and rg.HasContours():
                   match = True
               if match:
