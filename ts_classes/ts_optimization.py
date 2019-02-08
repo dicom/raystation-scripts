@@ -120,17 +120,17 @@ class TSOptimization(object):
             if not hasattr(obj.OfDoseDistribution, 'ForBeamSet'):
               target_fails.append(obj.ForRegionOfInterest.Name)
         if external_fails > 0:
-          return t.fail(str(external_fails))
+          return et.fail(str(external_fails))
         else:
-          return t.succeed()
+          return et.succeed()
         if len(oar_fails) > 0:
-          return t.fail(str(len(oar_fails)) + ": " + str(oar_fails))
+          return ot.fail(str(len(oar_fails)) + ": " + str(oar_fails))
         else:
-          return t.succeed()
+          return ot.succeed()
         if len(target_fails) > 0:
-          return t.fail(str(len(target_fails)) + ": " + str(target_fails))
+          return tt.fail(str(len(target_fails)) + ": " + str(target_fails))
         else:
-          return t.succeed()
+          return tt.succeed()
 
 
 

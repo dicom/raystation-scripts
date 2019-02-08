@@ -122,31 +122,32 @@ class TSPrescription(object):
 
   def prescription_real_dose_test(self):
     t = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum (eller punkt)", True, self.dose)
-    cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
-    diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
-    low_dose = round(diff_pr_dose * 0.995, 2)
-    high_dose = round(diff_pr_dose * 1.005, 2)
-    t.expected = "<" + str(low_dose) + " - " + str(high_dose) + ">"
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
-      norm_poi = ss_poi_geometry(self.ts_beam_set.beam_set, self.prescription.PrimaryDosePrescription.OnStructure)
-      p = {'x': norm_poi.Point.x, 'y': norm_poi.Point.y, 'z': norm_poi.Point.z}
-      real_poi_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.InterpolateDoseInPoint(Point = p)) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-      if real_poi_dose < low_dose or real_poi_dose > high_dose:
-        return t.fail(round(real_poi_dose, 2))
-      else:
-        return t.succeed()
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
-      real_dose_d50 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.50])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-      if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
-        return t.fail(round(real_dose_d50, 2))
-      else:
-        return t.succeed()
-    elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
-      real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-      if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
-        return t.fail(round(real_dose_d99, 2))
-      else:
-        return t.succeed()
+    if self.ts_beam_set.beam_set.Modality == 'Photons':
+      cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
+      diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
+      low_dose = round(diff_pr_dose * 0.995, 2)
+      high_dose = round(diff_pr_dose * 1.005, 2)
+      t.expected = "<" + str(low_dose) + " - " + str(high_dose) + ">"
+      if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
+        norm_poi = ss_poi_geometry(self.ts_beam_set.beam_set, self.prescription.PrimaryDosePrescription.OnStructure)
+        p = {'x': norm_poi.Point.x, 'y': norm_poi.Point.y, 'z': norm_poi.Point.z}
+        real_poi_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.InterpolateDoseInPoint(Point = p)) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+        if real_poi_dose < low_dose or real_poi_dose > high_dose:
+          return t.fail(round(real_poi_dose, 2))
+        else:
+          return t.succeed()
+      if self.prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
+        real_dose_d50 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.50])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+        if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
+          return t.fail(round(real_dose_d50, 2))
+        else:
+          return t.succeed()
+      elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
+        real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+        if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
+          return t.fail(round(real_dose_d99, 2))
+        else:
+          return t.succeed()
 
   def stereotactic_prescription_technique_test(self):
     t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
