@@ -97,7 +97,11 @@ class DefBreast(object):
     # Add volumes for boost (2Gy x 8) if selected:
     if not region == 'part':
       if boost:
-        ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ROIS.ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_targets([ROIS.ctv_sb, ptv_sbc])
+        if side == 'right':
+          ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ROIS.breast_r_draft], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+        else:
+          ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ROIS.breast_l_draft], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+        ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        site.add_targets([ROIS.surgical_bed, ctv_sb, ptv_sbc])
     # Create all targets and OARs in RayStation:
     site.create_rois()
