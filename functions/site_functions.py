@@ -45,9 +45,9 @@ def breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, targ
 # Prostate
 def prostate(ss, plan, total_dose, region_code):
   if region_code in RC.prostate_bed_codes:
-    return SITE.Site(RC.prostate_bed_codes, OBJ.prostate_objectives, OBJ.create_prostate_bed_objectives(ss, plan, total_dose), CGS.prostate_oars(ss), CGS.prostate_bed_targets(ss))
+    return SITE.Site(RC.prostate_bed_codes, OBJ.prostate_objectives, OBJ.create_prostate_bed_objectives(ss, plan, total_dose), CGS.prostate_oars(ss, total_dose), CGS.prostate_bed_targets(ss))
   else:
-    return SITE.Site(RC.prostate_codes, OBJ.prostate_objectives, OBJ.create_prostate_objectives(ss, plan, total_dose), CGS.prostate_oars(ss), CGS.prostate_targets(ss, total_dose))
+    return SITE.Site(RC.prostate_codes, OBJ.prostate_objectives, OBJ.create_prostate_objectives(ss, plan, total_dose), CGS.prostate_oars(ss, total_dose), CGS.prostate_targets(ss, total_dose))
 
 
 # Rectum
