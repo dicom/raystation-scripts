@@ -56,7 +56,9 @@ fractions_spinalcord = 25
 fractions_parotid = 25
 fractions_esophagus = 33
 fractions_bladder = 41
+fractions_bladder_hypo = 20
 fractions_rectum = 39
+fractions_rectum_hypo = 20
 fractions_femoral = 21
 fractions_bladder_at_rectum = 25
 fractions_breast = 25
@@ -234,6 +236,14 @@ bladder_v2_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_b
 bowelspace_v195_adx = EQD.Tolerance('BowelSpace', 'Some failure', ab_bowelspace, fractions_bowelspace, 45, 'Volume receiving tolerance dose being less than 195 cm3', 'Conventional RT')
 femoral_mean_adx = EQD.Tolerance('Femoral_Heads', 'Some failure', ab_femoral, fractions_femoral, 42, 'Mean dose being less than tolerance dose', 'Conventional RT')
 
+rectum_v40_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 40.8, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+rectum_v48_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+rectum_v52_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 52.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
+rectum_v57_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 57, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
+rectum_v60_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 60, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+bladder_v60_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 60, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+bladder_v48_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+bladder_v40_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 40.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
 # SBRT:
 
 # Lung SBRT 3 fractions

@@ -54,8 +54,10 @@ cc1000 = 1000
 cc1500 = 1500
 
 # Percent volumes:
+
 pc1 = 0.01
 pc2 = 0.02
+pc3 = 0.03
 pc5 = 0.05
 pc10 = 0.1
 pc15 = 0.15
@@ -598,29 +600,47 @@ bladder_oars = [
 
 
 # Prostate:
-def prostate_oars(ss):
-  prostate = [
-    CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4),
-    CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35_adx, priority4),
-    CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v25_adx, priority4),
-    CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc15, TOL.bladder_v15_adx, priority4),
-    CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-    CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
-    CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
-    CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc20, TOL.rectum_v20_adx,  priority3),
-    CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc15, TOL.rectum_v15_adx,  priority3),
-    CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-    CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
-    CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
-    CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc20, TOL.rectum_v20_adx,  priority3),
-    CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc15, TOL.rectum_v15_adx,  priority3),
-    CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
-    CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
-  ]
-  if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
-    prostate.extend([
+def prostate_oars(ss, total_dose):
+  if total_dose == 60:
+    prostate = [
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v40_adx_hypo, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v48_adx_hypo, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc5, TOL.bladder_v60_adx_hypo, priority4),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc60, TOL.rectum_v40_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v48_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc30, TOL.rectum_v52_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc15, TOL.rectum_v57_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc3, TOL.rectum_v60_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc60, TOL.rectum_v40_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc50, TOL.rectum_v48_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc30, TOL.rectum_v52_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc15, TOL.rectum_v57_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc3, TOL.rectum_v60_adx_hypo,  priority3),
+      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
       CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
-    ])
+    ]
+  else:
+    prostate = [
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35_adx, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v25_adx, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc15, TOL.bladder_v15_adx, priority4),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc20, TOL.rectum_v20_adx,  priority3),
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc15, TOL.rectum_v15_adx,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc20, TOL.rectum_v20_adx,  priority3),
+      CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc15, TOL.rectum_v15_adx,  priority3),
+      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+      CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
+    ]
+
   return prostate
 
 
