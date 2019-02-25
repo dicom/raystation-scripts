@@ -136,7 +136,7 @@ class Plan(object):
 
 
     # Total dose
-    total_dose = int(nr_fractions*fraction_dose)
+    #total_dose = int(nr_fractions*fraction_dose)
 
 
     # Determine prescription target:
