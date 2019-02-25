@@ -196,29 +196,30 @@ def create_posterior_half_fast(pm, examination, ss, source_roi, roi):
 # Creates a ROI which is the posterior half of the source roi in all slices.
 # Note that this function is somewhat slow, since it has to create a new ROI for every slice.
 def create_bottom_part_x_cm(pm, examination, ss, source_roi, roi, distance):
-  center_x = SSF.roi_center_x(ss, source_roi.name)
-  center_y = SSF.roi_center_y(ss, source_roi.name)
-  center_z = SSF.roi_center_z(ss, source_roi.name)
-  source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
-  x_min = source_roi_box[0].x
-  x_max = source_roi_box[1].x
-  x = source_roi_box[1].x - source_roi_box[0].x
-  y_min = source_roi_box[0].y
-  y_max = source_roi_box[1].y
-  y = source_roi_box[1].y - source_roi_box[0].y
-  z_min = source_roi_box[0].z
+  if SSF.has_named_roi_with_contours(ss, source_roi.name):
+    center_x = SSF.roi_center_x(ss, source_roi.name)
+    center_y = SSF.roi_center_y(ss, source_roi.name)
+    center_z = SSF.roi_center_z(ss, source_roi.name)
+    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+    x_min = source_roi_box[0].x
+    x_max = source_roi_box[1].x
+    x = source_roi_box[1].x - source_roi_box[0].x
+    y_min = source_roi_box[0].y
+    y_max = source_roi_box[1].y
+    y = source_roi_box[1].y - source_roi_box[0].y
+    z_min = source_roi_box[0].z
 
-  z = source_roi_box[1].z - source_roi_box[0].z
-  z_cutoff = z_min + distance/2
-  delete_roi(pm, ROIS.box.name)
-  box = pm.CreateRoi(Name = ROIS.box.name, Color = ROIS.box.color, Type = ROIS.box.type)
-  pm.RegionsOfInterest[ROIS.box.name].CreateBoxGeometry(Size={ 'x': x, 'y': y, 'z': distance}, Examination = examination, Center = { 'x': center_x, 'y': center_y, 'z': z_cutoff })
+    z = source_roi_box[1].z - source_roi_box[0].z
+    z_cutoff = z_min + distance/2
+    delete_roi(pm, ROIS.box.name)
+    box = pm.CreateRoi(Name = ROIS.box.name, Color = ROIS.box.color, Type = ROIS.box.type)
+    pm.RegionsOfInterest[ROIS.box.name].CreateBoxGeometry(Size={ 'x': x, 'y': y, 'z': distance}, Examination = examination, Center = { 'x': center_x, 'y': center_y, 'z': z_cutoff })
 
-  intersection = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = [ROIS.box], operator = 'Intersection')
-  # In the rare case that this ROI already exists, delete it (to avoid a crash):
-  delete_roi(pm, intersection.name)
-  create_algebra_roi(pm, examination, ss, intersection)
-  delete_roi(pm, ROIS.box.name)
+    intersection = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = [ROIS.box], operator = 'Intersection')
+    # In the rare case that this ROI already exists, delete it (to avoid a crash):
+    delete_roi(pm, intersection.name)
+    create_algebra_roi(pm, examination, ss, intersection)
+    delete_roi(pm, ROIS.box.name)
 
 
 # As there can only be one external, another external is created for brain stereotactic treatments, called 'Body', where only the patient geometry is included, The same as the normal 'External' for all other patient groups
