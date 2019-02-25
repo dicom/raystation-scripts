@@ -78,13 +78,16 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
       if fraction_dose > 8:
         BSF.create_single_arc(beam_set, isocenter, collimator_angle = '45', iso_index=iso_index, beam_index=beam_index)
       else:
-        if abs(isocenter.x) > 5:
-          if isocenter.x > 5 and CF.is_head_first_supine(examination) or not CF.is_head_first_supine(examination) and isocenter.x < -5:
-            BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '330', gantry_stop_angle2 = '179', gantry_start_angle1 = '179', gantry_start_angle2 = '330', iso_index=iso_index, beam_index=beam_index)
-          else:
-            BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '30', gantry_stop_angle2 = '181', gantry_start_angle1 = '181', gantry_start_angle2 = '30', iso_index=iso_index, beam_index=beam_index)
-        elif abs(isocenter.y) +5 < abs(SSF.roi_center_y(ss, "External")):
-          BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '240', gantry_stop_angle2 = '110', gantry_start_angle1 = '110', gantry_start_angle2 = '240', iso_index=iso_index, beam_index=beam_index)
+        if region_code in RC.whole_pelvis_codes:
+          BSF.create_dual_arcs(beam_set, isocenter, collimator_angle1 = '45', collimator_angle2 = '5', iso_index=iso_index, beam_index=beam_index)
         else:
-          BSF.create_single_arc(beam_set, isocenter, iso_index=iso_index, beam_index=beam_index)
+          if abs(isocenter.x) > 5:
+            if isocenter.x > 5 and CF.is_head_first_supine(examination) or not CF.is_head_first_supine(examination) and isocenter.x < -5:
+              BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '330', gantry_stop_angle2 = '179', gantry_start_angle1 = '179', gantry_start_angle2 = '330', iso_index=iso_index, beam_index=beam_index)
+            else:
+              BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '30', gantry_stop_angle2 = '181', gantry_start_angle1 = '181', gantry_start_angle2 = '30', iso_index=iso_index, beam_index=beam_index)
+          elif abs(isocenter.y) +5 < abs(SSF.roi_center_y(ss, "External")):
+            BSF.create_dual_arcs(beam_set, isocenter, gantry_stop_angle1 = '240', gantry_stop_angle2 = '110', gantry_start_angle1 = '110', gantry_start_angle2 = '240', iso_index=iso_index, beam_index=beam_index)
+          else:
+            BSF.create_single_arc(beam_set, isocenter, iso_index=iso_index, beam_index=beam_index)
   return len(list(beam_set.Beams))
