@@ -496,7 +496,7 @@ def is_breast_hypo(ss):
 # (Used to determine whether to use single or dual arc VMAT at the moment)
 def partial_brain_conflict_oars(ss):
   threshold = 3
-  if has_roi_with_shape(ss, ROIS.ptv_and_oars.name):
+  if has_named_roi_with_contours(ss, ROIS.ptv_and_oars.name):
     if ss.RoiGeometries[ROIS.ptv.name].GetRoiVolume() - ss.RoiGeometries[ROIS.ptv_and_oars.name].GetRoiVolume() < threshold:
       return True
     else:
