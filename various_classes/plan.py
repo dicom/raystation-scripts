@@ -191,9 +191,9 @@ class Plan(object):
     BSF.add_prescription(beam_set, nr_fractions, fraction_dose, target)
     # Determine the point which will be our isocenter:
     if nr_targets > 1:
-      if palliative_choices and palliative_choices[0].value == 'sep_beamset_iso':
-          # Consider all targets when determining isocenter:
-          isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets=True)
+      if palliative_choices and palliative_choices[0].value in ['sep_beamset_iso','beamset']:
+        # Consider all targets when determining isocenter:
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets=True)
       else:
         # Set isocenter for PTV1:
         isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external)
@@ -208,7 +208,7 @@ class Plan(object):
     # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets
     # FIXME: Bruke funksjon for test fx?
     if nr_targets > 1:
-      if region_code in RC.brain_codes + RC.lung_codes:
+      if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
         if PF.is_stereotactic(nr_fractions, fraction_dose):
           PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, nr_existing_beams=nr_beams)
       elif region_code in RC.palliative_codes:

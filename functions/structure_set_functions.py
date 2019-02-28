@@ -307,7 +307,7 @@ def determine_target(ss, nr_fractions, fraction_dose):
 def find_isocenter(examination, ss, target, external, multiple_targets=False):
   # Find center of target:
   if has_named_roi_with_contours(ss, target):
-    isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
+    center = ss.RoiGeometries[target].GetCenterOfRoi()
   # Determine x and y coordinate:
   patient_center_y = roi_center_y(ss, external)
   patient_center_x = roi_center_x(ss, external)
@@ -315,33 +315,55 @@ def find_isocenter(examination, ss, target, external, multiple_targets=False):
   if abs(patient_center_x) > 5:
     patient_center_x = 0
 
+  # Determine z coordinate for multiple targets:
+  if multiple_targets:
+    ptv_max_z = center.z #longitudinal direction
+    ptv_min_z = center.z
+    ptv_max_x = center.x #left - right / medial direction
+    ptv_min_x = center.x
+    ptv_max_y = center.y # anterior - posterior direction
+    ptv_min_y = center.y
+    # Iterate targets to find extreme boundary coordinates:
+    for roi in ss.RoiGeometries:
+      if roi.OfRoi.Type in ['Ptv', 'Ctv'] and roi.HasContours():
+        ptv_box = roi.GetBoundingBox()
+        ptv_box_max_z = ptv_box[1].z
+        ptv_box_min_z = ptv_box[0].z
+        ptv_box_max_x = ptv_box[1].x
+        ptv_box_min_x = ptv_box[0].x
+        ptv_box_max_y = ptv_box[1].y
+        ptv_box_min_y = ptv_box[0].y
+        if ptv_box_min_z < ptv_min_z:
+          ptv_min_z = ptv_box_min_z
+        if ptv_box_max_z > ptv_max_z:
+          ptv_max_z = ptv_box_max_z
+        if ptv_box_min_x < ptv_min_x:
+          ptv_min_x = ptv_box_min_x
+        if ptv_box_max_x > ptv_max_x:
+          ptv_max_x = ptv_box_max_x
+        if ptv_box_min_y < ptv_min_y:
+          ptv_min_y = ptv_box_min_y
+        if ptv_box_max_y > ptv_max_y:
+          ptv_max_y = ptv_box_max_y
+
+    middle_point_z = abs(ptv_max_z-ptv_min_z)/2
+    middle_point_x = abs(ptv_max_x-ptv_min_x)/2
+    middle_point_y = abs(ptv_max_y-ptv_min_y)/2
+    center.x = ptv_min_x + middle_point_x
+    center.y = ptv_min_y + middle_point_y
+    center.z = ptv_min_z + middle_point_z
+
   # Difference between isocenter and patient center:
-  dx = isocenter.x - patient_center_x
-  dy = isocenter.y - patient_center_y
+  dx = center.x - patient_center_x
+  dy = center.y - patient_center_y
   length = math.sqrt((dx)**2 +(dy)**2)
   max_length = 12
   if length > max_length:
     dx1 = max_length * dx/length
     dy1 = max_length *dy/length
-    isocenter.x = dx1 + patient_center_x
-    isocenter.y = dy1 + patient_center_y
-
-  # Determine z coordinate for multiple targets:
-  if multiple_targets:
-    ctv_upper = abs(isocenter.z)
-    ctv_lower = abs(isocenter.z)
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Type in ['Ctv','Ptv'] and roi.HasContours():
-        ctv_box = roi.GetBoundingBox()
-        ctv_box_upper = ctv_box[1].z
-        ctv_box_lower = ctv_box[0].z
-        if abs(ctv_box_upper) < abs(ctv_upper):
-          ctv_upper = ctv_box_upper
-        if abs(ctv_box_lower) > abs(ctv_lower):
-          ctv_lower = ctv_box_lower
-      middle_point = abs(ctv_upper - ctv_lower)/2
-      isocenter.z = ctv_lower + middle_point
-  return isocenter
+    center.x = dx1 + patient_center_x
+    center.y = dy1 + patient_center_y
+  return center
 
 
 # Determines the isocenter based on a given target and External contour provided for the given structure set.
