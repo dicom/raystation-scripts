@@ -32,10 +32,9 @@ brain_oar_objectives = []
 brain_whole_oar_objectives = [ROIS.eye_r_prv, ROIS.eye_l_prv, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.nasal_cavity]
 brain_stereotactic_oar_objectives = []
 # Breast
-breast_tang_oar_objectives = [ROIS.lung_r, ROIS.lung_l]
-breast_reg_l_oar_objectives = [ROIS.lung_r]
-breast_reg_r_oar_objectives = [ROIS.lung_l]
-breast_reg_oar_objectives = [ROIS.lung_l, ROIS.lung_r]
+breast_r_oar_objectives = [ROIS.lung_r]
+breast_l_oar_objectives = [ROIS.lung_l]
+
 # Lung
 lung_objectives = []
 # Palliative

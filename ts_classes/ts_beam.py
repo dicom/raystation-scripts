@@ -243,7 +243,7 @@ class TSBeam(object):
 
   # Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
   def stereotactic_mu_constraints_for_single_beam(self):
-    t1 = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
+    t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
     beam_start = 0
     beam_stop = 0
     beam_length = 0

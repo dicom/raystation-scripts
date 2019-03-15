@@ -52,7 +52,7 @@ def check_input(ss, region_code, nr_fractions, fraction_dose):
     elif SSF.has_roi_with_shape(ss, ROIS.ptv_77.name):
       error(nr_fractions, fraction_dose, [35], [2.2])
     else:
-      error(nr_fractions, fraction_dose, [20], [3])
+      error(nr_fractions, fraction_dose, [20, 13], [3])
   elif region_code in RC.rectum_codes:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_50.name):
       error(nr_fractions, fraction_dose, [25], [2])
