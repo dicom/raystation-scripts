@@ -69,6 +69,10 @@ def determine_patient_position(examination):
   patient_position = "HeadFirstSupine"
   if examination.PatientPosition == 'FFS':
     patient_position = "FeetFirstSupine"
+  elif examination.PatientPosition == 'HFP':
+    patient_position = "HeadFirstProne"
+  elif examination.PatientPosition == 'FFP':
+    patient_position = "FeetFirstProne"
   return patient_position
 
 
