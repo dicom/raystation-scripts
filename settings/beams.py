@@ -39,8 +39,10 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
     if region_code in RC.brain_whole_codes: # Whole brain
       BSF.create_single_arc(beam_set, isocenter)
     elif region_code in RC.brain_partial_codes:
-      if fraction_dose > 6: # Stereotactic brain
-        BSF.create_single_arc(beam_set, isocenter, collimator_angle = '45', iso_index=iso_index, beam_index=beam_index)
+      if fraction_dose > 15:
+        BSF.create_dual_arcs(beam_set, isocenter, collimator_angle1 = '5', collimator_angle2 = '355', iso_index=iso_index, beam_index=beam_index)
+      elif fraction_dose > 6: # Stereotactic brain
+        BSF.create_single_arc(beam_set, isocenter, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index)
       else: # Partial brain
         if SSF.partial_brain_conflict_oars(ss):
           BSF.create_single_arc(beam_set, isocenter, collimator_angle = '45', iso_index=iso_index, beam_index=beam_index)
@@ -76,7 +78,7 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
     elif region_code in RC.palliative_codes:
       # Stereotactic palliative codes:
       if fraction_dose > 8:
-        BSF.create_single_arc(beam_set, isocenter, collimator_angle = '45', iso_index=iso_index, beam_index=beam_index)
+        BSF.create_single_arc(beam_set, isocenter, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index)
       else:
         if region_code in RC.whole_pelvis_codes:
           BSF.create_dual_arcs(beam_set, isocenter, collimator_angle1 = '45', collimator_angle2 = '5', iso_index=iso_index, beam_index=beam_index)
