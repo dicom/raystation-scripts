@@ -95,36 +95,33 @@ class TSBeamSet(object):
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
     ss = self.ts_structure_set().structure_set
     isocenter = None
-    ctv_upper = None
-    ctv_lower = None
+    target0 = None
+    target1 = None
     if self.is_vmat():
+      for roi in ss.RoiGeometries:
+        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
+          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
+          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
+          if po:
+            for objective in po.Objective.ConstituentFunctions:
+              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
+                current_target = roi.GetBoundingBox()
+                if target0 == None or current_target[0].z < target0:
+                  target0 = current_target[0].z
+                if target1 == None or current_target[1].z > target1:
+                  target1 = current_target[1].z
       for beam in self.beam_set.Beams:
         photon_iso = beam.Isocenter.Position
-        for roi in ss.RoiGeometries:
-          if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-            isocenter = ss.RoiGeometries[roi.OfRoi.Name].GetCenterOfRoi()
-        if isocenter:
-          ctv_upper = isocenter.z
-          ctv_lower = isocenter.z
-        for roi in ss.RoiGeometries:
-          if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-            ctv_box = roi.GetBoundingBox()
-            ctv_box_upper = ctv_box[1].z
-            ctv_box_lower = ctv_box[0].z
-            if abs(ctv_box_upper) < abs(ctv_upper):
-              ctv_upper = ctv_box_upper
-            if abs(ctv_box_lower) > abs(ctv_lower):
-              ctv_lower = ctv_box_lower
-          if ctv_upper and ctv_lower:
-            if abs(ctv_upper - ctv_lower) <= 21:
-              if abs(photon_iso.z - ctv_lower) > 10.5:
-                return t.fail()
-              elif abs(photon_iso.z - ctv_upper) > 10.5:
-               return t.fail()
-              else:
-                return t.succeed()
+        if target0 and target1:
+          if abs(target0 - target1) <= 21:
+            if abs(photon_iso.z - target0) > 10.5:
+              return t.fail(round(abs(photon_iso.z - target0),2))
+            elif abs(photon_iso.z - target1) > 10.5:
+              return t.fail(round(abs(photon_iso.z - target1),2))
             else:
               return t.succeed()
+          else:
+            return t.succeed()
 
   # Tests if the energies of the beams in the beam set are the same.
   def beam_energy_equality_test(self):
