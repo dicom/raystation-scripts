@@ -83,6 +83,7 @@ pc72_36 = 0.7236363636
 pc73_09 = 0.7309090909
 pc75 = 0.75
 pc76 = 0.76
+pc76_36 = 0.763636363636
 pc78 = 0.78
 pc78_4 = 0.784
 pc79_6 = 0.796
@@ -1042,7 +1043,7 @@ def prostate_targets(ss, total_dose):
       CG.ClinicalGoal(ROIS.ctv_77.name, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ptv_77.name, at_least, conformity_index, pc90, pc95, priority5),
-      CG.ClinicalGoal(ROIS.ptv_70_sib.name, at_most, dose_at_volume, pc95, pc2, priority5),
+      CG.ClinicalGoal(ROIS.ptv_70_sib.name, at_most, dose_at_volume, pc95, pc10, priority5),
       CG.ClinicalGoal(ROIS.ptv_70_77.name, at_least, conformity_index, pc75, pc86_36, priority5)
     ])
     if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # With lymph node volume
@@ -1052,7 +1053,7 @@ def prostate_targets(ss, total_dose):
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc71_3, pc98, priority2),
         CG.ClinicalGoal(ROIS.ptv_56.name, at_least, dose_at_volume, pc69_1, pc98, priority4),
         CG.ClinicalGoal(ROIS.ptv_56_70_77.name, at_least, conformity_index, pc78, pc69_1, priority5),
-        CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume, pc76, pc5, priority5),
+        CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume, pc76_36, pc10, priority5),
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, homogeneity_index, pc95, pc95, priority5)
       ])
   elif total_dose == 60: # Hypofractionation
@@ -1112,7 +1113,7 @@ def rectum_targets(total_dose):
       CG.ClinicalGoal(ROIS.ctv_50.name, at_least, homogeneity_index, pc95, pc95, priority5),
       CG.ClinicalGoal(ROIS.ctv_47.name, at_least, homogeneity_index, pc95, pc95, priority5),
       CG.ClinicalGoal(ROIS.ptv_47_50.name, at_least, conformity_index, pc90, pc89_3, priority5),
-      CG.ClinicalGoal(ROIS.ptv_50.name, at_least, conformity_index, pc80, pc95, priority5),
+      CG.ClinicalGoal(ROIS.ptv_50.name, at_least, conformity_index, pc86, pc95, priority5),
       CG.ClinicalGoal(ROIS.ptv_47.name, at_most, dose_at_volume, pc98_7, pc2, priority5),
       CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)
     ]

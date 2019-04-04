@@ -49,7 +49,8 @@ class DefProstate(object):
           bladder_ptv.sourcesB.extend([ptv_70, ptv_56])
           rectum_ptv.sourcesB.extend([ptv_70, ptv_56])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_77, ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-          site.add_oars([bowel_ptv])
+          wall_ptv_70_77 = ROI.ROIWall(ROIS.z_ptv_70_77_wall.name, ROIS.z_ptv_70_77_wall.type, COLORS.wall, ptv_70_77, 1, 0)
+          site.add_oars([bowel_ptv, wall_ptv_70_77])
           site.add_targets([ROIS.gtv_n, ctv_n, ptv_n, ptv_semves, ptv_56, ctv_56, ROIS.pelvic_nodes, ptv_70_77, ptv_56_70_77])
         elif nodes == 'with':
           ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70_sib.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
@@ -61,7 +62,8 @@ class DefProstate(object):
           bladder_ptv.sourcesB.extend([ptv_70, ptv_56])
           rectum_ptv.sourcesB.extend([ptv_70, ptv_56])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_77, ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-          site.add_oars([bowel_ptv])
+          wall_ptv_70_77 = ROI.ROIWall(ROIS.z_ptv_70_77_wall.name, ROIS.z_ptv_70_77_wall.type, COLORS.wall, ptv_70_77, 1, 0)
+          site.add_oars([bowel_ptv, wall_ptv_70_77])
           site.add_targets([ptv_56, ctv_56, ROIS.pelvic_nodes, ptv_70_77, ptv_56_70_77])
 
         # Common for conventional fractionation:

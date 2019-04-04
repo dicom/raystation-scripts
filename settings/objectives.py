@@ -32,9 +32,10 @@ brain_oar_objectives = []
 brain_whole_oar_objectives = [ROIS.eye_r_prv, ROIS.eye_l_prv, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.nasal_cavity]
 brain_stereotactic_oar_objectives = []
 # Breast
-breast_r_oar_objectives = [ROIS.lung_r]
-breast_l_oar_objectives = [ROIS.lung_l]
-
+breast_tang_oar_objectives = [ROIS.lung_r, ROIS.lung_l]
+breast_reg_l_oar_objectives = [ROIS.lung_r]
+breast_reg_r_oar_objectives = [ROIS.lung_l]
+breast_reg_oar_objectives = [ROIS.lung_l, ROIS.lung_r]
 # Lung
 lung_objectives = []
 # Palliative
@@ -311,21 +312,24 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, total_dose*100, 42*100, 0.8, 12)
   elif total_dose == 77 and SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # Normo-fractionation and lymph node volume
     OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 15)
-    OF.min_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*0.98, 100)
-    OF.min_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*100*0.88, 100)
+    OF.uniform_dose(ss, plan, ROIS.ctv_70_sib.name, 70*100, 25)
+    OF.uniform_dose(ss, plan, ROIS.ctv_77.name, 77*100, 20)
     OF.min_dose(ss, plan, ROIS.ptv_56.name, 55*100, 100)
+    OF.max_dvh(ss, plan, ROIS.ptv_56.name, 58.5*100, 5, 5)
+    OF.min_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*100*0.88, 100)
+    OF.max_dvh(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.95*100, 5, 50)
+    OF.min_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*0.98, 100)
     OF.max_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*1.02, 70)
-    OF.max_dvh(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.95*100, 10, 50)
-    OF.fall_off(ss, plan, ROIS.ptv_70_sib.name, total_dose*100, 70*100, 0.5, 5)
-    OF.fall_off(ss, plan, ROIS.ptv_56.name, total_dose*100, 56*100, 0.5, 10)
-    OF.fall_off(ss, plan, ROIS.external.name, 56*100, 28*100, 2, 15)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.fall_off(ss, plan, ROIS.external.name, 56*100, 28*100, 2, 15)
     OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 10)
     OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 10)
     OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 31*100, 1, 1)
-    OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
-    OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
+    OF.max_eud(ss, plan, ROIS.z_bladder.name, 34*100, 1, 2)
+    OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 14.2*100, 1, 2)
+    OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 71*100, 0.3, 10)
+    OF.fall_off(ss, plan, ROIS.z_ptv_70_77_wall.name, total_dose*100, 56*100, 0.5, 5)
   elif total_dose == 77: # Normo-fractionation
     OF.uniform_dose(ss, plan, ROIS.ctv_77.name, total_dose*100, 40)
     OF.uniform_dose(ss, plan, ROIS.ctv_70_sib.name, 70*100, 40)
