@@ -26,14 +26,19 @@ import structure_set_functions as SSF
 
 # Contains a collection of plan functions.
 
+
 # Creates additional palliative beamsets (if multiple targets exists).
 def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, machine_name, nr_existing_beams=1, isocenter=False):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   i = 1
   if nr_targets > 1:
     for r in region_codes:
-      # Set up beam set and prescription:
       region_code = int(r)
+      # Determine the point which will be our isocenter:
+      if not isocenter:
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
+        machine_name = SSF.determine_machine_single_target(ss, 'PTV'+str(i+1))
+      # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
         Name=BSF.label(region_code, fraction_dose, nr_fractions, 'VMAT'),
         ExaminationName=examination.Name,
@@ -44,9 +49,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
         NumberOfFractions=nr_fractions
       )
       BSF.add_prescription(beam_set, nr_fractions, fraction_dose, 'CTV' + str(i+1))
-      # Determine the point which will be our isocenter:
-      if not isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
+
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams += nr_beams

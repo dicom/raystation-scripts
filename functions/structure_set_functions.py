@@ -104,7 +104,7 @@ def create_mask_ptv(pm, examination, ss, threshold):
 def is_target_oar_overlapping(ss, target, oar):
   center = ss.RoiGeometries[oar].GetCenterOfRoi()
   roi_box = ss.RoiGeometries[target].GetBoundingBox()
-  match = False 
+  match = False
   if center.x > roi_box[0].x and center.x < roi_box[1].x and center.y > roi_box[0].y and center.y < roi_box[1].y:
     match = True
 
@@ -186,6 +186,49 @@ def determine_machine(ss, target):
   # Iterate targets to find extreme boundary coordinates:
   for roi in ss.RoiGeometries:
     if roi.OfRoi.Type in ['Ptv', 'Ctv'] and roi.HasContours():
+      ptv_box = roi.GetBoundingBox()
+      ptv_box_max_z = ptv_box[1].z
+      ptv_box_min_z = ptv_box[0].z
+      ptv_box_max_x = ptv_box[1].x
+      ptv_box_min_x = ptv_box[0].x
+      ptv_box_max_y = ptv_box[1].y
+      ptv_box_min_y = ptv_box[0].y
+      if ptv_box_min_z < ptv_min_z:
+        ptv_min_z = ptv_box_min_z
+      if ptv_box_max_z > ptv_max_z:
+        ptv_max_z = ptv_box_max_z
+      if ptv_box_min_x < ptv_min_x:
+        ptv_min_x = ptv_box_min_x
+      if ptv_box_max_x > ptv_max_x:
+        ptv_max_x = ptv_box_max_x
+      if ptv_box_min_y < ptv_min_y:
+        ptv_min_y = ptv_box_min_y
+      if ptv_box_max_y > ptv_max_y:
+        ptv_max_y = ptv_box_max_y
+  dist_z = abs(ptv_max_z - ptv_min_z)
+  dist_y = abs(ptv_max_y - ptv_min_y)
+  dist_x = abs(ptv_max_x - ptv_min_x)
+  if dist_x < threshold and dist_y < threshold and dist_z < threshold:
+    machine = "ALVersa_FFF"
+  else:
+    machine = "ALVersa"
+  return machine
+
+# Determine the treatment machine (i.e. with or without filter) from the size of the given target volume.
+# Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
+def determine_machine_single_target(ss, target):
+  threshold = 13
+  # Establish start values:
+  center = ss.RoiGeometries[target].GetCenterOfRoi()
+  ptv_max_z = center.z #longitudinal direction
+  ptv_min_z = center.z
+  ptv_max_x = center.x #left - right / medial direction
+  ptv_min_x = center.x
+  ptv_max_y = center.y # anterior - posterior direction
+  ptv_min_y = center.y
+  # Iterate targets to find extreme boundary coordinates:
+  for roi in ss.RoiGeometries:
+    if roi.OfRoi.Name == target and roi.HasContours():
       ptv_box = roi.GetBoundingBox()
       ptv_box_max_z = ptv_box[1].z
       ptv_box_min_z = ptv_box[0].z
@@ -300,7 +343,7 @@ def determine_target(ss, nr_fractions, fraction_dose):
   else:
     #raise IOError("Mislyktes i å opprette 'Prescription', årsaken er at ROIen mangler eller at navnet ikke er som forventet.")
     GUIF.handle_missing_target()
-    
+
 
 
 # Determines the isocenter based on the CTV, and if it does not exist, the PTV, and External contour, (or the Body contour) provided for the given structure set.
