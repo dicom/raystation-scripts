@@ -37,16 +37,9 @@ def lung(ss, plan, total_dose, nr_fractions, region_code, target):
 # Breast
 def breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, target):
   if region_code in RC.breast_reg_codes:
-    if region_code in RC.breast_reg_r_codes:
-      return SITE.Site(RC.breast_reg_codes, OBJ.breast_r_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
-    else:
-      return SITE.Site(RC.breast_reg_codes, OBJ.breast_l_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
+    return SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
   else:
-    if region_code in RC.breast_tang_r_codes:
-      return SITE.Site(RC.breast_tang_codes, OBJ.breast_r_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, total_dose, target), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
-    else:
-      return SITE.Site(RC.breast_tang_codes, OBJ.breast_l_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, total_dose, target), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
-
+    return SITE.Site(RC.breast_tang_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, total_dose, target), CGS.breast_oars(region_code, nr_fractions, target), CGS.breast_targets(ss, region_code, target))
 
 
 # Prostate
