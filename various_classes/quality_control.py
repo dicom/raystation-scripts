@@ -130,6 +130,7 @@ class QualityControl(object):
       ts_beam_set.isocenter_centered_test()
       ts_beam_set.stereotactic_mu_test()
       ts_beam_set.vmat_mu_test()
+      ts_beam_set.beam_number_test()
       # Label tests:
       ts_label = ts_beam_set.ts_label
       ts_label.nr_parts_test()

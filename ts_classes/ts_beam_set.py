@@ -52,6 +52,7 @@ class TSBeamSet(object):
     self.isocenter = TEST.Parameter('Isosenter','', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
+    self.number = TEST.Parameter('Feltnummer','', self.param)
 
   # Gives true/false if the beam set has beams of not
   def has_beam(self):
@@ -135,7 +136,22 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-    #Tests if prescription in defined
+  def beam_number_test(self):
+    t = TEST.Test("Feltnummereringen ser ikke ut til å være riktig.", True, self.number)
+    numbers = []
+    order = True
+    for beam in self.beam_set.Beams:
+      numbers.append(beam.Number)
+    if len(numbers) > 1:
+      for i in range(0, len(numbers)-1):
+        if numbers[i+1] != numbers[i]+1:
+          order = False
+    if order:
+      return t.succeed()
+    else:
+      return t.fail()
+
+  #Tests if prescription in defined
   def defined_prescription_test(self):
     t = TEST.Test("Skal være definert.", True, self.defined_prescription)
     if self.has_prescription():
