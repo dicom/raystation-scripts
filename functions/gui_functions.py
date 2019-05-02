@@ -52,7 +52,7 @@ def check_input(ss, region_code, nr_fractions, fraction_dose):
     elif SSF.has_roi_with_shape(ss, ROIS.ptv_77.name):
       error(nr_fractions, fraction_dose, [35], [2.2])
     else:
-      error(nr_fractions, fraction_dose, [20], [3])
+      error(nr_fractions, fraction_dose, [20], [3, 2.75])
   elif region_code in RC.rectum_codes:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_50.name):
       error(nr_fractions, fraction_dose, [25], [2])
@@ -169,6 +169,14 @@ def error(nr_fractions, fraction_dose, nr_fractions_list, fraction_dose_list):
     text = "Ugyldig fraksjondose."
     MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
     sys.exit(0)
+
+# Handles the situation of a missing target.
+def handle_missing_ptv():
+  title = "Manglende ROI"
+  text = "PTV er ikke definert."
+  MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
+  sys.exit(0)
+
 
 # Handles the situation of a missing target.
 def handle_missing_ctv_or_ptv():

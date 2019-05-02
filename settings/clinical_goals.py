@@ -92,6 +92,7 @@ pc80_4 = 0.804
 pc84 = 0.84
 pc84_6 = 0.846
 pc85 = 0.85
+pc86 = 0.86
 pc88 = 0.88
 pc86_36 = 0.863636
 pc88_36 = 0.8836
@@ -602,7 +603,7 @@ bladder_oars = [
 
 # Prostate:
 def prostate_oars(ss, total_dose):
-  if total_dose == 60:
+  if total_dose in [55, 60]:
     prostate = [
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v40_adx_hypo, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v48_adx_hypo, priority4),
@@ -1071,6 +1072,15 @@ def prostate_targets(ss, total_dose):
       CG.ClinicalGoal(ROIS.ptv_60.name, at_least, conformity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ptv_57.name, at_most, dose_at_volume, pc99_75, pc2, priority5),
       CG.ClinicalGoal(ROIS.ptv_57_60.name, at_least, conformity_index, pc80, pc90_25, priority5)
+    ])
+  elif total_dose == 55: # Hypofractionation
+    prostate.extend([
+      CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
+      CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
+      CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc98, pc98, priority2),
+      CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc95, pc98,  priority4),
+      CG.ClinicalGoal(ROIS.ctv.name, at_least, homogeneity_index, pc95, pc98, priority5),
+      CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc95, priority5)
     ])
   return prostate
 

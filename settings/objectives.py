@@ -232,14 +232,15 @@ def create_lung_stereotactic_objectives(ss, plan, region_code, total_dose):
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 5, beam_set_index = i)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*130, 15, beam_set_index = i)
     OF.max_dose(ss, plan, ROIS.skin.name, 30*100, 10, beam_set_index = i)
-    OF.max_dose(ss, plan, ROIS.ribs.name, total_dose*120, 10, beam_set_index = i)
     OF.max_dose(ss, plan, ROIS.spinal_canal.name, 13*100, 5, beam_set_index = i)
     OF.max_dvh(ss, plan, ROIS.chestwall.name, 30*100, 2, 100, beam_set_index = i)
     OF.max_eud(ss, plan, ROIS.lungs.name, 4.5*100, 1, 1, beam_set_index = i)
     if region_code in RC.lung_r_codes:
       OF.max_eud(ss, plan, ROIS.lung_r.name, 6.5*100, 1, 3, beam_set_index = i)
+      OF.max_dose(ss, plan, ROIS.ribs_r.name, total_dose*120, 10, beam_set_index = i)
     else:
       OF.max_eud(ss, plan, ROIS.lung_l.name, 6.5*100, 1, 3, beam_set_index = i)
+      OF.max_dose(ss, plan, ROIS.ribs_l.name, total_dose*120, 10, beam_set_index = i)
   if nr_targets == 1:
     OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100, 250)
     OF.fall_off(ss, plan, ROIS.wall_ptv.name, total_dose*100, 0.7*total_dose*100, 0.8, 5)
@@ -310,6 +311,21 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1)
     OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, total_dose*100, 57*100, 0.3, 1)
     OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, total_dose*100, 42*100, 0.8, 12)
+  elif total_dose == 55: # Hypofractionation
+    OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 40)
+    OF.min_dose(ss, plan, ROIS.ptv.name, 52.3*100, 150)
+    OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.02, 60)
+    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
+    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.038, 25)
+    OF.max_dvh(ss, plan, ROIS.femoral_l.name, 20*100, 2, 10)
+    OF.max_dvh(ss, plan, ROIS.femoral_r.name, 20*100, 2, 10)
+    OF.max_eud(ss, plan, ROIS.rectum.name, 22.6*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.rectum.name, total_dose*0.975*100, 3, 4)
+    OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1)
+    OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
+    OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1)
+    OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, total_dose*100, 42*100, 1, 1)
   elif total_dose == 77 and SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # Normo-fractionation and lymph node volume
     OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 15)
     OF.uniform_dose(ss, plan, ROIS.ctv_70_sib.name, 70*100, 25)
