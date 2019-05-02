@@ -15,10 +15,13 @@ clr.AddReference("System.Drawing")
 from Microsoft.Office.Interop.Excel import *
 from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
 from System.Windows.Forms import (Application, BorderStyle, Button, CheckBox, DialogResult, Form, FormBorderStyle, Label, Panel, RadioButton, TextBox)
+clr.AddReference("PresentationFramework")
+from System.Windows import *
 # Import local files:
 import beams as BEAMS
 import beam_set_functions as BSF
 import case_functions as CF
+import gui_functions as GUIF
 import objectives as OBJ
 import region_codes as RC
 import roi_functions as ROIF
@@ -30,14 +33,20 @@ import structure_set_functions as SSF
 # Creates additional palliative beamsets (if multiple targets exists).
 def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, machine_name, nr_existing_beams=1, isocenter=False):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
+  common_isocenter = False
+  if isocenter:
+    common_isocenter = True
   i = 1
   if nr_targets > 1:
     for r in region_codes:
       region_code = int(r)
       # Determine the point which will be our isocenter:
       if not isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
-        machine_name = SSF.determine_machine_single_target(ss, 'PTV'+str(i+1))
+        if SSF.has_named_roi_with_contours(ss, 'PTV' + str(i+1)):
+          isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
+          machine_name = SSF.determine_machine_single_target(ss, 'PTV'+str(i+1))
+        else:
+          GUIF.handle_missing_ptv()
       # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
         Name=BSF.label(region_code, fraction_dose, nr_fractions, 'VMAT'),
@@ -55,6 +64,8 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       nr_existing_beams += nr_beams
       OBJ.create_palliative_objectives_for_additional_beamsets(ss, plan, fraction_dose*nr_fractions, i)
       i += 1
+      if not common_isocenter:
+        isocenter=False
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
 # (Used for brain or lung)
