@@ -299,6 +299,12 @@ def delete_matching_roi_except_manually_contoured(pm, ss, roi):
           pm_roi.DeleteRoi()
       break
 
+# Exclude 'Undefined' ROIs from the export
+def exclude_rois_from_export(pm):
+  for pm_roi in pm.RegionsOfInterest:
+    if pm_roi.Type == 'Undefined':
+      if not pm_roi.ExcludeFromExport:
+        pm_roi.ExcludeFromExport = True
 
 # Delete all ROIs from the patient model.
 def delete_roi(pm, name):

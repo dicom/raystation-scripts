@@ -89,3 +89,4 @@ class Definition(object):
 
     # Changes OrganType to "Other" for all ROIs in the given patient model which are of type "Undefined" or "Marker".
     PMF.set_all_undefined_to_organ_type_other(pm)
+    PMF.exclude_rois_from_export(pm)
