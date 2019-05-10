@@ -180,6 +180,8 @@ class Plan(object):
     # For those situations where you have two targets and you want to have separate isocenters, then you what to evaluate the targets separately.
     if target in ['CTV1','CTV2'] and palliative_choices[0].value in ['sep_beamset_sep_iso', 'sep_plan']:
       machine_name = SSF.determine_machine_single_target(ss, target)
+    elif region_code in RC.breast_codes:
+      machine_name = 'ALVersa'
     else:
       # Determine the machine name from the size of the target volume:
       machine_name = SSF.determine_machine(ss, target)
