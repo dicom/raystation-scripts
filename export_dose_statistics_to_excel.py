@@ -10,7 +10,7 @@
 # https://github.com/raysearchlabs/scripting
 #
 # Updated for RayStation 5.0: Christoffer Lervåg - 27.09.2016
-# Tested for RayStation version: 6.0.
+# Tested for RayStation version: 9A
 
 import clr, sys
 import System.Array

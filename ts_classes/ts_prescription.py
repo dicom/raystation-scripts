@@ -46,7 +46,8 @@ class TSPrescription(object):
     diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
     ss = self.ts_beam_set.ts_structure_set().structure_set
     if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
-      external = RSU.ss_roi_geometry(self.ts_beam_set.beam_set, self.ts_beam_set.ts_plan.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
+      #external = RSU.ss_roi_geometry(self.ts_beam_set.beam_set, self.ts_beam_set.ts_plan.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
+      external = ss.OutlineRoiGeometry
       volume = external.GetRoiVolume()
       # Determine the fraction corresponding to a 2cc volume:
       fraction = 2 / volume

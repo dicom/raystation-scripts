@@ -20,26 +20,27 @@ import raystation_utilities as RSU
 # This class contains tests for the RayStation Beam object:
 class TSBeam(object):
   def __init__(self, beam, ts_beam_set=None):
-    # RayStation object:
-    self.beam = beam
-    # Related test suite objects:
-    self.ts_beam_set = ts_beam_set
-    self.ts_segments = []
-    if ts_beam_set:
-      ts_beam_set.ts_beams.append(self)
-      self.parent_param = ts_beam_set.param
-    else:
-      self.parent_param = None
-    # Parameters:
-    self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
-    self.name = TEST.Parameter('Navn', '', self.param)
-    self.mu = TEST.Parameter('MU', '', self.param)
-    self.gantry = TEST.Parameter('Gantryvinkel', str(round(self.beam.GantryAngle, 1)), self.param)
-    self.energy = TEST.Parameter('Energi', str( self.beam.MachineReference.Energy), self.param)
-    self.collimator = TEST.Parameter('Kollimatorvinkel', str(round(beam.InitialCollimatorAngle, 1)), self.param)
-    self.segments = TEST.Parameter('Segmenter', '', self.param)
-    self.gantry_spacing = TEST.Parameter('Gantry spacing', '', self.param)
-    self.isocenter = TEST.Parameter('Isosenter', '', self.param)
+	# RayStation object:
+	self.beam = beam
+	# Related test suite objects:
+	self.ts_beam_set = ts_beam_set
+	self.ts_segments = []
+	if ts_beam_set:
+	  ts_beam_set.ts_beams.append(self)
+	  self.parent_param = ts_beam_set.param
+	else:
+	  self.parent_param = None
+	# Parameters:
+	self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
+	self.name = TEST.Parameter('Navn', '', self.param)
+	self.mu = TEST.Parameter('MU', '', self.param)
+	self.gantry = TEST.Parameter('Gantryvinkel', str(round(self.beam.GantryAngle, 1)), self.param)
+	self.energy = TEST.Parameter('Energi', str( self.beam.MachineReference.Energy), self.param)
+	self.collimator = TEST.Parameter('Kollimatorvinkel', str(round(beam.InitialCollimatorAngle, 1)), self.param)
+	self.segments = TEST.Parameter('Segmenter', '', self.param)
+	self.gantry_spacing = TEST.Parameter('Gantry spacing', '', self.param)
+	self.isocenter = TEST.Parameter('Isosenter', '', self.param)
+	self.opening = TEST.Parameter('Åpning', '', self.param)
 
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
@@ -63,7 +64,7 @@ class TSBeam(object):
       beam_s = RSU.beam_settings(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set, self.beam)
       if beam_s:
         if beam_s.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing != 4:
-          return t.fail(bs.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing)
+          return t.fail(beam_s.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing)
         else:
           return t.succeed()
 
@@ -124,8 +125,8 @@ class TSBeam(object):
   def energy_of_arc_test(self):
     t = TEST.Test("Skal normalt ikke bruke 15 MV ved VMAT", '6 eller 10', self.energy)
     if self.is_vmat():
-      if not self.beam.MachineReference.Energy in [6, 10]:
-        return t.fail(self.beam.MachineReference.Energy)
+      if self.beam.BeamQualityId == '15':
+        return t.fail(self.beam.BeamQualityId)
       else:
         return t.succeed()
 
@@ -243,7 +244,7 @@ class TSBeam(object):
 
   # Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
   def stereotactic_mu_constraints_for_single_beam(self):
-    t1 = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
+    t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
     beam_start = 0
     beam_stop = 0
     beam_length = 0
@@ -306,14 +307,14 @@ class TSBeam(object):
   # Tests if the jaw opening on a vmat plan is big enough to risk exposing the electronics of the QA detector.
   # The "limit" towards the electronics is 15 cm away from the gantry from the isocenter.
   def wide_jaw_opening_which_can_hit_vmat_qa_detector_electronics_test(self):
-    t = TEST.Test("Høy kollimator-åpning detektert. Avhengig av kollimatorvinkel og kollimatoråpning, kan man i slik situasjoner risikere å bestråle elektronikken på ArcCheck-detektoren, som bør unngås. Ved asymmetrisk isosenter, bør isosenter vurderes flyttet for å unngå dette.", '<14.3 cm', self.collimator)
+    t = TEST.Test("Høy kollimator-åpning detektert. Avhengig av kollimatorvinkel og kollimatoråpning, kan man i slik situasjoner risikere å bestråle elektronikken på ArcCheck-detektoren, som bør unngås. Ved asymmetrisk isosenter, bør isosenter vurderes flyttet for å unngå dette.", '<14.3 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'HFS':
       if self.is_vmat():
         if self.has_segment():
           jaws = self.beam.Segments[0].JawPositions
           if jaws[2] < -14.3:
-            return t.fail(abs(jaws[2]))
+            return t.fail(round(abs(jaws[2]),1))
           else:
             return t.succeed()
     elif self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'FFS':
@@ -321,16 +322,16 @@ class TSBeam(object):
         if self.has_segment():
           jaws = self.beam.Segments[0].JawPositions
           if jaws[3] > 14.3:
-            return t.fail(jaws[3])
+            return t.fail(round(jaws[3],1))
           else:
             return t.succeed()
 
   # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
   def wide_jaw_opening_for_filter_free_energies(self):
-    t = TEST.Test("Høy kollimatoråpning detektert, det bør vurderes om filter-energi bør brukes. Maksimal feltstørrelse ved bruk av filter fri energi er 15 cm  ", '<15 cm', self.collimator)
+    t = TEST.Test("Høy kollimatoråpning detektert, det bør vurderes om filter-energi bør brukes. Maksimal feltstørrelse ved bruk av filter fri energi er 15 cm  ", '<15 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
-      if self.ts_beam_set.beam_set.MachineReference.MachineName == 'ALVersa_FFF':
+      if self.beam.BeamQualityId == '6 FFF':
         if self.has_segment():
           maxJawY1 = self.beam.Segments[0].JawPositions[2]
           maxJawY2 = self.beam.Segments[0].JawPositions[3]
@@ -340,8 +341,28 @@ class TSBeam(object):
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
 
-            if abs(maxJawY1+maxJawY2) >15:
-              return t.fail(abs(maxJawY1+maxJawY2))
-            else:
-              return t.succeed()
+          if abs(maxJawY1)+abs(maxJawY2) > 15:
+            return t.fail(abs(maxJawY1)+abs(maxJawY2))
+          else:
+            return t.succeed()
+            
+    # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
+  def narrow_jaw_opening_for_filter_energies(self):
+    t = TEST.Test("Liten kollimatoråpning detektert. Det bør vurderes om filterfri-energi kan brukes for å spare tid.", '<15 cm', self.opening)
+    # Perform the test only for VMAT beams:
+    if self.is_vmat():
+      if self.beam.BeamQualityId == '6':
+        if self.has_segment():
+          maxJawY1 = self.beam.Segments[0].JawPositions[2]
+          maxJawY2 = self.beam.Segments[0].JawPositions[3]
+          for segment in self.beam.Segments:
+            if segment.JawPositions[2] < maxJawY1:
+              maxJawY1 = segment.JawPositions[2]
+            if segment.JawPositions[3] > maxJawY1:
+              maxJawY2 = segment.JawPositions[3]
+
+          if abs(maxJawY1)+abs(maxJawY2) < 14:
+            return t.fail(abs(maxJawY1)+abs(maxJawY2))
+          else:
+            return t.succeed()
 

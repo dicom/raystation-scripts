@@ -32,13 +32,11 @@ def check_input(ss, region_code, nr_fractions, fraction_dose):
     else:
       if fraction_dose > 6:
         error(nr_fractions, fraction_dose, [1, 3], [7, 8, 9, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25])
-      else:
-        error(nr_fractions, fraction_dose, [15, 17, 13, 30, 33,10], [1.8, 2, 2.67, 3, 3.4])
   elif region_code in RC.lung_codes:
-    if nr_fractions in [3, 5, 8]:
+    if nr_fractions in [3, 8] or nr_fractions == 5 and fraction_dose == 11:
       error(nr_fractions, fraction_dose, [3, 5, 8], [15, 11, 7])
     else:
-      error(nr_fractions, fraction_dose, [2, 10, 11, 12, 13, 15, 16, 17, 25, 30, 33, 35], [1.5, 1.8, 2, 2.8, 3, 8.5])
+      error(nr_fractions, fraction_dose, [2, 5, 10, 11, 12, 13, 15, 16, 17, 25, 30, 33, 35], [1.5, 1.8, 2, 2.8, 3, 4, 8.5])
   elif region_code in RC.breast_codes:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_p.name):
       error(nr_fractions, fraction_dose, [15], [2.67])
@@ -47,12 +45,12 @@ def check_input(ss, region_code, nr_fractions, fraction_dose):
   elif region_code in RC.bladder_codes:
     error(nr_fractions, fraction_dose, [3, 5, 6, 7, 10, 11, 12, 13, 25, 32], [2, 3, 3.5, 4, 7])
   elif region_code in RC.prostate_codes:
-    if region_code in RC.prostate_bed_codes:
+    if region_code in RC.prostate_bed_codes and SSF.has_roi_with_shape(ss, ROIS.ptv_70.name):
       error(nr_fractions, fraction_dose, [35], [2])
     elif SSF.has_roi_with_shape(ss, ROIS.ptv_77.name):
       error(nr_fractions, fraction_dose, [35], [2.2])
-    else:
-      error(nr_fractions, fraction_dose, [20], [3, 2.75])
+    elif SSF.has_roi_with_shape(ss, ROIS.ptv_60.name):
+      error(nr_fractions, fraction_dose, [20], [3])
   elif region_code in RC.rectum_codes:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_50.name):
       error(nr_fractions, fraction_dose, [25], [2])
@@ -62,6 +60,7 @@ def check_input(ss, region_code, nr_fractions, fraction_dose):
     if fraction_dose > 8:
       error(nr_fractions, fraction_dose, [1, 3], [9, 16])
 
+#error(nr_fractions, fraction_dose, [15, 17, 13, 30, 33,10], [1.8, 2, 2.67, 3, 3.4])
 
 # Checks if the given region code and region code list contain only unique codes.
 # If a duplicate exists, an error is raised.
@@ -119,15 +118,17 @@ def collect_delete_choice(options):
 # Determines what list of technique possibilities will be given for different region codes:
 def determine_choices(region_code, nr_fractions, fraction_dose):
   if region_code in RC.breast_tang_codes:
-    # Chosen technique value, 'VMAT' or 'Conformal'
-    technique = 'Conformal'
-    # Chosen technique name, 'VMAT' or '3D-CRT'
-    technique_name = '3D-CRT'
-    # Chosen optimization value
-    optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization)
-    # Collects the selected choices from the user
-    choices = collect_choices(optimization)
-    opt = choices[0].value
+		# Chosen technique value, 'VMAT' or 'Conformal'
+		technique = 'Conformal'
+		# Chosen technique name, 'VMAT' or '3D-CRT'
+		technique_name = '3D-CRT'
+		# Chosen optimization value
+		#optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization)
+		# Collects the selected choices from the user
+		#choices = collect_choices(optimization)
+		#opt = choices[0].value
+		choices = ''
+		opt = 'oar'
   elif region_code in RC.conventional_and_vmat_site_codes:
     # Determine which technique choices which will appear in the form
     techniques = RB.RadioButton('Planoppsett ', 'Velg planoppsett: ', PC.techniques)
@@ -138,20 +139,26 @@ def determine_choices(region_code, nr_fractions, fraction_dose):
     # Chosen technique name, 'VMAT' or '3D-CRT'
     technique_name = choices[0].name
     # Chosen optimization value
-    opt = choices[1].value
+    opt = 'oar'
   else:
     # Chosen technique value, 'VMAT' or 'Conformal'
     technique = 'VMAT'
     # Chosen technique name, 'VMAT' or '3D-CRT'
     technique_name = 'VMAT'
-    if region_code in RC.palliative_codes and nr_fractions*fraction_dose < 55 and not PF.is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.bladder_codes:
-      optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization)
+    #opt = ''
+    choices = ''
+    if region_code in RC.palliative_codes and nr_fractions*fraction_dose < 55 and not PF.is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.bladder_codes or region_code in RC.prostate_codes and nr_fractions*fraction_dose < 40 or region_code in RC.brain_whole_codes:
+      opt = 'oar'
     else:
-      optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization_simple)
+      opt = ''
+    #optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization)
+    #else:
+    #  optimization = RB.RadioButton('Optimalisering ', 'Velg optimalisering: ', PC.optimization_simple)
     # Collects the selected choices from the user
-    choices = collect_choices(optimization)
+    #choices = collect_choices(optimization)
     # Chosen optimization value
-    opt = choices[0].value
+    #opt = choices[0].value
+
 
   results = [choices, technique, technique_name, opt]
   return results
@@ -205,6 +212,17 @@ def handle_failed_translation_of_roi(roi_name):
   text = "Mislyktes i flytte " + roi_name + "\n\n" + "Årsaken er at en struktur med samme navn er godkjent i en tidligere plan." + "\n\n" + "Sjekk at plassering av " + roi_name + " er fornuftig!"
   MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
 
+# Handles the situation of a crashed attempt to move a roi that takes part of a structure set which has already been approved
+def handle_failed_creation_of_roi(roi_name):
+  title = "Feilet opprettelse av: " + roi_name
+  text = "Mislyktes i å opprette " + roi_name + "\n\n" + "Årsaken er at en struktur med samme navn er godkjent i en tidligere plan." + "\n\n"
+  MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
+
+  # Handles the situation of a crashed attempt to move a roi that takes part of a structure set which has already been approved
+def handle_creation_of_new_roi_because_of_approved_structure_set(roi_name):
+  title = "Opprettet roi: " + roi_name
+  text = "Legg merke til at det har blitt opprettet en roi: " + roi_name + "\n\n" "Dette er fordi en tilsvarende roi finnes i et allerede godkjent struktursett." + "\n\n"  + "Hvis denne skal benyttes bør man oppdatere 'Clinical Goals' og evt 'Objectives'"
+  MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
 
 # Handles the sitsuation of a missing ROI when trying to create a clinical goal.
 def handle_missing_roi_for_clinical_goal(roi_name):

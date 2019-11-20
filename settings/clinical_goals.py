@@ -36,6 +36,7 @@ priority8 = 8
 cc0 = 0
 cc0_1 = 0.1
 cc0_2 = 0.2
+cc0_03 = 0.03
 cc0_35 = 0.35
 cc0_5 = 0.5
 cc1 = 1
@@ -126,7 +127,9 @@ pc100_5 = 1.005
 pc105 = 1.05
 pc102 = 1.02
 pc132 = 1.32
+pc139 = 1.386
 pc140 = 1.4
+pc147 = 1.469475655
 pc150 = 1.5
 pc170 = 1.7
 
@@ -140,20 +143,15 @@ pc170 = 1.7
 # Brain:
 def brain_oars(nr_fractions, region_code):
   if region_code in RC.brain_whole_codes:
-    if nr_fractions == 10:
-      brain_oars = [
-        CG.ClinicalGoal(ROIS.eye_l_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx_10, pc2, priority3),
-        CG.ClinicalGoal(ROIS.eye_r_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx_10, pc2, priority3),
-        CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx_10, pc2, priority4),
-        CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx_10, pc2, priority4)
-      ]
-    elif nr_fractions == 5:
-      brain_oars = [
-        CG.ClinicalGoal(ROIS.eye_l_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx_5, pc2, priority3),
-        CG.ClinicalGoal(ROIS.eye_r_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx_5, pc2, priority3),
-        CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx_5, pc2, priority4),
-        CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx_5, pc2, priority4)
-      ]
+		brain_oars = [
+			CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
+			CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
+			CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0, priority3),
+			CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0, priority3),
+			CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean, None, priority3),
+			CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean, None, priority3),
+			CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0, priority3)
+		]
   elif region_code in RC.brain_partial_codes:
     if nr_fractions == 1: # Stereotactic, one fraction
       brain_oars = [
@@ -197,67 +195,30 @@ def brain_oars(nr_fractions, region_code):
       ]
     else: # Partial brain
       brain_oars = [
-        CG.ClinicalGoal(ROIS.eye_l_prv.name, at_most, dose_at_volume, TOL.eye_prv_v2_adx, pc2, priority3),
-        CG.ClinicalGoal(ROIS.eye_r_prv.name, at_most, dose_at_volume, TOL.eye_prv_v2_adx, pc2, priority3),
-        CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean, None, priority3),
-        CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, average_dose, TOL.cochlea_mean, None, priority3),
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority1),
-        CG.ClinicalGoal(ROIS.lacrimal_l_prv.name, at_most, dose_at_volume, TOL.lacrimal_prv_v2_adx, pc2, priority3),
-        CG.ClinicalGoal(ROIS.lacrimal_r_prv.name, at_most, dose_at_volume, TOL.lacrimal_prv_v2_adx, pc2, priority3),
-        CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_max, cc0, priority4)
+				CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_v003, cc0_03, priority1),
+				CG.ClinicalGoal(ROIS.brainstem_surface.name, at_most, dose_at_abs_volume, TOL.brainstem_surface_v003_adx, cc0_03, priority1),
+				CG.ClinicalGoal(ROIS.brainstem_core.name, at_most, dose_at_abs_volume, TOL.brainstem_core_v003_adx, cc0_03, priority1),
+				CG.ClinicalGoal(ROIS.optic_chiasm.name, at_most, dose_at_abs_volume, TOL.optic_chiasm_v003_adx, cc0_03, priority2),
+				CG.ClinicalGoal(ROIS.optic_nrv_l.name, at_most, dose_at_abs_volume, TOL.optic_nrv_v003_adx, cc0_03, priority2),
+				CG.ClinicalGoal(ROIS.optic_nrv_r.name, at_most, dose_at_abs_volume, TOL.optic_nrv_v003_adx, cc0_03, priority2),
+				CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
+				CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
+				CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.pituitary.name, at_most, average_dose, TOL.pituitary_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.pituitary.name, at_most, average_dose, TOL.pituitary_2_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.retina_l.name, at_most, dose_at_abs_volume, TOL.retina_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.retina_r.name, at_most, dose_at_abs_volume, TOL.retina_v003_adx, cc0_03, priority3),
+        CG.ClinicalGoal(ROIS.cornea_l.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.cornea_r.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority3),
+				CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, average_dose, TOL.cochlea_mean, None, priority4),
+				CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority4),
+				CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority4)
       ]
-      if nr_fractions == 13:
-        brain_oars.extend([
-          CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_13, pc2, priority5),
-          CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_13, pc2, priority5),
-          CG.ClinicalGoal(ROIS.brainstem_prv.name, at_most, dose_at_volume, TOL.brainstem_prv_v2_adx_33, pc2, priority1),
-          CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_mean_13, None, priority3),
-          CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_mean_13, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean_13, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean_13, None, priority3),
-          CG.ClinicalGoal(ROIS.optic_nrv_l_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_nrv_r_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_chiasm_prv.name, at_most, dose_at_volume, TOL.optic_chiasm_prv_v2_adx, pc2, priority2)
-        ])
-      elif nr_fractions == 15:
-        brain_oars.extend([
-          CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_15, pc2, priority5),
-          CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_15, pc2, priority5),
-          CG.ClinicalGoal(ROIS.brainstem_prv.name, at_most, dose_at_volume, TOL.brainstem_prv_v2_adx_33, pc2, priority1),
-          CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_mean_15, None, priority3),
-          CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_mean_15, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean_15, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean_15, None, priority3),
-          CG.ClinicalGoal(ROIS.optic_nrv_l_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_nrv_r_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_chiasm_prv.name, at_most, dose_at_volume, TOL.optic_chiasm_prv_v2_adx, pc2, priority2)
-        ])
-      elif nr_fractions == 30:
-        brain_oars.extend([
-          CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_30, pc2, priority5),
-          CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_30, pc2, priority5),
-          CG.ClinicalGoal(ROIS.brainstem_prv.name, at_most, dose_at_volume, TOL.brainstem_prv_v2_adx_30, pc2, priority1),
-          CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_mean_30, None, priority3),
-          CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_mean_30, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean_30, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean_30, None, priority3),
-          CG.ClinicalGoal(ROIS.optic_nrv_l_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx_30, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_nrv_r_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx_30, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_chiasm_prv.name, at_most, dose_at_volume, TOL.optic_chiasm_prv_v2_adx_30, pc2, priority2)
-        ])
-      elif nr_fractions == 33:
-        brain_oars.extend([
-          CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_33, pc2, priority5),
-          CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_volume, TOL.lens_prv_v2_adx_33, pc2, priority5),
-          CG.ClinicalGoal(ROIS.brainstem_prv.name, at_most, dose_at_volume, TOL.brainstem_prv_v2_adx_33, pc2, priority1),
-          CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_mean_33, None, priority3),
-          CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_mean_33, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean_33, None, priority3),
-          CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean_33, None, priority3),
-          CG.ClinicalGoal(ROIS.optic_nrv_l_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_nrv_r_prv.name, at_most, dose_at_volume, TOL.optic_nrv_prv_v2_adx, pc2, priority2),
-          CG.ClinicalGoal(ROIS.optic_chiasm_prv.name, at_most, dose_at_volume, TOL.optic_chiasm_prv_v2_adx, pc2, priority2)
-        ])
   return brain_oars
 
 
@@ -383,7 +344,8 @@ def lung_oars(ss):
   else:
     l = ROIS.lungs.name
   lung.extend([
-    CG.ClinicalGoal(l, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority3),
+    CG.ClinicalGoal(l, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3),
+    CG.ClinicalGoal(l, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority4),
     CG.ClinicalGoal(l, at_most, average_dose, TOL.lung_mean, None, priority3)
   ])
   return lung
@@ -622,7 +584,7 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
       CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
     ]
-  else:
+  elif total_dose > 60:
     prostate = [
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35_adx, priority4),
@@ -642,9 +604,16 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
       CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
     ]
+  elif total_dose <40:
+    prostate = [
+      CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority2),
+      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority3),
+      CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
+    ]
 
   return prostate
-
 
 # Bone/Spine SBRT:
 # For a treatment with one fraction, from the region code, one finds whether the
@@ -736,11 +705,9 @@ def bone_stereotactic_3fx_oars(region_code):
 # Palliative:
 head = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority1),
-  CG.ClinicalGoal(ROIS.eye_l_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx, cc2, priority3),
-  CG.ClinicalGoal(ROIS.eye_r_prv.name, at_most, dose_at_abs_volume, TOL.eye_prv_v2_adx, cc2, priority3),
-  CG.ClinicalGoal(ROIS.lens_l_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx, cc2, priority4),
-  CG.ClinicalGoal(ROIS.lens_r_prv.name, at_most, dose_at_abs_volume, TOL.lens_prv_v2_adx, cc2, priority4),
-  CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_max, cc0, priority3)
+  CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0, priority4),
+  CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0, priority4),
+  CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_v003, cc0, priority3)
 ]
 neck = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority1),
@@ -752,7 +719,8 @@ thorax = [
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc30, TOL.heart_v30_adx, priority2),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc60, TOL.heart_v60_adx, priority2),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc80, TOL.heart_v80_adx, priority2),
-  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority2),
+  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority3),
+  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority2),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority2)
 ]
 thorax_and_abdomen = [
@@ -761,7 +729,8 @@ thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc30, TOL.heart_v30_adx, priority2),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc60, TOL.heart_v60_adx, priority2),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc80, TOL.heart_v80_adx, priority2),
-  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority2),
+  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority3),
+  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority2),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority2),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, average_dose, TOL.kidney_mean, None, priority2),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc55, TOL.kidney_v55_adx, priority2),
@@ -778,6 +747,17 @@ abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority2),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority2),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority2)
+]
+abdomen_and_pelvis = [
+	CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority1),
+	CG.ClinicalGoal(ROIS.kidneys.name, at_most, average_dose, TOL.kidney_mean, None, priority2),
+	CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc55, TOL.kidney_v55_adx, priority2),
+	CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc32, TOL.kidney_v32_adx, priority2),
+	CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority2),
+	CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority2),
+	CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority2),
+	CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority3),
+	CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority2)
 ]
 pelvis = [
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority2),
@@ -926,7 +906,7 @@ def breast_targets(ss, region_code, target):
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 15.2*100,  pc95, priority2),
         CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*16*100, priority5),
-        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc132, cc2, priority4)
+        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc139, cc2, priority4)
       ])
   else: # Tangential
     breast_targets = [
@@ -958,7 +938,7 @@ def breast_targets(ss, region_code, target):
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 15.2*100,  pc95, priority2),
         CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*16*100, priority5),
-        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc132, cc2, priority4)
+        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc147, cc2, priority4)
       ])
   return breast_targets
 
@@ -1073,7 +1053,7 @@ def prostate_targets(ss, total_dose):
       CG.ClinicalGoal(ROIS.ptv_57.name, at_most, dose_at_volume, pc99_75, pc2, priority5),
       CG.ClinicalGoal(ROIS.ptv_57_60.name, at_least, conformity_index, pc80, pc90_25, priority5)
     ])
-  elif total_dose == 55: # Hypofractionation
+  else: # Hypofractionation
     prostate.extend([
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),

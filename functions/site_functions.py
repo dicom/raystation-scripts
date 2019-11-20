@@ -43,7 +43,9 @@ def breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, targ
 
 
 # Prostate
-def prostate(ss, plan, total_dose, region_code):
+def prostate(ss, plan, total_dose, region_code, target):
+  if total_dose < 40:
+    return SITE.Site(RC.prostate_codes, OBJ.palliative_prostate_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.prostate_oars(ss, total_dose), CGS.palliative_targets(ss, plan, target))
   if region_code in RC.prostate_bed_codes:
     return SITE.Site(RC.prostate_bed_codes, OBJ.prostate_objectives, OBJ.create_prostate_bed_objectives(ss, plan, total_dose), CGS.prostate_oars(ss, total_dose), CGS.prostate_bed_targets(ss))
   else:
@@ -58,20 +60,22 @@ def rectum(ss, plan, total_dose):
 # Palliative
 # Gives a treatment site (e.g. Pelvis) based on a specific region code (e.g. 314).
 def palliative(ss, plan, total_dose, region_code, target):
-  if region_code in RC.palliative_head_codes:
-    return SITE.Site(RC.palliative_head_codes, OBJ.palliative_head_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.head, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_neck_codes:
-    return SITE.Site(RC.palliative_neck_codes, OBJ.palliative_neck_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.neck, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_thorax_codes:
-    return SITE.Site(RC.palliative_thorax_codes, OBJ.palliative_thorax_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.thorax, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_thorax_and_abdomen_codes:
-    return SITE.Site(RC.palliative_thorax_and_abdomen_codes, OBJ.palliative_thorax_and_abdomen_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.thorax_and_abdomen, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_abdomen_codes:
-    return SITE.Site(RC.palliative_abdomen_codes, OBJ.palliative_abdomen_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.abdomen, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_pelvis_codes:
-    return SITE.Site(RC.palliative_pelvis_codes, OBJ.palliative_pelvis_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.pelvis, CGS.palliative_targets(ss, plan, target))
-  elif region_code in RC.palliative_other_codes:
-    return SITE.Site(RC.palliative_other_codes, OBJ.palliative_other_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.other, CGS.palliative_targets(ss, plan, target))
+	if region_code in RC.palliative_head_codes:
+		return SITE.Site(RC.palliative_head_codes, OBJ.palliative_head_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.head, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_neck_codes:
+		return SITE.Site(RC.palliative_neck_codes, OBJ.palliative_neck_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.neck, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_thorax_codes:
+		return SITE.Site(RC.palliative_thorax_codes, OBJ.palliative_thorax_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.thorax, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_thorax_and_abdomen_codes:
+		return SITE.Site(RC.palliative_thorax_and_abdomen_codes, OBJ.palliative_thorax_and_abdomen_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.thorax_and_abdomen, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_abdomen_codes:
+		return SITE.Site(RC.palliative_abdomen_codes, OBJ.palliative_abdomen_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.abdomen, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_abdomen_and_pelvis_codes:
+		return SITE.Site(RC.palliative_abdomen_and_pelvis_codes, OBJ.palliative_abdomen_and_pelvis_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.abdomen_and_pelvis, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_pelvis_codes:
+		return SITE.Site(RC.palliative_pelvis_codes, OBJ.palliative_pelvis_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.pelvis, CGS.palliative_targets(ss, plan, target))
+	elif region_code in RC.palliative_other_codes:
+		return SITE.Site(RC.palliative_other_codes, OBJ.palliative_other_oar_objectives, OBJ.create_palliative_objectives(ss, plan, total_dose, target=target), CGS.other, CGS.palliative_targets(ss, plan, target))
 
 
 # Stereotactic bone/spine
@@ -89,19 +93,24 @@ def bladder(ss, plan, total_dose):
 # Determines the site from the region code
 def site(pm, examination, ss, plan, nr_fractions, total_dose, region_code, target, technique_name):
   if region_code in RC.brain_codes:
+    if region_code not in RC.brain_whole_codes:
+      if nr_fractions > 5:
+        PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l, ROIS.cornea_l)
+        PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r, ROIS.cornea_r)
     return brain(pm, examination, ss, plan, total_dose, nr_fractions, region_code)
   elif region_code in RC.breast_codes:
     return breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, target)
   elif region_code in RC.lung_and_mediastinum_codes:
     return lung(ss, plan, total_dose, nr_fractions, region_code, target)
   elif region_code in RC.prostate_codes:
-    PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
-    return prostate(ss, plan, total_dose, region_code)
+    if total_dose > 50:
+      PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
+    return prostate(ss, plan, total_dose, region_code, target)
   elif region_code in RC.rectum_codes:
     return rectum(ss, plan, total_dose)
   elif region_code in RC.bladder_codes:
     return bladder(ss, plan, total_dose)
-  elif region_code in RC.palliative_codes:
+  elif region_code in RC.palliative_codes or region_code in RC.prostate_codes:
     if nr_fractions == 1 and total_dose > 15 or nr_fractions == 3 and total_dose == 27:
       return bone_stereotactic(ss, plan, total_dose, region_code, nr_fractions)
     else:

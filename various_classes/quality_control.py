@@ -114,7 +114,7 @@ class QualityControl(object):
       ts_beam_set.vmat_arc_sequence_test()
       ts_beam_set.reasonable_collimator_angles_test()
       ts_beam_set.defined_prescription_test()
-      ts_beam_set.specific_energy_for_region_test()
+      #ts_beam_set.specific_energy_for_region_test()
       ts_beam_set.nr_fractions_test()
       ts_beam_set.label_vmat_test()
       ts_beam_set.label_target_volume_test()
@@ -131,6 +131,8 @@ class QualityControl(object):
       ts_beam_set.stereotactic_mu_test()
       ts_beam_set.vmat_mu_test()
       ts_beam_set.beam_number_test()
+
+
       # Label tests:
       ts_label = ts_beam_set.ts_label
       ts_label.nr_parts_test()
@@ -175,6 +177,7 @@ class QualityControl(object):
         ts_beam.stereotactic_mu_constraints_for_multiple_beams()
         ts_beam.stereotactic_mu_constraints_for_single_beam()
         ts_beam.segment_test()
+        #ts_beam.narrow_jaw_opening_for_filter_energies()
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:
           ts_segment.mlc_corner_validity_test()

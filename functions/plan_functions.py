@@ -31,7 +31,7 @@ import structure_set_functions as SSF
 
 
 # Creates additional palliative beamsets (if multiple targets exists).
-def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, machine_name, nr_existing_beams=1, isocenter=False):
+def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams=1, isocenter=False):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   common_isocenter = False
   if isocenter:
@@ -44,14 +44,14 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       if not isocenter:
         if SSF.has_named_roi_with_contours(ss, 'PTV' + str(i+1)):
           isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
-          machine_name = SSF.determine_machine_single_target(ss, 'PTV'+str(i+1))
+          energy_name = SSF.determine_energy_single_target(ss, 'PTV'+str(i+1))
         else:
           GUIF.handle_missing_ptv()
       # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
         Name=BSF.label(region_code, fraction_dose, nr_fractions, 'VMAT'),
         ExaminationName=examination.Name,
-        MachineName= machine_name,
+        MachineName= "ALVersa",
         Modality='Photons',
         TreatmentTechnique='VMAT',
         PatientPosition=CF.determine_patient_position(examination),
@@ -60,7 +60,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       BSF.add_prescription(beam_set, nr_fractions, fraction_dose, 'CTV' + str(i+1))
 
       # Setup beams or arcs
-      nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', iso_index=str(i+1), beam_index=nr_existing_beams+1)
+      nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams += nr_beams
       OBJ.create_palliative_objectives_for_additional_beamsets(ss, plan, fraction_dose*nr_fractions, i)
       i += 1
@@ -69,7 +69,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
 # (Used for brain or lung)
-def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, nr_existing_beams=1):
+def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams=1):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   i = 1
   if nr_targets > 1:
@@ -80,7 +80,7 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
         beam_set = plan.AddNewBeamSet(
           Name=BSF.label_s(region_code, fraction_dose, nr_fractions),
           ExaminationName=examination.Name,
-          MachineName= "ALVersa_FFF",
+          MachineName= "ALVersa",
           Modality='Photons',
           TreatmentTechnique='VMAT',
           PatientPosition='HeadFirstSupine',
@@ -90,17 +90,17 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
         # Determine the point which will be our isocenter:
         isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
         # Setup beams or arcs
-        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', iso_index=str(i+1), beam_index=nr_existing_beams+1)
+        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
         nr_existing_beams += nr_beams
         i += 1
 
 
 # Creates a beam set (the first beam set, if multiple beam sets are to me made):
-def create_beam_set(plan, name, examination, machine, treatment_technique, nr_fractions, modality='Photons', patient_position="HeadFirstSupine"):
+def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, modality='Photons', patient_position="HeadFirstSupine"):
     beam_set = plan.AddNewBeamSet(
       Name=name,
       ExaminationName=examination.Name,
-      MachineName=machine,
+      MachineName="ALVersa",
       Modality=modality,
       TreatmentTechnique=treatment_technique,
       PatientPosition=CF.determine_patient_position(examination),
@@ -122,9 +122,10 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
   )
   BSF.add_prescription(beam_set, 8, 2, roi_name)
   if region_code in RC.breast_l_codes:
-    BSF.create_two_beams(beam_set, isocenter, name1='LPO', name2='RAO', gantry_angle1='130', gantry_angle2='310', collimator_angle1='343', collimator_angle2='17', iso_index=2)
+    BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2)
+    
   elif region_code in RC.breast_r_codes:
-    BSF.create_two_beams(beam_set, isocenter, name1='RPO', name2='LAO', gantry_angle1='230', gantry_angle2='50', collimator_angle1='8.9', collimator_angle2='351.5', iso_index=2)
+    BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2)
   total_dose = 16
   OBJ.create_breast_boost_objectives(ss, plan, total_dose)
 
@@ -142,6 +143,6 @@ def is_stereotactic(nr_fractions, fraction_dose):
 def set_dose_grid(plan, region_code, nr_fractions, fraction_dose):
   # Default grid size:
   size = 0.3
-  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes:
+  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_partial_codes:
     size = 0.2
   plan.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})

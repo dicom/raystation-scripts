@@ -121,8 +121,8 @@ def ss_poi_geometry(bs, poi):
 # Gets the strucutre set ROI geometry that corresponds to the given Region of Interest (in a given beam set):
 def ss_roi_geometry(bs, roi):
   if bs.FractionDose.OnDensity: # (For e.g. imported plans, OnDensity may be missing)
-    for r in bs.FractionDose.OnDensity.OutlineSource.RoiGeometries:
-      if r.OfRoi == roi:
+    for r in bs.FractionDose.OnDensity.OutlineGeometry:
+      if r.OfRoi.Name == roi:
         return r
 
 

@@ -32,3 +32,4 @@ rectum_ptv_50_expansion = MARGIN.Expansion(0.7, 0.7, 1, 0.7, 0.7, 0.7)
 
 # Contraction margins:
 uniform_5mm_contraction = MARGIN.Contraction(0.5, 0.5, 0.5, 0.5, 0.5, 0.5) # (typically used with external)
+uniform_2mm_contraction = MARGIN.Contraction(0.2, 0.2, 0.2, 0.2, 0.2, 0.2) 

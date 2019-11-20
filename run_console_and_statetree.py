@@ -5,7 +5,7 @@
 # Source:
 # https://github.com/raysearchlabs/scripting
 #
-# Tested for RayStation version: 6.0.
+# Tested for RayStation version: 9A
 
 import os, sys, System, statetree
 from connect import *

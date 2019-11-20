@@ -28,14 +28,16 @@ import region_codes as RC
 
 # Checks if a given roi takes part in a approved structure set
 def is_approved_roi_structure(ss, roi_name):
-  match = False
-  for set in ss.ApprovedStructureSets:
-    for roi in set.ApprovedRoiStructures:
-      if roi.OfRoi.Name == roi_name:
-        match = True
-  if match:
-    GUIF.handle_failed_translation_of_roi(roi_name)
-  return match
+	match = False
+	for set in ss.ApprovedStructureSets:
+		for roi in set.ApprovedRoiStructures:
+			if roi.OfRoi.Name == roi_name:
+				match = True
+	if match and roi_name == ROIS.couch.name:
+		GUIF.handle_failed_translation_of_roi(roi_name)
+	elif match and roi_name == ROIS.anal_canal.name:
+		GUIF.handle_failed_creation_of_roi(roi_name)
+	return match
 
 # Returns the name of the appropriately defined body ROI (having contours),
 # which in the case of stereotactic treatment is "Body", and otherwise it is "External".
@@ -173,7 +175,7 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
 
 # Determine the treatment machine (i.e. with or without filter) from the size of the target volume.
 # Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
-def determine_machine(ss, target):
+def determine_energy(ss, target):
   threshold = 13
   # Establish start values:
   center = ss.RoiGeometries[target].GetCenterOfRoi()
@@ -209,14 +211,14 @@ def determine_machine(ss, target):
   dist_y = abs(ptv_max_y - ptv_min_y)
   dist_x = abs(ptv_max_x - ptv_min_x)
   if dist_x < threshold and dist_y < threshold and dist_z < threshold:
-    machine = "ALVersa_FFF"
+    energy = "6 FFF"
   else:
-    machine = "ALVersa"
-  return machine
+    energy = "6"
+  return energy
 
 # Determine the treatment machine (i.e. with or without filter) from the size of the given target volume.
 # Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
-def determine_machine_single_target(ss, target):
+def determine_energy_single_target(ss, target):
   threshold = 13
   # Establish start values:
   center = ss.RoiGeometries[target].GetCenterOfRoi()
@@ -252,22 +254,23 @@ def determine_machine_single_target(ss, target):
   dist_y = abs(ptv_max_y - ptv_min_y)
   dist_x = abs(ptv_max_x - ptv_min_x)
   if dist_x < threshold and dist_y < threshold and dist_z < threshold:
-    machine = "ALVersa_FFF"
+    energy = "6 FFF"
   else:
-    machine = "ALVersa"
-  return machine
+    energy = "6"
+  return energy
 
 
 # Determines the number of targets from indexed PTV's (for example used for stereotactic brain with multiple targets):
 def determine_nr_of_indexed_ptvs(ss):
-  nr_targets = 1
-  if has_roi_with_shape(ss, ROIS.ptv2.name):
-    nr_targets += 1
-    if has_roi_with_shape(ss, ROIS.ptv3.name):
-      nr_targets += 1
-      if has_roi_with_shape(ss, ROIS.ptv4.name):
-        nr_targets += 1
-  return nr_targets
+	nr_targets = 1
+
+	if has_roi_with_shape(ss, ROIS.ptv2.name):
+		nr_targets += 1
+		if has_roi_with_shape(ss, ROIS.ptv3.name):
+			nr_targets += 1
+			if has_roi_with_shape(ss, ROIS.ptv4.name):
+				nr_targets += 1
+	return nr_targets
 
 
 # Determines the prescription target volume of the plan.
@@ -336,6 +339,20 @@ def determine_target(ss, nr_fractions, fraction_dose):
     for roi in ss.RoiGeometries:
       if roi.OfRoi.Name == ROIS.ctv_sb.name and roi.HasContours():
         target = ROIS.ctv_sb.name
+        match = True
+
+  #CTV2
+  if match == False:
+    for roi in ss.RoiGeometries:
+      if roi.OfRoi.Name == ROIS.ctv2.name and roi.HasContours():
+        target = ROIS.ctv2.name
+        match = True
+
+ #CTV3
+  if match == False:
+    for roi in ss.RoiGeometries:
+      if roi.OfRoi.Name == ROIS.ctv3.name and roi.HasContours():
+        target = ROIS.ctv3.name
         match = True
 
   if target:

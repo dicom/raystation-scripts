@@ -103,7 +103,14 @@ class Plan(object):
         if palliative_choices[0].value in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
           region_codes = GUIF.multiple_beamset_form(ss)
           GUIF.check_region_codes(region_code, region_codes)
-          target = 'CTV1'
+          if SSF.has_roi_with_shape(ss, 'CTV1'):
+            target = 'CTV1'
+          elif SSF.has_roi_with_shape(ss, 'CTV2'):
+            target = 'CTV2'
+          elif SSF.has_roi_with_shape(ss, 'CTV3'):
+            target = 'CTV3'
+          elif SSF.has_roi_with_shape(ss, 'CTV4'):
+            target = 'CTV4'
         elif palliative_choices[0].value == 'sep_plan':
           target = palliative_choices[1].value
 
@@ -178,20 +185,20 @@ class Plan(object):
 
     # Determine the machine name from the size of the target volume, only one target is taken into consideration here.
     # For those situations where you have two targets and you want to have separate isocenters, then you what to evaluate the targets separately.
-    if target in ['CTV1','CTV2'] and palliative_choices[0].value in ['sep_beamset_sep_iso', 'sep_plan']:
-      machine_name = SSF.determine_machine_single_target(ss, target)
+    if target in ['CTV1','CTV2','CTV3','CTV4'] and palliative_choices[0].value in ['sep_beamset_sep_iso', 'sep_plan']:
+      energy_name = SSF.determine_energy_single_target(ss, target)
     elif region_code in RC.breast_codes:
-      machine_name = 'ALVersa'
+      energy_name = '6'
     else:
       # Determine the machine name from the size of the target volume:
-      machine_name = SSF.determine_machine(ss, target)
+      energy_name = SSF.determine_energy(ss, target)
 
     # Create the name of the beamset
     beam_set_name = BSF.label(region_code, fraction_dose, nr_fractions, technique)
 
 
     # Create primary beam set:
-    beam_set = PF.create_beam_set(plan, beam_set_name, examination, machine_name, technique, nr_fractions)
+    beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, nr_fractions)
     # Add prescription:
     BSF.add_prescription(beam_set, nr_fractions, fraction_dose, target)
     # Determine the point which will be our isocenter:
@@ -206,7 +213,7 @@ class Plan(object):
       # Consider all targets when determining isocenter:
       isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets=True)
     # Setup beams or arcs
-    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name)
+    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name, energy_name)
     #nr_beams = len(beam_set.Beams)
 
 
@@ -215,26 +222,24 @@ class Plan(object):
     if nr_targets > 1:
       if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
         if PF.is_stereotactic(nr_fractions, fraction_dose):
-          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, nr_existing_beams=nr_beams)
+          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams=nr_beams)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
         if palliative_choices[0].value in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
           if palliative_choices[0].value == 'sep_beamset_iso':
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, machine_name, nr_existing_beams=nr_beams, isocenter=isocenter)
+            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams=nr_beams, isocenter=isocenter)
           else:
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, machine_name, nr_existing_beams=nr_beams)
+            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams=nr_beams)
 
 
     # If there is a 2Gy x 8 boost for breast patients
-    if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and region_code in RC.breast_codes:
+    if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
       PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(fraction_dose*nr_fractions)))
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
       plan.LoadBeamSet( BeamSetInfo=infos[0])
 
 
-    # Loads the plan, done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded
-    CF.load_plan(case, plan)
 
 
     # Determines and sets up isodoses based on region code and fractionation
@@ -248,48 +253,57 @@ class Plan(object):
     # Set up Clinical Goals:
     es = plan.TreatmentCourse.EvaluationSetup
     CG.setup_clinical_goals(ss, es, site, total_dose, nr_fractions, target)
+    # Loads the plan, done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded
+    CF.load_plan(case, plan)
 
-
-    # Use robust optimization for VMAT breast:
     if technique_name == 'VMAT' and region_code in RC.breast_reg_codes:
+      # Use robust optimization for VMAT breast:
       OBJF.set_robustness_breast(plan, region_code)
-
-
-    # If indicated, run optimization:
-    if opt != 'without':
-
-
-      # Run first optimization on each beam set:
-      for po in plan.PlanOptimizations:
-        po.RunOptimization()
-
-
-      # Adjust OAR settings and run further optimizations, if indicated:
-      if opt == 'oar':
-        OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
-        CF.load_plan(case, plan)
-
-
-      # Creates a margin into air for 3D-CRT breast
-      if technique_name == '3D-CRT' and region_code in RC.breast_codes:
-        if SSF.is_breast_hypo(ss):
-          breast = ROIS.ptv_pc.name
-          nodes = ROIS.ptv_n.name
+    elif technique_name == '3D-CRT' and region_code in RC.breast_codes:
+      if region_code in RC.breast_tang_codes:
+        if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and not SSF.has_roi_with_shape(ss, ROIS.ptv_c.name):
+          breast = ROIS.ptv_sbc.name 
         else:
-          breast = ROIS.ptv_50.name
-          nodes = ROIS.ptv_47.name
+          breast = ROIS.ptv_c.name
+        BSF.set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan.PlanOptimizations[0], breast)
+        if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ptv_c.name):
+          BSF.set_up_beams_and_optimization_for_tangential_breast(plan, plan.BeamSets[1], plan.PlanOptimizations[1], ROIS.ptv_sbc.name)
+      else:
+        BSF.set_up_beams_and_optimization_for_regional_breast(plan, beam_set, ROIS.ptv_c.name, region_code)
+    # Run first optimization on each beam set:
+    for po in plan.PlanOptimizations:
+      po.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
+      po.RunOptimization()
+
+    if opt == 'oar':
+      OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
+      if region_code in RC.breast_codes:
+        if region_code in RC.breast_tang_codes:
+          nodes = ''
+          if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and not SSF.has_roi_with_shape(ss, ROIS.ptv_c.name):
+            breast = ROIS.ptv_sbc.name 
+          else:
+            breast = ROIS.ptv_c.name
+        else: 
+          if SSF.is_breast_hypo(ss):
+            breast = ROIS.ptv_pc.name
+            nodes = ROIS.ptv_nc.name
+          else:
+            breast = ROIS.ptv_50c.name
+            nodes = ROIS.ptv_47c.name
+          BSF.close_leaves_behind_jaw_for_regional_breast(beam_set)
         BSF.create_margin_air_for_3dcrt_breast(ss, beam_set, region_code, breast, nodes)
-        CF.load_plan(case, plan)
-
-
-      # After optimization is completed, compute final dose:
-      beam_set.ComputeDose(DoseAlgorithm='CCDose')
-      CF.load_plan(case, plan)
+        beam_set.ComputeDose(DoseAlgorithm='CCDose')
+      for po in plan.PlanOptimizations:
+        po.AutoScaleToPrescription = True
+    # After optimization is completed, compute final dose:
+    CF.load_plan(case, plan)
 
 
 
     # Save
     patient.Save()
+
 
 
 

@@ -10,18 +10,18 @@ breast = P.Property('Bryst', 'breast', next_category = 'omfang')
 bladder = P.Property('Blære', 'bladder')
 prostate = P.Property('Prostata', 'prostate', next_category = 'omfang')
 rectum = P.Property('Rektum', 'rectum', next_category = 'fraksjonering')
-other = P.Property('Palliativ/Skjelett - øvrig', 'other', next_category = '')
+other = P.Property('Palliativ (skjelett og øvrig bløtvev)', 'other', next_category = '')
 
 
 # Brain: Scope:
 brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, default = True)
-brain_partial = P.Property('Del av hjerne', 'part', parent=brain, next_category='diagnose')
+brain_partial = P.Property('Del av hjerne', 'part', parent=brain)
 brain_stereotactic = P.Property('Stereotaksi','stereotactic', parent = brain, next_category ='antall målvolum')
 
 # Brain: Partial: Diagnosis:
-brain_partial_diag1 = P.Property('Glioblastom WHO grad IV', 'glio', parent=brain_partial, default = True)
-brain_partial_diag2 = P.Property('Anaplastisk astrocytom WHO grad III', 'astro', parent=brain_partial)
-brain_partial_diag3 = P.Property('Atypisk og anaplastisk meningeom', 'meningeom', parent=brain_partial)
+#brain_partial_diag1 = P.Property('Glioblastom WHO grad IV', 'glio', parent=brain_partial, default = True)
+#brain_partial_diag2 = P.Property('Anaplastisk astrocytom WHO grad III', 'astro', parent=brain_partial)
+#brain_partial_diag3 = P.Property('Atypisk og anaplastisk meningeom', 'meningeom', parent=brain_partial)
 
 # Brain: Stereotactic
 brain_stereo_nr1 = P.Property('1','one', parent = brain_stereotactic, default = True)
@@ -100,10 +100,13 @@ prostate_bed = P.Property('Prostataseng', 'bed', parent = prostate, next_categor
 prostate_hypo = P.Property('Hypofraksjonering (totaldose 60 Gy)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
 prostate_hypo_55 = P.Property('Hypofraksjonering (totaldose 55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
 prostate_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_normal, next_category ='')
+prostate_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_normal, next_category ='')
 
+prostate_bed_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_bed, next_category ='', default = True)
+prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_bed, next_category ='')
 
 # Prosate/bed: Lymph nodes:
-for p in [prostate_normo, prostate_bed]:
+for p in [prostate_normo, prostate_bed_normo]:
   prostate_without_ln =  P.Property('Uten lymfeknuter', 'without',  parent = p, next_category ='', default = True)
   prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = p, next_category ='')
   prostate_with_ln_boost =  P.Property('Med lymfeknuter og boost til positiv lymfeknute', 'with_node', parent = p, next_category ='')
@@ -126,7 +129,9 @@ other_non_stereotactic = P.Property('Ikke stereotaksi', False, parent = other, n
 other_head = P.Property('Hode', 'head', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_neck = P.Property('Hals', 'neck', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_thorax = P.Property('Thorax', 'thorax', parent=other_non_stereotactic, next_category = 'antall målvolum')
+other_thorax_and_abdomen = P.Property('Thorax/Abdomen', 'thorax_abdomen', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_abdomen = P.Property('Abdomen', 'abdomen', parent=other_non_stereotactic, next_category = 'antall målvolum')
+other_abdomen_and_pelvis = P.Property('Abdomen/Bekken', 'abdomen_pelvis', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_pelvis = P.Property('Bekken', 'pelvis', parent=other_non_stereotactic, next_category = 'antall målvolum', default = True)
 other_other = P.Property('Ekstremiteter/Annet', 'other', parent=other_non_stereotactic, next_category = 'antall målvolum')
 
@@ -136,7 +141,7 @@ other_stereotactic_col_pelvis =  P.Property('Columna - bekken', 'col pelvis', pa
 other_stereotactic_pelvis  = P.Property('Bekken', 'pelvis', parent=other_stereotactic, default = True)
 
 # Other non-SBRT: Number of target volumes:
-for region in [other_head, other_neck, other_thorax, other_abdomen, other_pelvis, other_other]:
+for region in [other_head, other_neck, other_thorax, other_thorax_and_abdomen, other_abdomen, other_abdomen_and_pelvis, other_pelvis, other_other]:
   other_target_volume_one = P.Property('1','1', parent = region, next_category = '', default = True)
   other_target_volume_two = P.Property('2','2', parent = region, next_category = '')
   # With or without soft tissue component:

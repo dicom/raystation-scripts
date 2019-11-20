@@ -26,27 +26,16 @@ class DefBrain(object):
       site.add_targets([ctv, ptv])
     # Partial Brain:
     elif region == 'part':
-      # Choice 2: Diagnosis:
-      diagnosis = choices[2].value
-      # Glioblastom:
-      if diagnosis == 'glio':
-        gtv =  ROI.ROIExpanded(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, ROIS.gtv_sb)
-        ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, gtv, margins = MARGINS.uniform_20mm_expansion)
-        brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [gtv], operator = 'Subtraction')
-        site.add_oars([brain_gtv])
-        site.add_targets([ROIS.gtv_p, ROIS.gtv_sb, gtv, ctv])
-      # All other diagnoses:
-      else:
-        ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.gtv, margins = MARGINS.uniform_20mm_expansion)
-        brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
-        site.add_oars([brain_gtv])
-        site.add_targets([ROIS.gtv, ctv])
-      # Common for all diagnoses of partial brain:
-      site.add_oars(DEF.brain_partial_oars)
-      ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
-      brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
-      site.add_oars([brain_ptv])
-      site.add_targets([ptv])
+			ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.gtv, margins = MARGINS.uniform_20mm_expansion)
+			brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
+			site.add_oars([brain_gtv])
+			site.add_targets([ROIS.gtv, ctv])
+			# Common for all diagnoses of partial brain:
+			site.add_oars(DEF.brain_partial_oars)
+			ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
+			brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+			site.add_oars([brain_ptv])
+			site.add_targets([ptv])
       
     # Stereotactic brain:
     elif region == 'stereotactic':

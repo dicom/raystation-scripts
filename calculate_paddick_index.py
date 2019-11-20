@@ -7,7 +7,7 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 6.0
+# Made for RayStation version: 9A
 
 from __future__ import division
 import math
@@ -57,6 +57,8 @@ for beam_set in plan.BeamSets:
           roi = prescription_roi.replace("C", "P")
         elif prescription_roi[:1] == "G":
           roi = prescription_roi.replace("G", "P")
+        else:
+          roi = 'PTV'
       else: # Other prescription types, used for stereotactic treatments
         # The dose value used is 100 % of the total dose
         dose_value = beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions
@@ -87,7 +89,7 @@ for beam_set in plan.BeamSets:
   paddick = None
   if roi_existence and ext_existence:
     if vve != 0:
-      paddick = round(vv/vve,2)
+      paddick = round((vv*vv)/(vve*volume),2)
       text += "Paddick konformitetsindeks:" + "\n"
       text += str(roi) + ": " + str(paddick) + "\n"
   elif ext_existence:

@@ -60,6 +60,8 @@ def determine_isodoses(case, ss, region_code, nr_fractions, fraction_dose):
           ISODOSES.prostate_70_77.apply_to(case)
     elif fraction_dose == 3:
       ISODOSES.prostate_57_60.apply_to(case)
+    else:
+      ISODOSES.standard.apply_to(case)
   elif PF.is_stereotactic(nr_fractions, fraction_dose):
     ISODOSES.stereotactic.apply_to(case)
   else:

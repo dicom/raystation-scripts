@@ -235,7 +235,10 @@ def set_robustness_breast(plan, region_code):
       PositionUncertaintyLeft=0,
       PositionUncertaintyRight=1,
       DensityUncertainty=0,
-      IndependentBeams=False,
+      PositionUncertaintySetting='Universal',
+      IndependentLeftRight = True,
+      IndependentAnteriorPosterior = True,
+      IndependentSuperiorInferior = True,
       ComputeExactScenarioDoses=False,
       NamesOfNonPlanningExaminations=[]
     )
@@ -248,7 +251,10 @@ def set_robustness_breast(plan, region_code):
       PositionUncertaintyLeft=1,
       PositionUncertaintyRight=0,
       DensityUncertainty=0,
-      IndependentBeams=False,
+      PositionUncertaintySetting='Universal',
+      IndependentLeftRight = True,
+      IndependentAnteriorPosterior = True,
+      IndependentSuperiorInferior = True,
       ComputeExactScenarioDoses=False,
       NamesOfNonPlanningExaminations=[]
     )

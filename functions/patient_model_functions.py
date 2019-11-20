@@ -39,7 +39,7 @@ def create_algebra_roi(pm, examination, ss, roi):
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, missing)
 
-
+'''
 # Creates the couch templated based support ROI:
 def create_couch(pm, examination):
   for pm_roi in pm.RegionsOfInterest:
@@ -56,6 +56,25 @@ def create_couch(pm, examination):
     InitializationOption="AlignImageCenters"
   )
 
+'''
+def create_couch(patient_db, pm, examination):
+  for pm_roi in pm.RegionsOfInterest:
+    if pm_roi.Name == "Couch":
+      pm_roi.DeleteRoi()
+      break
+  templateInfo = patient_db.GetPatientModelTemplateInfo()
+  for i in range(0, len(templateInfo)):
+    template = patient_db.LoadTemplatePatientModel(templateName = templateInfo[i]['Name'], lockMode = 'Read')
+    if template.Name == 'Bordtopp tykk':
+      pm.CreateStructuresFromTemplate(
+        SourceTemplate=template, 
+        SourceExaminationName= "CT 1",
+        SourceRoiNames=[ROIS.couch.name],
+        SourcePoiNames=[],
+        AssociateStructuresByName=False,
+        TargetExamination=examination,
+        InitializationOption="AlignImageCenters"
+      )
 
 # Creates an empty roi from a roi object
 def create_empty_roi(pm, roi):
@@ -214,13 +233,69 @@ def create_bottom_part_x_cm(pm, examination, ss, source_roi, roi, distance):
     delete_roi(pm, ROIS.box.name)
     box = pm.CreateRoi(Name = ROIS.box.name, Color = ROIS.box.color, Type = ROIS.box.type)
     pm.RegionsOfInterest[ROIS.box.name].CreateBoxGeometry(Size={ 'x': x, 'y': y, 'z': distance}, Examination = examination, Center = { 'x': center_x, 'y': center_y, 'z': z_cutoff })
-
-    intersection = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = [ROIS.box], operator = 'Intersection')
-    # In the rare case that this ROI already exists, delete it (to avoid a crash):
-    delete_roi(pm, intersection.name)
-    create_algebra_roi(pm, examination, ss, intersection)
+    if not SSF.is_approved_roi_structure(ss, roi.name):
+      if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
+        intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [ROIS.box], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+        GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
+      else:
+        intersection = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = [ROIS.box], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
     delete_roi(pm, ROIS.box.name)
 
+
+def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, intersection_roi, subtraction_roi):
+  if SSF.has_named_roi_with_contours(ss, source_roi.name):
+    center_x = SSF.roi_center_x(ss, source_roi.name)
+    center_z = SSF.roi_center_z(ss, source_roi.name)
+    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+    y_min = source_roi_box[1].y
+    if y_min > 0:
+      y_min = -source_roi_box[1].y
+
+    delete_roi(pm, box_roi.name)
+    box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
+    pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
+
+    if source_roi.name == ROIS.lens_l.name:
+      wall_roi = ROIS.z_eye_l
+    elif source_roi.name == ROIS.lens_r.name:
+      wall_roi = ROIS.z_eye_r
+    delete_roi(pm, wall_roi.name)
+    create_wall_roi(pm, examination, ss, wall_roi)
+
+    if not SSF.is_approved_roi_structure(ss, roi.name):
+      if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
+        intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [box_roi], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+        GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
+      else:
+        intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Intersection')
+        subtraction = ROI.ROIAlgebra(subtraction_roi.name, subtraction_roi.type, subtraction_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Subtraction')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        delete_roi(pm, subtraction.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+        create_algebra_roi(pm, examination, ss, subtraction)
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(intersection_roi.name, source_roi.name)
+
+
+# Checks if a given roi takes part in a approved structure set
+def is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
+  match = False
+  for set in pm.StructureSets:
+    for app_set in set.ApprovedStructureSets:
+      for roi in app_set.ApprovedRoiStructures:
+        if roi.OfRoi.Name == roi_name:
+          match = True
+  return match  
 
 # As there can only be one external, another external is created for brain stereotactic treatments, called 'Body', where only the patient geometry is included, The same as the normal 'External' for all other patient groups
 def create_stereotactic_body_geometry(pm, examination, ss):
@@ -298,14 +373,26 @@ def delete_matching_roi_except_manually_contoured(pm, ss, roi):
         if is_empty(ss, roi):
           pm_roi.DeleteRoi()
       break
-
+'''
 # Exclude 'Undefined' ROIs from the export
 def exclude_rois_from_export(pm):
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Type == 'Undefined':
       if not pm_roi.ExcludeFromExport:
         pm_roi.ExcludeFromExport = True
+        
 
+from connect import *
+
+case = get_current("Case")
+examination = get_current("Examination")
+db = get_current("PatientDB")
+
+
+with CompositeAction('Apply ROI changes (Breast_R_Draft)'):
+
+  case.PatientModel.ToggleExcludeFromExport(ExcludeFromExport=True, RegionOfInterests=[r"Breast_R_Draft"], PointsOfInterests=[])
+'''
 # Delete all ROIs from the patient model.
 def delete_roi(pm, name):
   for roi in pm.RegionsOfInterest:

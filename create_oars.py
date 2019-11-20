@@ -6,7 +6,7 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 6.0
+# Made for RayStation version: 9A
 
 # Import system libraries:
 from connect import *
@@ -44,7 +44,10 @@ try:
     case = get_current("Case")
 except SystemError:
     raise IOError("No case loaded.")
-
+try:
+  patient_db = get_current('PatientDB')
+except SystemError:
+  raise IOError("No case loaded.")
 # Load patient model, examination and structure set:
 pm = case.PatientModel
 examination = get_current("Examination")
@@ -124,7 +127,7 @@ for i in range(len(selected_oar_list)):
     del selected_oar_list[i]
     selected_oar_list.extend([ROIS.marker1, ROIS.marker2, ROIS.marker3, ROIS.marker4])
   if selected_oar_list[i].name == ROIS.couch.name:
-    PMF.create_couch(pm, examination)
+    PMF.create_couch(patient_db, pm, examination)
   if selected_oar_list[i].name == ROIS.body.name:
     PMF.create_stereotactic_body_geometry(pm, examination, ss)
     PMF.create_stereotactic_external_geometry(pm, examination, ss)

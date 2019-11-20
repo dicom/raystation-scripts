@@ -6,7 +6,7 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 6.0
+# Made for RayStation version: 9A
 
 # Import system libraries:
 from connect import *
@@ -45,13 +45,17 @@ import definition as DEF
 
 # Load patient and case data:
 try:
-    patient = get_current("Patient")
+  patient = get_current("Patient")
 except SystemError:
-    raise IOError("No patient loaded.")
+  raise IOError("No patient loaded.")
 try:
-    case = get_current("Case")
+  case = get_current("Case")
 except SystemError:
-    raise IOError("No case loaded.")
+  raise IOError("No case loaded.")
+try:
+  patient_db = get_current('PatientDB')
+except SystemError:
+  raise IOError("No case loaded.")
 
 # Set up and execute the def script:
-d = DEF.Definition(patient, case)
+d = DEF.Definition(patient_db, patient, case)

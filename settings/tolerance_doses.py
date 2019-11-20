@@ -12,7 +12,7 @@ ab_heart = 3
 ab_bowelspace = 3
 ab_spinalcord = 2
 ab_eye = 3
-ab_lens = 3
+ab_lens = 1
 ab_parotid = 3
 ab_brain = 2
 ab_esophagus = 3
@@ -38,13 +38,14 @@ ab_bronchus = 3
 ab_liver = 2
 ab_brachial = 2
 ab_stomach = 2
-ab_skin = 3
+ab_skin = 2
 ab_kidney_hilum = 2
 ab_cauda = 3
 ab_colon = 3
 ab_bowel = 3
 ab_breast = 3
 ab_lad = 2
+ab_cornea = 3
 
 
 # Reference number of fractions:
@@ -64,59 +65,27 @@ fractions_bladder_at_rectum = 25
 fractions_breast = 25
 fractions_breast_15 = 15
 fractions_eye = 33
-fractions_eye_5 = 5
-fractions_eye_10 = 10
-fractions_eye_13 = 13
-fractions_eye_15 = 15
-fractions_eye_30 = 30
-fractions_eye_33 = 33
-fractions_brain = 25
-fractions_brainstem = 33
-fractions_brainstem_33 = 33
-fractions_brainstem_30 = 30
-fractions_optic_nerve = 33
-fractions_optic_nerve_30 = 30
-fractions_optic_chiasm = 33
-fractions_optic_chiasm_30 = 30
-fractions_lacrimal = 33
-fractions_lacrimal_33 = 33
-fractions_lacrimal_30 = 30
-fractions_lacrimal_15 = 15
-fractions_lacrimal_13 = 13
-fractions_cochlea = 33
-fractions_hippocampus = 33
-fractions_hippocampus_33 = 33
-fractions_hippocampus_30 = 30
-fractions_hippocampus_15 = 15
-fractions_hippocampus_13 = 13
-fractions_lens = 33
-fractions_lens_10 = 10
-fractions_lens_5 = 5
-fractions_lens_33 = 33
-fractions_lens_30 = 30
-fractions_lens_15 = 15
-fractions_lens_13 = 13
-fractions_humeral = 25
 fractions_sbrt_3 = 3
 fractions_sbrt_5 = 5
 fractions_sbrt_8 = 8
 fractions_sbrt_1 = 1
-
-'''
 # Til ny prosedyre, del av hjerne og total hjerne
+fractions_brainstem_surface = 30
+fractions_brainstem_core = 27
+fractions_optic_nerve = 27.5
+fractions_optic_chiasm = 27.5
+fractions_cochlea = 22.5
+fractions_cochlea_tinnitus = 16
+fractions_hippocampus = 3.65
+fractions_lens = 5
+fractions_humeral = 25
+fractions_pituitary = 22.5
+fractions_pituitary_2 = 10
 fractions_brain = 30
-fractions_brainstem_prv = 30
-fractions_brainstem = 33
-fractions_optic_nerve = 33
-fractions_optic_chiasm = 33
-fractions_lacrimal = 33
-fractions_cochlea = 33
-fractions_hippocampus = 33
-fractions_lens = 33
-fractions_pituitary = 33
-fractions_retina = 33
-fractions_scalp = 33
-'''
+fractions_cornea = 25
+fractions_lacrimal = 12.5
+fractions_retina = 22.5
+fractions_skin = 12.5
 
 # Example:
 # EQD.Tolerance(organ, endpoint, alphabeta, nr_fractions, dose, criteria, comment)
@@ -124,65 +93,28 @@ fractions_scalp = 33
 # Conventional RT:
 
 # Head
-eye_prv_v2_adx_5 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_5, 22, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_5 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_5, 12, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_10 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_10, 28, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_10 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_10, 14, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
+
 
 # Partial brain
-lens_prv_v2_adx_13 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_13, 15, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_15 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_15, 16, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_30 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_30, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_33 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_33, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_13 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_13, 38, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_15 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_15, 40, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_30 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_30, 49, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_33 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_33, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
-hippocampus_mean_33 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_33, 17, 'Mean', 'Conventional RT')
-hippocampus_mean_30 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_30, 17, 'Mean', 'Conventional RT')
-hippocampus_mean_15 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_15, 15, 'Mean', 'Conventional RT')
-hippocampus_mean_13 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_13, 14, 'Mean', 'Conventional RT')
-lacrimal_mean_13 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_13, 21,  'Mean', 'Conventional RT')
-lacrimal_mean_15 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_15, 21,  'Mean', 'Conventional RT')
-lacrimal_mean_30 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_30, 25,  'Mean', 'Conventional RT')
-lacrimal_mean_33 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_33, 25,  'Mean', 'Conventional RT')
-brainstem_prv_v2_adx_33 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_33, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-brainstem_prv_v2_adx_30 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-brain_max = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
-brain_gtv_max = EQD.Tolerance('Brain-GTV','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
-brainstem_prv_v2_adx = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_nrv_prv_v2_adx = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve, 54,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_nrv_prv_v2_adx_30 = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve_30, 53,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_chiasm_prv_v2_adx = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_chiasm_prv_v2_adx_30 = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-lacrimal_prv_v2_adx = EQD.Tolerance('Glnd_Lacrimal_PRV_L', 'Some failure', ab_lacrimal, fractions_lacrimal, 30, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-lacrimal_mean = EQD.Tolerance('Glnd_Lacrimal', 'Some failure', ab_lacrimal, fractions_lacrimal, 25,  'Mean', 'Conventional RT')
-cochlea_mean = EQD.Tolerance('Cochlea', 'Some failure', ab_cochlea, fractions_cochlea, 35, 'Mean', 'Conventional RT')
-hippocampus_mean = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus, 17, 'Mean', 'Conventional RT')
-# Upcoming partial brain tolerances:
-'''
-lens_l_v0.03_adx = EQD.Tolerance('Lens_L','Some failure', ab_lens, fractions_lens, 19.1, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-lens_r_v0.03_adx = EQD.Tolerance('Lens_R','Some failure', ab_lens, fractions_lens, 19.1, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-brain_v0.03 = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-brainstem_prv_v0.03_adx = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-brainstem_v0.03_adx = EQD.Tolerance('Brainstem', 'Some failure', ab_brainstem, fractions_brainstem, 57.8, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-optic_nrv_l_v0.03_adx = EQD.Tolerance('OpticNrv_PRV_L','Some failure', ab_optic_nerve, fractions_optic_nerve, 58.4,  'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-optic_nrv_r_v0.03_adx = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve, 58.4, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-optic_chiasm_v0.03_adx = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm, 58.4, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-lacrimal_l_mean = EQD.Tolerance('Glnd_Lacrimal_L', 'Some failure', ab_lacrimal, fractions_lacrimal, 31.7,  'Mean', 'Conventional RT')
-lacrimal_r_mean = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal, 31.7,  'Mean', 'Conventional RT')
-cochlea_l_mean = EQD.Tolerance('Cochlea_L', 'Some failure', ab_cochlea, fractions_cochlea, 49.8, 'Mean', 'Conventional RT')
-cochlea_r_mean = EQD.Tolerance('Cochlea_R', 'Some failure', ab_cochlea, fractions_cochlea, 49.8, 'Mean', 'Conventional RT')
-pituitary_mean = EQD.Tolerance('Pituitary', 'Some failure', ab_pituitary, fractions_pitutary, 50.8, 'Mean', 'Conventional RT')
-retina_l_v0.03_adx = EQD.Tolerance('Retina_L', 'Some failure', ab_retina, fractions_retina, 49.8, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-retina_r_v0.03_adx = EQD.Tolerance('Retina_R', 'Some failure', ab_retina, fractions_retina, 49.8, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-scalp_v0.03_adx = EQD.Tolerance('Scalp', 'Some failure', ab_scalp, fractions_scalp, 33.3,'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-hippocampus_l_v40 = EQD.Tolerance('Hippocampus_L', 'Some failure', ab_hippocampus, fractions_hippocampus, 12.2, 'Volume receiving tolerance dose being less than 40%', 'Conventional RT')
-hippocampus_r_v40 = EQD.Tolerance('Hippocampus_R', 'Some failure', ab_hippocampus, fractions_hippocampus, 12.2, 'Volume receiving tolerance dose being less than 40%', 'Conventional RT')
 
-'''
+# Upcoming partial brain tolerances:
+
+lens_v003_adx = EQD.Tolerance('Lens_L','Some failure', ab_lens, fractions_lens, 10, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+brain_v003 = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+brainstem_surface_v003_adx = EQD.Tolerance('BrainstemSurface', 'Some failure', ab_brainstem, fractions_brainstem_surface, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+brainstem_core_v003_adx = EQD.Tolerance('BrainstemCore', 'Some failure', ab_brainstem, fractions_brainstem_core, 54, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+optic_nrv_v003_adx = EQD.Tolerance('OpticNrv','Some failure', ab_optic_nerve, fractions_optic_nerve, 55,  'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+optic_chiasm_v003_adx = EQD.Tolerance('OpticChiasm', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm, 55, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+lacrimal_mean = EQD.Tolerance('Glnd_Lacrimal', 'Some failure', ab_lacrimal, fractions_lacrimal, 25,  'Mean', 'Conventional RT')
+cochlea_mean = EQD.Tolerance('Cochlea_L', 'Some failure', ab_cochlea, fractions_cochlea, 45, 'Mean', 'Conventional RT')
+cochlea_mean_tinnitus = EQD.Tolerance('Cochlea_R', 'Some failure', ab_cochlea, fractions_cochlea_tinnitus, 32, 'Mean', 'Conventional RT')
+pituitary_mean = EQD.Tolerance('Pituitary', 'Some failure', ab_pituitary, fractions_pituitary, 45, 'Mean', 'Conventional RT')
+pituitary_2_mean = EQD.Tolerance('Pituitary', 'Some failure', ab_pituitary, fractions_pituitary_2, 10, 'Mean', 'Conventional RT')
+retina_v003_adx = EQD.Tolerance('Retina_R', 'Some failure', ab_retina, fractions_retina, 45, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+cornea_v003_adx = EQD.Tolerance('Cornea', 'Some failure', ab_cornea, fractions_cornea, 50, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+skin_v003_adx = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_skin, 25,'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+hippocampus_v40 = EQD.Tolerance('Hippocampus_L', 'Some failure', ab_hippocampus, fractions_hippocampus, 7.3, 'Volume receiving tolerance dose being less than 40%', 'Conventional RT')
+
 
 
 # Neck
@@ -197,6 +129,7 @@ kidney_v32_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_ki
 kidney_v55_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 12, 'Volume receiving tolerance dose being less than 12%', 'Conventional RT')
 lung_mean = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 20, 'Mean', 'Conventional RT')
 lung_v30_adx = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 20, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+lung_v35_adx = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v65_adx = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
 heart_mean = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 20, 'Mean', 'Conventional RT')
 heart_v25_adx = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 50, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
@@ -396,3 +329,70 @@ colon_sbrt_3fx_v0 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions_
 colon_sbrt_3fx_v20 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
 kidney_3fx_v10 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_1, 10, 'Volume receiving tolerance dose being less than 1/10 volume', 'SBRT')
 kidneys_col_3fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_3, 16, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
+
+
+'''
+eye_prv_v2_adx_5 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_5, 22, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_5 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_5, 12, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx_10 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_10, 28, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_10 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_10, 14, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_13 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_13, 15, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_15 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_15, 16, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_30 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_30, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
+lens_prv_v2_adx_33 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_33, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx_13 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_13, 38, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx_15 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_15, 40, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx_30 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_30, 49, 'Maximum dose at less than 2% volume', 'Conventional RT')
+eye_prv_v2_adx_33 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_33, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
+hippocampus_mean_33 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_33, 17, 'Mean', 'Conventional RT')
+hippocampus_mean_30 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_30, 17, 'Mean', 'Conventional RT')
+hippocampus_mean_15 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_15, 15, 'Mean', 'Conventional RT')
+hippocampus_mean_13 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_13, 14, 'Mean', 'Conventional RT')
+lacrimal_mean_13 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_13, 21,  'Mean', 'Conventional RT')
+lacrimal_mean_15 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_15, 21,  'Mean', 'Conventional RT')
+lacrimal_mean_30 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_30, 25,  'Mean', 'Conventional RT')
+lacrimal_mean_33 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_33, 25,  'Mean', 'Conventional RT')
+brainstem_prv_v2_adx_33 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_33, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+brainstem_prv_v2_adx_30 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+brain_max = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
+brain_gtv_max = EQD.Tolerance('Brain-GTV','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
+brainstem_prv_v2_adx = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+optic_nrv_prv_v2_adx = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve, 54,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+optic_nrv_prv_v2_adx_30 = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve_30, 53,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+optic_chiasm_prv_v2_adx = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+optic_chiasm_prv_v2_adx_30 = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+lacrimal_prv_v2_adx = EQD.Tolerance('Glnd_Lacrimal_PRV_L', 'Some failure', ab_lacrimal, fractions_lacrimal, 30, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
+lacrimal_mean = EQD.Tolerance('Glnd_Lacrimal', 'Some failure', ab_lacrimal, fractions_lacrimal, 25,  'Mean', 'Conventional RT')
+cochlea_mean = EQD.Tolerance('Cochlea', 'Some failure', ab_cochlea, fractions_cochlea, 35, 'Mean', 'Conventional RT')
+hippocampus_mean = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus, 17, 'Mean', 'Conventional RT')
+'''
+'''
+fractions_hippocampus_33 = 33
+fractions_hippocampus_30 = 30
+fractions_hippocampus_15 = 15
+fractions_hippocampus_13 = 13
+fractions_lens_10 = 10
+fractions_lens_5 = 5
+fractions_lens_33 = 33
+fractions_lens_30 = 30
+fractions_lens_15 = 15
+fractions_lens_13 = 13
+fractions_lacrimal_33 = 33
+fractions_lacrimal_30 = 30
+fractions_lacrimal_15 = 15
+fractions_lacrimal_13 = 13
+fractions_eye_5 = 5
+fractions_eye_10 = 10
+fractions_eye_13 = 13
+fractions_eye_15 = 15
+fractions_eye_30 = 30
+fractions_eye_33 = 33
+fractions_optic_nerve_30 = 30
+fractions_brainstem_33 = 33
+fractions_brainstem_30 = 30
+fractions_optic_chiasm = 33
+fractions_optic_chiasm_30 = 30
+fractions_lacrimal = 33
+'''

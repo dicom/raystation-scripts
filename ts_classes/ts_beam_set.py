@@ -54,6 +54,7 @@ class TSBeamSet(object):
     self.name = TEST.Parameter('Navn', '', self.param)
     self.number = TEST.Parameter('Feltnummer','', self.param)
 
+
   # Gives true/false if the beam set has beams of not
   def has_beam(self):
     if len(list(self.beam_set.Beams)) > 0:
@@ -77,7 +78,7 @@ class TSBeamSet(object):
 
   # Gives true/false if the delivery technique is VMAT or not
   def is_vmat(self):
-    if self.beam_set.DeliveryTechnique == 'Arc' and self.beam_set.Modality == 'Photons':
+    if self.beam_set.DeliveryTechnique in ['Arc','DynamicArc'] and self.beam_set.Modality == 'Photons':
       return True
     else:
       return False
@@ -126,22 +127,23 @@ class TSBeamSet(object):
 
   # Tests if the energies of the beams in the beam set are the same.
   def beam_energy_equality_test(self):
-    wanted_energy = 6
+    wanted_energy = '6'
     t = TEST.Test("Det skal i utgangspunktet benyttes samme energi for alle felt i et beam set. Kun ved særskilte kliniske begrunnelser skal dette avvikes.", wanted_energy, self.energies)
     energies = []
     for beam in self.beam_set.Beams:
-      energies.append(beam.MachineReference.Energy)
+      energies.append(beam.BeamQualityId)
     if len(set(energies)) > 1:
       return t.fail(energies)
     else:
       return t.succeed()
 
   def beam_number_test(self):
-    t = TEST.Test("Feltnummereringen ser ikke ut til å være riktig.", True, self.number)
     numbers = []
     order = True
+    t = TEST.Test("Feltnummereringen ser ikke ut til å være riktig.", True, self.number)
     for beam in self.beam_set.Beams:
       numbers.append(beam.Number)
+    numbers.sort()
     if len(numbers) > 1:
       for i in range(0, len(numbers)-1):
         if numbers[i+1] != numbers[i]+1:
@@ -189,7 +191,7 @@ class TSBeamSet(object):
   def guard_leaf_test(self):
     failed_beams = []
     t = TEST.Test("Første MLC blad utenfor blender skal være på samme posisjon som første MLC blad innenfor blender", None, self.mlc)
-    if self.beam_set.DeliveryTechnique != 'Arc':
+    if not self.is_vmat():
       for beam in self.beam_set.Beams:
         for [segment_index, segment] in enumerate(beam.Segments):
           assert (segment.LeafPositions.Length == 2)
@@ -273,7 +275,7 @@ class TSBeamSet(object):
           for beam in self.beam_set.Beams:
             photon_iso = beam.Isocenter.Position
             diff = abs(photon_iso.z - target_center_z)
-      elif self.beam_set.DeliveryTechnique != 'Arc':
+      elif not self.is_vmat():
         if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
           if self.beam_set.Modality == 'Photons':
             for beam in self.beam_set.Beams:
@@ -306,7 +308,7 @@ class TSBeamSet(object):
       if self.is_vmat() and not self.ts_label.label.technique in ('V', 'v'):
         t.expected = 'V'
         return t.fail(self.ts_label.label.technique)
-      elif self.beam_set.DeliveryTechnique != 'Arc' and self.ts_label.label.technique in ('V', 'v'):
+      elif self.beam_set.DeliveryTechnique not in ['Arc','DynamicArc'] and self.ts_label.label.technique in ('V', 'v'):
         t.expected = 'U/M/I'
         return t.fail(self.ts_label.label.technique)
       else:
@@ -314,8 +316,8 @@ class TSBeamSet(object):
 
   # Tests that the machine is among the 2 white listed: ALVersa & ALVersa_FFF
   def machine_test(self):
-    t = TEST.Test("Behandlingsapparat skal være en av disse", ['ALVersa', 'ALVersa_FFF'], self.machine)
-    if not self.beam_set.MachineReference.MachineName in ('ALVersa', 'ALVersa_FFF'):
+    t = TEST.Test("Behandlingsapparat skal være:", 'ALVersa', self.machine)
+    if not self.beam_set.MachineReference.MachineName == 'ALVersa':
       return t.fail(self.beam_set.MachineReference.MachineName)
     else:
       return t.succeed()
@@ -349,7 +351,7 @@ class TSBeamSet(object):
 
   # Tests that a sufficient number of histories has been used (in the case of Electron Monte Carlo calculations).
   def number_of_histories_test(self):
-    t = TEST.Test("Antall historier skal være minst 200.000", '>=200000', self.dose)
+    t = TEST.Test("Antall historier skal være minst 500.000", '>=500000', self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
         if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence < 200000:
@@ -359,18 +361,17 @@ class TSBeamSet(object):
 
   # Tests what photon energy is used for beam sets which are interpreted as being curative (would like to avoid 15 MV due to neutron production in these cases).
   def photon_energy_for_curative_fractionations_test(self):
-    t = TEST.Test("Skal normalt ikke bruke 15MV ved 'kurativ' fraksjonering (av hensyn til nøytronproduksjon)", '6 eller 10', self.energies)
+    t = TEST.Test("Skal normalt ikke bruke 15MV.", '6 eller 10', self.energies)
     # The test can only be performed if a prescription is defined, and if the modality is photons:
     if self.has_prescription() and self.beam_set.Modality == 'Photons':
       energies = []
       for beam in self.beam_set.Beams:
-        energies.append(beam.MachineReference.Energy)
-      # Define treatment as curative if fraction dose is less than 2.5 Gy (FIXME: This is of course extremely naive!!):
-      if self.fraction_dose < 2.5:
-        if 15 in energies:
-          return t.fail(15)
-        else:
-          return t.succeed()
+        energies.append(beam.BeamQualityId)
+
+      if '15' in energies:
+        return t.fail('15')
+      else:
+        return t.succeed()
 
 
   # Tests that number of monitor units corresponds to fraction dose (within 20%) for the caudal part of conventional, locoregional breast plans.
@@ -379,7 +380,7 @@ class TSBeamSet(object):
     mu_total_over = 0
     text = ""
     t.expected = RSU.fraction_dose(self.beam_set) * 100
-    if self.beam_set.DeliveryTechnique != 'Arc':
+    if not self.is_vmat():
       if self.ts_label.label.region in RC.breast_reg_codes:
         for beam in self.beam_set.Beams:
           segment_partial_area = []
@@ -398,7 +399,7 @@ class TSBeamSet(object):
               segment_partial_area[index] += (leaf_positions[1][mlc_y1] - leaf_positions[0][mlc_y1])*(((mlc_y1+1)-(y1+20)*2)/2)
               for mlc in range(mlc_y1+1, mlc_y2):
                 segment_partial_area[index] += (leaf_positions[1][mlc] - leaf_positions[0][mlc])*0.5
-              segment_partial_area[index] += (leaf_positions[1][mlc_y2] - leaf_positions[0][mlc])*(((y2+20)*2-(mlc_y2))/2)
+              segment_partial_area[index] += (leaf_positions[1][mlc_y2] - leaf_positions[0][mlc_y2])*(((y2+20)*2-(mlc_y2))/2)
             else:
               segment_partial_area.extend([0])
           max_area = max(segment_partial_area)
@@ -418,7 +419,7 @@ class TSBeamSet(object):
     mu_total_over = 0
     text = ""
     t.expected = RSU.fraction_dose(self.beam_set) * 100
-    if self.beam_set.DeliveryTechnique != 'Arc':
+    if not self.is_vmat():
       if self.ts_label.label.region in RC.breast_reg_codes:
         for beam in self.beam_set.Beams:
           segment_partial_area = []
@@ -436,7 +437,7 @@ class TSBeamSet(object):
               segment_partial_area[index] += (leaf_positions[1][mlc_y1] - leaf_positions[0][mlc_y1])*(((mlc_y1+1)-(y1+20)*2)/2)
               for mlc in range(mlc_y1+1, mlc_y2):
                 segment_partial_area[index] += (leaf_positions[1][mlc] - leaf_positions[0][mlc])*0.5
-              segment_partial_area[index] += (leaf_positions[1][mlc_y2] - leaf_positions[0][mlc])*(((y2+20)*2-(mlc_y2))/2)
+              segment_partial_area[index] += (leaf_positions[1][mlc_y2] - leaf_positions[0][mlc_y2])*(((y2+20)*2-(mlc_y2))/2)
             else:
               segment_partial_area.extend([0])
           max_area = max(segment_partial_area)
@@ -457,7 +458,7 @@ class TSBeamSet(object):
     mu_total = 0
     for beam in self.beam_set.Beams:
       mu_total += beam.BeamMU
-    if self.beam_set.DeliveryTechnique != 'Arc':
+    if not self.is_vmat():
       if not self.ts_label.label.region in RC.breast_reg_codes:
         # Naive approximation only relevant for conventional plans (not VMAT):
         # Sum of monitor units compared to fraction dose (+/- 15% of 100Mu/Gy):
@@ -497,21 +498,6 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the energies of the beams in the beam set are the same as the expected energy.
-  def specific_energy_for_region_test(self):
-    wanted_energy = 6 # (default)
-    if self.ts_label.label.region in RC.brain_whole_codes:
-      if self.beam_set.DeliveryTechnique != 'Arc':
-        wanted_energy = 10
-    t = TEST.Test("Det skal i utgangspunktet benyttes gitt energi for denne behandlingsregionen.", wanted_energy, self.energies)
-    energies = []
-    for beam in self.beam_set.Beams:
-      energies.append(beam.MachineReference.Energy)
-    if set(energies) != set([wanted_energy]):
-      return t.fail(energies)
-    else:
-      return t.succeed()
-
   # Tests if the total number of MUs is below 1.4*fraction dose (cGy)
   def stereotactic_mu_test(self):
     t = TEST.Test("Bør som hovedregel være innenfor 1.4*fraksjonsdose (cGy)", True, self.mu)
@@ -530,7 +516,7 @@ class TSBeamSet(object):
   # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC)
   def technique_test(self):
     t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
-    if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT'):
+    if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT','DynamicArc'):
       return t.fail(self.beam_set.DeliveryTechnique)
     else:
       return t.succeed()
@@ -669,4 +655,19 @@ class TSBeamSet(object):
 
 
 
-
+'''
+  # Tests if the energies of the beams in the beam set are the same as the expected energy.
+  def specific_energy_for_region_test(self):
+    wanted_energies = ['6','6 FFF'] # (default)
+    if self.ts_label.label.region in RC.brain_whole_codes:
+      if not self.is_vmat():
+        wanted_energy = '10'
+    t = TEST.Test("Det skal i utgangspunktet benyttes gitt energi for denne behandlingsregionen.", wanted_energies, self.energies)
+    energies = []
+    for beam in self.beam_set.Beams:
+      energies.append(beam.BeamQualityId)
+    if set(energies) != set([wanted_energy]):
+      return t.fail(energies)
+    else:
+      return t.succeed()
+'''

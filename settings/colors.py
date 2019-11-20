@@ -79,6 +79,10 @@ cauda ='23, 107, 43'
 small_bowel = '64, 0, 0'
 colon = '64, 0, 0'
 brachial = '255, 192, 0'
+brainstem_core = '255, 255, 128'
+brainstem_surface = '255, 128, 0'
+cornea = 'Yellow'
+retina = '229, 77, 0'
 
 # PRVs:
 prv = '128, 128, 128'

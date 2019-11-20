@@ -25,7 +25,8 @@ import ts_patient as TS_P
 
 
 class Definition(object):
-  def __init__(self, patient, case):
+  def __init__(self, patient_db, patient, case):
+    self.patient_db = patient_db
     self.patient = patient
     self.case = case
 
@@ -57,7 +58,7 @@ class Definition(object):
 
 
     # Create site:
-    site = DS.DefSite(pm, examination, ss, choices, targets = [], oars = [])
+    site = DS.DefSite(patient_db, pm, examination, ss, choices, targets = [], oars = [])
 
 
     # Choice 1: Which region is going to be treated?
@@ -89,4 +90,4 @@ class Definition(object):
 
     # Changes OrganType to "Other" for all ROIs in the given patient model which are of type "Undefined" or "Marker".
     PMF.set_all_undefined_to_organ_type_other(pm)
-    PMF.exclude_rois_from_export(pm)
+    #PMF.exclude_rois_from_export(pm)

@@ -6,7 +6,7 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 6.0
+# Made for RayStation version: 9A
 
 # Import system libraries:
 from connect import *

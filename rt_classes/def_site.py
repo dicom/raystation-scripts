@@ -20,7 +20,8 @@ class DefSite(object):
   # -Localization point
   # -External ROI (and Body ROI for brain treatments)
   # -Couch ROI and positions it in the lateral and AP directions (not long direction as we dont know target volume position yet).
-  def __init__(self, pm, examination, ss, choices, targets, oars):
+  def __init__(self, patient_db, pm, examination, ss, choices, targets, oars):
+    self.patient_db = patient_db
     self.pm = pm
     self.examination = examination
     self.ss = ss
@@ -35,17 +36,24 @@ class DefSite(object):
         # Create external geometry:
         PMF.create_stereotactic_body_geometry(self.pm, self.examination, self.ss)
         PMF.create_stereotactic_external_geometry(self.pm, self.examination, self.ss)
+      elif self.choices[1].value == 'part':
+        # Create external geometry:
+        PMF.create_stereotactic_body_geometry(self.pm, self.examination, self.ss)
+        PMF.create_stereotactic_external_geometry(self.pm, self.examination, self.ss)
+        # Create couch:
+        PMF.create_couch(self.patient_db, self.pm, self.examination)
+        PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name, couch_thickness = 11)
       else:
         # Create external geometry:
         PMF.create_external_geometry(self.pm, self.examination, self.ss)
         # Create couch:
-        PMF.create_couch(self.pm, self.examination)
-        PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name, couch_thickness = 11)
+        PMF.create_couch(self.patient_db, self.pm, self.examination)
+        PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
     else:
       # Create external geometry:
       PMF.create_external_geometry(self.pm, self.examination, self.ss)
       # Create couch:
-      PMF.create_couch(self.pm, self.examination)
+      PMF.create_couch(self.patient_db, self.pm, self.examination)
       PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
 
 

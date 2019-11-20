@@ -29,7 +29,7 @@ import tolerance_doses as TOL
 # OAR objectives:
 # Brain
 brain_oar_objectives = []
-brain_whole_oar_objectives = [ROIS.eye_r_prv, ROIS.eye_l_prv, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.nasal_cavity]
+brain_whole_oar_objectives = [ROIS.lens_l, ROIS.lens_r, ROIS.nasal_cavity]
 brain_stereotactic_oar_objectives = []
 # Breast
 breast_tang_oar_objectives = [ROIS.lung_r, ROIS.lung_l]
@@ -44,8 +44,10 @@ palliative_neck_oar_objectives = [ROIS.spinal_canal_head, ROIS.parotids]
 palliative_thorax_oar_objectives =  [ROIS.spinal_canal, ROIS.heart, ROIS.lungs]
 palliative_thorax_and_abdomen_oar_objectives =  [ROIS.spinal_canal, ROIS.heart, ROIS.lungs, ROIS.kidneys, ROIS.bowel_space]
 palliative_abdomen_oar_objectives =  [ROIS.spinal_canal, ROIS.kidneys, ROIS.bowel_space]
+palliative_abdomen_and_pelvis_objectives = [ROIS.spinal_canal, ROIS.kidneys, ROIS.bowel_space, ROIS.bladder, ROIS.rectum]
 palliative_pelvis_oar_objectives =  [ROIS.bowel_space, ROIS.bladder, ROIS.rectum, ROIS.spinal_canal]
 palliative_other_oar_objectives =  []
+palliative_prostate_oar_objectives = [ROIS.bowel_space, ROIS.bladder, ROIS.rectum]
 # Bladder
 bladder_objectives = [ROIS.bowel_space, ROIS.rectum]
 # Prostate
@@ -69,10 +71,12 @@ def create_breast_tang_objectives(ss, plan, total_dose, target):
   OF.uniform_dose(ss, plan, target, total_dose*100, 30)
   OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 150)
   OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
+  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2.5, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
-  OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 1)
-
+  if target == ROIS.ctv_sb.name:
+    OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 1)
+  else:
+    OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 1)
 # Create palliative objectives.
 def create_palliative_objectives(ss, plan, total_dose, target):
   OF.uniform_dose(ss, plan, target, total_dose*100, 30)
@@ -98,6 +102,7 @@ def create_breast_boost_objectives(ss, plan, total_dose):
   OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80, beam_set_index = 1)
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = 1)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = 1)
+  OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 1, beam_set_index = 1)
 
 
 # Whole brain
@@ -135,12 +140,12 @@ def create_brain_objectives(pm, examination, ss, plan, total_dose, nr_fractions)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
     # Objectives for prioritized OARs:
-    OF.max_dvh(ss, plan, ROIS.brainstem_prv.name, 53.8*100, 1, 120)
-    OF.max_dvh(ss, plan, ROIS.optic_chiasm_prv.name, 53.8*100, 1, 40)
-    OF.max_dvh(ss, plan, ROIS.optic_nrv_l_prv.name, 54*100, 2, 20)
-    OF.max_dvh(ss, plan, ROIS.optic_nrv_r_prv.name, 54*100, 2, 20)
-    prioritized_oars = [ROIS.brainstem_prv, ROIS.optic_chiasm_prv, ROIS.optic_nrv_l_prv, ROIS.optic_nrv_r_prv]
-    tolerances = [TOL.brainstem_prv_v2_adx, TOL.optic_chiasm_prv_v2_adx, TOL.optic_nrv_prv_v2_adx, TOL.optic_nrv_prv_v2_adx]
+    OF.max_dvh(ss, plan, ROIS.brainstem.name, 53.8*100, 1, 120)
+    OF.max_dvh(ss, plan, ROIS.optic_chiasm.name, 53.8*100, 1, 40)
+    OF.max_dvh(ss, plan, ROIS.optic_nrv_l.name, 54*100, 2, 20)
+    OF.max_dvh(ss, plan, ROIS.optic_nrv_r.name, 54*100, 2, 20)
+    prioritized_oars = [ROIS.brainstem_surface, ROIS.brainstem_core, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r]
+    tolerances = [TOL.brainstem_surface_v003_adx, TOL.brainstem_core_v003_adx,TOL.optic_chiasm_v003_adx, TOL.optic_nrv_v003_adx, TOL.optic_nrv_v003_adx]
     conflict_oars = []
     for i in range(len(prioritized_oars)):
       if tolerances[i].equivalent(nr_fractions) < total_dose*0.95:
@@ -163,8 +168,8 @@ def create_brain_objectives(pm, examination, ss, plan, total_dose, nr_fractions)
       OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
       OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
     # Setup of objectives for less prioritized OARs:
-    other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.eye_l_prv, ROIS.eye_r_prv, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.lacrimal_l_prv, ROIS.lacrimal_r_prv]
-    tolerances = [TOL.cochlea_mean, TOL.cochlea_mean, TOL.hippocampus_mean, TOL.hippocampus_mean, TOL.eye_prv_v2_adx, TOL.eye_prv_v2_adx, TOL.lens_prv_v2_adx, TOL.lens_prv_v2_adx, TOL.lacrimal_prv_v2_adx, TOL.lacrimal_prv_v2_adx]
+    other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r]
+    tolerances = [TOL.cochlea_mean, TOL.cochlea_mean, TOL.hippocampus_v40, TOL.hippocampus_v40, TOL.lens_v003_adx, TOL.lens_v003_adx, TOL.lacrimal_mean, TOL.lacrimal_mean]
     for i in range(len(other_oars)):
       if SSF.has_named_roi_with_contours(ss, other_oars[i].name):
         weight = None
@@ -255,7 +260,7 @@ def create_lung_stereotactic_objectives(ss, plan, region_code, total_dose):
 #Breast with regional lymph nodes
 def create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name):
   if SSF.has_roi_with_shape(ss, ROIS.ctv_p.name):
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
+    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2.5, 30)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
     OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 5)
     OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*0.998*100, 15)
@@ -270,7 +275,7 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_na
     else:
       OF.min_dvh(ss, plan, ROIS.ptv_c.name, total_dose*0.97*100, 99, 100)
   else:
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
+    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2.5, 30)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
     OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 5)
     OF.uniform_dose(ss, plan, ROIS.ctv_50.name, total_dose*0.998*100, 15)
@@ -368,23 +373,27 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 68*100, 0.3, 15)
 
 
+
+
+
 # Prostate bed
 def create_prostate_bed_objectives(ss, plan, total_dose):
   if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # With lymph node volume
-    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 20)
-    OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
-    OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
-    OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
-    OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.045, 70)
-    OF.fall_off(ss, plan, ROIS.ptv_70.name, total_dose*100, 56*100, 0.5, 10)
-    OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
-    OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 10)
-    OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 10)
-    OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
-    OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1)
-    OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
-    OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
+		OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 20)
+		OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
+		OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
+		OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
+		OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.045, 70)
+		OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
+		OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+		OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 10)
+		OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 10)
+		OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
+		OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1)
+		OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
+		OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
+		OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, total_dose*100, 56*100, 1, 1)
+		OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1)
   else: # Without lymph node volume
     OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 25)
     OF.min_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*0.96, 100)
@@ -400,7 +409,7 @@ def create_prostate_bed_objectives(ss, plan, total_dose):
     OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 25*100, 1, 3)
 
-
+		
 # Bladder
 def create_bladder_objectives(plan, ss, total_dose):
   OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
