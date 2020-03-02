@@ -5,14 +5,7 @@ from __future__ import division
 import math
 from connect import *
 import clr, sys
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-
-from Microsoft.Office.Interop.Excel import *
-from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
+from tkinter import messagebox
 
 # Import local files:
 import gui_functions as GUIF
@@ -140,12 +133,14 @@ def create_brain_objectives(pm, examination, ss, plan, total_dose, nr_fractions)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
     # Objectives for prioritized OARs:
-    OF.max_dvh(ss, plan, ROIS.brainstem.name, 53.8*100, 1, 120)
-    OF.max_dvh(ss, plan, ROIS.optic_chiasm.name, 53.8*100, 1, 40)
-    OF.max_dvh(ss, plan, ROIS.optic_nrv_l.name, 54*100, 2, 20)
-    OF.max_dvh(ss, plan, ROIS.optic_nrv_r.name, 54*100, 2, 20)
-    prioritized_oars = [ROIS.brainstem_surface, ROIS.brainstem_core, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r]
-    tolerances = [TOL.brainstem_surface_v003_adx, TOL.brainstem_core_v003_adx,TOL.optic_chiasm_v003_adx, TOL.optic_nrv_v003_adx, TOL.optic_nrv_v003_adx]
+    OF.max_dose(ss, plan, ROIS.brainstem_surface.name, (TOL.brainstem_surface_v003_adx.equivalent(nr_fractions)*100)-50, 60)
+    OF.max_dose(ss, plan, ROIS.brainstem_core.name, (TOL.brainstem_core_v003_adx.equivalent(nr_fractions)*100)-50, 80)
+    OF.max_dose(ss, plan, ROIS.optic_chiasm.name, (TOL.optic_chiasm_v003_adx.equivalent(nr_fractions)*100)-50, 40)
+    OF.max_dose(ss, plan, ROIS.optic_nrv_l.name, (TOL.optic_nrv_v003_adx.equivalent(nr_fractions)*100)-50, 20)
+    OF.max_dose(ss, plan, ROIS.optic_nrv_r.name, (TOL.optic_nrv_v003_adx.equivalent(nr_fractions)*100)-50, 20)
+
+    prioritized_oars = [ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r]
+    tolerances = [TOL.brainstem_core_v003_adx, TOL.brainstem_surface_v003_adx, TOL.optic_chiasm_v003_adx, TOL.optic_nrv_v003_adx, TOL.optic_nrv_v003_adx]
     conflict_oars = []
     for i in range(len(prioritized_oars)):
       if tolerances[i].equivalent(nr_fractions) < total_dose*0.95:
@@ -158,25 +153,26 @@ def create_brain_objectives(pm, examination, ss, plan, total_dose, nr_fractions)
       ptv_and_oars = ROI.ROIAlgebra(ROIS.ptv_and_oars.name, ROIS.ptv_and_oars.type, ROIS.other_ptv.color, sourcesA = [ROIS.ptv], sourcesB = conflict_oars, operator='Intersection')
       rois = [ctv_oars, ptv_oars, ptv_and_oars]
       PMF.delete_matching_rois(pm, rois)
-      for roi in rois:
-        PMF.create_algebra_roi(pm, examination, ss, roi)
+      for i in range(len(rois)):
+        PMF.create_algebra_roi(pm, examination, ss, rois[i])
+        PMF.exclude_roi_from_export(pm, rois[i].name)
       # Create objectives for the subtraction/intersect ROIs:
-      OF.uniform_dose(ss, plan, ROIS.ptv_and_oars.name, tolerances[0].equivalent(nr_fractions)*100, 5) # (Note that this assumes our OARs have the same tolerance dose...)
+      OF.uniform_dose(ss, plan, ROIS.ptv_and_oars.name, (tolerances[0].equivalent(nr_fractions)*100-50), 5) # (Note that this assumes our OARs have the same tolerance dose...)
       OF.uniform_dose(ss, plan, ROIS.ctv_oars.name, total_dose*100, 30)
       OF.min_dose(ss, plan, ROIS.ptv_oars.name, total_dose*100*0.95, 150)
     else:
       OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
       OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
     # Setup of objectives for less prioritized OARs:
-    other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r]
-    tolerances = [TOL.cochlea_mean, TOL.cochlea_mean, TOL.hippocampus_v40, TOL.hippocampus_v40, TOL.lens_v003_adx, TOL.lens_v003_adx, TOL.lacrimal_mean, TOL.lacrimal_mean]
+    other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.retina_l, ROIS.retina_r, ROIS.cornea_r, ROIS.cornea_l, ROIS.pituitary]
+    tolerances = [TOL.cochlea_mean_tinnitus, TOL.cochlea_mean_tinnitus, TOL.hippocampus_v40, TOL.hippocampus_v40, TOL.lens_v003_adx, TOL.lens_v003_adx, TOL.lacrimal_mean, TOL.lacrimal_mean, TOL.retina_v003_adx, TOL.retina_v003_adx, TOL.cornea_v003_adx, TOL.cornea_v003_adx, TOL.pituitary_mean]
     for i in range(len(other_oars)):
       if SSF.has_named_roi_with_contours(ss, other_oars[i].name):
         weight = None
         # Conflict with dose?
         if tolerances[i].equivalent(nr_fractions) < total_dose*0.95:
           # Conflict with dose:
-          if not SSF.roi_overlap(pm, examination, ss, ROIS.ptv, other_oars[i], 0):
+          if not SSF.roi_overlap(pm, examination, ss, ROIS.ptv, other_oars[i], 2):
             if ROIF.roi_vicinity_approximate(SSF.rg(ss, ROIS.ptv.name), SSF.rg(ss, other_oars[i].name), 2):
               # OAR is close, but not overlapping:
               weight = 2
@@ -187,10 +183,10 @@ def create_brain_objectives(pm, examination, ss, plan, total_dose, nr_fractions)
           weight = 20
         # Create objective if indicated:
         if weight:
-          if other_oars[i].name in  [ROIS.cochlea_r.name, ROIS.cochlea_r.name]:
-            OF.max_eud(ss, plan, other_oars[i].name, tolerances[i].equivalent(nr_fractions)*100, 1, weight)
+          if other_oars[i].name in  [ROIS.cochlea_r.name, ROIS.cochlea_l.name, ROIS.lacrimal_l.name, ROIS.lacrimal_r.name, ROIS.hippocampus_l.name, ROIS.hippocampus_r.name]:
+            OF.max_eud(ss, plan, other_oars[i].name, tolerances[i].equivalent(nr_fractions)*100-50, 1, weight)
           else:
-            OF.max_dvh(ss, plan, other_oars[i].name, tolerances[i].equivalent(nr_fractions)*100, 2, weight)
+            OF.max_dose(ss, plan, other_oars[i].name, (tolerances[i].equivalent(nr_fractions)*100)-50, weight)
       else:
         GUIF.handle_missing_roi_for_objective(other_oars[i].name)
 
@@ -379,21 +375,21 @@ def create_prostate_objectives(ss, plan, total_dose):
 # Prostate bed
 def create_prostate_bed_objectives(ss, plan, total_dose):
   if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # With lymph node volume
-		OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 20)
-		OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
-		OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
-		OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
-		OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.045, 70)
-		OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
-		OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
-		OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 10)
-		OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 10)
-		OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
-		OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1)
-		OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
-		OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
-		OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, total_dose*100, 56*100, 1, 1)
-		OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1)
+    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 20)
+    OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
+    OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
+    OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
+    OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.045, 70)
+    OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
+    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 10)
+    OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 10)
+    OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
+    OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
+    OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
+    OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, total_dose*100, 56*100, 1, 1)
+    OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1)
   else: # Without lymph node volume
     OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 25)
     OF.min_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*0.96, 100)

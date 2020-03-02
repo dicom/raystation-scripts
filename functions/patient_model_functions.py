@@ -1,5 +1,7 @@
 # encoding: utf8
 from __future__ import division
+from tkinter import *
+from tkinter import messagebox
 
 # Import local files:
 import roi as ROI
@@ -39,24 +41,7 @@ def create_algebra_roi(pm, examination, ss, roi):
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, missing)
 
-'''
-# Creates the couch templated based support ROI:
-def create_couch(pm, examination):
-  for pm_roi in pm.RegionsOfInterest:
-    if pm_roi.Name == ROIS.couch.name:
-      pm_roi.DeleteRoi()
-      break
-  pm.CreateStructuresFromTemplate(
-    SourceTemplateName="Bordtopp tykk",
-    SourceExaminationName= "CT 1",
-    SourceRoiNames=[ROIS.couch.name],
-    SourcePoiNames=[],
-    AssociateStructuresByName=False,
-    TargetExamination=examination,
-    InitializationOption="AlignImageCenters"
-  )
 
-'''
 def create_couch(patient_db, pm, examination):
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Name == "Couch":
@@ -131,46 +116,54 @@ def create_model_roi(pm, examination, roi):
       CreateNewRois=True, Examination=examination, UseAtlasBasedInitialization=True
     )
     pm.AdaptMbsMeshes(Examination=examination, RoiNames=[roi.name])
-  except SystemError:
-    # Display a message to the user:
-    GUIF.handle_failed_model_based_segmentation(roi.name)
-
+  except:
+    try:
+      pm.MBSAutoInitializer(
+        MbsRois=[{'CaseType': roi.case, 'ModelName': roi.model, 'RoiName': roi.name, 'RoiColor': roi.color}],
+        CreateNewRois=True, Examination=examination, UseAtlasBasedInitialization=False
+      )
+    except SystemError:
+      # Display a message to the user:
+      GUIF.handle_failed_model_based_segmentation(roi.name)
 
 
 # Creates a ROI which is the posterior half of the source roi in all slices.
 # Note that this function is somewhat slow, since it has to create a new ROI for every slice.
 def create_posterior_half(pm, examination, ss, source_roi, roi):
-  center_x = SSF.roi_center_x(ss, source_roi.name)
-  center_y = SSF.roi_center_y(ss, source_roi.name)
-  center_z = SSF.roi_center_z(ss, source_roi.name)
-  source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
-  x_min = source_roi_box[0].x
-  x_max = source_roi_box[1].x
-  x = source_roi_box[1].x - source_roi_box[0].x
-  boxes = []
-  boxes2 = []
-  for [contour_index, contour] in enumerate(ss.RoiGeometries[source_roi.name].PrimaryShape.Contours):
-    y_min = 9999
-    y_max = -9999
-    for coordinate in contour:
-      if coordinate.y > y_max:
-        y_max = coordinate.y
-      elif coordinate.y < y_min:
-        y_min = coordinate.y
-    length = round((abs(y_max - y_min)), 1)
-    center_y =y_max
-    delete_roi(pm, ROIS.box.name + str(contour_index))
-    box = pm.CreateRoi(Name = ROIS.box.name + str(contour_index), Color = ROIS.box.color, Type = ROIS.box.type)
-    pm.RegionsOfInterest[ROIS.box.name + str(contour_index)].CreateBoxGeometry(Size={ 'x': x, 'y': length, 'z': 0.3 }, Examination = examination, Center = { 'x': center_x, 'y': center_y, 'z': coordinate.z })
-    boxes.append(box)
-    boxes2.append(ROI.ROI(ROIS.box.name + str(contour_index), ROIS.box.type, ROIS.box.color))
+  if SSF.has_named_roi_with_contours(ss, source_roi.name):
+    center_x = SSF.roi_center_x(ss, source_roi.name)
+    center_y = SSF.roi_center_y(ss, source_roi.name)
+    center_z = SSF.roi_center_z(ss, source_roi.name)
+    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+    x_min = source_roi_box[0].x
+    x_max = source_roi_box[1].x
+    x = source_roi_box[1].x - source_roi_box[0].x
+    boxes = []
+    boxes2 = []
+    for [contour_index, contour] in enumerate(ss.RoiGeometries[source_roi.name].PrimaryShape.Contours):
+      y_min = 9999
+      y_max = -9999
+      for coordinate in contour:
+        if coordinate.y > y_max:
+          y_max = coordinate.y
+        elif coordinate.y < y_min:
+          y_min = coordinate.y
+      length = round((abs(y_max - y_min)), 1)
+      center_y =y_max
+      delete_roi(pm, ROIS.box.name + str(contour_index))
+      box = pm.CreateRoi(Name = ROIS.box.name + str(contour_index), Color = ROIS.box.color, Type = ROIS.box.type)
+      pm.RegionsOfInterest[ROIS.box.name + str(contour_index)].CreateBoxGeometry(Size={ 'x': x, 'y': length, 'z': 0.3 }, Examination = examination, Center = { 'x': center_x, 'y': center_y, 'z': coordinate.z })
+      boxes.append(box)
+      boxes2.append(ROI.ROI(ROIS.box.name + str(contour_index), ROIS.box.type, ROIS.box.color))
 
-  subtraction = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = boxes2, operator = 'Intersection')
-  # In the rare case that this ROI already exists, delete it (to avoid a crash):
-  delete_roi(pm, subtraction.name)
-  create_algebra_roi(pm, examination, ss, subtraction)
-  for i in range(0, len(boxes)):
-    delete_roi(pm, boxes[i].Name)
+    subtraction = ROI.ROIAlgebra(roi.name, roi.type, roi.color, sourcesA = [source_roi], sourcesB = boxes2, operator = 'Intersection')
+    # In the rare case that this ROI already exists, delete it (to avoid a crash):
+    delete_roi(pm, subtraction.name)
+    create_algebra_roi(pm, examination, ss, subtraction)
+    for i in range(0, len(boxes)):
+      delete_roi(pm, boxes[i].Name)
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(roi.name, source_roi.name)
 
 
 # Creates a ROI which is the posterior half of the source roi in all slices.
@@ -212,6 +205,7 @@ def create_posterior_half_fast(pm, examination, ss, source_roi, roi):
   for i in range(0, len(boxes)):
     delete_roi(pm, boxes[i].Name)
 
+
 # Creates a ROI which is the posterior half of the source roi in all slices.
 # Note that this function is somewhat slow, since it has to create a new ROI for every slice.
 def create_bottom_part_x_cm(pm, examination, ss, source_roi, roi, distance):
@@ -246,7 +240,24 @@ def create_bottom_part_x_cm(pm, examination, ss, source_roi, roi, distance):
         delete_roi(pm, intersection.name)
         create_algebra_roi(pm, examination, ss, intersection)
     delete_roi(pm, ROIS.box.name)
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(roi.name, source_roi.name)
 
+def create_grey_value_intersection_roi(pm, examination, ss, grey_level_roi, source_roi, intersection_roi, low_threshold, high_threshold):
+  delete_roi(pm, grey_level_roi.name)
+  pm.CreateRoi(Name = grey_level_roi.name, Type = grey_level_roi.type, Color = grey_level_roi.color)
+  ss.RoiGeometries[grey_level_roi.name].OfRoi.GrayLevelThreshold(Examination = examination, LowThreshold = low_threshold, HighThreshold = high_threshold)
+  if not SSF.is_approved_roi_structure(ss, intersection_roi.name):
+    if is_approved_roi_structure_in_one_of_all_structure_sets(pm, intersection_roi.name):
+      intersection = ROI.ROIAlgebra(intersection_roi.name+"1", intersection_roi.type, intersection_roi.color, sourcesA = [source_roi], sourcesB = [grey_level_roi], operator = 'Intersection')
+      create_algebra_roi(pm, examination, ss, intersection)
+    else:
+      delete_roi(pm, intersection_roi.name)
+      intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [source_roi], sourcesB = [grey_level_roi], operator = 'Intersection')
+      create_algebra_roi(pm, examination, ss, intersection)
+  delete_roi(pm, grey_level_roi.name)
+  if ss.RoiGeometries[intersection_roi.name].GetRoiVolume() < 0.1:
+    delete_roi(pm, intersection_roi.name)  
 
 def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, intersection_roi, subtraction_roi):
   if SSF.has_named_roi_with_contours(ss, source_roi.name):
@@ -260,13 +271,14 @@ def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, inte
     delete_roi(pm, box_roi.name)
     box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
     pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
-
+    exclude_roi_from_export(pm, box_roi.name)
     if source_roi.name == ROIS.lens_l.name:
       wall_roi = ROIS.z_eye_l
     elif source_roi.name == ROIS.lens_r.name:
       wall_roi = ROIS.z_eye_r
     delete_roi(pm, wall_roi.name)
     create_wall_roi(pm, examination, ss, wall_roi)
+    exclude_roi_from_export(pm, wall_roi.name)
 
     if not SSF.is_approved_roi_structure(ss, roi.name):
       if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
@@ -286,6 +298,76 @@ def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, inte
   else:
     GUIF.handle_missing_roi_for_derived_rois(intersection_roi.name, source_roi.name)
 
+def create_retina(pm, examination, ss, source_roi, box_roi, roi, intersection_roi):
+  if SSF.has_named_roi_with_contours(ss, source_roi.name):
+    center_x = SSF.roi_center_x(ss, source_roi.name)
+    center_z = SSF.roi_center_z(ss, source_roi.name)
+    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+    y_min = source_roi_box[1].y
+    if y_min > 0:
+      y_min = -source_roi_box[1].y
+
+    delete_roi(pm, box_roi.name)
+    box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
+    pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
+    exclude_roi_from_export(pm, box_roi.name)
+    if source_roi.name == ROIS.lens_l.name:
+      wall_roi = ROIS.z_eye_l
+    elif source_roi.name == ROIS.lens_r.name:
+      wall_roi = ROIS.z_eye_r
+    delete_roi(pm, wall_roi.name)
+    create_wall_roi(pm, examination, ss, wall_roi)
+    exclude_roi_from_export(pm, wall_roi.name)
+
+    if not SSF.is_approved_roi_structure(ss, roi.name):
+      if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
+        intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [box_roi], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+        GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
+      else:
+        intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(intersection_roi.name, source_roi.name)
+
+def create_cornea(pm, examination, ss, source_roi, box_roi, roi, subtraction_roi):
+  if SSF.has_named_roi_with_contours(ss, source_roi.name):
+    center_x = SSF.roi_center_x(ss, source_roi.name)
+    center_z = SSF.roi_center_z(ss, source_roi.name)
+    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+    y_min = source_roi_box[1].y
+    if y_min > 0:
+      y_min = -source_roi_box[1].y
+
+    delete_roi(pm, box_roi.name)
+    box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
+    pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
+    exclude_roi_from_export(pm, box_roi.name)
+    if source_roi.name == ROIS.lens_l.name:
+      wall_roi = ROIS.z_eye_l
+    elif source_roi.name == ROIS.lens_r.name:
+      wall_roi = ROIS.z_eye_r
+    delete_roi(pm, wall_roi.name)
+    create_wall_roi(pm, examination, ss, wall_roi)
+    exclude_roi_from_export(pm, wall_roi.name)
+    if not SSF.is_approved_roi_structure(ss, roi.name):
+      if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
+        intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [box_roi], operator = 'Intersection')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, intersection.name)
+        create_algebra_roi(pm, examination, ss, intersection)
+        GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
+      else:
+        subtraction = ROI.ROIAlgebra(subtraction_roi.name, subtraction_roi.type, subtraction_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Subtraction')
+        # In the rare case that this ROI already exists, delete it (to avoid a crash):
+        delete_roi(pm, subtraction.name)
+        create_algebra_roi(pm, examination, ss, subtraction)
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(subtraction_roi.name, source_roi.name)
 
 # Checks if a given roi takes part in a approved structure set
 def is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
@@ -328,22 +410,35 @@ def create_wall_roi(pm, examination, ss, roi):
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, [roi.source.name])
 
-
+'''
 # Delete all ROIs from the patient model.
 def delete_all_rois(pm):
   for roi in pm.RegionsOfInterest:
+    messagebox.showinfo("Error.",roi)
     roi.DeleteRoi()
-
+'''
+def delete_all_rois(pm):
+  roi = pm.RegionsOfInterest
+  for i in reversed(range(len(roi))):
+    roi[i].DeleteRoi()
 
 # Delete any ROIs which already exists.
+def delete_matching_rois(pm, rois):
+  delete_list = []
+  for pm_roi in pm.RegionsOfInterest:
+    for roi in rois:
+      if pm_roi.Name == roi.name:
+        delete_list.append(pm_roi.Name)
+  for roi_name in delete_list:
+    pm.RegionsOfInterest[roi_name].DeleteRoi()
+'''      
 def delete_matching_rois(pm, rois):
   for pm_roi in pm.RegionsOfInterest:
     for roi in rois:
       if pm_roi.Name == roi.name:
         pm_roi.DeleteRoi()
         break
-
-
+'''
 # Delete any ROIs which already exists, except those which are manually contoured.
 # Ikke i bruk lenger?
 def delete_rois_except_manually_contoured(pm, ss):
@@ -373,13 +468,27 @@ def delete_matching_roi_except_manually_contoured(pm, ss, roi):
         if is_empty(ss, roi):
           pm_roi.DeleteRoi()
       break
-'''
+
+
 # Exclude 'Undefined' ROIs from the export
 def exclude_rois_from_export(pm):
+  exclude_list = []
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Type == 'Undefined':
       if not pm_roi.ExcludeFromExport:
-        pm_roi.ExcludeFromExport = True
+        exclude_list.append(pm_roi.Name)
+  if len(exclude_list) > 0:
+    pm.ToggleExcludeFromExport(ExcludeFromExport = True, RegionOfInterests=exclude_list, PointsOfInterests=[])
+
+
+# Exclude 'Undefined' ROIs from the export
+def exclude_roi_from_export(pm, roi_name):
+  
+  for pm_roi in pm.RegionsOfInterest:
+    if pm_roi.Name == roi_name:
+      if not pm_roi.ExcludeFromExport:
+        pm.ToggleExcludeFromExport(ExcludeFromExport = True, RegionOfInterests=[roi_name], PointsOfInterests=[])
+'''        
         
 
 from connect import *
@@ -388,7 +497,7 @@ case = get_current("Case")
 examination = get_current("Examination")
 db = get_current("PatientDB")
 
-
+pm_roi.ExcludeFromExport = True
 with CompositeAction('Apply ROI changes (Breast_R_Draft)'):
 
   case.PatientModel.ToggleExcludeFromExport(ExcludeFromExport=True, RegionOfInterests=[r"Breast_R_Draft"], PointsOfInterests=[])

@@ -6,32 +6,24 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9A
+# Made for RayStation version: 9.A
+# Python 3.6
 
 # Import system libraries:
 from connect import *
 import clr, sys, os
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
 
-from Microsoft.Office.Interop.Excel import *
-from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
-from System.Windows.Forms import (Application, BorderStyle, Button, CheckBox, DialogResult, Form, FormBorderStyle, Label, Panel, RadioButton, TextBox)
 import math
 
+
 # Add necessary folders to the system path:
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\def_regions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\functions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\gui_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\quality_control".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\rt_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\settings".decode('utf8'))
+sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
+sys.path.append("C:\\temp\\raystation-scripts\\functions")
+sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
+sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\settings")
 
-
-from connect import *
 
 import patient_model_functions as PMF
 import roi as ROI
@@ -51,11 +43,16 @@ except SystemError:
 # Load patient model, examination and structure set:
 pm = case.PatientModel
 examination = get_current("Examination")
-ss = PMF.get_structure_set(pm, examination)
+#ss = PMF.get_structure_set(pm, examination)
 plan = get_current("Plan")
 beam_set = get_current("BeamSet")
 nr_fractions = beam_set.FractionationPattern.NumberOfFractions
 
+def get_structure_set(pm, examination):
+  ss = pm.StructureSets[examination.Name]
+  if ss:
+    return ss
+ss = get_structure_set(pm, examination)
 # Sets up clinical goals.
 # Creates clinical goals in RayStation from clinical goal objects
 # using the given fractionation to determine target clinical goals as well as doing EQD2 conversion on OAR clinical goals.
@@ -67,9 +64,7 @@ def setup_clinical_goals(ss, es, clinical_goals, nr_fractions):
         c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = cg.tolerance, ParameterValue = cg.value, Priority = cg.priority)
       else:
         c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = cg.tolerance, ParameterValue = cg.value.equivalent(nr_fractions)*100, Priority = cg.priority)
-    else:
-      # Missing ROI:
-      GUIF.handle_missing_roi_for_clinical_goal(cg.name)
+
 
 # Creates clinical goal objects which are specific for patients included in the COBRA-study,
 def create_cobra_clinical_goals(nr_fractions):

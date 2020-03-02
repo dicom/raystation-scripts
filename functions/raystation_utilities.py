@@ -3,7 +3,7 @@
 # A collection of convenience methods for dealing with the RayStation scripting interface.
 #
 # Verified for RayStation 6.0.
-
+from tkinter import messagebox
 
 # Gets the optimization BeamSettings that corresponds to the given beam, beam set and plan:
 def beam_settings(plan, beam_set, beam):
@@ -19,10 +19,10 @@ def beam_settings(plan, beam_set, beam):
 # Returns True if violation exists, False if not.
 def check_mlc_corners(segment):
   violated = False
-  if segment.LeafPositions.Length != 2:
+  if len(segment.LeafPositions) != 2:
     raise "Unexpected number of leaf positions for segment. Expected 2, got" + str(segment.LeafPositions.Length)
   else:
-    if segment.LeafPositions[0].Length == 80:
+    if len(segment.LeafPositions[0])== 80:
       # Agility/Versa HD:
       limits = [20.0 for i in range(80)]
       limits[0] = limits[79] = 16.1
@@ -33,7 +33,8 @@ def check_mlc_corners(segment):
       limits[5] = limits[74] = 18.8
       limits[6] = limits[73] = 19.2
       limits[7] = limits[72] = 19.7
-    elif segment.LeafPositions[0].Length == 40:
+      messagebox.showinfo("", "1")
+    elif len(segment.LeafPositions[0])== 40:
       # Synergy:
       limits = [20.0 for i in range(40)]
       limits[0] = limits[39] = 16.4
@@ -99,7 +100,8 @@ def soc_length(collection):
 def f(str):
   if str:
     #return str.decode('utf8', 'replace')
-    return str.decode('iso-8859-1', 'replace')
+    #return str.decode('iso-8859-1', 'replace')
+    return str
   else:
     return ''
 

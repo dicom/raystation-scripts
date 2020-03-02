@@ -1,4 +1,12 @@
-
+# Calculate the EDRIC from "Impact of Radiation Dose to the Host Immune System on Tumor Control and Survival for
+# Stage III Non-Small Cell Lung Cancer Treated with Definitive Radiation Therapy" by Ladbury et al (2019).
+#
+# Authors:
+# Marit Funderud
+# Helse Møre og Romsdal HF
+#
+# Made for RayStation version: 9.A
+# Python 3.6
 from __future__ import division
 import math
 # encoding: utf8
@@ -7,31 +15,21 @@ import math
 # Import system libraries:
 from connect import *
 import clr, sys
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-clr.AddReference("PresentationFramework")
-from System.Windows import *
-import Microsoft.Office.Interop.Excel as interop_excel
-
+from tkinter import *
+from tkinter import messagebox
 
 # Add necessary folders to the system path:
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\def_regions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\functions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\gui_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\rt_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\settings".decode('utf8'))
+sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
+sys.path.append("C:\\temp\\raystation-scripts\\functions")
+sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
+sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\settings")
 
-#import region_codes as RC
-
-# Utility function to create 2-dimensional array
-def create_array(m, n):
-    dims = System.Array.CreateInstance(System.Int32, 2)
-    dims[0] = m
-    dims[1] = n
-    return System.Array.CreateInstance(System.Object, dims)
+# Import local files:
+import patient_model_functions as PMF
+import structure_set_functions as SSF
+import gui_functions as GUIF
 
 patient_db = get_current('PatientDB')
 
@@ -48,43 +46,31 @@ try:
     plan = get_current("Plan")
 except SystemError:
     raise IOError("No plan loaded.")
-
 try:
     beam_set = get_current("BeamSet")
 except SystemError:
     raise IOError("No beam set loaded.")
 
+# Load patient model, examination and structure set:
+pm = case.PatientModel
+examination = get_current("Examination")
+ss = PMF.get_structure_set(pm, examination)
+
 nr_f = beam_set.FractionationPattern.NumberOfFractions
-structure_set = plan.GetStructureSet()
 text = ''
 title = "EDRIC"
 match_l = False
-for r in structure_set.RoiGeometries:
-  if r.OfRoi.Name == 'Lungs-IGTV'and r.HasContours():
-    l = 'Lungs-IGTV'
+target_list = ['Lungs-IGTV','Lungs-GTV','Lungs','Lung union']
+roi_dict = SSF.create_roi_dict(ss)
+for i in range(len(target_list)):
+  if roi_dict.get(target_list[i]):
+    l = target_list[i]
     match_l = True
-    
-if not match_l:
-  for r in structure_set.RoiGeometries:
-    if r.OfRoi.Name == 'Lungs-GTV'and r.HasContours():
-      l = 'Lungs-GTV'
-    match_l = True
-
-if not match_l:
-  for r in structure_set.RoiGeometries:
-    if r.OfRoi.Name == 'Lungs'and r.HasContours():
-      l = 'Lungs'
-    match_l = True
-
-if not match_l:
-  for r in structure_set.RoiGeometries:
-    if r.OfRoi.Name == 'Lung union'and r.HasContours():
-      l = 'Lung union'
-    match_l = True
- 
+    break
+      
 if not match_l:
   text += "Finner ingen Lungs-IGTV. Dette skriptet kan bare brukes på lungeplaner."
-  MessageBox.Show(text, title, MessageBoxButton.OK)
+  messagebox.showinfo(title, text)
   sys.exit(0)
 
 mld = round(plan.TreatmentCourse.TotalDose.GetDoseStatistic(RoiName=l, DoseType='Average')/100,2)
@@ -95,5 +81,4 @@ edric = round((0.12*mld)+(0.08*mhd)+(0.45+(0.35*0.85*math.sqrt(nr_f/45)))*mbd ,2
 
 text += "EDRIC: " + str(edric) + " Gy" + "\n" 
 
-MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information)
-
+GUIF.message_box(title, text)

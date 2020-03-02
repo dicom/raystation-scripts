@@ -7,13 +7,8 @@ import math
 import clr, sys
 from connect import *
 import clr, sys
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-clr.AddReference("PresentationFramework")
-from System.Windows import *
+from tkinter import messagebox
+
 # Import local files:
 import gui_functions as GUIF
 import roi as ROI
@@ -69,48 +64,25 @@ def create_expanded_and_intersected_volume(pm, examination, ss, source_roi, inte
   # Create ROI in RayStation
   PMF.create_algebra_roi(pm, examination, ss, expanded_roi)
 
-'''
-def create_mask_ptv(pm, examination, ss, threshold):
 
-  #threshold = 50
-  margin = [MARGINS.uniform_30mm_expansion, MARGINS.uniform_40mm_expansion, MARGINS.uniform_50mm_expansion, MARGINS.uniform_60mm_expansion, MARGINS.uniform_70mm_expansion, MARGINS.uniform_80mm_expansion, MARGINS.uniform_90mm_expansion]
-  i = 0
-  mask_ptv = ROI.ROIExpanded('MASK_PTV', 'Undefined', 'Black', ROIS.ptv, margins = MARGINS.uniform_20mm_expansion)
-  subtraction = ROI.ROIAlgebra('MASK_PTV' + '-' + 'Brain', 'Undefined', 'Black', sourcesA = [mask_ptv], sourcesB = [ROIS.brain], operator = 'Subtraction')
-  PMF.delete_roi(pm, mask_ptv.name)
-  PMF.create_expanded_roi(pm, examination, ss, mask_ptv)
-  PMF.delete_roi(pm, subtraction.name)
-  PMF.create_algebra_roi(pm, examination, ss, subtraction)
-  while ss.RoiGeometries[subtraction.name].GetRoiVolume() < threshold:
-    mask_ptv = ROI.ROIExpanded('MASK_PTV', 'Undefined', 'Black', ROIS.ptv, margins = margin[i])
-    subtraction = ROI.ROIAlgebra('MASK_PTV' + '-' + 'Brain', 'Undefined', 'Black', sourcesA = [mask_ptv], sourcesB = [ROIS.brain], operator = 'Subtraction')
-    PMF.delete_roi(pm, mask_ptv.name)
-    PMF.create_expanded_roi(pm, examination, ss, mask_ptv)
-    PMF.delete_roi(pm, subtraction.name)
-    PMF.create_algebra_roi(pm, examination, ss, subtraction)
-    i += 1
+# Creates a dictionary with the names of all defined ROIs in the current structure set.
+def create_roi_dict(ss):
+  roi_dict = {}
+  roi = ss.RoiGeometries
+  for i in range(len(roi)):
+    if roi[i].HasContours():
+      roi_dict[roi[i].OfRoi.Name] = True
 
-  PMF.delete_roi(pm, subtraction.name)
+  return roi_dict
 
-def create_mask_ptv(pm, examination, ss, threshold):
-  volume1 = ss.RoiGeometries['PTV'].GetRoiVolume()
-  radius1 = math.pow((volume1 * 3)/ (4*math.pi), 1.0/3.0)
-  radius2 = math.pow((threshold * 3)/ (4*math.pi), 1.0/3.0)
-  r_mask = round(radius2 - radius1, 1)
-  margin = MARGIN.Expansion(r_mask, r_mask, r_mask, r_mask, r_mask, r_mask)
-  mask_ptv = ROI.ROIExpanded('MASK_PTV', 'Undefined', 'Black', ROIS.ptv, margins = margin)
-  PMF.delete_roi(pm, mask_ptv.name)
-  PMF.create_expanded_roi(pm, examination, ss, mask_ptv)
-'''
+def create_roi_dict_not_contours(ss):
+  roi_dict = {}
+  roi = ss.RoiGeometries
+  for i in range(len(roi)):
+    if roi[i].HasContours() == False:
+      roi_dict[roi[i].OfRoi.Name] = True
 
-def is_target_oar_overlapping(ss, target, oar):
-  center = ss.RoiGeometries[oar].GetCenterOfRoi()
-  roi_box = ss.RoiGeometries[target].GetBoundingBox()
-  match = False
-  if center.x > roi_box[0].x and center.x < roi_box[1].x and center.y > roi_box[0].y and center.y < roi_box[1].y:
-    match = True
-
-  return match
+  return roi_dict
 
 
 # Creates a ROI where roi2 is subtracted from roi1 (if an overlap exists).
@@ -127,9 +99,20 @@ def create_roi_subtraction(pm, examination, ss, roi1, roi2, subtraction_name, th
     PMF.delete_roi(pm, subtraction.name)
     PMF.create_algebra_roi(pm, examination, ss, subtraction)
     # Is overlapping volume less than threshold?
-    if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
-      overlap = True
+    if has_named_roi_with_contours(ss, subtraction.name):
+      if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
+        overlap = True
+  else:
+    GUIF.handle_missing_roi_for_derived_rois(subtraction_name, roi2.name)
   return overlap
+
+def determine_breast_primary_target(ss):
+  target = ROIS.ctv
+  if is_breast_hypo(ss):
+    target = ROIS.ctv_p
+  elif has_named_roi_with_contours(ss, ROIS.ctv_47.name):
+    target = ROIS.ctv_50
+  return target
 
 # Determines from the region code if the plan is a tangential breast or if it is a breast with regional lymph nodes usign VMAT or 3D-CRT,
 # In those cases specific functions are used to find the isocenter, in all other cases the same function is used.
@@ -262,105 +245,43 @@ def determine_energy_single_target(ss, target):
 
 # Determines the number of targets from indexed PTV's (for example used for stereotactic brain with multiple targets):
 def determine_nr_of_indexed_ptvs(ss):
-	nr_targets = 1
+  nr_targets = 1
 
-	if has_roi_with_shape(ss, ROIS.ptv2.name):
-		nr_targets += 1
-		if has_roi_with_shape(ss, ROIS.ptv3.name):
-			nr_targets += 1
-			if has_roi_with_shape(ss, ROIS.ptv4.name):
-				nr_targets += 1
-	return nr_targets
-
+  if has_roi_with_shape(ss, ROIS.ptv2.name):
+    nr_targets += 1
+    if has_roi_with_shape(ss, ROIS.ptv3.name):
+      nr_targets += 1
+      if has_roi_with_shape(ss, ROIS.ptv4.name):
+        nr_targets += 1
+  return nr_targets
 
 # Determines the prescription target volume of the plan.
-def determine_target(ss, nr_fractions, fraction_dose):
+def determine_target(ss, roi_dict, nr_fractions, fraction_dose):
   total_dose = int(nr_fractions*fraction_dose)
   match = False
-  target = None
+  target = "hei"
+  target_list = [ROIS.ctv.name, ROIS.ctv_p.name,'CTV_'+ str(total_dose),ROIS.ictv.name,ROIS.ctv1.name,ROIS.ctv_sb.name,ROIS.ctv2.name,ROIS.ctv3.name]
   # Stereotactic brain treatments with multiple targets, PTV is the target
   if nr_fractions == 3 and fraction_dose in [7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ptv1.name and roi.HasContours():
-        target = ROIS.ptv1.name
-        match = True
-
+    target_list.insert(0, ROIS.ptv1.name)
+    match = True
+  
   # Stereotactic treatments, PTV is the target
   if match == False:
     if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
       if determine_nr_of_indexed_ptvs(ss) > 1:
-        for roi in ss.RoiGeometries:
-          if roi.OfRoi.Name == ROIS.ptv1.name and roi.HasContours():
-            target = ROIS.ptv1.name
-            match = True
+        target_list.insert(0, ROIS.ptv1.name)
       else:
-        for roi in ss.RoiGeometries:
-          if roi.OfRoi.Name == ROIS.ptv.name and roi.HasContours():
-            target = ROIS.ptv.name
-            match = True
-
- # CTV is the target in most other cases
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv.name and roi.HasContours():
-        target = ROIS.ctv.name
-        match = True
-
- # CTV based on total dose, for example CTV_50
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == 'CTV_'+ str(total_dose) and roi.HasContours():
-        target = 'CTV_'+ str(total_dose)
-        match = True
-
-  # CTVp, for breast plans (for now)
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv_p.name and roi.HasContours():
-        target = ROIS.ctv_p.name
-        match = True
-
-  #ICTV
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ictv.name and roi.HasContours():
-        target = ROIS.ictv.name
-        match = True
-
-  # CTV1
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv1.name and roi.HasContours():
-        target = ROIS.ctv1.name
-        match = True
-
-  # CTVsb
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv_sb.name and roi.HasContours():
-        target = ROIS.ctv_sb.name
-        match = True
-
-  #CTV2
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv2.name and roi.HasContours():
-        target = ROIS.ctv2.name
-        match = True
-
- #CTV3
-  if match == False:
-    for roi in ss.RoiGeometries:
-      if roi.OfRoi.Name == ROIS.ctv3.name and roi.HasContours():
-        target = ROIS.ctv3.name
-        match = True
+        target_list.insert(0, ROIS.ptv.name)
+  for i in range(len(target_list)):
+    if roi_dict.get(target_list[i]):
+      target = target_list[i]
+      break
 
   if target:
     return target
   else:
-    #raise IOError("Mislyktes i å opprette 'Prescription', årsaken er at ROIen mangler eller at navnet ikke er som forventet.")
     GUIF.handle_missing_target()
-
 
 
 # Determines the isocenter based on the CTV, and if it does not exist, the PTV, and External contour, (or the Body contour) provided for the given structure set.
@@ -459,7 +380,7 @@ def find_isocenter_conv_reg_breast(ss, region_code, target, node_target):
     ctv_ant_senter = abs(ctv[0].y - ctv[1].y)/2
     ctv_ant_point = ctv[0].y + ctv_ant_senter #- 2
 
-    if region_code in [242, 244]:
+    if region_code in RC.breast_reg_r_codes:
       isocenter.x = ctv_lat_point + 2.5
     else:
       isocenter.x = ctv_lat_point - 2.5
@@ -546,7 +467,6 @@ def has_roi_with_contours(ss):
       break
   return match
 
-
 # Returns true if any rois have a contour in this stucture set.
 def has_named_roi_with_contours(ss, name):
   match = False
@@ -555,7 +475,6 @@ def has_named_roi_with_contours(ss, name):
       match = True
       break
   return match
-
 
 # Returns true if the structure set contains a ROI with a defined volume matching the given name.
 def has_roi_with_shape(ss, name):
@@ -573,6 +492,14 @@ def is_breast_hypo(ss):
   else:
     return False
 
+def is_target_oar_overlapping(ss, target, oar):
+  center = ss.RoiGeometries[oar].GetCenterOfRoi()
+  roi_box = ss.RoiGeometries[target].GetBoundingBox()
+  match = False
+  if center.x > roi_box[0].x and center.x < roi_box[1].x and center.y > roi_box[0].y and center.y < roi_box[1].y:
+    match = True
+
+  return match
 
 # Determines if the volume of PTV that overlaps with OARs is less than a given threshold
 # (Used to determine whether to use single or dual arc VMAT at the moment)
@@ -598,6 +525,7 @@ def roi_overlap(pm, examination, ss, roi1, roi2, threshold):
   if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
     overlap = True
   PMF.delete_roi(pm, subtraction.name)
+
   return overlap
 
 

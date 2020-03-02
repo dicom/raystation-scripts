@@ -13,14 +13,14 @@ class DefRectum(object):
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
   def __init__(self, pm, examination, ss, choices, site):
     # Choice 1: Fractionation - normo or hypofractionated?
-    frac = choices[1].value
+    frac = choices[1]
     site.add_oars(DEF.rectum_oars)
     # Conventionally fractionated (2 Gy x 25):
     if frac == 'normo':
       # Choice 2: Groin target volume - included or not?
-      groin = choices[2].value
+      groin = choices[2]
       # Groin targets included:
-      if groin:
+      if groin == 'with':
         gtv =  ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r])
         site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r, gtv])
       # Without groin targets:
@@ -30,7 +30,7 @@ class DefRectum(object):
       # Common for groin included or not:
       ctv_50 = ROI.ROIExpanded(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
       ptv_50 = ROI.ROIExpanded(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, source = ctv_50, margins = MARGINS.rectum_ptv_50_expansion)
-      if groin:
+      if groin == 'with':
         ctv_47 =  ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e, ROIS.ctv_groin_l, ROIS.ctv_groin_r], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero )
         ptv_47_tot =  ROI.ROIAlgebra(ROIS.ptv_47_tot.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.ctv_groin_l, ROIS.ctv_groin_r], operator = 'Union', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_expansion )
         ptv_47 =  ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_47_tot], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero )

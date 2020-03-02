@@ -6,34 +6,26 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9A
+# Made for RayStation version: 9.A
+# Python 3.6
 
 # Import system libraries:
 from connect import *
 import clr, sys, os
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-
-from Microsoft.Office.Interop.Excel import *
-from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
-from System.Windows.Forms import (Application, BorderStyle, Button, CheckBox, DialogResult, Form, FormBorderStyle, Label, Panel, RadioButton, TextBox)
 import math
+from tkinter import *
+from tkinter import messagebox
 
 # Add necessary folders to the system path:
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\def_regions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\functions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\gui_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\quality_control".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\rt_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\settings".decode('utf8'))
+sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
+sys.path.append("C:\\temp\\raystation-scripts\\functions")
+sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
+sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\settings")
 
 
-
-from connect import *
-
+# Import local files:
 import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS

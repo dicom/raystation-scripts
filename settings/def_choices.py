@@ -52,8 +52,8 @@ for side in [stereo_lung_right, stereo_lung_left]:
 
 
 # Lung palliative:
-lung_with_4dct = P.Property('Med 4DCT', True, parent = lung_palliative, default = True)
-lung_without_4dct = P.Property('Uten 4DCT', False, parent = lung_palliative)
+lung_with_4dct = P.Property('Med 4DCT', 'with', parent = lung_palliative, default = True)
+lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
 
 
 #Breast:
@@ -74,8 +74,8 @@ breast_left_part = P.Property('Venstre','left', parent = breast_partial)
 
 # Breast youth boost:
 for side in [breast_right_tang, breast_left_tang]:
-  breast_with_boost_tang = P.Property('Med ungdomsboost',True, parent = side)
-  breast_without_boost_tang = P.Property('Uten ungdomsboost', False, parent = side, default = True)
+  breast_with_boost_tang = P.Property('Med ungdomsboost','with', parent = side)
+  breast_without_boost_tang = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
 
 
 # Breast regional:
@@ -88,8 +88,8 @@ for b in [breast_locoregional, breast_imn]:
     breast_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = side, next_category ='')
     # Breast youth boost:
     for frac in [breast_hypo, breast_normo]:
-      breast_with_boost = P.Property('Med ungdomsboost',True, parent = frac)
-      breast_without_boost = P.Property('Uten ungdomsboost', False, parent = frac, default = True)
+      breast_with_boost = P.Property('Med ungdomsboost','with', parent = frac)
+      breast_without_boost = P.Property('Uten ungdomsboost', 'without', parent = frac, default = True)
 
 
 # Prostate:
@@ -97,10 +97,10 @@ prostate_normal = P.Property('Prostata', 'prostate', parent = prostate, next_cat
 prostate_bed = P.Property('Prostataseng', 'bed', parent = prostate, next_category ='')
 
 # Prostate: Fractionation:
-prostate_hypo = P.Property('Hypofraksjonering (totaldose 60 Gy)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
-prostate_hypo_55 = P.Property('Hypofraksjonering (totaldose 55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
+prostate_hypo = P.Property('Hypofraksjonering (60 Gy)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
+prostate_hypo_55 = P.Property('Hypofraksjonering, med gull (55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
 prostate_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_normal, next_category ='')
-prostate_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_normal, next_category ='')
+prostate_palliative = P.Property('Palliativ fraksjonering, uten gull', 'palliative', parent = prostate_normal, next_category ='')
 
 prostate_bed_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_bed, next_category ='', default = True)
 prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_bed, next_category ='')
@@ -117,13 +117,13 @@ rectum_hypo = P.Property('Hypofraksjonering', 'hypo', parent = rectum, next_cate
 rectum_normo = P.Property('Konvensjonell fraksjonering med SIB', 'normo', parent = rectum, next_category ='omfang', default = True)
 
 # Rectum normo: Nodes:
-rectum_with_nodes = P.Property('Med patologisk forstørrede lymfeglandler i lyskene', True, parent = rectum_normo)
-rectum_without_nodes = P.Property('Uten patologisk forstørrede lymfeglandler i lyskene', False, parent = rectum_normo, default = True)
+rectum_with_nodes = P.Property('Med patologisk forstørrede lymfeglandler i lyskene', 'with', parent = rectum_normo)
+rectum_without_nodes = P.Property('Uten patologisk forstørrede lymfeglandler i lyskene', 'without', parent = rectum_normo, default = True)
 
 
 # Other (palliative): SBRT:
-other_stereotactic = P.Property('Stereotaksi', True, parent =other, next_category = 'region')
-other_non_stereotactic = P.Property('Ikke stereotaksi', False, parent = other, next_category = 'region', default = True)
+other_stereotactic = P.Property('Stereotaksi', 'yes', parent =other, next_category = 'region')
+other_non_stereotactic = P.Property('Ikke stereotaksi', 'no', parent = other, next_category = 'region', default = True)
 
 # Other non-SBRT: Region:
 other_head = P.Property('Hode', 'head', parent=other_non_stereotactic, next_category = 'antall målvolum')
@@ -146,8 +146,8 @@ for region in [other_head, other_neck, other_thorax, other_thorax_and_abdomen, o
   other_target_volume_two = P.Property('2','2', parent = region, next_category = '')
   # With or without soft tissue component:
   for tv in [other_target_volume_one, other_target_volume_two]:
-    other_with_gtv = P.Property('Bløtvevskomponent (med GTV)', True, parent = tv)
-    other_without_gtv = P.Property('Skjelett (uten GTV)', False, parent = tv, default = True)
+    other_with_gtv = P.Property('Bløtvevskomponent (med GTV)', 'with', parent = tv)
+    other_without_gtv = P.Property('Skjelett (uten GTV)', 'without', parent = tv, default = True)
 
 
 # Lists to be used with radiobutton objects:

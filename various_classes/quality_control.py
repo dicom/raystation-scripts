@@ -7,13 +7,12 @@
 # System configuration:
 from connect import *
 import sys
-
+from tkinter import messagebox
 # GUI framework (debugging only):
-clr.AddReference("PresentationFramework")
-from System.Windows import *
+
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 import ts_patient as TS_P
 import ts_case as TS_C
@@ -36,7 +35,7 @@ class QualityControl(object):
     self.patient = patient
     self.case = case
     self.plan = plan
-
+    
     # Initialize test suites:
     ts_patient = TS_P.TSPatient(patient)
     ts_case = TS_C.TSCase(case, ts_patient=ts_patient)
@@ -51,6 +50,7 @@ class QualityControl(object):
       for roi_geometry in structure_set.RoiGeometries:
         ts_roi_geometry = TS_RG.TSROIGeometry(roi_geometry, ts_structure_set=ts_structure_set)
     ts_plan = TS_PLAN.TSPlan(plan, ts_case=ts_case)
+
     for beam_set in plan.BeamSets:
       ts_beam_set = TS_BS.TSBeamSet(beam_set, ts_plan=ts_plan)
       ts_label = TS_L.TSLabel(beam_set.DicomPlanLabel, ts_beam_set=ts_beam_set)
@@ -63,7 +63,7 @@ class QualityControl(object):
         ts_beam = TS_B.TSBeam(beam, ts_beam_set=ts_beam_set)
         for segment in beam.Segments:
           ts_segment = TS_S.TSSegment(segment, ts_beam=ts_beam)
-
+    
     # Store the patient test results:
     self.result = ts_patient.param
 
@@ -74,30 +74,33 @@ class QualityControl(object):
     # Case tests:
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
-
+    
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
-      ts_structure_set.localization_point_test()
-      ts_structure_set.external_test()
-      ts_structure_set.dose_region_test()
-      ts_structure_set.ptv_derived_test()
-      ts_structure_set.prosthesis_titanium_test()
-      ts_structure_set.external_ptv_bounding_test()
-      ts_structure_set.couch_test()
-      ts_structure_set.couch_close_to_patient_test()
-      ts_structure_set.breast_seeds_test()
-      # POI geometry tests:
-      for ts_poi_geometry in ts_structure_set.ts_poi_geometries:
-        ts_poi_geometry.is_defined_test()
-        ts_poi_geometry.is_not_zero_test()
-      # ROI geometry tests:
-      for ts_roi_geometry in ts_structure_set.ts_roi_geometries:
-        ts_roi_geometry.derived_roi_geometry_is_updated_test()
+      if ts_structure_set.structure_set.OnExamination.Name == ts_case.ts_plan.plan.GetStructureSet().OnExamination.Name:
+        ts_structure_set.localization_point_test()
+        ts_structure_set.external_test()
+        ts_structure_set.dose_region_test()
+        ts_structure_set.ptv_derived_test()
+        ts_structure_set.prosthesis_titanium_test()
+        ts_structure_set.external_ptv_bounding_test()
+        ts_structure_set.couch_test()
+        ts_structure_set.couch_close_to_patient_test()
+        ts_structure_set.breast_seeds_test()
+      
+        # POI geometry tests:
+        for ts_poi_geometry in ts_structure_set.ts_poi_geometries:
+          ts_poi_geometry.is_defined_test()
+          ts_poi_geometry.is_not_zero_test()
+        # ROI geometry tests:
+        for ts_roi_geometry in ts_structure_set.ts_roi_geometries:
+          ts_roi_geometry.derived_roi_geometry_is_updated_test()
+    
     # Plan tests:
     ts_plan.planned_by_test()
     ts_plan.unique_beam_numbers_test()
     ts_plan.breast_oar_defined_test()
-
+    
     # Beam set tests:
     for ts_beam_set in ts_plan.ts_beam_sets:
       ts_beam_set.unmerged_beams_test()
@@ -120,8 +123,6 @@ class QualityControl(object):
       ts_beam_set.label_target_volume_test()
       ts_beam_set.guard_leaf_test()
       ts_beam_set.name_of_beam_iso_test()
-      ts_beam_set.prostate_normalisation_test()
-      ts_beam_set.recti_normalisation_test()
       ts_beam_set.isocenter_centered_long_test()
       ts_beam_set.prescription_mu_breast_regional_caudal_test()
       ts_beam_set.prescription_mu_breast_regional_cranial_test()
@@ -131,8 +132,9 @@ class QualityControl(object):
       ts_beam_set.stereotactic_mu_test()
       ts_beam_set.vmat_mu_test()
       ts_beam_set.beam_number_test()
-
-
+      ts_beam_set.target_volume_normalisation_for_sib_test()
+      
+      
       # Label tests:
       ts_label = ts_beam_set.ts_label
       ts_label.nr_parts_test()
@@ -152,6 +154,7 @@ class QualityControl(object):
         ts_prescription.prescription_real_dose_test()
         ts_prescription.clinical_max_test()
         ts_prescription.stereotactic_prescription_technique_test()
+        
       # Objectives/constraints tests:
       ts_optimization = ts_beam_set.ts_optimization
       if ts_optimization:
@@ -159,6 +162,7 @@ class QualityControl(object):
         ts_optimization.objectives_background_dose_test()
         ts_optimization.constrain_leaf_motion_test()
         ts_optimization.dose_grid_test()
+        
       # Beam tests:
       for ts_beam in ts_beam_set.ts_beams:
         ts_beam.name_test()
@@ -181,4 +185,7 @@ class QualityControl(object):
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:
           ts_segment.mlc_corner_validity_test()
+        
+        
+
 

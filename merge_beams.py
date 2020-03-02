@@ -1,7 +1,16 @@
+# Merges beams with the same gantry, couch and collimator angle
+#
+# Authors:
+# Marit Funderud
+# Helse Møre og Romsdal HF
+#
+# Made for RayStation version: 9.A
+# Python 3.6
+
 from connect import *
 import math
 import sys
-clr.AddReference("PresentationFramework")
+# Python 3.6
 from System.Windows import *
 
 try:
@@ -10,7 +19,7 @@ except SystemError:
     raise IOError("No beam set loaded.")
 		
 target_beams = []
-potential_beams = ['LPO','Venstre','Forfra','RAO','Høyre'.decode('utf8', 'replace'),'RPO','LAO','Bakfra']
+potential_beams = ['LPO','Venstre','Forfra','RAO','Høyre','RPO','LAO','Bakfra']
 for beam in beam_set.Beams:
 	for i in range(len(potential_beams)):
 		if beam.Name == potential_beams[i]:

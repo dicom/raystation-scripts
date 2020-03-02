@@ -29,12 +29,12 @@ lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.trachea, ROIS.li
 
 # Breast:
 # Regional lymph nodes
-breast_reg_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.muscle, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.lad, ROIS.clips]
+breast_reg_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.muscle, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.lad]
 
 # Tangential
-breast_tang_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.lad, ROIS.clips]
+breast_tang_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.lad]
 
-breast_part_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.lad, ROIS.surgical_bed, ROIS.clips]
+breast_part_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.lad, ROIS.surgical_bed]
 
 # Prostate
 prostate_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.rectum, ROIS.bowel_space, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.seed4]

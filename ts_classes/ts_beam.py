@@ -8,39 +8,40 @@
 from connect import *
 import sys
 #sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\RayStation\\lib".decode('utf8'))
-
+from tkinter import messagebox
 # GUI framework (debugging only):
 #clr.AddReference("PresentationFramework")
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 
 # This class contains tests for the RayStation Beam object:
 class TSBeam(object):
   def __init__(self, beam, ts_beam_set=None):
-	# RayStation object:
-	self.beam = beam
-	# Related test suite objects:
-	self.ts_beam_set = ts_beam_set
-	self.ts_segments = []
-	if ts_beam_set:
-	  ts_beam_set.ts_beams.append(self)
-	  self.parent_param = ts_beam_set.param
-	else:
-	  self.parent_param = None
-	# Parameters:
-	self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
-	self.name = TEST.Parameter('Navn', '', self.param)
-	self.mu = TEST.Parameter('MU', '', self.param)
-	self.gantry = TEST.Parameter('Gantryvinkel', str(round(self.beam.GantryAngle, 1)), self.param)
-	self.energy = TEST.Parameter('Energi', str( self.beam.MachineReference.Energy), self.param)
-	self.collimator = TEST.Parameter('Kollimatorvinkel', str(round(beam.InitialCollimatorAngle, 1)), self.param)
-	self.segments = TEST.Parameter('Segmenter', '', self.param)
-	self.gantry_spacing = TEST.Parameter('Gantry spacing', '', self.param)
-	self.isocenter = TEST.Parameter('Isosenter', '', self.param)
-	self.opening = TEST.Parameter('Åpning', '', self.param)
+    # RayStation object:
+    self.beam = beam
+    # Related test suite objects:
+    self.ts_beam_set = ts_beam_set
+    self.ts_segments = []
+    if ts_beam_set:
+      ts_beam_set.ts_beams.append(self)
+      self.parent_param = ts_beam_set.param
+    else:
+      self.parent_param = None
+    # Parameters:
+    self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
+    self.name = TEST.Parameter('Navn', '', self.param)
+    self.mu = TEST.Parameter('MU', '', self.param)
+    self.gantry = TEST.Parameter('Gantryvinkel', str(round(self.beam.GantryAngle, 1)), self.param)
+    self.energy = TEST.Parameter('Energi', str( self.beam.MachineReference.Energy), self.param)
+    self.collimator = TEST.Parameter('Kollimatorvinkel', str(round(beam.InitialCollimatorAngle, 1)), self.param)
+    self.segments = TEST.Parameter('Segmenter', '', self.param)
+    self.gantry_spacing = TEST.Parameter('Gantry spacing', '', self.param)
+    self.isocenter = TEST.Parameter('Isosenter', '', self.param)
+    self.opening = TEST.Parameter('Åpning', '', self.param)
+    self.mlc = TEST.Parameter('MLC', '', self.param)
 
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
@@ -97,12 +98,13 @@ class TSBeam(object):
       if self.has_segment():
         maxJawY1 = self.beam.Segments[0].JawPositions[2]
         maxJawY2 = self.beam.Segments[0].JawPositions[3]
+        
         for segment in self.beam.Segments:
           if segment.JawPositions[2] < maxJawY1:
             maxJawY1 = segment.JawPositions[2]
           if segment.JawPositions[3] > maxJawY1:
             maxJawY2 = segment.JawPositions[3]
-
+        messagebox.showinfo("", "2")
         if maxJawY1 < -10.5 and maxJawY2 > 10.5:
           return t.succeed()
         elif maxJawY1 < -10.5:
@@ -340,7 +342,6 @@ class TSBeam(object):
               maxJawY1 = segment.JawPositions[2]
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
-
           if abs(maxJawY1)+abs(maxJawY2) > 15:
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
@@ -365,4 +366,5 @@ class TSBeam(object):
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
             return t.succeed()
+
 

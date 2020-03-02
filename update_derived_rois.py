@@ -6,7 +6,8 @@
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9A
+# Made for RayStation version: 6.0
+# Python 3.6
 
 from connect import *
 

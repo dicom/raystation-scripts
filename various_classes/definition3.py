@@ -24,7 +24,7 @@ class Definition(object):
     self.patient = patient
     self.case = case
 
-    #messagebox.showinfo("Error.","hei")
+
     pm = case.PatientModel
     examination = get_current("Examination")
     ss = PMF.get_structure_set(pm, examination)
@@ -38,33 +38,33 @@ class Definition(object):
     # If there is, ask to delete rois.
     if SSF.has_roi_with_contours(ss):
       delete = RB.RadioButton('Eksisterende ROIs oppdaget', 'Velg:', DC.delete)
-      my_window = Tk()
-      choice_d=[]
-      delete_choice = GUIF.collect_delete_choice(delete, my_window, choice_d)
+      delete_choice = GUIF.collect_delete_choice(delete)
       for i in range(len(delete_choice)):
         # If the delete all rois choice was selected, delete rois.
-        if delete_choice[i] == 'yes':
+        if delete_choice[i].cget("value") == 'yes':
           PMF.delete_all_rois(pm)
-        elif delete_choice[i] == 'some':
+        elif delete_choice[i].cget("value")  == 'some':
           PMF.delete_rois_except_manually_contoured(pm, ss)
-      my_window = Toplevel()
-    else:
-      my_window = Tk()
-      
-      
-
-
+    my_window = Tk()
+    choices=[]
     # Create initial radiobutton object, then recursively iterate it to collect all user choices:
     regions = RB.RadioButton('Behandlingsregion', 'Velg behandlingsregion:', DC.regions)
+    selection = GUIF.collect_choices(regions, my_window)
+    choices.append(selection.value)
+    new_window = Toplevel()
+    if selection.children:
+      next_options = RB.RadioButton(selection.next_category.capitalize(), 'Velg ' + selection.next_category +':' , selection.children)
+      selection = GUIF.collect_choices(next_options, new_window)
+      choices.extend(selection)
 
-    choices = GUIF.collect_choices(regions, my_window, [])
 
     # Create site:
     site = DS.DefSite(patient_db, pm, examination, ss, choices, targets = [], oars = [])
-    
+
 
     # Choice 1: Which region is going to be treated?
-    region = choices[0]
+    region = choices[0].value.get()
+
 
     if region == 'brain':
       import def_brain as DEF_BRAIN
@@ -90,6 +90,5 @@ class Definition(object):
 
 
     # Changes OrganType to "Other" for all ROIs in the given patient model which are of type "Undefined" or "Marker".
-    PMF.exclude_rois_from_export(pm)
     PMF.set_all_undefined_to_organ_type_other(pm)
-    
+    #PMF.exclude_rois_from_export(pm)

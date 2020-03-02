@@ -1,14 +1,10 @@
 # Used for GUI debugging:
+from tkinter import *
+from tkinter import messagebox
 
-from connect import *
-import clr, sys
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-clr.AddReference("PresentationFramework")
-from System.Windows import *
-
+root = Tk()
+root.withdraw()
+title = ""
 text = ""
-MessageBox.Show(text, "DEBUG", MessageBoxButton.OK, MessageBoxImage.Information)
+messagebox.showinfo(title, text)
+root.destroy()

@@ -7,7 +7,8 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9A
+# Made for RayStation version: 9.A
+# Python 3.6
 
 from __future__ import division
 import math
@@ -15,13 +16,8 @@ import math
 # Import system libraries:
 from connect import *
 import clr, sys
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-clr.AddReference("PresentationFramework")
-from System.Windows import *
+from tkinter import *
+from tkinter import messagebox
 
 
 # Load case data:
@@ -98,7 +94,9 @@ for beam_set in plan.BeamSets:
     text += "Fant ikke forventet ROI: " + "'External' eller 'Body'" + "\n" + "Kan derfor ikke beregne Paddick konformitetsindeks" + "\n"
   else:
     text += "Fant ikke forventet ROI: " + str(roi) + " eller " + "'External' eller 'Body'" + "\n" + "Kan derfor ikke beregne Paddick konformitetsindeks" + "\n"
-
-  MessageBox.Show(text, "Paddick konformitetsindeks", MessageBoxButton.OK, MessageBoxImage.Information)
+  title = "Paddick konformitetsindeks"
+  root = Tk()
+  root.withdraw()
+  messagebox.showinfo(title, text)
 
 

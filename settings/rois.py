@@ -57,6 +57,7 @@ gtv4 = ROI.ROI('GTV4', 'Gtv', COLORS.gtv)
 ctv1 = ROI.ROI('CTV1', 'Ctv', COLORS.ctv)
 ctv2 = ROI.ROI('CTV2', 'Ctv', COLORS.ctv)
 ctv3 = ROI.ROI('CTV3', 'Ctv', COLORS.ctv)
+ctv4 = ROI.ROI('CTV4', 'Ctv', COLORS.ctv)
 gtv_sb = ROI.ROI('GTVsb', 'Gtv', COLORS.gtv)
 ctv_sb = ROI.ROI('CTVsb', 'Ctv', COLORS.ctv)
 vb = ROI.ROI('VB','Ctv', COLORS.ctv_med)
@@ -171,6 +172,7 @@ marker1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
 marker2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
 marker3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
 marker4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
+temp_markers = ROI.ROI('tempMarkers', 'Marker', COLORS.seed)
 
 
 # OARs: MBS (delineated by model based segmentation):

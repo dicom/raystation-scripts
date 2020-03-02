@@ -10,8 +10,7 @@
 # Formats a string for output.
 def f(str):
   if str:
-    #return str.decode('utf8', 'replace')
-    return str.decode('iso-8859-1', 'replace')
+    return str
   else:
     return ''
 

@@ -7,7 +7,7 @@ import objectives as OBJ
 import rt_site as SITE
 import rois as ROIS
 import patient_model_functions as PMF
-
+import structure_set_functions as SSF
 
 # Example:
 # SITE.Site(codes, oar_objectives, opt_objectives, oar_clinical_goals, target_clinical_goals)
@@ -99,6 +99,9 @@ def site(pm, examination, ss, plan, nr_fractions, total_dose, region_code, targe
         PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r, ROIS.cornea_r)
     return brain(pm, examination, ss, plan, total_dose, nr_fractions, region_code)
   elif region_code in RC.breast_codes:
+    if region_code in RC.breast_not_thorax_codes:
+      breast_target = SSF.determine_breast_primary_target(ss)
+      PMF.create_grey_value_intersection_roi(pm, examination, ss, ROIS.temp_markers, breast_target, ROIS.markers, 250, 2500)
     return breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, target)
   elif region_code in RC.lung_and_mediastinum_codes:
     return lung(ss, plan, total_dose, nr_fractions, region_code, target)

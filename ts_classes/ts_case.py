@@ -14,7 +14,7 @@ import sys
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import region_codes as RC
 import rois as ROIS
 #import raystation_utilities as RSU
@@ -36,7 +36,7 @@ class TSCase(object):
     else:
       self.parent_param = None
     # Parameters:
-    self.param = TEST.Parameter('Case', self.case.CaseName.decode('utf8', 'replace'), self.parent_param)
+    self.param = TEST.Parameter('Case', self.case.CaseName, self.parent_param)
     self.localization_point = TEST.Parameter('REF', '', self.param)
     self.examination = TEST.Parameter('Examination', '', self.param)
 
@@ -64,12 +64,13 @@ class TSCase(object):
     primary_date = primary.GetExaminationDateTime()
     for examination in self.case.Examinations:
       current_date = examination.GetExaminationDateTime()
-      if current_date > primary_date:
-        description = examination.GetAcquisitionDataFromDicom()['SeriesModule']['SeriesDescription']
-        frame_uid = examination.EquipmentInfo.FrameOfReference
-        modality = examination.EquipmentInfo.Modality
-        if modality == 'CT' and 'CBCT' not in description and frame_uid != primary.EquipmentInfo.FrameOfReference:
-          more_recent = examination.Name
+      if current_date:
+        if current_date > primary_date:
+          description = examination.GetAcquisitionDataFromDicom()['SeriesModule']['SeriesDescription']
+          frame_uid = examination.EquipmentInfo.FrameOfReference
+          modality = examination.EquipmentInfo.Modality
+          if modality == 'CT' and 'CBCT' not in description and frame_uid != primary.EquipmentInfo.FrameOfReference:
+            more_recent = examination.Name
     if more_recent:
       return t.fail(more_recent)
     else:

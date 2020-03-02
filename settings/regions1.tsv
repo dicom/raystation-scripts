@@ -176,12 +176,12 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 236	Bløtvev	Thorax, bak h.s.	Bløtvev: Thorax, bak h.s.	Thorax bak hø
 237	Bløtvev	Thorax, på sida v.s.	Bløtvev: Thorax, på sida v.s.	V.Thorax side
 238	Bløtvev	Thorax, på sida h.s.	Bløtvev: Thorax, på sida h.s.	H.Thorax side
-239	Bløtvev	Bryst/Brystvegg, v.s.	Bløtvev: Bryst/Brystvegg, v.s.	V.Bryst/BV
-240	Bløtvev	Bryst/Brystvegg, h.s.	Bløtvev: Bryst/Brystvegg, h.s.	H.Bryst/BV
-241	Bløtvev	Brystvegg/Reg.lkn., v.s.	Bløtvev: Brystvegg/Reg.lkn., v.s.	V.Brystvegg/LK
-242	Bløtvev	Brystvegg/Reg.lkn., h.s.	Bløtvev: Brystvegg/Reg.lkn., h.s.	H.Brystvegg/LK
-243	Bløtvev	Bryst/Reg.lkn., v.s.	Bløtvev: Bryst/Reg.lkn., v.s.	V.Bryst/LK
-244	Bløtvev	Bryst/Reg.lkn., h.s.	Bløtvev: Bryst/Reg.lkn., h.s.	H.Bryst/LK
+239	Bløtvev	Mamma/Thoraxvegg, v.s.	Bløtvev: Mamma/Thoraxvegg, v.s.	V.Mamma/TV
+240	Bløtvev	Mamma/Thoraxvegg, h.s.	Bløtvev: Mamma/Thoraxvegg, h.s.	H.Mamma/TV
+241	Bløtvev	Thoraxv/Reg.lymfkn., v.s.	Bløtvev: Thoraxv/Reg.lymfkn., v.s.	V.Thoraxv/LK
+242	Bløtvev	Thoraxv/Reg.lymfkn., h.s.	Bløtvev: Thoraxv/Reg.lymfkn., h.s.	H.Thoraxv/LK
+243	Bløtvev	Mamma/Reg.lymfekn., v.s.	Bløtvev: Mamma/Reg.lymfekn., v.s.	V.Mamma/LK
+244	Bløtvev	Mamma/Reg.lymfekn., h.s.	Bløtvev: Mamma/Reg.lymfekn., h.s.	H.Mamma/LK
 245	Bløtvev	Lunger, begge /Mediast	Bløtvev: Lunger, begge /Mediast	Lunger/Mediast
 246	Bløtvev	Lunger, begge	Bløtvev: Lunger, begge	Lunger begge
 247	Bløtvev	Lunge, v.s.	Bløtvev: Lunge, v.s.	Lunge ve
@@ -210,8 +210,6 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 270	Bløtvev	Underarm, h.s.	Bløtvev: Underarm, h.s.	Underarm hø
 271	Bløtvev	Hand, v.s.	Bløtvev: Hand, v.s.	Hand ve
 272	Bløtvev	Hand, h.s.	Bløtvev: Hand, h.s.	Hand hø
-273	Bløtvev	Del av bryst, v.s.	Bløtvev: Del av bryst, v.s.	Delbryst ve
-274	Bløtvev	Del av bryst, h.s.	Bløtvev: Del av bryst, h.s.	Delbryst hø
 300	Bløtvev	Underkropp, ins.	Bløtvev: Underkropp, ins.	Underkropp ins
 301	Bløtvev	Underkropp, mult.lok.	Bløtvev: Underkropp, mult.lok.	Underkropp mul
 302	Bløtvev	Underkropp (hele)	Bløtvev: Underkropp (hele)	Underkropp hel
@@ -255,13 +253,10 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 347	Bløtvev	Cervix	Bløtvev: Cervix	Cervix
 348	Bløtvev	Prostataseng,	Bløtvev: Prostataseng,	Prostataseng
 349	Bløtvev	Urethra	Bløtvev: Urethra	Urethra
-350	Bløtvev	Vulva	Bløtvev: Vulva	Vulva
 351	Bløtvev	Binyre, v.s.	Bløtvev: Binyre, v.s.	Binyre ve
 352	Bløtvev	Binyre, h.s.	Bløtvev: Binyre, h.s.	Binyre hø
 353	Bløtvev	Sete, v.s.	Bløtvev: Sete, v.s.	Sete ve
 354	Bløtvev	Sete, h.s.	Bløtvev: Sete, h.s.	Sete hø
-355	Bløtvev	Prostata/Reg.lkn.	Bløtvev: Prostata/Reg.lkn.	Prostata/LK
-356	Bløtvev	Prostataseng/Reg.lkn.	Bløtvev: Prostataseng/Reg.lkn.	Prost.seng/LK
 373	Bløtvev	Hofte, v.s.	Bløtvev: Hofte, v.s.	Hofte ve
 374	Bløtvev	Hofte, h.s.	Bløtvev: Hofte, h.s.	Hofte hø
 375	Bløtvev	Underekstr., ins. v.s.	Bløtvev: Underekstr., ins. v.s.	V.Underekstr.

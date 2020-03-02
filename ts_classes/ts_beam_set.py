@@ -2,12 +2,14 @@
 
 # Contains treatment plan tests for individual beam sets.
 #
-# Verified for RayStation 6.0.
+# Verified for RayStation 9.A
+# Python 3.6
 
 # System configuration:
 from connect import *
 import sys
 import math
+from tkinter import messagebox
 #sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\RayStation\\lib".decode('utf8'))
 
 # GUI framework (debugging only):
@@ -15,7 +17,7 @@ import math
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 import rois as ROIS
 import region_codes as RC
@@ -87,10 +89,10 @@ class TSBeamSet(object):
   def fraction_dose(self):
     return (self.beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
-    # Gives the ts_structure_set which corresponds with this beam set:
+  # Gives the ts_structure_set which corresponds with this beam set:
   def ts_structure_set(self):
     for ts_struct in self.ts_plan.ts_case.ts_structure_sets:
-      if ts_struct.structure_set.OnExamination == self.beam_set.GetPlanningExamination():
+      if ts_struct.structure_set.OnExamination.Name == self.beam_set.GetPlanningExamination().Name:
         return ts_struct
 
   def asymmetric_jaw_opening_long_test(self):
@@ -194,7 +196,6 @@ class TSBeamSet(object):
     if not self.is_vmat():
       for beam in self.beam_set.Beams:
         for [segment_index, segment] in enumerate(beam.Segments):
-          assert (segment.LeafPositions.Length == 2)
           leaf_positions = segment.LeafPositions
           jaw = segment.JawPositions
           # array (x1,x2,y1,y2)  we are looking at Y1 and Y2.
@@ -202,18 +203,18 @@ class TSBeamSet(object):
           y2 = jaw[3]
           if -1 < y1 < 1:
             # get the last corresponding MLC that is in the field
-            mlcY1 = math.floor((y1 + 20) * 2) + 1.0
+            mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
             # don't forget that mlc 50 is in spot leafPositions[0][49]
             if (mlcY1 - 2) > 0:
               if round(abs(leaf_positions[0][mlcY1 - 2]), 3) - round(abs(leaf_positions[0][mlcY1 - 1]), 3) > 0.2 or round(abs(leaf_positions[1][mlcY1 - 2]), 3) - round(abs(leaf_positions[1][mlcY1 - 1]), 3) > 0.2:
                 if round(beam.BeamMU*segment.RelativeWeight, 2) > 20:
-                  failed_beams.append(str(beam.Name.decode('utf8', 'replace')))
+                  failed_beams.append(str(beam.Name))
           elif -1< y2 < 1:
-            mlcY2 = math.ceil ((y2 + 20) * 2)
+            mlcY2 = int(math.ceil ((y2 + 20) * 2))
             if mlcY2 < 80:
               if round(abs(leaf_positions[0][mlcY2]), 3) - round(abs(leaf_positions[0][mlcY2 - 1]), 3) > 0.2 or round(abs(leaf_positions[1][mlcY2]), 3)  - round(abs(leaf_positions[1][mlcY2 - 1]), 3) > 0.2:
                 if round(beam.BeamMU*segment.RelativeWeight, 2) > 20:
-                  failed_beams.append(str(beam.Name.decode('utf8', 'replace')))
+                  failed_beams.append(str(beam.Name))
 
         if len(failed_beams) >= 1:
           return t.fail(list(set(failed_beams)))
@@ -337,7 +338,7 @@ class TSBeamSet(object):
       if match:
         return t.succeed()
       else:
-        return t.fail(beam.Isocenter.Annotation.Name.decode('utf8', 'replace'))
+        return t.fail(beam.Isocenter.Annotation.Name)
 
   # Tests correspondence of nr fractions in beam set with external value (from label).
   def nr_fractions_test(self):
@@ -580,82 +581,41 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-
- # Tests for prostate SIB plans, if the 'CTV 0-70' and 'CTV 0-56' volumes are normalised to the correct value, within 0.5%.
-  def prostate_normalisation_test(self):
-    t_70 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolum " + ROIS.ctv_70_sib.name + ".", True, self.norm_dose)
-    t_56 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolum " + ROIS.ctv_56.name + ".", True, self.norm_dose)
-    t_56.expected = 56
-    t_70.expected = 70
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.region in RC.prostate_codes:
-        if self.ts_label.label.nr_fractions == '35':
-          match = False
-          cum_pr_dose = RSU.prescription_dose(self.beam_set)
-          diff_pr_dose = RSU.differential_prescription_dose(self.ts_plan.plan, self.beam_set)
-          low_dose_70 = 70 * 0.995
-          high_dose_70 = 70 * 1.005
-          low_dose_56 = 56 * 0.995
-          high_dose_56 = 56 * 1.005
-          for rg in structure_set.RoiGeometries:
-            if rg.OfRoi.Name == ROIS.ctv_70_sib.name:
-              real_dose_d50_70 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = ROIS.ctv_70_sib.name, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
-              if real_dose_d50_70 < low_dose_70 or real_dose_d50_70 > high_dose_70:
-                t_70.fail(round(real_dose_d50_70, 2))
+  # Tests for SIB plans, if the lower doser volumes is normalised to the correct value, within 0.5%.
+  def target_volume_normalisation_for_sib_test(self):
+    if self.ts_label.label.region in RC.prostate_codes + RC.breast_codes + RC.rectum_codes:
+      ss = self.ts_structure_set().structure_set
+      roi_dict = SSF.create_roi_dict(ss)
+      potential_target_volumes = [ROIS.ctv_47.name, ROIS.ctv_56.name, ROIS.ctv_70_sib.name, ROIS.ctv_57.name]
+      objective_target_volumes = {}
+      # Create a dictionary of all CTVs defined as an objective.
+      po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
+      if po:
+        for objective in po.Objective.ConstituentFunctions:
+          if objective.ForRegionOfInterest.Type == 'Ctv':
+            objective_target_volumes[objective.ForRegionOfInterest.Name] = True
+      # Check in the list of potential SIB volumes if any exist in the structure set, define as target
+      for i in range(len(potential_target_volumes)):
+        if roi_dict.get(potential_target_volumes[i]):
+          target = potential_target_volumes[i]
+          t = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolumet " + target + ".", True, self.norm_dose)
+          # Check if the target was used as objective
+          if objective_target_volumes.get(target):
+            # Use the two last characters in the target-string to find the wanted median dose of that target volume
+            if int(target[-2:]) > 30:
+              prescription_dose = int(target[-2:])
+              low_dose = round(prescription_dose * 0.995, 2)
+              high_dose = round(prescription_dose * 1.005, 2)
+              real_dose_d50 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = target, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
+              t.expected = ">" + str(low_dose) + " og " + "<" +str(high_dose)
+              if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
+                t.fail(round(real_dose_d50, 2))
               else:
-                t_70.succeed()
-            elif rg.OfRoi.Name == ROIS.ctv_56.name:
-              real_dose_d50_56 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = ROIS.ctv_56.name, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
-              #t_56.fail(round(real_dose_d50_56, 2))
-              if real_dose_d50_56 < low_dose_56 or real_dose_d50_56 > high_dose_56:
-                t_56.fail(round(real_dose_d50_56, 2))
-              else:
-                t_56.succeed()
-
-
- #Tests for recti SIB plans, if the 'CTV 0-47' volume is normalised to the correct value, within 0.5%.
-  def recti_normalisation_test(self):
-    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.region not in RC.rectum_codes:
-        if self.ts_label.label.nr_fractions == '25':
-          match = False
-          cum_pr_dose = RSU.prescription_dose(self.beam_set)
-          diff_pr_dose = RSU.differential_prescription_dose(self.ts_plan.plan, self.beam_set)
-          low_dose_47 = round(47 * 0.995, 2)
-          high_dose_47 = round(47 * 1.005, 2)
-          for rg in structure_set.RoiGeometries:
-            if rg.OfRoi.Name == ROIS.ctv_47.name and rg.OfRoi.Type == 'Ctv':
-              real_dose_d50_47 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = ROIS.ctv_47.name, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
-              t_47.expected = "<" + str(low_dose_47) + " - " + str(high_dose_47) + ">"
-              if real_dose_d50_47 < low_dose_47 or real_dose_d50_47 > high_dose_47:
-                t_47.fail(round(real_dose_d50_47, 2))
-              else:
-                t_47.succeed()
-
- #Tests for breast SIB plans, if the 'CTV 0-47' volume is normalised to the correct value, within 0.5%.
-  def breast_normalisation_test(self):
-    t_47 = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for normeringsvolumet " + ROIS.ctv_47.name +".", True, self.norm_dose)
-    for structure_set in self.ts_plan.ts_case.case.PatientModel.StructureSets:
-      if self.ts_label.label.region in RC.breast_reg_codes:
-        if self.ts_label.label.nr_fractions == '25':
-          match = False
-          cum_pr_dose = RSU.prescription_dose(self.beam_set)
-          diff_pr_dose = RSU.differential_prescription_dose(self.ts_plan.plan, self.beam_set)
-          low_dose_47 = round(47 * 0.995, 2)
-          high_dose_47 = round(47 * 1.005, 2)
-          for rg in structure_set.RoiGeometries:
-            if rg.OfRoi.Name == ROIS.ctv_47.name and rg.OfRoi.Type == 'Ctv':
-              real_dose_d50_47 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = ROIS.ctv_47.name, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
-              t_47.expected = "<" + str(low_dose_47) + " - " + str(high_dose_47) + ">"
-              if real_dose_d50_47 < low_dose_47 or real_dose_d50_47 > high_dose_47:
-                t_47.fail(round(real_dose_d50_47, 2))
-              else:
-                t_47.succeed()
-
-
-
+                t.succeed()
 '''
+messagebox.showinfo("", target)
+
+                
   # Tests if the energies of the beams in the beam set are the same as the expected energy.
   def specific_energy_for_region_test(self):
     wanted_energies = ['6','6 FFF'] # (default)

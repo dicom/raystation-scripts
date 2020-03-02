@@ -1,5 +1,5 @@
 # encoding: utf8
-
+from tkinter import messagebox
 # Import local files:
 import patient_model_functions as PMF
 import rois as ROIS
@@ -31,12 +31,13 @@ class DefSite(object):
 
     # Create localization point:
     PMF.create_localization_point(self.pm, self.examination)
-    if self.choices[0].value == 'brain':
-      if self.choices[1].value == 'stereotactic':
+
+    if self.choices[0] == 'brain':
+      if self.choices[1] == 'stereotactic':
         # Create external geometry:
         PMF.create_stereotactic_body_geometry(self.pm, self.examination, self.ss)
         PMF.create_stereotactic_external_geometry(self.pm, self.examination, self.ss)
-      elif self.choices[1].value == 'part':
+      elif self.choices[1] == 'part':
         # Create external geometry:
         PMF.create_stereotactic_body_geometry(self.pm, self.examination, self.ss)
         PMF.create_stereotactic_external_geometry(self.pm, self.examination, self.ss)
@@ -48,7 +49,7 @@ class DefSite(object):
         PMF.create_external_geometry(self.pm, self.examination, self.ss)
         # Create couch:
         PMF.create_couch(self.patient_db, self.pm, self.examination)
-        PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
+        PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name, couch_thickness = 11)
     else:
       # Create external geometry:
       PMF.create_external_geometry(self.pm, self.examination, self.ss)
@@ -71,12 +72,13 @@ class DefSite(object):
   def create_rois(self):
     # Delete pre-existing ROIs (except those which are manually contoured) in sorted order:
     group = self.grouped_rois()
-    for key in sorted(group.iterkeys()):
+    for key in sorted(iter(group)):
       for roi in group[key]:
         PMF.delete_matching_roi_except_manually_contoured(self.pm, self.ss, roi)
     group = self.grouped_rois()
     # Create ROIs (in reverse sorted order):
-    for key in reversed(sorted(group.iterkeys())):
+    #for key in reversed(sorted(group.iterkeys())):
+    for key in reversed(sorted(iter(group))):
       for roi in group[key]:
         # Only create ROI if it doesn't already exist:
         if not PMF.has_roi(self.pm, roi.name):

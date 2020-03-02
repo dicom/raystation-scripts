@@ -14,7 +14,7 @@ import sys
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 #import raystation_utilities as RSU
 
 # This class contains tests for the RayStation Patient object:
@@ -27,7 +27,7 @@ class TSPatient(object):
     # Related test suite objects:
     self.ts_case = None
     # Parameters:
-    self.param = TEST.Parameter('Pasient', patient.Name.decode('utf8', 'replace'), None) # NB: Enkodingproblem: krasjer ikke, men gir ? istedenfor æ,ø,å
+    self.param = TEST.Parameter('Pasient', patient.Name, None) # NB: Enkodingproblem: krasjer ikke, men gir ? istedenfor æ,ø,å
     self.id = TEST.Parameter('ID', '', self.param)
 
   # Tests the length of the patient's ID.

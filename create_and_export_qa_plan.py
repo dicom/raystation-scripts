@@ -1,30 +1,23 @@
 # encoding: utf8
-
+# Creates a QA plan with standard settings and exports it to specified folder.
 #
 # Authors:
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
 # Made for RayStation version: 9A
+# Python 3.6
 
 # Import system libraries:
 from connect import *
 import clr, sys, os
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
 
-from Microsoft.Office.Interop.Excel import *
-from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
-from System.Windows.Forms import (Application, BorderStyle, Button, CheckBox, DialogResult, Form, FormBorderStyle, Label, Panel, RadioButton, TextBox)
 import math
 
 
 # Load patient and case data:
 try:
-		patient = get_current("Patient")
+    patient = get_current("Patient")
 except SystemError:
     raise IOError("No plan loaded.")
 try:
@@ -55,7 +48,6 @@ if len(list(plan.VerificationPlans)) > 0:
       if name_conflict == False:
         break
 
-
 beam_set.CreateQAPlan(
 	PhantomName = 'ArcCheck (Heterogen bordtopp)',
 	PhantomId = 'AC_plug_test',
@@ -68,10 +60,8 @@ beam_set.CreateQAPlan(
 # Save
 patient.Save()
 last_plan = len(list(plan.VerificationPlans))-1
-#for verificationPlan in plan.VerificationPlans:
-#if verificationPlan.OfRadiationSet.DicomPlanLabel == beam_set.DicomPlanLabel:
 plan.VerificationPlans[last_plan].ScriptableQADicomExport(
-	ExportFolderPath = "I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Stråleterapi_avd\\Stråleterapi\\Mosaiq\\dokument-import\\VMAT_QA".decode('utf8'),
+	ExportFolderPath = "I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Stråleterapi_avd\\Stråleterapi\\Mosaiq\\dokument-import\\VMAT_QA",
 	QaPlanIdentity = 'Patient',
 	ExportExamination = False,
 	ExportExaminationStructureSet = False,

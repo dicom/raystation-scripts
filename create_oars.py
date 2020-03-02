@@ -6,37 +6,30 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9A
+# Made for RayStation version: 9.A
+# Python 3.6
 
 # Import system libraries:
 from connect import *
 import clr, sys, os
-import System.Array
-clr.AddReference("Office")
-clr.AddReference("Microsoft.Office.Interop.Excel")
-clr.AddReference("System.Windows.Forms")
-clr.AddReference("System.Drawing")
-
-from Microsoft.Office.Interop.Excel import *
-from System.Drawing import (Color, ContentAlignment, Font, FontStyle, Point)
-from System.Windows.Forms import (Application, BorderStyle, Button, CheckBox, DialogResult, Form, FormBorderStyle, Label, Panel, RadioButton, TextBox)
+from tkinter import *
+from tkinter import messagebox
 import math
 
 # Add necessary folders to the system path:
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\def_regions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\functions".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\gui_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\quality_control".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\rt_classes".decode('utf8'))
-sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\raystation-scripts\\settings".decode('utf8'))
-
+sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
+sys.path.append("C:\\temp\\raystation-scripts\\functions")
+sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
+sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
+sys.path.append("C:\\temp\\raystation-scripts\\settings")
 # Import local files:
 import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 import property as P
 import radio_button as RB
-import check_box_form as FORM
+import check_button_frame as FRAME
 import structure_set_functions as SSF
 
 # Load case data:
@@ -48,6 +41,7 @@ try:
   patient_db = get_current('PatientDB')
 except SystemError:
   raise IOError("No case loaded.")
+
 # Load patient model, examination and structure set:
 pm = case.PatientModel
 examination = get_current("Examination")
@@ -58,6 +52,7 @@ def get_my_key(obj):
 # OAR choices:
 oar_list = [
   ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r,
+  ROIS.retina_l, ROIS.retina_r, ROIS.cornea_l, ROIS.cornea_r,
   ROIS.optic_nrv_l, ROIS.optic_nrv_r, ROIS.optic_chiasm,
   ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.cochlea_l, ROIS.cochlea_r,
   ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.nasal_cavity,
@@ -77,70 +72,97 @@ oar_list = [
   ROIS.markers, ROIS.prosthesis_l, ROIS.prosthesis_r, ROIS.couch,
 ]
 oar_list.sort(key=get_my_key)
+
 # Setup GUI choices:
 oar_property = []
 for i in range(len(oar_list)):
   oar_property.append(P.Property(oar_list[i].name, oar_list[i].name))
 
-# Setup and run GUI:
+# Create radio button object
 options = RB.RadioButton('ROI','Velg:', oar_property)
-form_r = FORM.CheckBoxForm(options)
-form_r.DialogResult
+
+# Setup and run GUI:
+my_window = Tk()
+frame = FRAME.CheckButtonFrame(my_window, options)
+frame.grid(row = 0,column = 0)
+my_window.mainloop()
 
 # Extract information from the users's selections in the GUI:
-if form_r.DialogResult == DialogResult.OK:
-  checkBoxes = form_r.SelectedBoxes
-elif form_r.DialogResult == DialogResult.Cancel:
-  print "Script execution cancelled by user..."
-  sys.exit(0)
+if frame.ok:
+    checkBoxes = frame.checkbuttons
+    variables = frame.variables
+elif not frame.ok:
+    print ("Script execution cancelled by user...")
+    sys.exit(0)
 else:
-  raise IOError("Unexpected error (selection).")
+    messagebox.showinfo("Error.","Unexpected error.")
+    sys.exit(0)
 
 # Determine which OARs have been selected:
-selected_oar_list = []
-for box in checkBoxes:
-  for i in range(len(oar_list)):
-    if box.Checked:
-      if oar_list[i].name == box.Text:
-        selected_oar_list.append(oar_list[i])
+selected_oar_list = {}
+for i in range(len(checkBoxes)):
+  for j in range(len(oar_list)):
+    if variables[i].get() == 1:
+      if oar_list[j].name == checkBoxes[i].cget("text"):
+        selected_oar_list[oar_list[j]] = True
         break
 
-# Add left/right organs in cases where a union organ has been selected from the list:
-for i in range(len(selected_oar_list)):
-  if selected_oar_list[i].name == ROIS.kidneys.name:
-    selected_oar_list.extend([ROIS.kidney_l, ROIS.kidney_r])
-  if selected_oar_list[i].name == ROIS.parotids.name:
-    selected_oar_list.extend([ROIS.parotid_l, ROIS.parotid_r])
-  if selected_oar_list[i].name == ROIS.submands.name:
-    selected_oar_list.extend([ROIS.submand_l, ROIS.submand_r])
-  if selected_oar_list[i].name == ROIS.ribs_l.name:
-    selected_oar_list.extend([ROIS.rib_y_l, ROIS.rib_x_l])
-  if selected_oar_list[i].name == ROIS.ribs_r.name:
-    selected_oar_list.extend([ROIS.rib_y_r, ROIS.rib_x_r])
-  if selected_oar_list[i].name == ROIS.lungs.name:
-    selected_oar_list.extend([ROIS.lung_l, ROIS.lung_r])
-  if selected_oar_list[i].name == ROIS.breast_l.name:
-    selected_oar_list.extend([ROIS.breast_l_draft])
-  if selected_oar_list[i].name == ROIS.breast_r.name:
-    selected_oar_list.extend([ROIS.breast_r_draft])
-  if selected_oar_list[i].name == ROIS.markers.name and SSF.has_roi(ss, ROIS.rectum.name):
-    del selected_oar_list[i]
-    selected_oar_list.extend([ROIS.marker1, ROIS.marker2, ROIS.marker3, ROIS.marker4])
-  if selected_oar_list[i].name == ROIS.couch.name:
-    PMF.create_couch(patient_db, pm, examination)
-  if selected_oar_list[i].name == ROIS.body.name:
-    PMF.create_stereotactic_body_geometry(pm, examination, ss)
-    PMF.create_stereotactic_external_geometry(pm, examination, ss)
-  if selected_oar_list[i].name == ROIS.external.name:
-    PMF.create_external_geometry(pm, examination, ss)
-  if selected_oar_list[i].name == ROIS.anal_canal.name:
-    PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
-  if selected_oar_list[i].name == ROIS.dorso_rectum.name:
-    PMF.create_posterior_half(pm, examination, ss, ROIS.rectum, ROIS.dorso_rectum)
+# Add left/right organs in cases where a union organ has been selected from the list and create OARs that require special functions:
+if selected_oar_list.get(ROIS.kidneys):
+  selected_oar_list[ROIS.kidney_l] = True
+  selected_oar_list[ROIS.kidney_r] = True
+if selected_oar_list.get(ROIS.parotids):
+  selected_oar_list[ROIS.parotid_l] = True
+  selected_oar_list[ROIS.parotid_r] = True
+if selected_oar_list.get(ROIS.submands):
+  selected_oar_list[ROIS.submand_l] = True
+  selected_oar_list[ROIS.submand_r] = True
+if selected_oar_list.get(ROIS.ribs_l):
+  selected_oar_list[ROIS.rib_y_l] = True
+  selected_oar_list[ROIS.rib_x_l] = True  
+if selected_oar_list.get(ROIS.ribs_r):
+  selected_oar_list[ROIS.rib_y_r] = True
+  selected_oar_list[ROIS.rib_x_r] = True  
+if selected_oar_list.get(ROIS.lungs):
+  selected_oar_list[ROIS.lung_l] = True
+  selected_oar_list[ROIS.lung_r] = True    
+if selected_oar_list.get(ROIS.breast_l):
+  selected_oar_list[ROIS.breast_l_draft] =True
+if selected_oar_list.get(ROIS.breast_r):
+  selected_oar_list[ROIS.breast_r_draft] =True
+if selected_oar_list.get(ROIS.markers)and SSF.has_roi(ss, ROIS.rectum.name):
+  del selected_oar_list[ROIS.markers]
+  selected_oar_list[ROIS.marker1] = True
+  selected_oar_list[ROIS.marker2] = True
+  selected_oar_list[ROIS.marker3] = True
+  selected_oar_list[ROIS.marker4] = True
+if selected_oar_list.get(ROIS.couch):
+  PMF.create_couch(patient_db, pm, examination)
+if selected_oar_list.get(ROIS.body):
+  PMF.create_stereotactic_body_geometry(pm, examination, ss)
+  PMF.create_stereotactic_external_geometry(pm, examination, ss)
+if selected_oar_list.get(ROIS.external):
+  PMF.create_external_geometry(pm, examination, ss)
+if selected_oar_list.get(ROIS.anal_canal):
+  PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
+if selected_oar_list.get(ROIS.dorso_rectum):
+  PMF.create_posterior_half(pm, examination, ss, ROIS.rectum, ROIS.dorso_rectum)
+if selected_oar_list.get(ROIS.cornea_l) and selected_oar_list.get(ROIS.retina_l):
+  PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l, ROIS.cornea_l)
+elif selected_oar_list.get(ROIS.retina_l) and not selected_oar_list.get(ROIS.cornea_l):
+  PMF.create_retina(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l)
+elif selected_oar_list.get(ROIS.cornea_l) and not selected_oar_list.get(ROIS.retina_l):
+  PMF.create_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.cornea_l)
+if selected_oar_list.get(ROIS.cornea_r) and selected_oar_list.get(ROIS.retina_r):
+  PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r, ROIS.cornea_r)
+elif selected_oar_list.get(ROIS.retina_r) and not selected_oar_list.get(ROIS.cornea_r):
+  PMF.create_retina(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r)
+elif selected_oar_list.get(ROIS.cornea_r) and not selected_oar_list.get(ROIS.retina_r):
+  PMF.create_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.cornea_r)
 
 
 # Create ROIs:
-for roi in reversed(selected_oar_list):
+for roi in reversed(list(selected_oar_list)):
   # Only create ROI if it doesn't already exist:
   if not PMF.has_roi(pm, roi.name):
     if roi.__class__.__name__ == 'ROI':

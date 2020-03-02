@@ -15,7 +15,7 @@ import re
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import beam_set_label as BSL
 #import raystation_utilities as RSU
 

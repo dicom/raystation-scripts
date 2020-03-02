@@ -14,7 +14,7 @@ import sys
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 
 # This class contains tests for the RayStation POI object:

@@ -7,14 +7,16 @@
 # System configuration:
 from connect import *
 import sys
+import itertools as it
 #sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\RayStation\\lib".decode('utf8'))
 
 # GUI framework (debugging only):
 #clr.AddReference("PresentationFramework")
 #from System.Windows import *
+from tkinter import messagebox
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 
 # This class contains tests for the RayStation Segment object:
@@ -36,8 +38,27 @@ class TSSegment(object):
   # Tests validity of mlc corners.
   def mlc_corner_validity_test(self):
     t = TEST.Test("Skal ha hjørne-posisjoner som er leverbare på Elekta", True, self.mlc)
-    mlc_violation = RSU.check_mlc_corners(self.segment)
-    if mlc_violation:
+    violated = False
+    # Agility/Versa HD:
+    limits = [20.0 for i in range(80)]
+    limits[0] = limits[79] = 16.1
+    limits[1] = limits[78] = 16.7
+    limits[2] = limits[77] = 17.3
+    limits[3] = limits[76] = 17.8
+    limits[4] = limits[75] = 18.3
+    limits[5] = limits[74] = 18.8
+    limits[6] = limits[73] = 19.2
+    limits[7] = limits[72] = 19.7
+ 
+    # Iterate leaf positions and check against limits:
+    #for i in range(len(limits)):
+    for i in it.chain(range(0, 7), range(72, 79)):
+      if self.segment.LeafPositions[0][i] < -limits[i]:
+        violated = True
+      if self.segment.LeafPositions[1][i] > limits[i]:
+        violated = True
+
+    if violated:
       return t.fail(False)
     else:
       return t.succeed()

@@ -115,43 +115,46 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
 # Adjusts leaf positions on the first segment of each beam for 3DCRT breast plans.
 # Leafs (on anterior-lateral leaf bank) are pulled 2.5 cm out from their initial position.
 # For locoregional plans, this is only done in the part of the field covering the breast.
-def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code, breast_name, nodes_name):
+def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code):
+  roi_dict = SSF.create_roi_dict(ss)
+  for beam in beam_set.Beams:
+    segment = beam.Segments[0]
+    leaf_positions = segment.LeafPositions
+    jaw = segment.JawPositions
+    y1 = jaw[2]
+    if region_code in RC.breast_reg_codes:
+      if SSF.has_named_roi_with_contours(ss, ROIS.ptv_pc.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_nc.name) and beam.Name in ['RPO','LPO']:
+        nodes = ss.RoiGeometries[ROIS.ptv_nc.name].GetBoundingBox()
+        breast = ss.RoiGeometries[ROIS.ptv_pc.name].GetBoundingBox()
+        y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
+      elif SSF.has_named_roi_with_contours(ss, ROIS.ptv_50c.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_47c.name) and beam.Name in ['RPO','LPO']:
+        nodes = ss.RoiGeometries[ROIS.ptv_47c.name].GetBoundingBox()
+        breast = ss.RoiGeometries[ROIS.ptv_50c.name].GetBoundingBox()
+        y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
+      else:
+        y2 = jaw[3]
+    else:
+      y2 = jaw[3]
 
-	for beam in beam_set.Beams:
-		segment = beam.Segments[0]
-		leaf_positions = segment.LeafPositions
-		jaw = segment.JawPositions
-		y1 = jaw[2]
-
-		if region_code in RC.breast_reg_codes:
-			if SSF.has_named_roi_with_contours(ss, nodes_name) and SSF.has_named_roi_with_contours(ss, breast_name) and beam.Name in ['RPO','LPO']:
-				nodes = ss.RoiGeometries[nodes_name].GetBoundingBox()
-				breast = ss.RoiGeometries[breast_name].GetBoundingBox()
-				y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
-			else:
-				y2 = jaw[3]
-		else:
-			y2 = jaw[3]
-
-		# don't forget that mlc 50 is index leafPositions[x][49]
-		mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
-		mlcY2 = int(math.ceil ((y2 + 20) * 2))
+    # don't forget that mlc 50 is index leafPositions[x][49]
+    mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
+    mlcY2 = int(math.ceil ((y2 + 20) * 2))
 		
-		for leaf in range(mlcY1-1, mlcY2+1):
-			if beam.Name in ['LAO', 'LPO 1'] and region_code in RC.breast_r_codes:
-				leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
-			elif beam.Name in ['RAO','RPO 1'] and region_code in RC.breast_l_codes:
-				leaf_positions[1][leaf] = leaf_positions[1][leaf] +2.5
-			elif beam.Name == 'RPO':
-				leaf_positions[1][leaf] = leaf_positions[1][leaf] +2.5
-			elif beam.Name == 'LPO':
-				leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
+    for leaf in range(mlcY1-1, mlcY2+1):
+      if beam.Name == 'LAO' and region_code in RC.breast_r_codes:
+        leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
+      elif beam.Name == 'RAO' and region_code in RC.breast_l_codes:
+        leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
+      elif beam.Name in ['RPO', 'RPO 1']:
+        leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
+      elif beam.Name in ['LPO', 'LPO 1']:
+        leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
 
-		segment.LeafPositions = leaf_positions
+    segment.LeafPositions = leaf_positions
 
 
 # Creates a single arc, VMAT
-def create_single_arc(beam_set, isocenter, energy, gantry_stop_angle='179', gantry_start_angle='181', collimator_angle='5', couch_angle='0', iso_index = 1, beam_index=1):
+def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', gantry_start_angle='181', collimator_angle='5', couch_angle='0', iso_index = 1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b = beam_set.CreateArcBeam(
     ArcStopGantryAngle = gantry_stop_angle,
@@ -262,6 +265,11 @@ def set_MU(beam_set, names, mu):
   for i in range(len(names)):
     beam_set.Beams[names[i]].BeamMU = mu[i]
 
+def set_up_treat_and_protect_for_stereotactic_lung(beam_set, protect_roi, margin):
+    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
+    for beam in beam_set.Beams:
+        beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = protect_roi)
+    #beam_set.TreatAndProtect(ShowProgress=True)
 		
 def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_optimization, protect_roi):
 	beam_set.SetTreatmentTechnique(Technique = 'Conformal')

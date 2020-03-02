@@ -14,9 +14,9 @@ class DefBreast(object):
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
   def __init__(self, pm, examination, ss, choices, site):
     # Choice 1: Local/Regional/Regional with IMN
-    region = choices[1].value
+    region = choices[1]
     # Choice 2: Side - Left or right?
-    side = choices[2].value
+    side = choices[2]
 
     if region == 'part':
       site.add_oars(DEF.breast_part_oars)
@@ -44,13 +44,13 @@ class DefBreast(object):
       ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       site.add_targets([ctv, ptv])
       # Choice 2: With our without boost?
-      boost = choices[3].value
+      boost = choices[3]
     elif region in ['reg','imn']:
       # Breast where regional lymph nodes or IMN is included
       # Choice 3: Hypofractionation or not
-      frac = choices[3].value
+      frac = choices[3]
       # Choice 4: With our without boost?
-      boost = choices[4].value
+      boost = choices[4]
       site.add_oars(DEF.breast_reg_oars)
       # Hypofractionated
       if frac == 'hypo':
@@ -96,7 +96,7 @@ class DefBreast(object):
         site.add_targets([ctv, ctv_47, ctv_47_50, ptv_50c, ptv_47, ptv_47c, ptv])
     # Add volumes for boost (2Gy x 8) if selected:
     if not region == 'part':
-      if boost:
+      if boost == 'with':
         if side == 'right':
           ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
         else:

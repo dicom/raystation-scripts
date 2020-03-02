@@ -13,20 +13,18 @@ import structure_set_functions as SSF
 def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name, energy_name, iso_index = 1, beam_index=1):
   if technique_name == '3D-CRT':
     #Two tangetial beams:
-    if region_code in RC.breast_tang_l_codes:
-      if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and not SSF.has_roi_with_shape(ss, ROIS.ptv_c.name): # Partial breast
-        BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=iso_index, beam_index=beam_index)
-        BSF.set_MU(beam_set,['LPO','LAO','RAO'], [90, 15, 90] )
-      else:
-        BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '310', collimator_angle1 = '343', collimator_angle2 = '17', iso_index=iso_index, beam_index=beam_index)
-        BSF.set_MU(beam_set,['LPO','RAO'], [110, 110] )
+    if region_code in RC.breast_partial_l_codes:
+      BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=iso_index, beam_index=beam_index)
+      BSF.set_MU(beam_set,['LPO','LAO','RAO'], [90, 15, 90] )
+    elif region_code in RC.breast_tang_l_codes:
+      BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '310', collimator_angle1 = '343', collimator_angle2 = '17', iso_index=iso_index, beam_index=beam_index)
+      BSF.set_MU(beam_set,['LPO','RAO'], [110, 110] )
+    elif region_code in RC.breast_partial_r_codes:
+      BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=iso_index, beam_index=beam_index)
+      BSF.set_MU(beam_set,['RPO','RAO','LAO'], [90, 15, 90] )
     elif region_code in RC.breast_tang_r_codes:
-      if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and not SSF.has_roi_with_shape(ss, ROIS.ptv_c.name): # Partial breast
-        BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=iso_index, beam_index=beam_index)
-        BSF.set_MU(beam_set,['RPO','RAO','LAO'], [90, 15, 90] )
-      else:
-        BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'LAO', gantry_angle1 = '230', gantry_angle2 = '50', collimator_angle1 = '9', collimator_angle2 = '352', iso_index=iso_index, beam_index=beam_index)
-        BSF.set_MU(beam_set,['RPO','LAO'], [110, 110] )
+      BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'LAO', gantry_angle1 = '230', gantry_angle2 = '50', collimator_angle1 = '9', collimator_angle2 = '352', iso_index=iso_index, beam_index=beam_index)
+      BSF.set_MU(beam_set,['RPO','LAO'], [110, 110] )
     # Breast with regional lymph nodes:
     elif region_code in RC.breast_reg_l_codes: # Left
       BSF.create_four_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'Venstre', name3 = 'Forfra', name4 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '90', gantry_angle3 = '0', gantry_angle4 = '309', iso_index=iso_index, beam_index=beam_index)

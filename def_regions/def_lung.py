@@ -14,11 +14,11 @@ class DefLung(object):
   def __init__(self, pm, examination, ss, choices, site):
     site.add_oars(DEF.lung_oars)
     # Choice 1: Intent (curative or palliative)
-    intent = choices[1].value
+    intent = choices[1]
     # Curative:
     if intent == 'curative':
       # Choice 2: Diagnosis
-      diagnosis = choices[2].value
+      diagnosis = choices[2]
       # Non small cell lung cancer (with 4DCT) or small cell lung cancer (with 4DCT):
       if diagnosis == '4dct':
         igtv =  ROI.ROIAlgebra(ROIS.igtv.name, ROIS.igtv.type, ROIS.gtv.color, sourcesA=[ROIS.igtv_p], sourcesB=[ROIS.igtv_n])
@@ -63,7 +63,7 @@ class DefLung(object):
     elif intent == 'palliative':
       # Choice 2: 4DCT - with or without?
       # With 4DCT:
-      if choices[2].value:
+      if choices[2]:
         ictv =  ROI.ROIAlgebra(ROIS.ictv.name, ROIS.ictv.type, ROIS.ctv.color, sourcesA=[ROIS.igtv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
         ptv =  ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ictv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
         lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [ROIS.igtv], operator='Subtraction')
@@ -85,12 +85,12 @@ class DefLung(object):
     # Stereotactic treatment:
     elif intent == 'stereotactic':
       # Choice 2: Side - left or right?
-      side = choices[2].value
+      side = choices[2]
       if side == 'right':
         site.add_oars([ROIS.rib_x_r, ROIS.rib_y_r, ROIS.ribs_r])
       elif side == 'left':
         site.add_oars([ROIS.rib_x_l, ROIS.rib_y_l, ROIS.ribs_l])
-      nr_targets = choices[3].value
+      nr_targets = choices[3]
       # Choice 3: Number of target volumes?
       if nr_targets == 'one':
         site.add_targets([ROIS.igtv, ROIS.ictv, ROIS.iptv, ROIS.wall_ptv])

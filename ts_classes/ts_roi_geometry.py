@@ -14,7 +14,7 @@ import sys
 #from System.Windows import *
 
 # Local script imports:
-import test as TEST
+import test_p as TEST
 import raystation_utilities as RSU
 import ts_structure_set as SS
 
@@ -32,33 +32,31 @@ class TSROIGeometry(object):
       self.parent_param = None
     # Parameters:
     self.param = TEST.Parameter('ROI', '', self.parent_param)
-    self.defined_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name.decode('utf8', 'replace'), self.param)
-    self.updated_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name.decode('utf8', 'replace'), self.param)
+    self.defined_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name, self.param)
+    self.updated_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name, self.param)
 
 
 
 #Tests if all ROI's are defined
   def defined_volume_test(self):
     t = TEST.Test("Regionen må ha definert volum", True, self.defined_roi)
-    if self.ts_structure_set.structure_set == self.ts_structure_set.ts_case.ts_plan.plan.GetStructureSet():
-      if self.roi_geometry.HasContours():
-        return t.succeed()
-      else:
-        return t.fail()
+    if self.roi_geometry.HasContours():
+      return t.succeed()
+    else:
+      return t.fail()
 
 
 
 #Tests if a ROI is updated when it is derived
   def derived_roi_geometry_is_updated_test(self):
     t = TEST.Test("Regionen må være oppdatert når den er avledet", True, self.updated_roi)
-    if self.ts_structure_set.structure_set == self.ts_structure_set.ts_case.ts_plan.plan.GetStructureSet():
-      if self.roi_geometry.PrimaryShape:
-        # Is the referenced ROI derived?
-        if self.roi_geometry.OfRoi.DerivedRoiExpression:
-          # Is this ROI Geometry not updated?
-          if not self.roi_geometry.PrimaryShape.DerivedRoiStatus:
-            return t.fail()
-          elif self.roi_geometry.PrimaryShape.DerivedRoiStatus.IsShapeDirty:
-            return t.fail()
-          else:
-            return t.succeed()
+    if self.roi_geometry.PrimaryShape:
+      # Is the referenced ROI derived?
+      if self.roi_geometry.OfRoi.DerivedRoiExpression:
+        # Is this ROI Geometry not updated?
+        if not self.roi_geometry.PrimaryShape.DerivedRoiStatus:
+          return t.fail()
+        elif self.roi_geometry.PrimaryShape.DerivedRoiStatus.IsShapeDirty:
+          return t.fail()
+        else:
+          return t.succeed()
