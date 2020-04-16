@@ -106,11 +106,19 @@ def create_roi_subtraction(pm, examination, ss, roi1, roi2, subtraction_name, th
     GUIF.handle_missing_roi_for_derived_rois(subtraction_name, roi2.name)
   return overlap
 
+# Gives the name of the CTV which is the primary target for this particular breast treatment plan.
+# The primary target CTV name varies based on whether the plan is partial breast, whole breast or locoregional breast (also fractionation may impact the name).
 def determine_breast_primary_target(ss):
+  # Default (Whole breast):
   target = ROIS.ctv
-  if is_breast_hypo(ss):
+  if has_named_roi_with_contours(ss, ROIS.ctv_p.name):
+    # Locoregional:
     target = ROIS.ctv_p
+  elif has_named_roi_with_contours(ss, ROIS.ctv_sb.name):
+    # Partial breast:
+    target = ROIS.ctv_sb
   elif has_named_roi_with_contours(ss, ROIS.ctv_47.name):
+    # Normofractionated locoregional (legacy):
     target = ROIS.ctv_50
   return target
 
