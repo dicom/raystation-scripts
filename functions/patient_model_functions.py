@@ -243,10 +243,14 @@ def create_bottom_part_x_cm(pm, examination, ss, source_roi, roi, distance):
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, source_roi.name)
 
+# Creates a grey value theshold ROI (grei_level_roi), which is intersected with source_roi. The end result is intersect_roi.
+# grei_level_roi is only used temporary and is deleted after use. If unsuccessful, the intersect_roi is also deleted.
 def create_grey_value_intersection_roi(pm, examination, ss, grey_level_roi, source_roi, intersection_roi, low_threshold, high_threshold):
+  # If the grey level threshold ROI already exists, delete it and re-create an empty ROI:
   delete_roi(pm, grey_level_roi.name)
   pm.CreateRoi(Name = grey_level_roi.name, Type = grey_level_roi.type, Color = grey_level_roi.color)
   ss.RoiGeometries[grey_level_roi.name].OfRoi.GrayLevelThreshold(Examination = examination, LowThreshold = low_threshold, HighThreshold = high_threshold)
+  # Create the intersection ROI:
   if not SSF.is_approved_roi_structure(ss, intersection_roi.name):
     if is_approved_roi_structure_in_one_of_all_structure_sets(pm, intersection_roi.name):
       intersection = ROI.ROIAlgebra(intersection_roi.name+"1", intersection_roi.type, intersection_roi.color, sourcesA = [source_roi], sourcesB = [grey_level_roi], operator = 'Intersection')
@@ -255,9 +259,15 @@ def create_grey_value_intersection_roi(pm, examination, ss, grey_level_roi, sour
       delete_roi(pm, intersection_roi.name)
       intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [source_roi], sourcesB = [grey_level_roi], operator = 'Intersection')
       create_algebra_roi(pm, examination, ss, intersection)
-  delete_roi(pm, grey_level_roi.name)
-  if ss.RoiGeometries[intersection_roi.name].GetRoiVolume() < 0.1:
-    delete_roi(pm, intersection_roi.name)  
+  # Clean up: Delete the threshold ROI which was created:
+  if ss.RoiGeometries[grey_level_roi.name]:
+    delete_roi(pm, grey_level_roi.name)
+  # In case of failure (no volume or volume < 0.1 cm^3), delete the intersection ROI:
+  if ss.RoiGeometries[intersection_roi.name].HasContours():
+    if ss.RoiGeometries[intersection_roi.name].GetRoiVolume() < 0.1:
+      delete_roi(pm, intersection_roi.name)
+  else:
+    delete_roi(pm, intersection_roi.name)
 
 def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, intersection_roi, subtraction_roi):
   if SSF.has_named_roi_with_contours(ss, source_roi.name):
