@@ -79,9 +79,9 @@ class FractionationFrame(Frame):
             messagebox.showinfo("Ugyldig regionkode.","Ugyldig regionkode." )
             sys.exit(0)
     
-        if 0 < float(self.fraction_dose_entry.get()) < 26: 
-            fraction_dose = float(self.fraction_dose_entry.get())
-        else:
+        # Floats expect . (for more flexibility we will replace , with . as , is commonly used in Norway for floats)
+        fraction_dose = float(self.fraction_dose_entry.get().replace(',', '.'))
+        if not 0 < fraction_dose < 26: 
             messagebox.showinfo("Ugyldig fraksjonsdose.","Ugyldig fraksjonsdose." )
             sys.exit(0)
             
