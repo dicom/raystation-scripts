@@ -72,7 +72,7 @@ class TSBeam(object):
     t = TEST.Test("Maksimal avstand fra isosenter til feltgrense ved bruk av filter fri energi bør være < 7.5 cm  ", '<7.5 cm', self.collimator)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
-      if self.ts_beam_set.beam_set.MachineReference.MachineName == 'ALVersa_FFF':
+      if self.beam.BeamQualityId == '6 FFF':
         if self.has_segment():
           maxJawY1 = self.beam.Segments[0].JawPositions[2]
           maxJawY2 = self.beam.Segments[0].JawPositions[3]

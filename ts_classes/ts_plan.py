@@ -9,7 +9,7 @@ from connect import *
 import sys
 
 # GUI framework (debugging only):
-from tkinter import messagebox
+#from tkinter import messagebox
 
 # Local script imports:
 import test_p as TEST
