@@ -8,10 +8,8 @@
 from connect import *
 import sys
 
-
 # GUI framework (debugging only):
-#clr.AddReference("PresentationFramework")
-#from System.Windows import *
+#from tkinter import messagebox
 
 # Local script imports:
 import test_p as TEST

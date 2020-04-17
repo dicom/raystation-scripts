@@ -7,11 +7,9 @@
 # System configuration:
 from connect import *
 import sys
-#sys.path.append("I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Program\\Skript\\RayStation\\lib".decode('utf8'))
-from tkinter import messagebox
+
 # GUI framework (debugging only):
-#clr.AddReference("PresentationFramework")
-#from System.Windows import *
+from tkinter import messagebox
 
 # Local script imports:
 import test_p as TEST
@@ -166,7 +164,7 @@ class TSBeam(object):
       return t.succeed()
     else:
       t.expected = self.beam.Name[0].upper()
-      return t.fail(self.beam.Name[0].decode('utf8', 'replace'))
+      return t.fail(self.beam.Name[0])
 
   # Tests that name format is 'Arc X', with X being the beam number, for VMAT arcs.
   def name_of_arc_test(self):
@@ -175,7 +173,7 @@ class TSBeam(object):
       expected = 'Arc ' + str(self.beam.Number)
       if expected != self.beam.Name:
         t.expected = expected
-        return t.fail(self.beam.Name.decode('utf8', 'replace'))
+        return t.fail(self.beam.Name)
       else:
         return t.succeed()
 
