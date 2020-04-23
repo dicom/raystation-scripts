@@ -267,25 +267,27 @@ def determine_nr_of_indexed_ptvs(ss):
 def determine_target(ss, roi_dict, nr_fractions, fraction_dose):
   total_dose = int(nr_fractions*fraction_dose)
   match = False
-  target = "hei"
-  target_list = [ROIS.ctv.name, ROIS.ctv_p.name,'CTV_'+ str(total_dose),ROIS.ictv.name,ROIS.ctv1.name,ROIS.ctv_sb.name,ROIS.ctv2.name,ROIS.ctv3.name]
-  # Stereotactic brain treatments with multiple targets, PTV is the target
+  target_list = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(total_dose), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
+  # Stereotactic brain treatments with multiple targets: PTV is the target
   if nr_fractions == 3 and fraction_dose in [7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
-    target_list.insert(0, ROIS.ptv1.name)
+    if determine_nr_of_indexed_ptvs(ss) > 1:
+      target_list.insert(0, ROIS.ptv1.name)
+    else:
+      target_list.insert(0, ROIS.ptv.name)
     match = True
-  
-  # Stereotactic treatments, PTV is the target
+  # Extracranial stereotactic treatments: PTV is the target
   if match == False:
     if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
       if determine_nr_of_indexed_ptvs(ss) > 1:
         target_list.insert(0, ROIS.ptv1.name)
       else:
         target_list.insert(0, ROIS.ptv.name)
+  # Pick the first ROI in the target list that gives a match in the ROI dictionary given as a function parameter:
   for i in range(len(target_list)):
     if roi_dict.get(target_list[i]):
       target = target_list[i]
       break
-
+  # Return the determined target (or fail gracefully with a dialogue window):
   if target:
     return target
   else:
