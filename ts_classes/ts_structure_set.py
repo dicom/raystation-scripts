@@ -143,14 +143,17 @@ class TSStructureSet(object):
   # Tests if the CT-images are cropped close to external, in the same area as there is a target volume.
   def external_ptv_bounding_test(self):
     t = TEST.Test("External ligger helt på yttergrensen av bildeopptaket. Dette kan tyde på at CT-bildene er beskjært uheldig, og at deler av pasienten mangler. Dersom denne beskjæringen forekommer i nærheten av målvolumet, vil det resultere i feil doseberegning.", True, self.external_bounding)
-    # Run test if this structure set corresponds to the examination used for the treatment plan:
-    #t.expected = 0
     match = False
-    for rg in self.structure_set.RoiGeometries:
-      if SSF.has_named_roi_with_contours(self.structure_set, ROIS.external.name):
-        ext_box = self.structure_set.RoiGeometries[ROIS.external.name].GetBoundingBox()
-        img_box = self.structure_set.OnExamination.Series[0].ImageStack.GetBoundingBox()
-        if rg.OfRoi.Type in ['Gtv','Ctv'] and rg.HasContours() and not rg.PrimaryShape.DerivedRoiStatus:
+    # Run test if this structure set corresponds to the examination used for the treatment plan:
+    if SSF.has_named_roi_with_contours(self.structure_set, ROIS.external.name):
+      ext_box = self.structure_set.RoiGeometries[ROIS.external.name].GetBoundingBox()
+      img_box = self.structure_set.OnExamination.Series[0].ImageStack.GetBoundingBox()
+      # Iterate all ROI geometries:
+      for rg in self.structure_set.RoiGeometries:
+        # We have quite a few criterias on which ROI geometries to test with. It should be a GTV or CTV, it should have contours
+        # (unfotunately a cornercase has been discovered with an underived but unedited ROI which means we also have to check for the attribute 'Contours'),
+        # and finally we dont check on derived ROIs:
+        if rg.OfRoi.Type in ['Gtv','Ctv'] and rg.HasContours() and hasattr(rg.PrimaryShape, 'Contours') and not rg.PrimaryShape.DerivedRoiStatus:
           roi_box = rg.GetBoundingBox()
           if abs(roi_box[0].z - img_box[0].z) < 1.5 or abs(roi_box[1].z -img_box[1].z) < 1.5:
             match = True
