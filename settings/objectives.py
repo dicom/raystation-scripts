@@ -202,7 +202,7 @@ def create_lung_objectives(ss, plan, target, total_dose):
     OF.max_eud(ss, plan, ROIS.esophagus.name, 0.51*total_dose*100, 1, 1) # (~34 Gy for 66 Gy total dose)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 80)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 2)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100/2, total_dose*100/6, 6, 2)
+    #OF.fall_off(ss, plan, ROIS.external.name, total_dose*100/2, total_dose*100/6, 6, 2) # this didnt seem to work well in practice
     OF.max_eud(ss, plan, ROIS.heart.name, 0.53*total_dose*100, 1, 10) # (~35 Gy for 66 Gy total dose)
     OF.max_eud(ss, plan, ROIS.spinal_canal.name, 0.6818*total_dose*100, 1, 10) # (~45 Gy for 66 Gy total dose)
     match = False
