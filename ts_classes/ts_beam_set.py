@@ -519,21 +519,23 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests presence of unmerged beams.
+  # Tests presence of unmerged (static) beams.
   def unmerged_beams_test(self):
     t = TEST.Test('Når Beam-settet inneholder felt som har identisk gantry- og kollimator-vinkel, skal i utgangspunktet disse være sammeslått (merge).', True, self.param)
-    gantry_and_coll_angles = set([])
-    has_unmerged_beams = None
-    for beam in self.beam_set.Beams:
-      beam_angles = str(beam.GantryAngle) + '-' + str(beam.InitialCollimatorAngle)
-      if beam_angles in gantry_and_coll_angles:
-        has_unmerged_beams = True
+    # It doesn't make sense to run this test on VMAT plans (since we don't merge arcs):
+    if self.beam_set.DeliveryTechnique != 'DynamicArc':
+      gantry_and_coll_angles = set([])
+      has_unmerged_beams = None
+      for beam in self.beam_set.Beams:
+        beam_angles = str(beam.GantryAngle) + '-' + str(beam.InitialCollimatorAngle)
+        if beam_angles in gantry_and_coll_angles:
+          has_unmerged_beams = True
+        else:
+          gantry_and_coll_angles.add(beam_angles)
+      if has_unmerged_beams:
+        return t.fail(True)
       else:
-        gantry_and_coll_angles.add(beam_angles)
-    if has_unmerged_beams:
-      return t.fail(True)
-    else:
-      return t.succeed()
+        return t.succeed()
 
 
   # Tests that in cases of full arcs, if the last arc of the beam set is clockwise, which gives a more efficient patient takedown.
