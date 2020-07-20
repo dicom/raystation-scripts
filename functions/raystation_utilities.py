@@ -173,7 +173,7 @@ def differential_prescription_dose(plan, beam_set):
 def background_prescription_dose(plan, beam_set):
   dose = 0
   bg_bs = background_beam_set(plan, beam_set)
-  if bg_bs:
+  if bg_bs and bg_bs.Prescription.PrimaryDosePrescription:
     dose = prescription_dose(bg_bs) + background_prescription_dose(plan, bg_bs)
   return dose
 
