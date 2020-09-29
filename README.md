@@ -6,7 +6,9 @@ workflow with the radiotherapy treatment planning system RayStation.
 The scripts are written in Python and can be executed inside RayStation by
 using the built-in scripting workspace.
 
-The scripts are currently compatible with RayStation 6.0.
+The scripts are currently compatible with RayStation 9A and are used with Python 3.6.
+
+Graphical user interfaces (GUI) use the Tkinter package.
 
 ## Contents
 
