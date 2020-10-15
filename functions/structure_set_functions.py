@@ -122,34 +122,42 @@ def determine_breast_primary_target(ss):
     target = ROIS.ctv_50
   return target
 
-# Determines from the region code if the plan is a tangential breast or if it is a breast with regional lymph nodes usign VMAT or 3D-CRT,
-# In those cases specific functions are used to find the isocenter, in all other cases the same function is used.
+# Determines the isocenter position to be used for the treatment plan.
+# If an appropriate ISO-POI is defined, its coordiantes will be used.
+# If not, a generic method will be used to determine a proper isocenter,
+# or for breast treatments, some special functions will be applied
+# based on treatment type (e.q. whole breast or locoregional) and technique (e.g. 3D-CRT or VMAT).
 def determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets=False):
-  # Determine the point which will be our isocenter:
+  # Check if there is a POI which is meant to define the isocenter position:
   iso = False
   for p in ss.PoiGeometries:
-    if p.OfPoi.Name in ['Iso', 'ISO']:
+    # Check if we have a properly named 'ISO' POI:
+    if p.OfPoi.Name.upper() in ['ISO']:
       name = p.OfPoi.Name
+      # Check if it has a defined geometry:
       if ss.PoiGeometries[name].Point.x != sys.float_info.min:
         isocenter = ss.PoiGeometries[name].Point
         iso = True
-
+  # If no ISO POI was found, we need to determine the isocenter coordinates:
   if iso == False:
+    # The logic used to determine the isocenter depends on what kind of treatment and technique is used:
     if region_code in RC.breast_tang_codes:
-      # When tangential fields are used
+      # Whole breast, conventional treatment technique:
       isocenter = find_isocenter_conv_breast(ss, target)
     elif region_code in RC.breast_reg_codes:
-      # If VMAT technique is used
+      # Locoregional breast:
       if technique_name == 'VMAT':
+        # VMAT technique:
         if is_breast_hypo(ss):
           isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv.name)
         else:
           if has_roi_with_shape(ss, ROIS.ctv_47_50.name):
             isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv_47_50.name)
-          else: # (If the 47 dose level is not defined, use target as "backup")
+          else:
+            # If the 47 dose level is not defined, use target as "backup":
             isocenter = find_isocenter_vmat_breast(ss, target)
       else:
-        # If 3D-CRT technique is used
+        # 3D-CRT technique (or hybrid-IMRT):
         if region_code in RC.breast_reg_l_codes:
           level = ROIS.level4_l.name
         else:
@@ -159,7 +167,7 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
         else:
           isocenter = find_isocenter_conv_reg_breast(ss, region_code, ROIS.ctv_47_50.name, level)
     else:
-      # In all other cases
+      # In all other cases:
       isocenter = find_isocenter(examination, ss, target, external, multiple_targets=multiple_targets)
   return isocenter
 
@@ -405,23 +413,29 @@ def find_isocenter_conv_reg_breast(ss, region_code, target, node_target):
     return isocenter
 
 
-# Determines the isocenter for VMAT breast with regional lymph nodes
+# Determines the isocenter for VMAT breast with regional lymph nodes.
 def find_isocenter_vmat_breast(ss, target):
-  # Find center of target:
+  # Find the center of the target ROI:
   if has_named_roi_with_contours(ss, target):
     isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
-    # Determine x and y coordinate:
+    # Determine the center x and y coordinate of the patient external contour:
     patient_center_x = roi_center_x(ss, ROIS.external.name)
     patient_center_y = roi_center_y(ss, ROIS.external.name)
+    # Determine the length from the isocenter to the patient center (in the axial plane):
     length = math.sqrt((isocenter.x - patient_center_x)**2 +(isocenter.y - patient_center_y)**2)
+    # Define the max tolerated length:
     max_length = 9
+    # If max length is violated, we must reduce the length to the isocenter position:
     if length > max_length:
-      y = isocenter.y - patient_center_y
-      x = abs(isocenter.x - patient_center_x)
-      x1 = max_length * x/length
-      y1 = max_length * y/length * (isocenter.y)/(abs(isocenter.y))
-      isocenter.x =  x1 * (isocenter.x)/(abs(isocenter.x))
-      isocenter.y = patient_center_y - y1* (isocenter.x)/(abs(isocenter.x))
+      # Existing delta between isocenter and patient center:
+      delta_x = isocenter.x - patient_center_x
+      delta_y = isocenter.y - patient_center_y
+      # New (reduced) delta between isocenter and patient center:
+      delta_x1 = delta_x * max_length / length
+      delta_y1 = delta_y * max_length / length
+      # New isocenter positions when applying the reduced delta:
+      isocenter.x = patient_center_x + delta_x1
+      isocenter.y = patient_center_y + delta_y1
     return isocenter
 
 
