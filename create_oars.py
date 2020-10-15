@@ -55,7 +55,7 @@ oar_list = [
   ROIS.retina_l, ROIS.retina_r, ROIS.cornea_l, ROIS.cornea_r,
   ROIS.optic_nrv_l, ROIS.optic_nrv_r, ROIS.optic_chiasm,
   ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.cochlea_l, ROIS.cochlea_r,
-  ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.nasal_cavity,
+  ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.nasal_cavity, ROIS.oral_cavity,
   ROIS.brain, ROIS.brainstem, ROIS.spinal_canal, ROIS.spinal_cord,
   ROIS.parotids, ROIS.submands,
   ROIS.esophagus, ROIS.breast_l, ROIS.breast_r,
