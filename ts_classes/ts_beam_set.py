@@ -152,7 +152,7 @@ class TSBeamSet(object):
     else:
       return t.fail()
 
-  #Tests if prescription in defined
+  # Tests if a prescription is defined.
   def defined_prescription_test(self):
     t = TEST.Test("Skal være definert.", True, self.defined_prescription)
     if self.has_prescription():
@@ -571,7 +571,7 @@ class TSBeamSet(object):
     t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
     if self.has_prescription():
-      t.expected = "<" + str(RSU.fraction_dose(self.beam_set) * 250)
+      t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250, 1))
       if self.is_vmat():
         for beam in self.beam_set.Beams:
           mu_total += beam.BeamMU
