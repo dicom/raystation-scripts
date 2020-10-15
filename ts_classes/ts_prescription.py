@@ -107,13 +107,14 @@ class TSPrescription(object):
       else:
         return t.succeed()
 
+  # Tests if the prescription dose is equal to the dose given in the DICOM plan label.
   def prescription_dose_test(self):
     t = TEST.Test("Skal stemme overens med totaldose indikert av beam set label.", True, self.dose)
     cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
     diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
     if self.ts_beam_set.ts_label.label.valid:
       label_dose_acc = RSU.accumulated_label_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set, self.ts_beam_set.ts_label.label)
-      t.expected = label_dose_acc
+      t.expected = round(label_dose_acc, 2)
       if label_dose_acc != cum_pr_dose:
         return t.fail(cum_pr_dose)
       else:
