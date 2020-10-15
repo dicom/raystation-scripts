@@ -8,7 +8,6 @@ from tkinter import *
 from tkinter import messagebox
 import math
 
-
 # Import local files:
 import beams as BEAMS
 import beam_set_functions as BSF
@@ -32,9 +31,10 @@ import ts_case as TS_C
 
 
 class Plan(object):
-  def __init__(self, patient, case):
+  def __init__(self, patient, case, mq_patient):
     self.patient = patient
     self.case = case
+    self.mq_patient = mq_patient
 
 
     # Load patient model, examination and structure set:
@@ -194,8 +194,12 @@ class Plan(object):
     else:
       # Consider all targets when determining isocenter:
       isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets = True)
+    # Determine if this patient has any previous beams in Mosaiq (which impacts which beam number is to be used with this plan):
+    beam_nr = 1
+    if self.mq_patient:
+      beam_nr = self.mq_patient.next_available_field_number()
     # Setup beams or arcs
-    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name, energy_name)
+    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name, energy_name, beam_index=beam_nr)
 
 
     # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets

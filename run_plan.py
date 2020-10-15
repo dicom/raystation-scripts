@@ -15,22 +15,21 @@ import clr, sys, os
 
 import math
 
-
 # Add necessary folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
-sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
+#sys.path.append("C:\\temp\\raystation-scripts\\mosaiqdb")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\various_classes")
-# Relative paths would be better, but unfortunately doesnt seem to work when imported into the RayStation database:
+sys.path.append(r'C:\temp\raystation-scripts')
+# Relative paths would be better, but unfortunately doesnt seem to work when imported into the RayStation database, e.g.:
 #sys.path.append(os.path.join(sys.path[0],'def_regions'))
-#sys.path.append(os.path.join(sys.path[0],'functions'))
-#sys.path.append(os.path.join(sys.path[0],'gui_classes'))
-#sys.path.append(os.path.join(sys.path[0],'rt_classes'))
-#sys.path.append(os.path.join(sys.path[0],'settings'))
+
+# Import local packages:
+import mosaiq
 
 # Local script imports:
 import plan as PLAN
@@ -45,5 +44,9 @@ try:
 except SystemError:
     raise IOError("No case loaded.")
 
+# Load mosaiq patient:
+mq_patient = mosaiq.Patient.find_by_ida(patient.PatientID)
+    
 # Set up and execute the plan script:
-p = PLAN.Plan(patient, case)
+p = PLAN.Plan(patient, case, mq_patient)
+#p = PLAN.Plan(patient, case, mq_patient=None)
