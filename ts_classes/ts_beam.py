@@ -138,6 +138,26 @@ class TSBeam(object):
     else:
       return t.succeed()
 
+  # Tests for gantry angle on a breast treatment (where we should not have an entry in the opposite posterior quadrant).
+  def logical_gantry_angle_breast_test(self):
+    t = TEST.Test("Gantryvinkel skrått bakfra fra motsatt side bør ikke forekomme ved brystbestråling", None, self.gantry)
+    left_side_codes = [239, 241, 243, 273]
+    right_side_codes = [240, 242, 244, 274]
+    if self.ts_beam_set.ts_label:
+      if self.ts_beam_set.ts_label.label.region in left_side_codes+right_side_codes:
+        if self.ts_beam_set.ts_label.label.region in left_side_codes:
+          t.expected = '!<180-270>'
+          if 180 <= self.beam.GantryAngle <= 270:
+            return t.fail(round(self.beam.GantryAngle, 1))
+          else:
+            return t.succeed()
+        if self.ts_beam_set.ts_label.label.region in right_side_codes:
+          t.expected = '!<90-180>'
+          if 90 <= self.beam.GantryAngle <= 180:
+            return t.fail(round(self.beam.GantryAngle, 1))
+          else:
+            return t.succeed()
+  
   # Tests for low number of monitor units.
   def mu_beam_vmat_test(self):
     t = TEST.Test("Skal være høyere enn nedre praktiserte grense", '>2', self.mu)
@@ -345,7 +365,7 @@ class TSBeam(object):
           else:
             return t.succeed()
             
-    # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
+  # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
   def narrow_jaw_opening_for_filter_energies(self):
     t = TEST.Test("Liten kollimatoråpning detektert. Det bør vurderes om filterfri-energi kan brukes for å spare tid.", '<15 cm', self.opening)
     # Perform the test only for VMAT beams:

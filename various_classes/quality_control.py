@@ -170,6 +170,7 @@ class QualityControl(object):
         ts_beam.name_of_arc_test()
         ts_beam.mu_beam_vmat_test()
         ts_beam.gantry_angle_test()
+        ts_beam.logical_gantry_angle_breast_test()
         ts_beam.energy_of_arc_test()
         ts_beam.collimator_angle_of_arc_test()
         ts_beam.number_of_segments_of_static_beam_test()
