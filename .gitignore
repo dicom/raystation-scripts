@@ -112,3 +112,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Specific files for the raystation-scripts project:
+# Database configuration:
+mosaiq/database.txt
+mosaiq/password.txt
+mosaiq/user.txt
