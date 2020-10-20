@@ -55,14 +55,14 @@ class TSBeam(object):
     else:
       return False
 
-  # Tests that for arcs that a gantry spacing of 4 is used.
+  # Tests that for arcs that a gantry spacing of either 2 or 4 is used.
   def arc_gantry_spacing_test(self):
-    t = TEST.Test("Skal normalt være 4", 4, self.gantry_spacing)
+    t = TEST.Test("Skal normalt være 2 eller 4", "[2,4]", self.gantry_spacing)
     if self.is_vmat():
       # VMAT optimization settings:
       beam_s = RSU.beam_settings(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set, self.beam)
       if beam_s:
-        if beam_s.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing != 4:
+        if not beam_s.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing in [2, 4]:
           return t.fail(beam_s.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing)
         else:
           return t.succeed()
