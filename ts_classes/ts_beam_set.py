@@ -220,7 +220,7 @@ class TSBeamSet(object):
 
   # Tests that the isocenter coordinate is reasonably centered in the patient (in the axial slice).
   def isocenter_centered_test(self):
-    t = TEST.Test("Skal i utgangspunktet være mest mulig sentrert i pasientens aksial-snitt", '<12 cm', self.isocenter)
+    t = TEST.Test("Skal i utgangspunktet være mest mulig sentrert i pasientens aksial-snitt", '<= 12 cm', self.isocenter)
     photon_iso = None
     if self.beam_set.Modality == 'Photons':
       ss = self.ts_structure_set().structure_set
@@ -229,18 +229,15 @@ class TSBeamSet(object):
           photon_iso = beam.Isocenter.Position
           # For photon plans, isosenter should be somewhat centered in the patient to avoid gantry collisions.
           # Compare isocenter x and y coordinates to the center coordinates of the external ROI:
-
-          #external = RSU.ss_roi_geometry(beam_set, self.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
-          #if external:
           if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
             # Determine x and y coordinate:
             patient_center_x = SSF.roi_center_x(ss, ROIS.external.name)
             patient_center_y = SSF.roi_center_y(ss, ROIS.external.name)
+            # Reset large patient center x values (Why do we do this?!)
             if abs(patient_center_x) > 3:
               patient_center_x = 0
-            #patc = external.GetCenterOfRoi()
-            #diff = ((photon_iso.x - patc.x ) ** 2 + (photon_iso.y - patc.y) ** 2) ** 0.5
-            diff = ((photon_iso.x - patient_center_x ) ** 2 + (photon_iso.y - patient_center_y) ** 2) ** 0.5
+            # Determine the distance between patient center and isocenter:
+            diff = round(((photon_iso.x - patient_center_x ) ** 2 + (photon_iso.y - patient_center_y) ** 2) ** 0.5, 1)
             if diff > 12:
               return t.fail(diff)
             else:
