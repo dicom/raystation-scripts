@@ -49,7 +49,7 @@ class TSStructureSet(object):
     #self.breast = TEST.Parameter('Geometri', '', self.param)
 
 
-  # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined
+  # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined.
   def breast_seeds_test(self):
     t = TEST.Test("Mammae-pasienter som skal ha ungdomsboost skal ha " + ROIS.clips.name + " definert.", True, self.geometry)
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
@@ -83,7 +83,7 @@ class TSStructureSet(object):
         else:
           return t.fail()
 
-  # Tests if the couch top is placed close to the patient
+  # Tests if the couch top is placed close to the patient.
   def couch_close_to_patient_test(self):
     t = TEST.Test("Bordtopp-ROI (Couch) skal ligge inntil external", True, self.couch)
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique:
@@ -99,7 +99,7 @@ class TSStructureSet(object):
                 else:
                   return t.succeed()
 
-  # Tests for presence of an external
+  # Tests for presence of an external.
   def external_test(self):
     t = TEST.Test("Struktursettet må ha definert en ytterkontur (navn og type skal være: External)", True, self.external)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
@@ -138,7 +138,6 @@ class TSStructureSet(object):
           return t.fail()
         else:
           return t.succeed()
-
 
   # Tests if the CT-images are cropped close to external, in the same area as there is a target volume.
   def external_ptv_bounding_test(self):
@@ -220,7 +219,6 @@ class TSStructureSet(object):
     else:
       return t.fail()
 
-
   # Tests if PTV's are derived
   def ptv_derived_test(self):
     t = TEST.Test("Alle PTV skal i utgangspunktet være 'derived'", True, self.geometry)
@@ -231,10 +229,3 @@ class TSStructureSet(object):
           return t.succeed()
         else:
           return t.fail()
-
-
-
-
-
-
-

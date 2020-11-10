@@ -34,8 +34,7 @@ class TSROIGeometry(object):
     self.updated_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name, self.param)
 
 
-
-#Tests if all ROI's are defined
+  # Tests if all ROIs are defined.
   def defined_volume_test(self):
     t = TEST.Test("Regionen må ha definert volum", True, self.defined_roi)
     if self.roi_geometry.HasContours():
@@ -43,17 +42,16 @@ class TSROIGeometry(object):
     else:
       return t.fail()
 
-
-
-#Tests if a ROI is updated when it is derived
+  # Tests if a ROI is updated when it is derived.
   def derived_roi_geometry_is_updated_test(self):
     t = TEST.Test("Regionen må være oppdatert når den er avledet", True, self.updated_roi)
+    # Does the RoiGeometry have a shape?
     if self.roi_geometry.PrimaryShape:
       # Is the referenced ROI derived?
       if self.roi_geometry.OfRoi.DerivedRoiExpression:
-        # Is this ROI Geometry not updated?
+        # Is this ROI Geometry updated or not?
         if not self.roi_geometry.PrimaryShape.DerivedRoiStatus:
-          return t.fail()
+          return t.succeed()
         elif self.roi_geometry.PrimaryShape.DerivedRoiStatus.IsShapeDirty:
           return t.fail()
         else:
