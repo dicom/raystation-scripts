@@ -67,7 +67,7 @@ class TSBeam(object):
         else:
           return t.succeed()
 
-  # Tests if the field is asymmetric, i.e. ifthe maximum jaw opening is more than 7.5 cm for Y1 and Y2 jaws for an VMAT arc, for filter free energies,
+  # Tests if the field is asymmetric, i.e. ifthe maximum jaw opening is more than 7.5 cm for Y1 and Y2 jaws for an VMAT arc, for filter free energies.
   def asymmetric_jaw_opening_for_filter_free_energies(self):
     t = TEST.Test("Maksimal avstand fra isosenter til feltgrense ved bruk av filter fri energi bør være < 7.5 cm  ", '<7.5 cm', self.collimator)
     # Perform the test only for VMAT beams:
@@ -88,7 +88,7 @@ class TSBeam(object):
           else:
             return t.succeed()
 
-  # Tests if the maximum jaw opening is more than 10.5 cm for both Y1 and Y2 jaws for an VMAT arc, to be able to measure it with the ArcCHECK-phantom
+  # Tests if the maximum jaw opening is more than 10.5 cm for both Y1 and Y2 jaws for an VMAT arc, to be able to measure it with the ArcCHECK-phantom.
   def asymmetric_jaw_opening_for_vmat_qa_detector_test(self):
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
     # Perform the test only for VMAT beams:
@@ -167,7 +167,7 @@ class TSBeam(object):
       else:
         return t.succeed()
 
-  # Tests for low number of monitor units for 3D-CRT beams
+  # Tests for low number of monitor units for 3D-CRT beams.
   def mu_segment_3dcrt_test(self):
     t = TEST.Test("Skal være høyere enn nedre praktiserte grense", '>2', self.mu)
     if self.beam.ArcRotationDirection == 'None':
@@ -223,107 +223,6 @@ class TSBeam(object):
     else:
       return t.fail()
 
-  # Tests if the number of MU per beam is evenly distributed among the beams
-  def stereotactic_beam_distribution_mu_test(self):
-    t = TEST.Test("Antall MU bør være jevnt fordelt per bue (buelengde tatt i betraktning). MU på denne buen er > 1.15 * forventningsverdien.", True, self.mu)
-    beam_start = 0
-    beam_stop = 0
-    beam_length = 0
-    total_beam_length = 0
-    if self.ts_beam_set.has_prescription():
-      if len(list(self.ts_beam_set.beam_set.Beams)) > 1:
-        if self.ts_beam_set.ts_label.label.technique:
-          if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-            for beam in self.ts_beam_set.beam_set.Beams:
-              beam_start = beam.GantryAngle
-              beam_stop = beam.ArcStopGantryAngle
-              if beam_start > 180:
-                total_beam_length += 360 - beam_start
-              else:
-                total_beam_length += beam_start
-              if beam_stop > 180:
-                total_beam_length += 360 - beam_stop
-              else:
-                total_beam_length += beam_stop
-
-            beam_start = self.beam.GantryAngle
-            beam_stop = self.beam.ArcStopGantryAngle
-            if beam_start > 180:
-              beam_length += 360 - beam_start
-            else:
-              beam_length += beam_start
-            if beam_stop > 180:
-              beam_length += 360 - beam_stop
-            else:
-              beam_length += beam_stop
-            t.expected = "<" + str(round((beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140))
-            if self.beam.BeamMU > (beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140 *1.15:
-              return t.fail(round(self.beam.BeamMU, 1))
-            else:
-              return t.succeed()
-
-  # Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
-  def stereotactic_mu_constraints_for_single_beam(self):
-    t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy).", True, self.mu)
-    beam_start = 0
-    beam_stop = 0
-    beam_length = 0
-    total_beam_length = 0
-    if self.ts_beam_set.has_prescription():
-      if len(list(self.ts_beam_set.beam_set.Beams)) == 1:
-        if self.ts_beam_set.ts_label.label.technique:
-          if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-            for po in self.ts_beam_set.ts_plan.plan.PlanOptimizations:
-              for beam_settings in po.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
-                if self.beam.Number == beam_settings.ForBeam.Number and beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU:
-                  t.expected = "<" + str(RSU.fraction_dose(self.ts_beam_set.beam_set) * 140)
-                  if beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU <= (RSU.fraction_dose(self.ts_beam_set.beam_set) * 140*1.15):
-                    return t.succeed()
-                  else:
-                    return t.fail(round(beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU,1))
-
-  # Tests if a constraint is set for the maximum number of MU per beam, and if it is lower than 1.4 times the fraction dose
-  def stereotactic_mu_constraints_for_multiple_beams(self):
-    t = TEST.Test("Skal i utgangspunktet bruke begrensninger på antall MU per bue <= 1.4*fraksjonsdose (cGy), disse bør også ta hensyn til buelengden. Begrensningen på MU for denne buen er > 1.15 * forventningsverdien.", True, self.mu)
-    beam_start = 0
-    beam_stop = 0
-    beam_length = 0
-    total_beam_length = 0
-    if self.ts_beam_set.has_prescription():
-      if len(list(self.ts_beam_set.beam_set.Beams)) > 1:
-        if self.ts_beam_set.ts_label.label.technique:
-          if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-            for po in self.ts_beam_set.ts_plan.plan.PlanOptimizations:
-              for beam_settings in po.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
-                if self.beam.Number == beam_settings.ForBeam.Number and beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU:
-                  for beam in self.ts_beam_set.beam_set.Beams:
-                    beam_start = beam.GantryAngle
-                    beam_stop = beam.ArcStopGantryAngle
-                    if beam_start > 180:
-                      total_beam_length += 360 - beam_start
-                    else:
-                      total_beam_length += beam_start
-                    if beam_stop > 180:
-                      total_beam_length += 360 - beam_stop
-                    else:
-                      total_beam_length += beam_stop
-
-                  beam_start = beam_settings.ForBeam.GantryAngle
-                  beam_stop = beam_settings.ForBeam.ArcStopGantryAngle
-                  if beam_start > 180:
-                    beam_length += 360 - beam_start
-                  else:
-                    beam_length += beam_start
-                  if beam_stop > 180:
-                    beam_length += 360 - beam_stop
-                  else:
-                    beam_length += beam_stop
-                  t.expected = "<" + str(round((beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140))
-                  if beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU <= ((beam_length/total_beam_length)*RSU.fraction_dose(self.ts_beam_set.beam_set) * 140*1.15):
-                    return t.succeed()
-                  else:
-                    return t.fail(round(beam_settings.ArcConversionPropertiesPerBeam.MaxArcMU,1))
-
   # Tests if the jaw opening on a vmat plan is big enough to risk exposing the electronics of the QA detector.
   # The "limit" towards the electronics is 15 cm away from the gantry from the isocenter.
   def wide_jaw_opening_which_can_hit_vmat_qa_detector_electronics_test(self):
@@ -365,12 +264,12 @@ class TSBeam(object):
           else:
             return t.succeed()
             
-  # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
+  # Tests if the maximal jaw opening is less than 15 cm and a filter free beam quality has not been used.
   def narrow_jaw_opening_for_filter_energies(self):
     t = TEST.Test("Liten kollimatoråpning detektert. Det bør vurderes om filterfri-energi kan brukes for å spare tid.", '<15 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
-      if self.beam.BeamQualityId == '6':
+      if not 'FFF' in self.beam.BeamQualityId:
         if self.has_segment():
           maxJawY1 = self.beam.Segments[0].JawPositions[2]
           maxJawY2 = self.beam.Segments[0].JawPositions[3]
@@ -379,10 +278,8 @@ class TSBeam(object):
               maxJawY1 = segment.JawPositions[2]
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
-
           if abs(maxJawY1)+abs(maxJawY2) < 14:
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
             return t.succeed()
-
 

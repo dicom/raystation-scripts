@@ -54,35 +54,35 @@ class TSBeamSet(object):
     self.number = TEST.Parameter('Feltnummer','', self.param)
 
 
-  # Gives true/false if the beam set has beams of not
+  # Gives true/false if the beam set has beams of not.
   def has_beam(self):
     if len(list(self.beam_set.Beams)) > 0:
       return True
     else:
       return False
 
-  # Gives true/false if the beam set has dose or not
+  # Gives true/false if the beam set has dose or not.
   def has_dose(self):
     if self.beam_set.FractionDose.DoseValues:
       return True
     else:
       return False
 
-  # Gives true/false if the beam set has a prescription defined
+  # Gives true/false if the beam set has a prescription defined.
   def has_prescription(self):
     if self.beam_set.Prescription.PrimaryDosePrescription:
       return True
     else:
       return False
 
-  # Gives true/false if the delivery technique is VMAT or not
+  # Gives true/false if the delivery technique is VMAT or not.
   def is_vmat(self):
     if self.beam_set.DeliveryTechnique in ['Arc','DynamicArc'] and self.beam_set.Modality == 'Photons':
       return True
     else:
       return False
 
-  # Gives the fraction dose (in Gy):
+  # Gives the fraction dose (in Gy).
   def fraction_dose(self):
     return (self.beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
@@ -92,6 +92,7 @@ class TSBeamSet(object):
       if ts_struct.structure_set.OnExamination.Name == self.beam_set.GetPlanningExamination().Name:
         return ts_struct
 
+  # Tests if the isocenter is assymmetric in the longitudinal direction, in such a way that it could pose a problem for measuring the plan by VMAT QA.
   def asymmetric_jaw_opening_long_test(self):
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
     ss = self.ts_structure_set().structure_set
@@ -136,6 +137,7 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
+  # Tests that the beam numbering in the beam set is correct (that subsequent beam numbers are used, i.e. no gaps).
   def beam_number_test(self):
     numbers = []
     order = True
@@ -177,7 +179,7 @@ class TSBeamSet(object):
       else:
         return t.fail()
 
-  # Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo
+  # Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo.
   def dose_algorithm_test(self):
     t = TEST.Test("Algoritme skal være en av disse", ['CCDose', 'ElectronMonteCarlo'], self.dose)
     if self.has_dose():
@@ -309,7 +311,7 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests that the machine is among the 2 white listed: ALVersa & ALVersa_FFF
+  # Tests that the machine name is the one that is clinically validated (ALVersa).
   def machine_test(self):
     t = TEST.Test("Behandlingsapparat skal være:", 'ALVersa', self.machine)
     if not self.beam_set.MachineReference.MachineName == 'ALVersa':
@@ -317,7 +319,7 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  #Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO1' etc. The plan label, for example '401V:0-70:35 1' is also allowed.
+  # Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO1' etc. The plan label, for example '401V:0-70:35 1' is also allowed.
   def name_of_beam_iso_test(self):
     t = TEST.Test("Isosenter-navn på felt/buer skal være 'Iso' eller 'Iso1', 'Iso2' osv", True, self.name)
     match = False
@@ -368,7 +370,6 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-
   # Tests that number of monitor units corresponds to fraction dose (within 20%) for the caudal part of conventional, locoregional breast plans.
   def prescription_mu_breast_regional_caudal_test(self):
     t = TEST.Test("Skal stå i forhold til fraksjonsdosen for beam-settet, det ser ut som MU kaudalt for isosenter avviker med mer enn 20% av fraksjonsdosen (cGy).", True, self.mu)
@@ -407,7 +408,6 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-
   # Tests that number of monitor units corresponds to fraction dose (within 20%) for the cranial part of conventional, locoregional breast plans.
   def prescription_mu_breast_regional_cranial_test(self):
     t = TEST.Test("Skal stå i forhold til fraksjonsdosen for beam-settet, det ser ut som MU kranielt for isosenter avviker med mer enn 20% av fraksjonsdosen (cGy).", True, self.mu)
@@ -445,7 +445,6 @@ class TSBeamSet(object):
           return t.fail(round(mu_total_over,1))
         else:
           return t.succeed()
-
 
   # Tests that number of monitor units corresponds to fraction dose (within 15 %) for conventional plans (non-VMAT) that is not locoregional breast.
   def prescription_mu_test(self):
@@ -493,22 +492,23 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the total number of MUs is below 1.4*fraction dose (cGy)
+  # Tests if the total number of MUs is below 2.0*fraction dose (cGy).
   def stereotactic_mu_test(self):
-    t = TEST.Test("Bør som hovedregel være innenfor 1.4*fraksjonsdose (cGy)", True, self.mu)
+    t = TEST.Test("Bør som hovedregel være innenfor 2.0*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
+    limit = RSU.fraction_dose(self.beam_set) * 200
     if self.has_prescription():
-      t.expected = "<" + str(RSU.fraction_dose(self.beam_set) * 140)
+      t.expected = "<" + str(limit)
       if self.ts_label.label.technique:
         if self.ts_label.label.technique.upper() == 'S':
           for beam in self.beam_set.Beams:
             mu_total += beam.BeamMU
-          if mu_total > RSU.fraction_dose(self.beam_set) * 140:
+          if mu_total > limit:
             return t.fail(round(mu_total, 1))
           else:
             return t.succeed()
 
-  # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC)
+  # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC).
   def technique_test(self):
     t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
     if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT','DynamicArc'):
@@ -563,7 +563,7 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests if the total number of MUs is below 2.5*fraction dose (cGy)
+  # Tests if the total number of MUs is below 2.5*fraction dose (cGy).
   def vmat_mu_test(self):
     t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
@@ -608,22 +608,4 @@ class TSBeamSet(object):
                 t.fail(round(real_dose_d50, 2))
               else:
                 t.succeed()
-'''
-messagebox.showinfo("", target)
 
-                
-  # Tests if the energies of the beams in the beam set are the same as the expected energy.
-  def specific_energy_for_region_test(self):
-    wanted_energies = ['6','6 FFF'] # (default)
-    if self.ts_label.label.region in RC.brain_whole_codes:
-      if not self.is_vmat():
-        wanted_energy = '10'
-    t = TEST.Test("Det skal i utgangspunktet benyttes gitt energi for denne behandlingsregionen.", wanted_energies, self.energies)
-    energies = []
-    for beam in self.beam_set.Beams:
-      energies.append(beam.BeamQualityId)
-    if set(energies) != set([wanted_energy]):
-      return t.fail(energies)
-    else:
-      return t.succeed()
-'''

@@ -178,9 +178,6 @@ class QualityControl(object):
         ts_beam.arc_gantry_spacing_test()
         ts_beam.wide_jaw_opening_for_filter_free_energies()
         ts_beam.mu_segment_3dcrt_test()
-        ts_beam.stereotactic_beam_distribution_mu_test()
-        ts_beam.stereotactic_mu_constraints_for_multiple_beams()
-        ts_beam.stereotactic_mu_constraints_for_single_beam()
         ts_beam.segment_test()
         #ts_beam.narrow_jaw_opening_for_filter_energies()
         # Segment tests:
