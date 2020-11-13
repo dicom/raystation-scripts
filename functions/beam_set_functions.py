@@ -17,7 +17,7 @@ import rois as ROIS
 # Contains a collection of beam set functions.
 
 
-# Set presciption (default is median dose, with dose at volume for stereotactic plans)
+# Set presciption (default is median dose, with dose at volume for stereotactic plans).
 def add_prescription(beam_set, nr_fractions, fraction_dose, target):
   total_dose = nr_fractions*fraction_dose
   if PF.is_stereotactic(nr_fractions, fraction_dose):
@@ -26,7 +26,7 @@ def add_prescription(beam_set, nr_fractions, fraction_dose, target):
     beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = 'MedianDose', DoseValue = total_dose*100)
 
 
-# Creates two arcs, VMAT
+# Creates two arcs (VMAT).
 def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', gantry_stop_angle2='179', gantry_start_angle1='179', gantry_start_angle2='181', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreateArcBeam(
@@ -59,7 +59,7 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
   b2.Number = beam_index + 1
 
 
-# Creates four beams, 3D-CRT
+# Creates four beams (3D-CRT).
 def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', name4='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', gantry_angle4='179', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', collimator_angle4='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', couch_angle4 = '0', iso_index = 1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
@@ -135,11 +135,9 @@ def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code):
         y2 = jaw[3]
     else:
       y2 = jaw[3]
-
-    # don't forget that mlc 50 is index leafPositions[x][49]
+    # (Don't forget that MLC number 50 has index leafPositions[x][49])
     mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
     mlcY2 = int(math.ceil ((y2 + 20) * 2))
-		
     for leaf in range(mlcY1-1, mlcY2+1):
       if beam.Name == 'LAO' and region_code in RC.breast_r_codes:
         leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
@@ -149,16 +147,15 @@ def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code):
         leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
       elif beam.Name in ['LPO', 'LPO 1']:
         leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
-
     segment.LeafPositions = leaf_positions
 
 
-# Creates a single arc, VMAT
+# Creates a single arc (VMAT).
 def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', gantry_start_angle='181', collimator_angle='5', couch_angle='0', iso_index = 1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b = beam_set.CreateArcBeam(
     ArcStopGantryAngle = gantry_stop_angle,
-    ArcRotationDirection = 'Clockwise',
+    ArcRotationDirection = BF.rotation_direction(gantry_start_angle, gantry_stop_angle),
     BeamQualityId = energy,
     IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
     Name= 'Arc '+str(beam_index),
@@ -171,7 +168,8 @@ def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', 
   )
   b.Number = beam_index
 
-# Creates three beams, 3D-CRT
+
+# Creates three beams (3D-CRT).
 def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', iso_index = 1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
@@ -212,7 +210,7 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
   b3.Number = beam_index + 2
 
 
-# Creates two beams, 3D-CRT
+# Creates two beams (3D-CRT).
 def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry_angle1='181', gantry_angle2='179', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
@@ -241,7 +239,7 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
   b2.Number = beam_index + 1
 
 
-# Creates the label from region code, fraction dose, number of fractions and which technique (VMAT or 3D-CRT). Is used as beam set name.
+# Creates a label based on region code, fraction dose, number of fractions and technique (VMAT or 3D-CRT). The label is used as beam set name.
 def label(region_code, fraction_dose, nr_fractions, technique, background_dose=0):
   if technique == 'Conformal': # 3D-CRT
     t = 'I:' + str(background_dose) + '-'
@@ -253,8 +251,8 @@ def label(region_code, fraction_dose, nr_fractions, technique, background_dose=0
   return str(region_code) + t + GF.dynamic_round(background_dose + fraction_dose*nr_fractions) + ':' + str(nr_fractions)
 
 
-# Creates the label from region code, fraction dose, number of fractions and which technique (VMAT or 3D-CRT).
-# Is used as beam set name for the addition beam sets for stereotactic brain with multiple targets
+# Creates the label based on region code, fraction dose, number of fractions and which technique (VMAT or 3D-CRT).
+# Is used as beam set name for the additional beam sets for stereotactic brain with multiple targets
 def label_s(region_code, fraction_dose, nr_fractions):
   t = 'S:0-'
   return str(region_code) + t + GF.dynamic_round(fraction_dose*nr_fractions) + ':' + str(nr_fractions)
@@ -265,12 +263,13 @@ def set_MU(beam_set, names, mu):
   for i in range(len(names)):
     beam_set.Beams[names[i]].BeamMU = mu[i]
 
+
 def set_up_treat_and_protect_for_stereotactic_lung(beam_set, protect_roi, margin):
     beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
     for beam in beam_set.Beams:
         beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = protect_roi)
-    #beam_set.TreatAndProtect(ShowProgress=True)
-		
+
+
 def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_optimization, protect_roi):
 	beam_set.SetTreatmentTechnique(Technique = 'Conformal')
 	beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
@@ -294,9 +293,7 @@ def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_opt
 	tss.SegmentConversion.MinSegmentArea = 4
 	tss.SegmentConversion.MinSegmentMUPerFraction = 4
 
-	
-	
-	
+
 def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_roi, region_code):
 	if region_code in [242,244]:
 		beam_set.CopyBeam(BeamName = 'RPO')
@@ -322,7 +319,6 @@ def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_ro
 			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_50c.name)
 			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_47c.name)
 		beam_set.TreatAndProtect(ShowProgress=True)
-
 	for beam in beam_set.Beams:
 		segments = beam.Segments[0]
 		jaw = segments.JawPositions
@@ -331,7 +327,6 @@ def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_ro
 		elif beam.Name in ['Høyre','Forfra','Venstre']:
 			jaw[2] = 0
 		segments.JawPositions = jaw
-
 	if region_code in [242,244]:
 		beam_set.CopyBeam(BeamName = 'RPO 1')
 		beam_set.CopyBeam(BeamName = 'Høyre')
@@ -342,11 +337,9 @@ def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_ro
 		beam_set.CopyBeam(BeamName = 'Venstre')
 		beam_set.CopyBeam(BeamName = 'Forfra')
 		beam_set.CopyBeam(BeamName = 'RAO')
-
 	beam_set.SetTreatmentTechnique(Technique = 'SMLC')
 	po = plan.PlanOptimizations[0]
 	tss = po.OptimizationParameters.TreatmentSetupSettings[0]
-
 	for bs in tss.BeamSettings:
 		if bs.ForBeam.Name in ['RPO','LPO','LAO','RAO','Høyre','Venstre','Forfra','RPO 1','LPO 1']:
 			bs.EditBeamOptimizationSettings(OptimizationTypes=["None"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
@@ -366,8 +359,6 @@ def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_ro
 	tss.SegmentConversion.MinSegmentMUPerFraction = 4
 
 
-
-	
 def close_leaves_behind_jaw_for_regional_breast(beam_set):
 	for beam in beam_set.Beams:
 		if beam.Name in ['Høyre','Venstre','LPO 1','RAO','Forfra','RPO 1','LAO']:
@@ -380,15 +371,13 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 			last_x1 = leaf_positions[0][79]
 			first_x2 = leaf_positions[1][1]
 			last_x2 = leaf_positions[1][79]
-			# get the last corresponding MLC that is in the field
+			# Get the last corresponding MLC that is in the field:
 			mlcY1 = math.floor((y1 + 20) * 2) + 1.0
 			mlcY2 = math.ceil ((y2 + 20) * 2)
-
-			# don't forget that mlc 50 is in spot leafPositions[0][49]
+			# (Don't forget that MLC number 50 has the index leafPositions[0][49])
 			for i in range(0, int(mlcY1 -2)):
 				leaf_positions[0][i] = first_x1
 				leaf_positions[1][i] = first_x2
-
 			for j in range(int(mlcY2 +1), 80):
 				leaf_positions[0][j] = last_x1
 				leaf_positions[1][j] = last_x2
@@ -404,6 +393,4 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-2]
 				elif abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)])>1:
 					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-1]
-			
 			segments.LeafPositions = leaf_positions
-			
