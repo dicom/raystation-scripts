@@ -39,11 +39,12 @@ def load_plan(case, plan):
   case.LoadPlan(PlanInfo = current_plan[0])
 
 
-# Set isodose lines:
+# Sets isodose lines.
 def determine_isodoses(case, ss, region_code, nr_fractions, fraction_dose):
+  # Configure case isodose settings (relative and prescription dose):
   case.CaseSettings.DoseColorMap.PresentationType = 'Relative'
   case.CaseSettings.DoseColorMap.ReferenceValue = nr_fractions*fraction_dose*100
-
+  # Apply dose levels based on region and fractionation:
   if region_code in RC.breast_codes and fraction_dose == 2 or region_code in RC.rectum_codes and fraction_dose == 2:
     ISODOSES.sib_47_50.apply_to(case)
   elif region_code in RC.prostate_codes:
@@ -67,6 +68,8 @@ def determine_isodoses(case, ss, region_code, nr_fractions, fraction_dose):
   else:
     ISODOSES.standard.apply_to(case)
 
+
+# Gives the patient position description (e.q. HeadFirstSupine) based on the abbreviation (e.q. HFS).
 def determine_patient_position(examination):
   patient_position = "HeadFirstSupine"
   if examination.PatientPosition == 'FFS':
@@ -78,6 +81,7 @@ def determine_patient_position(examination):
   return patient_position
 
 
+# Returns True if patient position is head first supine and False if not.
 def is_head_first_supine(examination):
   if determine_patient_position(examination) == 'HeadFirstSupine':
     return True
