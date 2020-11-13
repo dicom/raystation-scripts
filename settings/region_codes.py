@@ -3,12 +3,12 @@
 
 # Region codes:
 
-# Brain
+# Brain:
 brain_whole_codes = [401]
 brain_partial_codes =  list(range(402, 415+1))
 brain_codes = brain_whole_codes + brain_partial_codes
 
-# Breast
+# Breast:
 breast_partial_l_codes = [273]
 breast_partial_r_codes = [274]
 breast_partial_codes = breast_partial_l_codes +breast_partial_r_codes 
@@ -23,14 +23,27 @@ breast_r_codes = [240, 242, 244, 274]
 breast_not_thorax_codes = [273, 274, 239, 240, 243, 244]
 breast_codes = breast_partial_r_codes + breast_partial_l_codes +breast_tang_l_codes + breast_tang_r_codes + breast_reg_l_codes + breast_reg_r_codes
 
-# Lung
+# Lung:
 lung_codes = [245, 246, 247, 248, 249, 250]
 lung_r_codes = [248, 250]
 lung_l_codes = [247, 249]
 lung_mediastinum_codes = [224, 225, 226, 228, 245, 246]
 lung_and_mediastinum_codes = lung_codes + lung_mediastinum_codes
 
-# Palliative
+# Bladder
+bladder_codes = [341]
+
+# Prostate
+prostate_only_codes = [342]
+prostate_vesicles_codes = [343, 355]
+prostate_bed_codes = [348, 356]
+prostate_node_codes = [355, 356]
+prostate_codes = prostate_only_codes + prostate_vesicles_codes + prostate_bed_codes
+
+# Rectum
+rectum_codes = [340]
+
+# Palliative:
 palliative_head_codes = list(range(1, 20+1)) + list(range(100, 126+1))  + list(range(501, 506+1))
 palliative_head_codes.extend((100, 101, 102, 110, 111, 112, 114, 116, 117, 118, 120, 121, 125, 126))
 palliative_neck_codes = list(range(21, 29 +1)) + list(range(140, 146+1))
@@ -55,21 +68,8 @@ stereotactic_spine_thorax_codes = [520, 521, 522]
 stereotactic_spine_pelvis_codes = [523, 524, 525]
 bone_stereotactic_codes = stereotactic_pelvis_codes + stereotactic_spine_thorax_codes + stereotactic_spine_pelvis_codes
 
-# Bladder
-bladder_codes = [341]
-
-# Prostate
-prostate_only_codes = [342]
-prostate_vesicles_codes = [343, 355]
-prostate_bed_codes = [348, 356]
-
-prostate_codes = prostate_only_codes + prostate_vesicles_codes + prostate_bed_codes
-#prostate_codes = [342, 343, 348]
-# Rectum
-rectum_codes = [340]
-
+# Whole pelvis:
 whole_pelvis_codes = [512]
 
 # Regions where conventional planning and vmat is both done:
 conventional_and_vmat_site_codes = breast_reg_codes
-
