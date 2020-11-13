@@ -172,8 +172,8 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
   return isocenter
 
 
-# Determine the treatment machine (i.e. with or without filter) from the size of the target volume.
-# Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
+# Determine the energy quality (i.e. with or without filter) from the size of the target volume.
+# Returns the quality name (e.g. '6' or '6 FFF').
 def determine_energy(ss, target):
   threshold = 13
   # Establish start values:
