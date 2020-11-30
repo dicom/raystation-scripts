@@ -67,7 +67,12 @@ def optimization_parameters(region_code, fraction_dose):
     opt = sliding_window
   elif region_code in RC.lung_and_mediastinum_codes:
     # Lung:
-    opt = sliding_window
+    if fraction_dose > 9:
+      # Stereotactic lung:
+      opt = sbrt
+    else:
+      # Conventional lung:
+      opt = sliding_window
   elif region_code in RC.prostate_codes:
     # Prostate:
     if region_code in RC.prostate_node_codes:
