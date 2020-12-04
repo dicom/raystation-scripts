@@ -20,6 +20,7 @@ import objective_functions as OBJF
 import optimization as OPT
 import patient_model_functions as PMF
 import plan_functions as PF
+import prescription as PRES
 import region_codes as RC
 import region_list as REGIONS
 import roi as ROI
@@ -98,9 +99,13 @@ class Plan(object):
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
     plan = CF.create_plan(case, examination, region_text)
 
-
-    # Check that the number of fractions and fraction dose is among those expected for the given region code:
-    GUIF.check_input(ss, region_code, nr_fractions, fraction_dose)
+    
+    # Create the prescription object:
+    prescription = PRES.create_prescription(total_dose, nr_fractions, region_code)
+    # Validate the prescription:
+    valid = PRES.validate_prescription(prescription, region_code)
+    if not valid:
+      GUIF.handle_invalid_prescription(prescription, region_code)
 
 
     # Set planners initials:

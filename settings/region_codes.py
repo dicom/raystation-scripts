@@ -8,6 +8,9 @@ brain_whole_codes = [401]
 brain_partial_codes =  list(range(402, 415+1))
 brain_codes = brain_whole_codes + brain_partial_codes
 
+# ALS:
+als_codes = [122, 123, 124]
+
 # Breast:
 breast_partial_l_codes = [273]
 breast_partial_r_codes = [274]
@@ -36,9 +39,10 @@ bladder_codes = [341]
 # Prostate
 prostate_only_codes = [342]
 prostate_vesicles_codes = [343, 355]
+prostate_intact_codes = [342, 343, 355]
 prostate_bed_codes = [348, 356]
 prostate_node_codes = [355, 356]
-prostate_codes = prostate_only_codes + prostate_vesicles_codes + prostate_bed_codes
+prostate_codes = prostate_intact_codes + prostate_bed_codes
 
 # Rectum
 rectum_codes = [340]
@@ -66,6 +70,7 @@ palliative_columna_codes.extend((512, 416, 417, 418, 419))
 stereotactic_pelvis_codes = [513, 514, 527, 573, 574, 575, 576, 577, 578, 585, 586]
 stereotactic_spine_thorax_codes = [520, 521, 522]
 stereotactic_spine_pelvis_codes = [523, 524, 525]
+# FIXME: Why doesnt this contain all bone codes (e.g. cervical spine?)
 bone_stereotactic_codes = stereotactic_pelvis_codes + stereotactic_spine_thorax_codes + stereotactic_spine_pelvis_codes
 
 # Whole pelvis:
