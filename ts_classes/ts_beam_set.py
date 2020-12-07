@@ -319,19 +319,14 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO1' etc. The plan label, for example '401V:0-70:35 1' is also allowed.
+  # Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO2' etc.
   def name_of_beam_iso_test(self):
     t = TEST.Test("Isosenter-navn på felt/buer skal være 'Iso' eller 'Iso1', 'Iso2' osv", True, self.name)
     match = False
     expected1 = 'Iso'
     expected2 = 'ISO'
     for beam in self.beam_set.Beams:
-      if beam.Isocenter.Annotation.Name in ('Iso','ISO'):
-        match = True
-      elif not beam.Isocenter.Annotation.Name in ('Iso','ISO'):
-        if beam.Isocenter.Annotation.Name in ('Iso1','ISO1','Iso2','ISO2','Iso3','ISO3'):
-          match = True
-      if match:
+      if beam.Isocenter.Annotation.Name.lower() in ['iso','iso1','iso2','iso3','iso4','iso5','iso6','iso7','iso8','iso9']:
         return t.succeed()
       else:
         return t.fail(beam.Isocenter.Annotation.Name)
@@ -386,7 +381,6 @@ class TSBeamSet(object):
             y2 = jaw[3]
             if y2 > 0:
               y2 = 0
-
             if y2 <= 0 and y1 < 0 or y1 < 0:
               leaf_positions = segment.LeafPositions
               mlc_y1 = int(math.floor((y1 + 20) * 2))
@@ -440,7 +434,6 @@ class TSBeamSet(object):
             jaw = segment.JawPositions
             if segment_partial_area[index] > 1.5 and segment_partial_area[index]/max_area > 0.4 or round(jaw[2],1) >=0:
               mu_total_over += beam.BeamMU*segment.RelativeWeight
-
         if abs((mu_total_over - RSU.fraction_dose(self.beam_set) * 100) / (RSU.fraction_dose(self.beam_set) * 100) * 100) > 20:
           return t.fail(round(mu_total_over,1))
         else:
@@ -608,4 +601,3 @@ class TSBeamSet(object):
                 t.fail(round(real_dose_d50, 2))
               else:
                 t.succeed()
-
