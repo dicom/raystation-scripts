@@ -12,10 +12,11 @@ import sys
 #from tkinter import messagebox
 
 # Local script imports:
-import test_p as TEST
 import raystation_utilities as RSU
-import structure_set_functions as SSF
+import region_codes as RC
 import rois as ROIS
+import structure_set_functions as SSF
+import test_p as TEST
 
 # This class contains tests for the RayStation Prescription object:
 class TSPrescription(object):
@@ -35,37 +36,55 @@ class TSPrescription(object):
     self.type = TEST.Parameter('Type', self.prescription.PrimaryDosePrescription.PrescriptionType, self.param)
     self.dose = TEST.Parameter('Dose', '', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
-    self.maks = TEST.Parameter('Klinisk maksdose', '', self.param)
+    self.max = TEST.Parameter('Klinisk maksdose', '', self.param)
 
 
+  # Gives true/false if the prescription is stereotactic or not.
+  def is_stereotactic(self):
+    match = False
+    if self.ts_beam_set.ts_label:
+      if self.ts_beam_set.ts_label.label.technique == 'S':
+        match = True
+    return match
+  
+  # Tests if the clinical max dose is higher than the set limit.
   def clinical_max_test(self):
-    t = TEST.Test("Skal i utgangspunktet være mindre enn 105% av normeringsdosen", True, self.maks)
-    ts = TEST.Test("Skal i utgangspunktet være mindre enn 150% av normeringsdosen", True, self.maks)
-    diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
     ss = self.ts_beam_set.ts_structure_set().structure_set
     if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
-      #external = RSU.ss_roi_geometry(self.ts_beam_set.beam_set, self.ts_beam_set.ts_plan.ts_case.case.PatientModel.RegionsOfInterest[ROIS.external.name])
+      # Get the external ROI and its volume:
       external = ss.OutlineRoiGeometry
       volume = external.GetRoiVolume()
-      # Determine the fraction corresponding to a 2cc volume:
-      fraction = 2 / volume
-      #clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-      if self.ts_beam_set.ts_label.label.technique:
-        if not self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-          if clinical_max_dose > diff_pr_dose * 1.05:
-            t.expected = "<" + str(round(diff_pr_dose * 1.05, 2))
-            return t.fail(round(clinical_max_dose, 2))
-          else:
-            return t.succeed()
-        elif self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-          clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [0])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-          if clinical_max_dose > diff_pr_dose * 1.50:
-            ts.expected = "<" + str(round(diff_pr_dose * 1.50, 2))
-            ts.fail(round(clinical_max_dose, 2))
-          else:
-            ts.succeed()
+      # Determine which max dose level and volume fraction is to be used:
+      if self.is_stereotactic():
+        # Use point dose (0 cc):
+        fraction = 0
+        # For stereotactic treatments, max allowed dose is dependent on site:
+        if self.ts_beam_set.ts_label.label.region in RC.brain_codes:
+          # Brain SRT:
+          max_factor = 1.7
+        else:
+          # Other SBRT:
+          max_factor = 1.5
+      else:
+        # Use the fraction which gives a 2 cc volume:
+        fraction = 2 / volume
+        # For conventional treatment max allowed dose is 105 %:
+        max_factor = 1.05
+      # The differential dose of this prescription:
+      diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
+      # Create the test:
+      expected = "<" + str(round(diff_pr_dose * max_factor, 2))
+      t = TEST.Test("Skal i utgangspunktet være mindre enn {} % av normeringsdosen".format(round(max_factor*100)), expected, self.max)
+      # Get the clinical max dose:
+      clinical_max_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = external.OfRoi.Name, RelativeVolumes = [fraction])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+      # Is it outside the set limit?
+      if clinical_max_dose > diff_pr_dose * max_factor:
+        return t.fail(round(clinical_max_dose, 2))
+      else:
+        return t.succeed()
+        
 
+  # Tests if the prescription volume type is as expected.
   def ctv_prescription_test(self):
     t = TEST.Test("Skal i utgangspunktet benytte CTV til normalisering.", True, self.roi)
     ts = TEST.Test("Skal i utgangspunktet benytte PTV til normalisering.", True, self.roi)
@@ -81,6 +100,7 @@ class TSPrescription(object):
         else:
           return t.fail(self.prescription.PrimaryDosePrescription.OnStructure.Type)
 
+  # Tests that the prescription type (dose volume) is as expected.
   # FIXME: Egen prescription test for stereotaksi og om planen har målvolum eller ikke.
   def prescription_type_test(self):
     t = TEST.Test("Skal være en av disse", ['MedianDose', 'DoseAtPoint', 'DoseAtVolume'], self.type)
@@ -89,6 +109,7 @@ class TSPrescription(object):
     else:
       return t.fail()
 
+  # Tests whether use of point prescription is in combination with the 'U' beam label code.
   def prescription_poi_technique_test(self):
     t = TEST.Test("Punktnormering skal bare benyttes i kombinasjon med plan-type 'U'", False, self.type)
     if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
@@ -98,6 +119,7 @@ class TSPrescription(object):
         else:
           return t.fail(True)
 
+  # Tests whether use of point prescription is in combination with target volume-less treatment planning.
   # FIXME: Bruk struktursett tilhørende aktuell plan istedenfor case.
   def prescription_poi_target_volume_test(self):
     t = TEST.Test("Punktnormering skal kun benyttes for planer som ikke har målvolum definert", False, self.type)
@@ -120,6 +142,7 @@ class TSPrescription(object):
       else:
         return t.succeed()
 
+  # Tests if the dose in the prescription volume is within 0.5 % of the set prescription dose.
   def prescription_real_dose_test(self):
     t = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum (eller punkt)", True, self.dose)
     if self.ts_beam_set.beam_set.Modality == 'Photons':
@@ -149,6 +172,7 @@ class TSPrescription(object):
         else:
           return t.succeed()
 
+  # Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.
   def stereotactic_prescription_technique_test(self):
     t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
     if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryDosePrescription.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
@@ -159,8 +183,3 @@ class TSPrescription(object):
           return t.fail()
       else:
         return t.fail(self.prescription.PrimaryDosePrescription.PrescriptionType)
-
-
-
-
-
