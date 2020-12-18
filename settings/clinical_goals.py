@@ -235,43 +235,43 @@ def breast_oars(region_code, nr_fractions, target):
   if region_code in [241, 243]: # Left
     if nr_fractions == 25:
       breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority1),
+        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority4),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority4),
+        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority3),
+        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
       breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority1),
+        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority4),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority4),
+        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority3),
+        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   elif region_code in [242, 244]: # Right
     if nr_fractions == 25:
       breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority1),
+        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority4),
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority4),
+        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_25, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority3),
+        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
       breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority1),
+        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority4),
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority4),
+        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx_15, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority3),
+        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   else:
@@ -295,11 +295,11 @@ def breast_oars(region_code, nr_fractions, target):
 # In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs'.
 def lung_oars(ss):
   lung = [
-    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority1),
-    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority2),
-    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority2),
-    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority2),
-    CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, TOL.esophagus_v17_adx, priority2),
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority3),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority3),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority3),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, TOL.esophagus_v17_adx, priority3),
 	CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6),
     CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6)
   ]
