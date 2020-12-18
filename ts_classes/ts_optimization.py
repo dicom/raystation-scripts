@@ -12,9 +12,9 @@ import sys
 #from tkinter import messagebox
 
 # Local script imports:
-import test_p as TEST
 import raystation_utilities as RSU
 import region_codes as RC
+import test_p as TEST
 
 # This class contains tests for the RayStation Optimization object:
 class TSOptimization(object):
@@ -36,6 +36,14 @@ class TSOptimization(object):
     self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
 
 
+  # Gives true/false if this optimization is in a stereotactic beam_set or not.
+  def is_stereotactic(self):
+    match = False
+    if self.ts_beam_set.ts_label:
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+        match = True
+    return match
+  
   # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
   def constrain_leaf_motion_test(self):
     t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion <= 0.3 cm/deg", True, self.parameter)
@@ -65,28 +73,35 @@ class TSOptimization(object):
     else:
       return t.succeed()
 
+  # Tests the resolution used in the dose grid.
   def dose_grid_test(self):
-    correct_grid = 0.3
-    match = True
+    # Default voxel size:
+    max_voxel_size = 0.3
+    # Expected dose grid resolution depends on whether the beam set is stereotactic or not and which region is treated:
+    if self.is_stereotactic():
+      if self.ts_beam_set.ts_label.label.region in RC.brain_codes:
+        max_voxel_size = 0.1
+      elif self.ts_beam_set.ts_label.label.region in RC.lung_and_mediastinum_codes:
+        max_voxel_size = 0.2
+      else:
+        # Bone mets SBRT:
+        max_voxel_size = 0.1
+    else:
+      # Conventional treatment:
+      if self.ts_beam_set.ts_label.label.region in RC.brain_codes:
+        max_voxel_size = 0.2
+      elif self.ts_beam_set.ts_label.label.region in RC.prostate_codes:
+        max_voxel_size = 0.2
+    # Create the test:
+    t = TEST.Test("Skal i utgangspunktet bruke dose grid med maks voksel størrelse: " + str(max_voxel_size) + " cm", "<="+str(max_voxel_size), self.grid)
+    # Determine actual value:
     grid = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.FractionDose.InDoseGrid.VoxelSize
-    if self.ts_beam_set.ts_label.label.technique:
-      if self.ts_beam_set.ts_label.label.technique.upper() == 'S' and self.ts_beam_set.ts_label.label.region in RC.brain_partial_codes:
-        if grid.x != 0.1 or grid.y != 0.1 or grid.z != 0.1:
-          correct_grid = 0.1
-          match = False
-      elif self.ts_beam_set.ts_label.label.region in RC.brain_partial_codes or self.ts_beam_set.ts_label.label.region in RC.prostate_codes or self.ts_beam_set.ts_label.label.technique.upper() == 'S' and self.ts_beam_set.ts_label.label.region in RC.lung_codes:
-        if grid.x != 0.2 or grid.y != 0.2 or grid.z != 0.2:
-          correct_grid = 0.2
-          match = False
-      elif grid.x != 0.3 or grid.y != 0.3 or grid.z != 0.3:
-        correct_grid = 0.3
-        match = False
-        
-    t = TEST.Test("Skal i utgangspunktet bruke dosegrid: " + str(correct_grid)+"x"+str(correct_grid)+"x"+str(correct_grid)+" cm^3", True, self.grid)
-    if match:
+    grid_max = max([grid.x, grid.y, grid.z])
+    # Test:
+    if grid_max <= max_voxel_size:
       return t.succeed()
     else:
-      return t.fail(grid.x)
+      return t.fail(grid_max)
 
   # Tests for proper usage of background dose for three kinds of ROIs: Target volume, external and organ.
   # Our expectation is that background dose is used on OARs, but not on targets or external volumes.
@@ -123,7 +138,3 @@ class TSOptimization(object):
           return tt.fail(str(len(target_fails)) + ": " + str(target_fails))
         else:
           return tt.succeed()
-
-
-
-
