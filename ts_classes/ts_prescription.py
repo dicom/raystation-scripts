@@ -43,7 +43,7 @@ class TSPrescription(object):
   def is_stereotactic(self):
     match = False
     if self.ts_beam_set.ts_label:
-      if self.ts_beam_set.ts_label.label.technique == 'S':
+      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
         match = True
     return match
   
