@@ -197,7 +197,7 @@ def validate_prescription(prescription, region_code):
   elif region_code in RC.breast_codes:
     if prescription in breast:
       valid = True
-  elif region_code in RC.lung_codes:
+  elif region_code in RC.lung_and_mediastinum_codes:
     if prescription in lung:
       valid = True
   elif region_code in RC.bladder_codes:
