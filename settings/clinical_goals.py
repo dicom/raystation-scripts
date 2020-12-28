@@ -150,7 +150,7 @@ def brain_oars(nr_fractions, region_code):
       CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0_03, priority3),
       CG.ClinicalGoal(ROIS.lacrimal_l.name, at_most, average_dose, TOL.lacrimal_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean, None, priority3),
-      CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority4)
+      CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority6)
 		]
   elif region_code in RC.brain_partial_codes:
     if nr_fractions == 1: # Stereotactic, one fraction
@@ -168,7 +168,7 @@ def brain_oars(nr_fractions, region_code):
         CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, dose_at_abs_volume, TOL.cochlea_srt_1fx_v0, cc0, priority3),
         CG.ClinicalGoal(ROIS.eye_r.name, at_most, dose_at_abs_volume, TOL.eye_srt_1fx_v0, cc0, priority3),
         CG.ClinicalGoal(ROIS.eye_l.name, at_most, dose_at_abs_volume, TOL.eye_srt_1fx_v0, cc0, priority3),
-        CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_srt_1fx_v10, cc10, priority3),
+        CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_srt_1fx_v10, cc10, priority4),
         CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_srt_1fx_v0, cc0, priority4),
         CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_srt_1fx_v0, cc0, priority4),
         CG.ClinicalGoal(ROIS.brain_gtv.name, at_most, dose_at_abs_volume, TOL.brain_srt_1fx_v10, cc10, priority6)
