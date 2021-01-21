@@ -46,7 +46,11 @@ if d1:
 d2 = get_item(pm.RegionsOfInterest, "BreastString_Step2")
 if d2:
   d2.DeleteRoi()
-
+# Rename ScaleneMusc_Ant to ScaleneMusc_Ant_L:
+r3 = get_item(pm.RegionsOfInterest, "ScaleneMusc_Ant")
+if r3:
+  r3.Name = 'ScaleneMusc_Ant_L'
+  
 # ROIs which are used to derive ROIs (they are accepted to be present, but not required to be):
 temp_rois = [
   'Breast_L_Draft',
@@ -63,7 +67,7 @@ required_rois = [
   'LN_Ax_Pectoral_L',
   'LN_IMN_L',
   'Sternum',
-  'ScaleneMusc_Ant',
+  'ScaleneMusc_Ant_L',
   'A_Subclavian_L+A_Axillary_L',
   'A_Carotid_L',
   'V_Brachioceph_L',
