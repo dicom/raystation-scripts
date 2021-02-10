@@ -39,19 +39,19 @@ class TSPlan(object):
     self.defined_roi = TEST.Parameter('Geometri','', self.param)
 
 
-  #Tests if all ROI's are defined, except 'LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT)
+  # Tests if all expected breast OARs are defined, except 'A_LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT).
+  # FIXME: Have a look at this function sometime...
   def breast_oar_defined_test(self):
     failed_geometries = []
     t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
     t.expected = None
     ss = self.ts_beam_sets[0].ts_structure_set().structure_set
     roi_not_contours_dict = SSF.create_roi_dict_not_contours(ss)
-    roi_and_region_dict = {ROIS.lad.name: RC.breast_r_codes, ROIS.breast_r_draft.name:RC.breast_l_codes, ROIS.breast_r.name:RC.breast_l_codes, ROIS.breast_l.name :RC.breast_r_codes}
+    roi_and_region_dict = {ROIS.a_lad.name: RC.breast_r_codes, ROIS.breast_r_draft.name: RC.breast_l_codes, ROIS.breast_r.name: RC.breast_l_codes, ROIS.breast_l.name :RC.breast_r_codes}
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
       for key, value in roi_and_region_dict.items():
         if roi_not_contours_dict.get(key) and self.ts_beam_sets[0].ts_label.label.region in value:
           del roi_not_contours_dict[key]
-
     structure_sets = self.ts_case.case.PatientModel.StructureSets
     for i in range(len(structure_sets)):
       if structure_sets[i].OnExamination.Name != self.ts_beam_sets[0].ts_structure_set().structure_set.OnExamination.Name:
@@ -59,7 +59,6 @@ class TSPlan(object):
         for j in range(len(roi)):
           if roi[j].HasContours() and roi_not_contours_dict.get(roi[j].OfRoi.Name):
             del roi_not_contours_dict[roi[j].OfRoi.Name]
-
     if len(roi_not_contours_dict.keys()) >= 1:
       return t.fail(list(roi_not_contours_dict.keys()))
     else:
@@ -90,64 +89,3 @@ class TSPlan(object):
       return t.fail(has_duplicate_beam_nr.Number)
     else:
       return t.succeed()
-
-
-'''
-
-
-      if self.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
-        if roi_not_contours_dict.get(ROIS.breast_r_draft.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
-          del roi_not_contours_dict[ROIS.breast_r_draft.name]
-
-        if roi_not_contours_dict.get(ROIS.breast_r.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
-          del roi_not_contours_dict[ROIS.breast_r.name]
-
-        if roi_not_contours_dict.get(ROIS.breast_l_draft.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_r_codes:
-          del roi_not_contours_dict[ROIS.breast_l_draft.name]
-
-        if roi_not_contours_dict.get(ROIS.breast_l.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_r_codes:
-          del roi_not_contours_dict[ROIS.breast_l.name]
-  #Tests if all ROI's are defined, except 'LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT)
-  def breast_oar_defined_test(self):
-    failed_geometries = []
-    t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
-    t.expected = None
-    ss = self.ts_beam_sets[0].ts_structure_set().structure_set
-    roi_dict = SSF.create_roi_dict(ss)
-    for rg in self.ts_beam_sets[0].ts_structure_set().structure_set.RoiGeometries:
-      
-      if rg.HasContours() == False:
-        if self.ts_beam_sets[0].beam_set.DeliveryTechnique != 'Arc':
-          if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
-            if rg.OfRoi.Name == ROIS.lad.name and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
-              failed_geometries.append(str(rg.OfRoi.Name))
-            elif not rg.OfRoi.Name in (ROIS.breast_r.name, ROIS.breast_r_draft.name) and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
-              failed_geometries.append(str(rg.OfRoi.Name))
-            elif not rg.OfRoi.Name in (ROIS.lad.name, ROIS.breast_r.name, ROIS.breast_r_draft.name):
-              failed_geometries.append(str(rg.OfRoi.Name))
-        elif self.ts_beam_sets[0].beam_set.DeliveryTechnique == 'Arc':
-          if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
-            if rg.OfRoi.Name == ROIS.lad.name and self.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
-              failed_geometries.append(str(rg.OfRoi.Name))
-            elif rg.OfRoi.Name != ROIS.lad.name:
-              failed_geometries.append(str(rg.OfRoi.Name))
-    
-    new_failed_geometries = []
-    if len(failed_geometries) >= 1:
-      for structure_set in self.ts_case.case.PatientModel.StructureSets:
-        structure_sets = []
-        if structure_set != self.ts_beam_sets[0].ts_structure_set().structure_set:
-          structure_sets.append(structure_set)
-      for struct_set in structure_sets:
-        for rg in struct_set.RoiGeometries:
-          for roi in list(set(failed_geometries)):
-            if rg.OfRoi.Name == roi:
-              if rg.HasContours() == True:
-                failed_geometries.remove(roi)
-
-    
-    if len(failed_geometries) >= 1:
-      return t.fail(list(set(failed_geometries)))
-    else:
-      return t.succeed()
-'''
