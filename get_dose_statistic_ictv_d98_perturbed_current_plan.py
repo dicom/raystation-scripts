@@ -53,7 +53,7 @@ for doe in case.TreatmentDelivery.FractionEvaluations[0].DoseOnExaminations:
         data_array[i][2] = de.PerturbedDoseProperties.IsoCenterShift.z 
 
       nr_f = plan.BeamSets[0].FractionationPattern.NumberOfFractions
-      structure_set = plan.GetStructureSet()
+      structure_set = plan.BeamSets[0].GetStructureSet()
       match_c = False
       for r in structure_set.RoiGeometries:
         if r.OfRoi.Name == 'ICTV' and r.HasContours():

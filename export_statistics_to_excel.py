@@ -157,7 +157,7 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
     parameter_dict['PTV, D98 [%]'] = (ptv_d98*100)/tot_dose
     parameter_dict['PTV, D50 [Gy]'] = ptv_d50
     parameter_dict['PTV, D50 [%]'] = (ptv_d50*100)/tot_dose
-    ptv_volume = plan.GetStructureSet().RoiGeometries[ptv].GetRoiVolume()
+    ptv_volume = plan.BeamSets[0].GetStructureSet().RoiGeometries[ptv].GetRoiVolume()
     parameter_dict['PTV, Volum [cc]'] = ptv_volume
     ptv_v95 = plan_dose.GetRelativeVolumeAtDoseValues(RoiName=ptv, DoseValues=[dose_value])[0]
     ptv_v100 = plan_dose.GetRelativeVolumeAtDoseValues(RoiName=ptv, DoseValues=[tot_dose*100/nr_fractions])[0]
@@ -168,7 +168,7 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
 
   try:
     dose_value_4465 = (beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions)*0.893
-    external_volume = plan.GetStructureSet().RoiGeometries[has_roi(roi_dict, external_list)].GetRoiVolume()
+    external_volume = plan.BeamSets[0].GetStructureSet().RoiGeometries[has_roi(roi_dict, external_list)].GetRoiVolume()
     parameter_dict['External, Volum [cc]'] = external_volume
     ext_d2cc = (nr_fractions*plan_dose.GetDoseAtRelativeVolumes(RoiName=has_roi(roi_dict, external_list), RelativeVolumes=[2/external_volume])[0])/100
     parameter_dict['External, D2cm3 [Gy]'] = ext_d2cc
@@ -285,7 +285,7 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
     try:
       dose_value_4465 = (beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions)*0.893
       ptv_n_p = has_roi(roi_dict, ptv_n_p_list)
-      ptv_n_p_volume = plan.GetStructureSet().RoiGeometries[ptv_n_p].GetRoiVolume()
+      ptv_n_p_volume = plan.BeamSets[0].GetStructureSet().RoiGeometries[ptv_n_p].GetRoiVolume()
       
       ptv_n_p_v95 = plan_dose.GetRelativeVolumeAtDoseValues(RoiName=ptv_n_p, DoseValues=[dose_value_4465])[0]
       ptv_n_p_v95_volume = ptv_n_p_v95*ptv_n_p_volume
@@ -474,7 +474,7 @@ for i in range(len(patient_info)):
                           #plan_dose = plan[i].TreatmentCourse.TotalDose
                           plan_dose = beam_set[j].FractionDose
                           # Find all visible ROIs with defined geometry in the current plan
-                          ss = plan[i].GetStructureSet()
+                          ss = plan[i].BeamSets[0].GetStructureSet()
                           roi_dict = SSF.create_roi_dict(ss)
                           patient_nr += 1
                           
@@ -496,7 +496,7 @@ for i in range(len(patient_info)):
                         if int(label[0:3]) in region_codes and str(label[3]) == 'S' or int(label[0:2]) in region_codes and str(label[2]) == 'S':
                           plan_dose = beam_set[j].FractionDose
                           # Find all visible ROIs with defined geometry in the current plan
-                          ss = plan[i].GetStructureSet()
+                          ss = plan[i].BeamSets[0].GetStructureSet()
                           roi_dict = SSF.create_roi_dict(ss)
                           patient_nr += 1
                           parameter_dict = create_parameter_dict(patient, plan[i], plan_dose, beam_set[j], patient_nr, roi_dict, region_codes)
@@ -514,7 +514,7 @@ for i in range(len(patient_info)):
                         if int(label[0:3]) in region_codes or int(label[0:2]) in region_codes:
                           plan_dose = beam_set[j].FractionDose
                           # Find all visible ROIs with defined geometry in the current plan
-                          ss = plan[i].GetStructureSet()
+                          ss = plan[i].BeamSets[0].GetStructureSet()
                           roi_dict = SSF.create_roi_dict(ss)
                           patient_nr += 1
                           parameter_dict = create_parameter_dict(patient, plan[i], plan_dose, beam_set[j], patient_nr, roi_dict, region_codes)

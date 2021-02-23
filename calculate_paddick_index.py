@@ -36,7 +36,7 @@ ext_existence = False
 
 for beam_set in plan.BeamSets:
   plan_dose = beam_set.FractionDose
-  structure_set = plan.GetStructureSet()
+  structure_set = plan.BeamSets[0].GetStructureSet()
   text = ""
   if beam_set.Prescription:
     if beam_set.Prescription.PrimaryDosePrescription:

@@ -77,7 +77,7 @@ class QualityControl(object):
     
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
-      if ts_structure_set.structure_set.OnExamination.Name == ts_case.ts_plan.plan.GetStructureSet().OnExamination.Name:
+      if ts_structure_set.structure_set.OnExamination.Name == ts_case.ts_plan.plan.BeamSets[0].GetStructureSet().OnExamination.Name:
         ts_structure_set.localization_point_test()
         ts_structure_set.external_test()
         ts_structure_set.dose_region_test()
