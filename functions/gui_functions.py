@@ -7,15 +7,15 @@ from tkinter import *
 from tkinter import messagebox
 
 # Import local files:
+import beam_set_functions as BSF
+import fractionation_frame as FRAC_FRAME
 import plan_choices as PC
-import plan_functions as PF
 import radio_button as RB
 import radio_button_frame as FRAME
-import fractionation_frame as FRAC_FRAME
 import region_code_frame as REGION_FRAME
 import region_codes as RC
-import structure_set_functions as SSF
 import rois as ROIS
+import structure_set_functions as SSF
 
 
 # Checks if the given region code and region code list contain only unique codes.
@@ -121,7 +121,7 @@ def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choic
     # Optimization value
     opt = 'oar'
   else:
-    if region_code in RC.palliative_codes and nr_fractions*fraction_dose < 55 and not PF.is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.bladder_codes or region_code in RC.prostate_codes and nr_fractions*fraction_dose < 40 or region_code in RC.brain_whole_codes:
+    if region_code in RC.palliative_codes and nr_fractions*fraction_dose < 55 and not BSF.is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.bladder_codes or region_code in RC.prostate_codes and nr_fractions*fraction_dose < 40 or region_code in RC.brain_whole_codes:
       opt = 'oar'
   results = [technique, technique_name, opt]
   return results

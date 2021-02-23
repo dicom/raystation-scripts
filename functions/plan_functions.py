@@ -119,21 +119,3 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
     BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2)
   total_dose = 16
   OBJ.create_breast_boost_objectives(ss, plan, total_dose)
-
-
-
-# Returns true if stereotactic fractionation is used
-def is_stereotactic(nr_fractions, fraction_dose):
-  if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
-    return True
-  else:
-    return False
-
-
-# Set dose grid, 0.2x0.2x0.2 cm3 for stereotactic treatments and 0.3x03x0.3 cm3 otherwise
-def set_dose_grid(plan, region_code, nr_fractions, fraction_dose):
-  # Default grid size:
-  size = 0.3
-  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_partial_codes:
-    size = 0.2
-  plan.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})

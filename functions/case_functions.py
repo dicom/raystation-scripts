@@ -1,8 +1,8 @@
 # encoding: utf8
 
 # Import local files:
+import beam_set_functions as BSF
 import isodose_color_tables as ISODOSES
-import plan_functions as PF
 import region_codes as RC
 import structure_set_functions as SSF
 import rois as ROIS
@@ -63,7 +63,7 @@ def determine_isodoses(case, ss, region_code, nr_fractions, fraction_dose):
       ISODOSES.prostate_57_60.apply_to(case)
     else:
       ISODOSES.standard.apply_to(case)
-  elif PF.is_stereotactic(nr_fractions, fraction_dose):
+  elif BSF.is_stereotactic(nr_fractions, fraction_dose):
     ISODOSES.stereotactic.apply_to(case)
   else:
     ISODOSES.standard.apply_to(case)

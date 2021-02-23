@@ -75,7 +75,7 @@ class Plan(object):
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if nr_targets > 1:
       if region_code in RC.brain_codes + RC.lung_codes:
-        if PF.is_stereotactic(nr_fractions, fraction_dose):
+        if BSF.is_stereotactic(nr_fractions, fraction_dose):
           region_codes = GUIF.multiple_beamset_form(ss, Toplevel())
           GUIF.check_region_codes(region_code, region_codes)
       elif region_code in RC.palliative_codes:
@@ -111,11 +111,8 @@ class Plan(object):
     # Set planners initials:
     plan.PlannedBy = initials
 
-
-    # Set dose grid, 0.2x0.2x0.2 cm^3 for stereotactic treatments and for prostate and 0.3x03x0.3 cm^3 otherwise:
-    PF.set_dose_grid(plan, region_code, nr_fractions, fraction_dose)
-
     my_window = Toplevel()
+	
     # Determine which technique and optimization choices which will appear in the form:
     results = GUIF.determine_choices(region_code, nr_fractions, fraction_dose, my_window, [])
     # Chosen technique value ('VMAT' or 'Conformal'):
@@ -150,7 +147,7 @@ class Plan(object):
 
 
     # Create 'Mask_PTV' for stereotactic lung:
-    if region_code in RC.lung_codes and PF.is_stereotactic(nr_fractions, fraction_dose):
+    if region_code in RC.lung_codes and BSF.is_stereotactic(nr_fractions, fraction_dose):
       if nr_targets > 1:
         targets = [ROIS.ptv1, ROIS.ptv2, ROIS.ptv3]
         for i in range(nr_targets):
@@ -187,6 +184,10 @@ class Plan(object):
     beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, nr_fractions)
     # Add prescription:
     BSF.add_prescription(beam_set, nr_fractions, fraction_dose, target)
+	
+	# Set beam set dose grid:
+    BSF.set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose)
+	
     # Determine the point which will be our isocenter:
     if nr_targets > 1:
       if palliative_choices and palliative_choices[0] in ['sep_beamset_iso','beamset']:
@@ -210,7 +211,7 @@ class Plan(object):
     # FIXME: Bruke funksjon for test fx?
     if nr_targets > 1:
       if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
-        if PF.is_stereotactic(nr_fractions, fraction_dose):
+        if BSF.is_stereotactic(nr_fractions, fraction_dose):
           PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams = nr_beams)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
@@ -259,7 +260,7 @@ class Plan(object):
 
 
     # Set up treat and protect for stereotactic lung:
-    #if region_code in RC.lung_codes and PF.is_stereotactic(nr_fractions, fraction_dose):
+    #if region_code in RC.lung_codes and BSF.is_stereotactic(nr_fractions, fraction_dose):
     #  BSF.set_up_treat_and_protect_for_stereotactic_lung(beam_set, target, 0.5)
 
 

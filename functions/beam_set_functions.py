@@ -7,7 +7,6 @@ import math
 import beam_functions as BF
 import general_functions as GF
 import objective_functions as OBJF
-import plan_functions as PF
 import region_codes as RC
 import roi_functions as ROIF
 import structure_set_functions as SSF
@@ -20,7 +19,7 @@ import rois as ROIS
 # Set presciption (default is median dose, with dose at volume for stereotactic plans).
 def add_prescription(beam_set, nr_fractions, fraction_dose, target):
   total_dose = nr_fractions*fraction_dose
-  if PF.is_stereotactic(nr_fractions, fraction_dose):
+  if is_stereotactic(nr_fractions, fraction_dose):
     beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = 'DoseAtVolume', DoseValue = total_dose*100, DoseVolume = 99)
   else:
     beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = 'MedianDose', DoseValue = total_dose*100)
@@ -40,7 +39,7 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
     CollimatorAngle = collimator_angle1,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle1
+    CouchRotationAngle = couch_angle1
   )
   b1.Number = beam_index
   b2 = beam_set.CreateArcBeam(
@@ -54,7 +53,7 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
     CollimatorAngle = collimator_angle2,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle2
+    CouchRotationAngle = couch_angle2
   )
   b2.Number = beam_index + 1
 
@@ -71,7 +70,7 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
     CollimatorAngle = collimator_angle1,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle1
+    CouchRotationAngle = couch_angle1
   )
   b1.Number = beam_index
   b2 = beam_set.CreatePhotonBeam(
@@ -83,7 +82,7 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
     CollimatorAngle = collimator_angle2,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle2
+    CouchRotationAngle = couch_angle2
   )
   b2.Number = beam_index + 1
   b3 = beam_set.CreatePhotonBeam(
@@ -95,7 +94,7 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
     CollimatorAngle = collimator_angle3,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle3
+    CouchRotationAngle = couch_angle3
   )
   b3.Number = beam_index + 2
   b4 = beam_set.CreatePhotonBeam(
@@ -107,7 +106,7 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
     CollimatorAngle = collimator_angle4,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle4
+    CouchRotationAngle = couch_angle4
   )
   b4.Number = beam_index + 3
 
@@ -164,7 +163,7 @@ def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', 
     CollimatorAngle = collimator_angle,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle
+    CouchRotationAngle = couch_angle
   )
   b.Number = beam_index
 
@@ -181,7 +180,7 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
     CollimatorAngle = collimator_angle1,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle1
+    CouchRotationAngle = couch_angle1
   )
   b1.Number = beam_index
   b2 = beam_set.CreatePhotonBeam(
@@ -193,7 +192,7 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
     CollimatorAngle = collimator_angle2,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle2
+    CouchRotationAngle = couch_angle2
   )
   b2.Number = beam_index + 1
   b3 = beam_set.CreatePhotonBeam(
@@ -205,7 +204,7 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
     CollimatorAngle = collimator_angle3,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchAngle = couch_angle3
+    CouchRotationAngle = couch_angle3
   )
   b3.Number = beam_index + 2
 
@@ -219,7 +218,7 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
     Name= name1,
     Description = '',
     GantryAngle = gantry_angle1,
-    CouchAngle = couch_angle1,
+    CouchRotationAngle = couch_angle1,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
     CollimatorAngle = collimator_angle1
@@ -231,7 +230,7 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
     Name= name2,
     Description = '',
     GantryAngle = gantry_angle2,
-    CouchAngle = couch_angle2,
+    CouchRotationAngle = couch_angle2,
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
     CollimatorAngle = collimator_angle2
@@ -244,7 +243,7 @@ def label(region_code, fraction_dose, nr_fractions, technique, background_dose=0
   if technique == 'Conformal': # 3D-CRT
     t = 'I:' + str(background_dose) + '-'
   else:
-    if PF.is_stereotactic(nr_fractions, fraction_dose):
+    if is_stereotactic(nr_fractions, fraction_dose):
       t = 'S:' + str(background_dose) + '-' #Stereotactic
     else:
       t = 'V:' + str(background_dose) + '-' #VMAT
@@ -394,3 +393,18 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 				elif abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)])>1:
 					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-1]
 			segments.LeafPositions = leaf_positions
+
+# Returns True if the combination of nr_fractions and fraction_dose given appears to be stereotactic.
+def is_stereotactic(nr_fractions, fraction_dose):
+  if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
+    return True
+  else:
+    return False
+
+# Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).
+def set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose):
+  # Default grid size:
+  size = 0.3
+  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_partial_codes:
+    size = 0.2
+  beam_set.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})
