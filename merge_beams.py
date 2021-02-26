@@ -4,7 +4,7 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
+# Made for RayStation version: 10B
 # Python 3.6
 
 from connect import *
@@ -28,7 +28,7 @@ for beam in beam_set.Beams:
 for t in target_beams:
 	beams_to_be_merged = []
 	for beam in beam_set.Beams:
-		if beam.Name != t.Name and beam.GantryAngle == t.GantryAngle and beam.InitialCollimatorAngle == t.InitialCollimatorAngle and beam.CouchAngle == t.CouchAngle and beam.BeamQualityId == t.BeamQualityId:
+		if beam.Name != t.Name and beam.GantryAngle == t.GantryAngle and beam.InitialCollimatorAngle == t.InitialCollimatorAngle and beam.CouchRotationAngle == t.CouchRotationAngle and beam.BeamQualityId == t.BeamQualityId:
 			beams_to_be_merged.append(beam.Name)
 	if len(list(beams_to_be_merged)) > 0:
 		beam_set.MergeBeamSegments(TargetBeamName = t.Name, MergeBeamNames = beams_to_be_merged)
