@@ -78,9 +78,10 @@ class TSCase(object):
   def localization_points_for_gating_test(self):
     t = TEST.Test("Skal være samme referansepunkt i både fripust CT og dyp innpust CT for planer som har gating-regionkode", True, self.localization_point)
     points = []
-    if self.ts_plan.ts_beam_sets[0].ts_label.label.region and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_l_codes:
+    if self.ts_plan.ts_beam_sets[0].ts_label.label.region and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
       for ts_structure_set in self.ts_structure_sets:
-        points.append(ts_structure_set.structure_set.LocalizationPoiGeometry.Point)
+        if ts_structure_set.structure_set.LocalizationPoiGeometry.Point:
+          points.append(ts_structure_set.structure_set.LocalizationPoiGeometry.Point)
       if len(points) >= 2:
         if points[0].x - points[1].x > 0.05 or points[0].y - points[1].y > 0.05 or points[0].z - points[1].z > 0.05:
           return t.fail()
