@@ -40,8 +40,9 @@ class TSOptimization(object):
   def is_stereotactic(self):
     match = False
     if self.ts_beam_set.ts_label:
-      if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-        match = True
+      if self.ts_beam_set.ts_label.label.valid:
+        if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
+          match = True
     return match
   
   # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
