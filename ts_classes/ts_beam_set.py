@@ -346,8 +346,8 @@ class TSBeamSet(object):
     t = TEST.Test("Antall historier skal være minst 500.000", '>=500000', self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
-        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence < 200000:
-          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.ElectronMCHistoriesPerAreaFluence)
+        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MonteCarloHistoriesPerAreaFluence < 200000:
+          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MonteCarloHistoriesPerAreaFluence)
         else:
           return t.succeed()
 
