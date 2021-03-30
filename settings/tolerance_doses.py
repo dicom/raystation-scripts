@@ -139,6 +139,7 @@ spinalcanal_v2_adx = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord,
 esophagus_mean = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 34, 'Mean', 'Conventional RT')
 esophagus_v15_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
 esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+
 # Breast
 lung_v15_adx = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 heart_mean_breast = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_breast, 2, 'Mean', 'Conventional RT')
@@ -153,6 +154,7 @@ lad_v100_adx_15 = EQD.Tolerance('LAD', 'Some failure', ab_lad, fractions_breast_
 ipsilateral_breast_v50_adx = EQD.Tolerance('Breast_L/R','Some failure', ab_heart, fractions_breast_15, 40,'Volume receiving tolerance dose being less than 50%', 'Conventional RT' )
 
 # Prostate
+# 35 fractions:
 bladder_v50_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 65, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
 bladder_v35_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 70, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 bladder_v25_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 75, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
@@ -166,7 +168,7 @@ femoral_v2_adx = EQD.Tolerance('Femoral_Heads', 'Some failure', ab_femoral, frac
 bladder_v2_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_at_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
 bowelspace_v195_adx = EQD.Tolerance('BowelSpace', 'Some failure', ab_bowelspace, fractions_bowelspace, 45, 'Volume receiving tolerance dose being less than 195 cm3', 'Conventional RT')
 femoral_mean_adx = EQD.Tolerance('Femoral_Heads', 'Some failure', ab_femoral, fractions_femoral, 42, 'Mean dose being less than tolerance dose', 'Conventional RT')
-
+# 20 fractions:
 rectum_v40_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 40.8, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
 rectum_v48_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 rectum_v52_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 52.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
@@ -175,7 +177,10 @@ rectum_v60_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', 
 bladder_v60_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 60, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
 bladder_v48_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 bladder_v40_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 40.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
+
+
 # SBRT:
+
 
 # Lung SBRT 3 fractions
 spinal_canal_sbrt_3fx_v1_2 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_3, 12.3, 'Volume receiving tolerance dose being less than 1.2 cm3', 'SBRT')
@@ -203,14 +208,7 @@ ribs_sbrt_3fx_v2 = EQD.Tolerance('Ribs', 'Some failure', ab_ribs, fractions_sbrt
 ribs_sbrt_3fx_v0 = EQD.Tolerance('Ribs', 'Some failure', ab_ribs, fractions_sbrt_3, 53.76, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 skin_sbrt_3fx_v10 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_3, 22.5, 'Volume receiving tolerance dose being less than 10cm3', 'SBRT')
 skin_sbrt_3fx_v0 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-# Not in use by default:
-#brachial_sbrt_3fx_v0 = EQD.Tolerance('BrachialPlexus', 'Some failure', ab_brachial, fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-#brachial_sbrt_3fx_v3 = EQD.Tolerance('BrachialPlexus', 'Some failure', ab_brachial, fractions_sbrt_3, 20.4, 'Volume receiving tolerance dose being less than 3cm3', 'SBRT')
-#kidney_hilum_3fx_v66 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_3, 18.6, 'Volume receiving tolerance dose being less than 3cm3', 'SBRT')
-#kidneys_3fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_3, 14.4, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
-#kidneys_3fx_v33 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_3, 15, 'Volume receiving tolerance dose being less than 33%', 'SBRT')
-#stomach_3fx_v0 = EQD.Tolerance('Stomach', 'Some failure', ab_stomach, fractions_sbrt_3, 22.2, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-#stomach_3fx_v10 = EQD.Tolerance('Stomach', 'Some failure', ab_stomach, fractions_sbrt_3, 16.5, 'Volume receiving tolerance dose being less than 10cm3', 'SBRT')
+
 
 # Lung SBRT 5 fractions
 spinal_canal_sbrt_5fx_v1_2 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_5, 14.5, 'Volume receiving tolerance dose being less than 1.2 cm3', 'SBRT')
@@ -235,14 +233,7 @@ chestwall_sbrt_5fx_v30 = EQD.Tolerance('Chestwall', 'Some failure', ab_chestwall
 ribs_sbrt_5fx_v1 = EQD.Tolerance('Ribs', 'Some failure', ab_ribs, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 2cm3', 'SBRT')
 skin_sbrt_5fx_v10 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_5, 32, 'Volume receiving tolerance dose being less than 10cm3', 'SBRT')
 skin_sbrt_5fx_v0 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_5, 30, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-# Not in use by default:
-#brachial_sbrt_sbrt_5fx_v0 = EQD.Tolerance('BrachialPlexus', 'Some failure', ab_brachial, fractions_sbrt_5, 30.5, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-#brachial_sbrt_sbrt_5fx_v3 = EQD.Tolerance('BrachialPlexus', 'Some failure', ab_brachial, fractions_sbrt_5, 27, 'Volume receiving tolerance dose being less than 3cm3', 'SBRT')
-#kidney_hilum_sbrt_5fx_v66 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_5, 23, 'Volume receiving tolerance dose being less than 3cm3', 'SBRT')
-#kidneys_sbrt_5fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_5, 17.5, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
-#idneys_sbrt_5fx_v33 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_5, 18.5, 'Volume receiving tolerance dose being less than 33%', 'SBRT')
-#stomach_sbrt_5fx_v0 = EQD.Tolerance('Stomach', 'Some failure', ab_stomach, fractions_sbrt_5, 32, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-#stomach_sbrt_5fx_v10 = EQD.Tolerance('Stomach', 'Some failure', ab_stomach, fractions_sbrt_5, 18, 'Volume receiving tolerance dose being less than 10cm3', 'SBRT')
+
 
 # Lung SBRT 8 fractions
 esophagus_sbrt_8fx_v0 = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_sbrt_8, 41.6, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
@@ -328,69 +319,3 @@ colon_sbrt_3fx_v20 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions
 kidney_3fx_v10 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_1, 10, 'Volume receiving tolerance dose being less than 1/10 volume', 'SBRT')
 kidneys_col_3fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_3, 16, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
 
-
-'''
-eye_prv_v2_adx_5 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_5, 22, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_5 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_5, 12, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_10 = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye_10, 28, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_10 = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens_10, 14, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx = EQD.Tolerance('Eye_PRV','Some failure', ab_eye, fractions_eye, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx = EQD.Tolerance('Lens_PRV','Some failure', ab_lens, fractions_lens, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_13 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_13, 15, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_15 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_15, 16, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_30 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_30, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
-lens_prv_v2_adx_33 = EQD.Tolerance('Lens_PRV_R','Some failure', ab_lens, fractions_lens_33, 25, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_13 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_13, 38, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_15 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_15, 40, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_30 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_30, 49, 'Maximum dose at less than 2% volume', 'Conventional RT')
-eye_prv_v2_adx_33 = EQD.Tolerance('Eye_PRV_R','Some failure', ab_eye, fractions_eye_33, 50, 'Maximum dose at less than 2% volume', 'Conventional RT')
-hippocampus_mean_33 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_33, 17, 'Mean', 'Conventional RT')
-hippocampus_mean_30 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_30, 17, 'Mean', 'Conventional RT')
-hippocampus_mean_15 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_15, 15, 'Mean', 'Conventional RT')
-hippocampus_mean_13 = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus_13, 14, 'Mean', 'Conventional RT')
-lacrimal_mean_13 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_13, 21,  'Mean', 'Conventional RT')
-lacrimal_mean_15 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_15, 21,  'Mean', 'Conventional RT')
-lacrimal_mean_30 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_30, 25,  'Mean', 'Conventional RT')
-lacrimal_mean_33 = EQD.Tolerance('Glnd_Lacrimal_R', 'Some failure', ab_lacrimal, fractions_lacrimal_33, 25,  'Mean', 'Conventional RT')
-brainstem_prv_v2_adx_33 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_33, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-brainstem_prv_v2_adx_30 = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-brain_max = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
-brain_gtv_max = EQD.Tolerance('Brain-GTV','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose', 'Conventional RT')
-brainstem_prv_v2_adx = EQD.Tolerance('Brainstem_PRV', 'Some failure', ab_brainstem, fractions_brainstem, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_nrv_prv_v2_adx = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve, 54,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_nrv_prv_v2_adx_30 = EQD.Tolerance('OpticNrv_PRV_R','Some failure', ab_optic_nerve, fractions_optic_nerve_30, 53,  'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_chiasm_prv_v2_adx = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm, 54, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-optic_chiasm_prv_v2_adx_30 = EQD.Tolerance('OpticChiasm_PRV', 'Some failure', ab_optic_chiasm, fractions_optic_chiasm_30, 53, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-lacrimal_prv_v2_adx = EQD.Tolerance('Glnd_Lacrimal_PRV_L', 'Some failure', ab_lacrimal, fractions_lacrimal, 30, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-lacrimal_mean = EQD.Tolerance('Glnd_Lacrimal', 'Some failure', ab_lacrimal, fractions_lacrimal, 25,  'Mean', 'Conventional RT')
-cochlea_mean = EQD.Tolerance('Cochlea', 'Some failure', ab_cochlea, fractions_cochlea, 35, 'Mean', 'Conventional RT')
-hippocampus_mean = EQD.Tolerance('Hippocampus', 'Some failure', ab_hippocampus, fractions_hippocampus, 17, 'Mean', 'Conventional RT')
-'''
-'''
-fractions_hippocampus_33 = 33
-fractions_hippocampus_30 = 30
-fractions_hippocampus_15 = 15
-fractions_hippocampus_13 = 13
-fractions_lens_10 = 10
-fractions_lens_5 = 5
-fractions_lens_33 = 33
-fractions_lens_30 = 30
-fractions_lens_15 = 15
-fractions_lens_13 = 13
-fractions_lacrimal_33 = 33
-fractions_lacrimal_30 = 30
-fractions_lacrimal_15 = 15
-fractions_lacrimal_13 = 13
-fractions_eye_5 = 5
-fractions_eye_10 = 10
-fractions_eye_13 = 13
-fractions_eye_15 = 15
-fractions_eye_30 = 30
-fractions_eye_33 = 33
-fractions_optic_nerve_30 = 30
-fractions_brainstem_33 = 33
-fractions_brainstem_30 = 30
-fractions_optic_chiasm = 33
-fractions_optic_chiasm_30 = 30
-fractions_lacrimal = 33
-'''
