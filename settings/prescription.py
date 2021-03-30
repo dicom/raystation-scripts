@@ -114,7 +114,9 @@ bladder = [
   Prescription(21, 3, 'MedianDose'),
   Prescription(20, 5, 'MedianDose'),
   Prescription(28, 7, 'MedianDose'),
+  Prescription(30, 10, 'MedianDose'),
   Prescription(35, 10, 'MedianDose'),
+  Prescription(39, 13, 'MedianDose'),
   Prescription(64, 32, 'MedianDose')
 ]
 prostate = [
