@@ -222,17 +222,10 @@ def brain_oars(nr_fractions, region_code):
   return brain_oars
 
 
-# Breast tangential:
-breast_tang_oars = [
-  CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-  CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4),
-  CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)
-]
-
-
-# Breast with regional lymph nodes, clinical goal for 'Humeral_L' is added for left sided and vice versa
+# Breast (Regional breast/Whole breast/Partial breast):
 def breast_oars(region_code, nr_fractions, target):
-  if region_code in [241, 243]: # Left
+  if region_code in [241, 243]:
+    # Regional (left):
     if nr_fractions == 25:
       breast = [
         CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
@@ -253,7 +246,8 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
-  elif region_code in [242, 244]: # Right
+  elif region_code in [242, 244]:
+    # Regional (right):
     if nr_fractions == 25:
       breast = [
         CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
@@ -275,16 +269,18 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   else:
+    # Whole breast and partial breast:
     breast = [
       CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)
     ]
-    if region_code in RC.breast_tang_r_codes and target == ROIS.ctv_sb.name:
+    # Partial breast only:
+    if region_code in RC.breast_partial_r_codes:
       breast.extend([
         CG.ClinicalGoal(ROIS.breast_r.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)
       ])
-    elif region_code in RC.breast_tang_l_codes and target == ROIS.ctv_sb.name:
+    elif region_code in RC.breast_partial_l_codes:
       breast.extend([
         CG.ClinicalGoal(ROIS.breast_l.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)
       ])
