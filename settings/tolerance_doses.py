@@ -96,7 +96,6 @@ fractions_skin = 12.5
 
 
 # Partial brain
-
 lens_v003_adx = EQD.Tolerance('Lens_L','Some failure', ab_lens, fractions_lens, 10, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 brain_v003 = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 brainstem_surface_v003_adx = EQD.Tolerance('BrainstemSurface', 'Some failure', ab_brainstem, fractions_brainstem_surface, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
@@ -114,10 +113,10 @@ skin_v003_adx = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_skin, 2
 hippocampus_v40 = EQD.Tolerance('Hippocampus_L', 'Some failure', ab_hippocampus, fractions_hippocampus, 7.3, 'Volume receiving tolerance dose being less than 40%', 'Conventional RT')
 
 
-
 # Neck
 parotids_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_parotid, 25, 'Mean', 'Conventional RT')
 parotid_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_parotid, 20, 'Mean', 'Conventional RT')
+
 
 # Thorax
 kidney_mean = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 15, 'Mean', 'Conventional RT')
@@ -140,18 +139,20 @@ esophagus_mean = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fracti
 esophagus_v15_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
 esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
 
+
 # Breast
 lung_v15_adx = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 heart_mean_breast = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_breast, 2, 'Mean', 'Conventional RT')
 heart_mean_breast_15 = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_breast_15, 2, 'Mean', 'Conventional RT')
 humeral_v33_adx = EQD.Tolerance('Humeral', 'Some failure', ab_humeral, fractions_breast, 25, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
 contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 3, 'Mean', 'Conventional RT')
-lung_v30_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 20, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
-lung_v30_adx_15 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+lung_v35_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+lung_v35_adx_15 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v65_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
 lad_v100_adx = EQD.Tolerance('LAD', 'Some failure', ab_lad, fractions_breast, 20, 'Volume receiving tolerance dose being less than 100%', 'Conventional RT')
 lad_v100_adx_15 = EQD.Tolerance('LAD', 'Some failure', ab_lad, fractions_breast_15, 20, 'Volume receiving tolerance dose being less than 100%', 'Conventional RT')
 ipsilateral_breast_v50_adx = EQD.Tolerance('Breast_L/R','Some failure', ab_heart, fractions_breast_15, 40,'Volume receiving tolerance dose being less than 50%', 'Conventional RT' )
+
 
 # Prostate
 # 35 fractions:
@@ -259,6 +260,7 @@ skin_srt_1fx_v10 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt
 spinal_cord_srt_1fx_v0 = EQD.Tolerance('SpinalCord', 'Some failure', ab_spinalcord, fractions_sbrt_1, 12.5, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
 spinal_cord_srt_1fx_v0_25 = EQD.Tolerance('SpinalCord', 'Some failure', ab_spinalcord, fractions_sbrt_1, 10, 'Volume receiving tolerance dose being less than 0.25 cm3', 'SBRT')
 
+
 # Brain SRT 3 fractions
 cochlea_srt_3fx_v0 = EQD.Tolerance('Cochlea_L', 'Some failure', ab_cochlea, fractions_sbrt_3, 17, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
 optic_nrv_srt_3fx_v0 = EQD.Tolerance('OpticNrv_L','Some failure', ab_optic_nerve, fractions_sbrt_3, 19.5, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
@@ -303,6 +305,7 @@ kidney_hilum_1fx_v66 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_h
 kidney_sbrt_1fx_v0 = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_sbrt_1, 18.6, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 kidneys_col_1fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_1, 8.4, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
 
+
 # Bone/Spine SBRT 3 fractions
 spinal_canal_sbrt_3fx_v0 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_3, 21.9, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
 spinal_canal_sbrt_3fx_v0_35 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_3, 18, 'Volume receiving tolerance dose being less than 0.35 cm3', 'SBRT')
@@ -318,4 +321,3 @@ colon_sbrt_3fx_v0 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions_
 colon_sbrt_3fx_v20 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
 kidney_3fx_v10 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_1, 10, 'Volume receiving tolerance dose being less than 1/10 volume', 'SBRT')
 kidneys_col_3fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_3, 16, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
-
