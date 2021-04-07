@@ -152,7 +152,9 @@ lung_v65_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breas
 lad_v100_adx = EQD.Tolerance('LAD', 'Some failure', ab_lad, fractions_breast, 20, 'Volume receiving tolerance dose being less than 100%', 'Conventional RT')
 lad_v100_adx_15 = EQD.Tolerance('LAD', 'Some failure', ab_lad, fractions_breast_15, 20, 'Volume receiving tolerance dose being less than 100%', 'Conventional RT')
 ipsilateral_breast_v50_adx = EQD.Tolerance('Breast_L/R','Some failure', ab_heart, fractions_breast_15, 40,'Volume receiving tolerance dose being less than 50%', 'Conventional RT' )
-
+esophagus_mean_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 11, 'Mean', 'Conventional RT')
+esophagus_v30_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 10, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+esophagus_v15_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 20, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 
 # Prostate
 # 35 fractions:

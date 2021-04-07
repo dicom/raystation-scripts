@@ -234,6 +234,9 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
         CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
@@ -244,6 +247,9 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
         CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   elif region_code in [242, 244]:
@@ -256,6 +262,9 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
         CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
@@ -266,6 +275,9 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority5),
         CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
         CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   else:
