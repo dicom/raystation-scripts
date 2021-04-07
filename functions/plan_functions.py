@@ -49,14 +49,14 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
         NumberOfFractions=nr_fractions
       )
       BSF.add_prescription(beam_set, nr_fractions, fraction_dose, 'CTV' + str(i+1))
-
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
-      nr_existing_beams += nr_beams
+      nr_existing_beams = nr_existing_beams + nr_beams
       OBJ.create_palliative_objectives_for_additional_beamsets(ss, plan, fraction_dose*nr_fractions, i)
       i += 1
       if not common_isocenter:
         isocenter=False
+
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
 # (Used for brain or lung)
@@ -86,7 +86,7 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
         i += 1
 
 
-# Creates a beam set (the first beam set, if multiple beam sets are to me made):
+# Creates a beam set (the first beam set, if multiple beam sets are to me made).
 def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, modality='Photons', patient_position="HeadFirstSupine"):
     beam_set = plan.AddNewBeamSet(
       Name=name,
@@ -99,8 +99,12 @@ def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, 
     )
     return beam_set
 
-# Creates an additional beam set for breast patients with a 2 Gy x 8 boost, prescription is set, two beams are set up and common objectives are set:
+
+# Creates an additional beam set for breast patients with a 2 Gy x 8 boost.
+# (Prescription is set, three conventional beams are set up and common objectives are set)
 def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, roi_name, background_dose=0):
+  # Determine first available beam number:
+  next_beam_number = first_available_beam_number(plan)
   # Set up beam set and prescription:
   beam_set = plan.AddNewBeamSet(
     Name=BSF.label(region_code, 2, 8, 'Conformal', background_dose=background_dose),
@@ -113,9 +117,19 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
   )
   BSF.add_prescription(beam_set, 8, 2, roi_name)
   if region_code in RC.breast_l_codes:
-    BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2)
-    
+    BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2, beam_index=next_beam_number) 
   elif region_code in RC.breast_r_codes:
-    BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2)
+    BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2, beam_index=next_beam_number)
   total_dose = 16
   OBJ.create_breast_boost_objectives(ss, plan, total_dose)
+
+
+# Determines the first available beam number for this plan (which is the highest existing beam number + 1).
+def first_available_beam_number(plan):
+  highest_number = 0
+  for bs in plan.BeamSets:
+    for b in bs.Beams:
+      if b.Number > highest_number:
+        highest_number = b.Number
+  return highest_number + 1
+
