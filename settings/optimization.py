@@ -50,6 +50,7 @@ sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_l
 
 
 # Set up optimization parameters, based on region code (i.e. treatment site) and fraction dose (i.e. fractionated treatment or SBRT).
+# FIXME: Would be more robust to use the prescription object here, instead of the fraction_dose (for interpreting sbrt/conventional treatment).
 def optimization_parameters(region_code, fraction_dose):
   # Set default optimization settings:
   opt = default
@@ -70,6 +71,9 @@ def optimization_parameters(region_code, fraction_dose):
     if fraction_dose > 9:
       # Stereotactic lung:
       opt = sbrt
+    elif fraction_dose == 7:
+      # Stereotactic lung: (7Gy * 8fx)
+      opt = sbrt
     else:
       # Conventional lung:
       opt = sliding_window
@@ -85,6 +89,9 @@ def optimization_parameters(region_code, fraction_dose):
     # Palliative treatment:
     if fraction_dose > 8:
       # Stereotactic palliative:
+      opt = sbrt
+    elif fraction_dose >= 6 and fraction_dose <= 7:
+      # Stereotactic palliative: (6-7Gy * 5fx)
       opt = sbrt
     else:
       # Conventional palliative:
