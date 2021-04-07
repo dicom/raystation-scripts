@@ -22,7 +22,7 @@ lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.trachea, ROIS.li
 
 # Breast:
 # Breast with regional lymph nodes:
-breast_reg_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.thyroid, ROIS.esophagus]
+breast_reg_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.thyroid, ROIS.esophagus, ROIS.liver]
 # Whole or partial breast:
 breast_tang_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal]
 breast_part_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.surgical_bed]
