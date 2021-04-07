@@ -96,18 +96,18 @@ class Plan(object):
           target = palliative_choices[1]
 
 
-    # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
-    plan = CF.create_plan(case, examination, region_text)
-
-    
     # Create the prescription object:
     prescription = PRES.create_prescription(total_dose, nr_fractions, region_code)
     # Validate the prescription:
     valid = PRES.validate_prescription(prescription, region_code)
     if not valid:
       GUIF.handle_invalid_prescription(prescription, region_code)
+    
+    
+    # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
+    plan = CF.create_plan(case, examination, region_text)
 
-
+   
     # Set planners initials:
     plan.PlannedBy = initials
 
