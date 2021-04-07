@@ -147,7 +147,12 @@ palliative = [
   Prescription(50, 25, 'MedianDose'),
   # Stereotactic:
   Prescription(16, 1, 'DoseAtVolume', volume_percent=99),
-  Prescription(27, 3, 'DoseAtVolume', volume_percent=99)
+  Prescription(27, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(24, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(30, 3, 'DoseAtVolume', volume_percent=99), # Bony-M trial (GTV dose)
+  Prescription(37.5, 3, 'DoseAtVolume', volume_percent=99), # Bony-M trial (GTV dose)
+  Prescription(30, 5, 'DoseAtVolume', volume_percent=99),
+  Prescription(35, 5, 'DoseAtVolume', volume_percent=99)
 ]
 
 
