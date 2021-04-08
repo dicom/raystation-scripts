@@ -223,7 +223,8 @@ def brain_oars(nr_fractions, region_code):
 
 
 # Breast (Regional breast/Whole breast/Partial breast):
-def breast_oars(region_code, nr_fractions, target):
+# FIXME: Unnecessary code duplication in this function. Should be cleaned up!
+def breast_oars(ss, region_code, nr_fractions, target):
   if region_code in [241, 243]:
     # Regional (left):
     if nr_fractions == 25:
@@ -237,6 +238,7 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
@@ -250,8 +252,13 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
+    # Thyroid absolute volume CG for regional breast:
+    if SSF.has_roi_with_contours(ROIS.thyroid.name):
+      volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
+      breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
   elif region_code in [242, 244]:
     # Regional (right):
     if nr_fractions == 25:
@@ -265,6 +272,7 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
@@ -278,8 +286,13 @@ def breast_oars(region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
+        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
+    # Thyroid absolute volume CG for regional breast:
+    if SSF.has_roi_with_contours(ROIS.thyroid.name):
+      volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
+      breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
   else:
     # Whole breast and partial breast:
     breast = [

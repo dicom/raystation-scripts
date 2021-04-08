@@ -14,6 +14,7 @@ ab_spinalcord = 2
 ab_eye = 3
 ab_lens = 1
 ab_parotid = 3
+ab_thyroid = 3
 ab_brain = 2
 ab_esophagus = 3
 ab_lung = 3
@@ -155,6 +156,8 @@ ipsilateral_breast_v50_adx = EQD.Tolerance('Breast_L/R','Some failure', ab_heart
 esophagus_mean_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 11, 'Mean', 'Conventional RT')
 esophagus_v30_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 10, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
 esophagus_v15_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 20, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+thyroid_mean_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 11.8, 'Mean', 'Conventional RT')
+thyroid_v8_5cc_adx_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 20, 'More than 8.5 cm^3 should receive less than the tolerance dose', 'Conventional RT')
 
 # Prostate
 # 35 fractions:
