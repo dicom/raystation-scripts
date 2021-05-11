@@ -179,6 +179,7 @@ class QualityControl(object):
         ts_beam.wide_jaw_opening_for_filter_free_energies()
         ts_beam.mu_segment_3dcrt_test()
         ts_beam.segment_test()
+        ts_beam.bolus_set_test()
         #ts_beam.narrow_jaw_opening_for_filter_energies()
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:

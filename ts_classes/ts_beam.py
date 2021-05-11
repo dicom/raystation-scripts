@@ -13,6 +13,7 @@ from tkinter import messagebox
 
 # Local script imports:
 import test_p as TEST
+import patient_model_functions as PMF
 import raystation_utilities as RSU
 
 # This class contains tests for the RayStation Beam object:
@@ -112,6 +113,16 @@ class TSBeam(object):
         else:
           return t.succeed()
 
+  # Tests if a bolus is activated for the beam (in cases where a bolus exists among the ROIs).
+  def bolus_set_test(self):
+    t = TEST.Test("Bolus forventes å være aktivert for feltet når en bolus ROI eksisterer i struktursettet", None, self.param)
+    if PMF.bolus(self.ts_beam_set.ts_plan.ts_case.case.PatientModel):
+      t.expected = str(PMF.bolus_names(self.ts_beam_set.ts_plan.ts_case.case.PatientModel))
+      if len(self.beam.Boli) > 0:
+        return t.succeed()
+      else:
+        return t.fail(None)
+  
   # Tests for cardinal collimator angles for VMAT arcs.
   def collimator_angle_of_arc_test(self):
     t = TEST.Test("Skal normalt unngå rette vinkler for VMAT buer", 'Ulik [0, 90, 180, 270]', self.collimator)
