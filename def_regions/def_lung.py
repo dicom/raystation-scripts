@@ -3,6 +3,7 @@
 # Import local files:
 import colors as COLORS
 import def_oars as DEF
+import def_quality_control as DEFQC
 import margins as MARGINS
 import roi as ROI
 import rois as ROIS
@@ -84,6 +85,8 @@ class DefLung(object):
       site.add_oars([heart_ptv, esophagus_ptv])
     # Stereotactic treatment:
     elif intent == 'stereotactic':
+      # Slice thickness quality control:
+      DEFQC.test_slice_thickness(examination, 0.2, "Lunge SBRT")
       # Choice 2: Side - left or right?
       side = choices[2]
       if side == 'right':
