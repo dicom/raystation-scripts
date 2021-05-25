@@ -146,6 +146,16 @@ def create_model_roi(pm, examination, roi):
       GUIF.handle_failed_model_based_segmentation(roi.name)
 
 
+# Creates a POI (if one doesn't already exist with the same name).
+def create_poi(pm, examination, name, type, color):
+  match = False
+  for poi in pm.PointsOfInterest:
+    if poi.Name == name:
+      match = True
+  if not match:
+    pm.CreatePoi(Examination = examination, Name = name, Color = color , Type = type)
+
+
 # Creates a ROI which is the posterior half of the source ROI in all slices.
 # Note that this function is somewhat slow, since it has to create a new ROI for every slice.
 def create_posterior_half(pm, examination, ss, source_roi, roi):
