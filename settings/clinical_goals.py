@@ -802,7 +802,7 @@ def palliative_targets(ss, plan, target):
       CG.ClinicalGoal(target, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(target, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(target, at_least, dose_at_volume, pc98, pc98, priority2),
-      CG.ClinicalGoal(target.replace("C", "P"), at_least, dose_at_volume, pc95, pc98, priority2),
+      CG.ClinicalGoal(target.replace("C", "P"), at_least, dose_at_volume, pc95, pc98, priority4),
       CG.ClinicalGoal(target, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(target.replace("C", "P"), at_least, conformity_index, pc90, pc95, priority5)
     ])
