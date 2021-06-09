@@ -405,6 +405,6 @@ def is_stereotactic(nr_fractions, fraction_dose):
 def set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose):
   # Default grid size:
   size = 0.3
-  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_partial_codes:
+  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_codes:
     size = 0.2
   beam_set.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})
