@@ -52,6 +52,22 @@ class TSCase(object):
        match = True
     return match
 
+  
+  # Tests if a POI exists for specifying where the breath measurement point is.
+  def breath_measurement_point_for_lung_sbrt_test(self):
+    t = TEST.Test("For lunge stereotaksi skal det finnes en 'Pust' POI for markering av målepunkt for pustebevegelse", True, self.param)
+    # Only relevant to run this test for lung region and stereotactic treatment:
+    if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
+      match = False
+      for poi in self.case.PatientModel.PointsOfInterest:
+        if poi.Name == 'Pust' or poi.Name == 'PUST':
+          match = True
+      if match:
+        return t.succeed()
+      else:
+        return t.fail()
+  
+  
   # Tests if the CT image series used for treatment planning is the most recent CT image series in this case.
   # While evaluating against other image series, non-CT modalities, CBCT series and CT image series
   # having the same frame of reference UID as the primary image series are filtered out.

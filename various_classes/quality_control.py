@@ -74,6 +74,7 @@ class QualityControl(object):
     # Case tests:
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
+    ts_case.breath_measurement_point_for_lung_sbrt_test()
     
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
