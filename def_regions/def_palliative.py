@@ -63,12 +63,10 @@ class DefPalliative(object):
           site.add_targets([ROIS.gtv, ROIS.ctv_ext])
         else:
           site.add_targets([ROIS.ctv_underived])
-          if region == 'other':
-            ROIS.ptv_ext.sourcesA = [ROIS.ctv_underived]
-            site.add_targets([ROIS.ptv_ext_7])
-          else:
-            ROIS.ptv_ext.sourcesA = [ROIS.ctv_underived]
-            site.add_targets([ROIS.ptv_ext])
+        if region == 'other':
+          site.add_targets([ROIS.ptv_ext_7])
+        else:
+          site.add_targets([ROIS.ptv_ext])
       # 2 or 3 targets:
       else:
         # With GTV:
