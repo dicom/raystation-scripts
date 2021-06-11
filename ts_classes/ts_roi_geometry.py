@@ -56,3 +56,32 @@ class TSROIGeometry(object):
           return t.fail()
         else:
           return t.succeed()
+
+  # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
+  def gaps_in_definition_test(self):
+    t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
+    # We are only able to test this if there actually are contours (e.q. it is not a derived ROI geometry):
+    try:
+      contours = self.roi_geometry.PrimaryShape.Contours
+    except Exception:
+      contours = None
+    if contours:
+      missing_slices = []
+      # Extract all slices (z coordinates) where the ROI is defined:
+      slices = []
+      for slice in self.roi_geometry.PrimaryShape.Contours:
+        slices.append(slice[0].z)
+      # Determine unique slice positions and sort them:
+      unique_slices = list(set(slices))
+      unique_slices.sort()
+      # Iterate the recorded slices to see if there are any gaps (i.e. a difference bigger than the slice thickness):
+      for i in range(len(unique_slices)):
+        if i > 0:
+          gap = round(abs(unique_slices[i] - unique_slices[i-1]), 1)
+          # If this gap is larger than slice thickness, then we have a missing slice:
+          if gap > self.ts_structure_set.slice_thickness:
+            missing_slices.append(round(unique_slices[i], 1))
+      if len(missing_slices) > 0:
+        return t.fail(str(missing_slices))
+      else:
+        return t.succeed()
