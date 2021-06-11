@@ -128,12 +128,13 @@ other_non_stereotactic = P.Property('Ikke stereotaksi', 'no', parent = other, ne
 # Other non-SBRT: Region:
 other_head = P.Property('Hode', 'head', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_neck = P.Property('Hals', 'neck', parent=other_non_stereotactic, next_category = 'antall målvolum')
+other_costa = P.Property('Costa', 'costa', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_thorax = P.Property('Thorax', 'thorax', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_thorax_and_abdomen = P.Property('Thorax/Abdomen', 'thorax_abdomen', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_abdomen = P.Property('Abdomen', 'abdomen', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_abdomen_and_pelvis = P.Property('Abdomen/Bekken', 'abdomen_pelvis', parent=other_non_stereotactic, next_category = 'antall målvolum')
 other_pelvis = P.Property('Bekken', 'pelvis', parent=other_non_stereotactic, next_category = 'antall målvolum', default = True)
-other_other = P.Property('Ekstremiteter/Annet', 'other', parent=other_non_stereotactic, next_category = 'antall målvolum')
+other_other = P.Property('Ekstremiteter', 'other', parent=other_non_stereotactic, next_category = 'antall målvolum')
 
 # Other SBRT: Region:
 other_stereotactic_col_thorax =  P.Property('Columna - thorax', 'col thorax', parent=other_stereotactic)
@@ -141,7 +142,7 @@ other_stereotactic_col_pelvis =  P.Property('Columna - bekken', 'col pelvis', pa
 other_stereotactic_pelvis  = P.Property('Bekken', 'pelvis', parent=other_stereotactic, default = True)
 
 # Other non-SBRT: Number of target volumes:
-for region in [other_head, other_neck, other_thorax, other_thorax_and_abdomen, other_abdomen, other_abdomen_and_pelvis, other_pelvis, other_other]:
+for region in [other_head, other_neck, other_costa, other_thorax, other_thorax_and_abdomen, other_abdomen, other_abdomen_and_pelvis, other_pelvis, other_other]:
   other_target_volume_one = P.Property('1','1', parent = region, next_category = '', default = True)
   other_target_volume_two = P.Property('2','2', parent = region, next_category = '')
   # With or without soft tissue component:

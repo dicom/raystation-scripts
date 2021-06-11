@@ -28,6 +28,7 @@ prostate_lymph_nodes_seed_expansion = MARGIN.Expansion(1.0, 1.0, 1.0, 1.0, 0.7, 
 prostate_bone_match_expansion = MARGIN.Expansion(1.2, 1.2, 1, 1, 0.8, 0.8)
 rectum_ctv_primary_risk_expansion = MARGIN.Expansion(0.5, 0.5, 0.8, 0.5, 0.5, 0.5)
 rectum_ptv_50_expansion = MARGIN.Expansion(0.7, 0.7, 1, 0.7, 0.7, 0.7)
+abdomen_near_lung_soft_tissue_expansion = MARGIN.Expansion(1.0, 1.0, 0.7, 0.7, 0.7, 0.7)
 
 
 # Contraction margins:
