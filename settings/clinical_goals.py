@@ -256,7 +256,7 @@ def breast_oars(ss, region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     # Thyroid absolute volume CG for regional breast:
-    if SSF.has_roi_with_contours(ROIS.thyroid.name):
+    if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
       volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
       breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
   elif region_code in [242, 244]:
@@ -290,7 +290,7 @@ def breast_oars(ss, region_code, nr_fractions, target):
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     # Thyroid absolute volume CG for regional breast:
-    if SSF.has_roi_with_contours(ROIS.thyroid.name):
+    if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
       volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
       breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
   else:
