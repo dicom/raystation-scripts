@@ -76,6 +76,10 @@ class QualityControl(object):
     ts_case.localization_points_for_gating_test()
     ts_case.breath_measurement_point_for_lung_sbrt_test()
     
+    # ROI tests:
+    for ts_roi in ts_case.ts_rois:
+      ts_roi.exclude_from_export_test()
+    
     # Structure set tests:
     for ts_structure_set in ts_case.ts_structure_sets:
       if ts_structure_set.structure_set.OnExamination.Name == ts_case.ts_plan.plan.BeamSets[0].GetStructureSet().OnExamination.Name:
@@ -187,7 +191,3 @@ class QualityControl(object):
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:
           ts_segment.mlc_corner_validity_test()
-        
-        
-
-
