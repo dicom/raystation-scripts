@@ -96,6 +96,7 @@ class QualityControl(object):
         # ROI geometry tests:
         for ts_roi_geometry in ts_structure_set.ts_roi_geometries:
           ts_roi_geometry.derived_roi_geometry_is_updated_test()
+          ts_roi_geometry.gaps_in_definition_test()
     
     # Plan tests:
     ts_plan.planned_by_test()
@@ -181,6 +182,7 @@ class QualityControl(object):
         ts_beam.mu_segment_3dcrt_test()
         ts_beam.segment_test()
         ts_beam.bolus_set_test()
+        ts_beam.couch_rotation_angle_test()
         #ts_beam.narrow_jaw_opening_for_filter_energies()
         # Segment tests:
         for ts_segment in ts_beam.ts_segments:

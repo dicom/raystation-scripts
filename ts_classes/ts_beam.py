@@ -41,6 +41,7 @@ class TSBeam(object):
     self.isocenter = TEST.Parameter('Isosenter', '', self.param)
     self.opening = TEST.Parameter('Åpning', '', self.param)
     self.mlc = TEST.Parameter('MLC', '', self.param)
+    self.couch_rotation_angle = TEST.Parameter('Bordvinkel', str(beam.CouchRotationAngle), self.param)
 
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
@@ -132,6 +133,14 @@ class TSBeam(object):
       else:
         return t.succeed()
 
+  # Tests for a valid couch rotation angle (Max couch rotation angle on our linacs is 100 and 260 degrees).
+  def couch_rotation_angle_test(self):
+    t = TEST.Test("Skal ikke være større enn 100 grader eller mindre enn 260 grader", 'Ikke <100-260>', self.couch_rotation_angle)
+    if 100 < self.beam.CouchRotationAngle < 260:
+      return t.fail(self.beam.CouchRotationAngle)
+    else:
+      return t.succeed()
+  
   # Tests for energy used for VMAT arcs.
   def energy_of_arc_test(self):
     t = TEST.Test("Skal normalt ikke bruke 15 MV ved VMAT", '6 eller 10', self.energy)
