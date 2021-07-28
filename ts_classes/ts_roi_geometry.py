@@ -60,11 +60,18 @@ class TSROIGeometry(object):
   # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
   def gaps_in_definition_test(self):
     t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
-    # We are only able to test this if there actually are contours (e.q. it is not a derived ROI geometry):
+    # We are only able to test this if there actually are contours:
     try:
       contours = self.roi_geometry.PrimaryShape.Contours
     except Exception:
       contours = None
+    # If the ROI geometry is derived, we will not perform this test on it:
+    if self.roi_geometry.PrimaryShape.DerivedRoiStatus:
+      contours = None
+    # Also skip this test for ROIs where organ type is "Other" or "Unknown" (to avoid testing e.g. dose derived volumes):
+    if self.roi_geometry.OfRoi.OrganData.OrganType in ['Other', 'Unknown']:
+      contours = None
+    # Perform the test if indicated:
     if contours:
       missing_slices = []
       # Extract all slices (z coordinates) where the ROI is defined:
