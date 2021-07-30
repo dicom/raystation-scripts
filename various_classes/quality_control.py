@@ -75,6 +75,7 @@ class QualityControl(object):
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
     ts_case.breath_measurement_point_for_lung_sbrt_test()
+    ts_case.breath_measurement_point_not_in_gantry_shadow_for_lung_sbrt_test()
     
     # ROI tests:
     for ts_roi in ts_case.ts_rois:

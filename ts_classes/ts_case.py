@@ -7,6 +7,7 @@
 # System configuration:
 from connect import *
 import sys
+import math
 
 # GUI framework (debugging only):
 #from tkinter import messagebox
@@ -67,6 +68,42 @@ class TSCase(object):
       else:
         return t.fail()
   
+  # Tests if the breath measurement point is not too far offset from the isocenter.
+  # (such that it falls in the shadow of the gantry from the Catalyst camera's point of view)
+  def breath_measurement_point_not_in_gantry_shadow_for_lung_sbrt_test(self):
+    t = TEST.Test("For lunge stereotaksi bør avstanden mellom isocenter og 'Pust' POIen ikke være såpass stor at pustepunktet kommer i skyggen av gantry (fra Catalyst kameraet sitt synspunkt)", True, self.param)
+    # Only relevant to run this test for lung region and stereotactic treatment:
+    if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
+      match = False
+      for poi in self.case.PatientModel.PointsOfInterest:
+        if poi.Name == 'Pust' or poi.Name == 'PUST':
+          match = True
+      if match:
+        # The POI exists. Proceed to test the geometry between the POI and the isocenter:
+        # Isocenter:
+        iso = self.ts_plan.ts_beam_sets[0].ts_beams[0].beam.Isocenter.Position
+        ss = self.ts_plan.ts_beam_sets[0].beam_set.GetStructureSet()
+        for poi in ss.PoiGeometries:
+          if poi.OfPoi.Name == 'Pust' or poi.OfPoi.Name == 'PUST':
+            # Set (max/expected) breathing amplitude (cm):
+            amplitude = 2
+            # Catalyst camera angle:
+            angle = 60
+            # Maximum (realistic) catalyst height:
+            max = 22
+            # Catalyst realistic field of view along iso:
+            iso_real_fov = max * math.tan(math.radians(angle))
+            # Calculate difference in the height and long directions:
+            delta_height = abs(iso.y - poi.Point.y)
+            delta_long = poi.Point.z - iso.z
+            # Catalyst realistic field of view at breath measurement point: 
+            breath_real_fov = (iso_real_fov - delta_long) / math.tan(math.radians(angle))
+            delta_height_dibh = delta_height + amplitude
+            if delta_height_dibh > breath_real_fov:
+              t.expected = "<" + str(round(breath_real_fov, 1))
+              return t.fail(round(delta_height_dibh, 1))
+            else:
+              return t.succeed()
   
   # Tests if the CT image series used for treatment planning is the most recent CT image series in this case.
   # While evaluating against other image series, non-CT modalities, CBCT series and CT image series
