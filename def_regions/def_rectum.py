@@ -44,7 +44,8 @@ class DefRectum(object):
       bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_47_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_47_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       wall_ptv_50 = ROI.ROIWall(ROIS.z_ptv_50_wall.name, ROIS.z_ptv_50_wall.type, COLORS.wall, ptv_50, 0.5, 0)
-      site.add_oars([bladder_ptv, bowel_ptv, wall_ptv_50])
+      wall_ptv_47_50 = ROI.ROIWall(ROIS.z_ptv_47_50_wall.name, ROIS.z_ptv_47_50_wall.type, COLORS.wall, ptv_47_50, 0.5, 0)
+      site.add_oars([bladder_ptv, bowel_ptv, wall_ptv_50, wall_ptv_47_50])
       site.add_targets([ROIS.ctv_e, ctv_50, ptv_50, ctv_47_50, ptv_47_50])
     # Hypofractionated treatment (5 Gy x 5):
     else:

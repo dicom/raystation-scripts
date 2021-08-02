@@ -432,6 +432,7 @@ def create_rectum_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 28*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.bowel_space.name, 20*100, 1, 5)
     OF.fall_off(ss, plan, ROIS.z_ptv_50_wall.name, 49*100, 45*100, 0.5, 5)
+    OF.fall_off(ss, plan, ROIS.z_ptv_47_50_wall.name, 50*100, 35*100, 1.0, 1)
   #elif total_dose == 25:
   else: # (Had to to change this for a rare 1.5*30 case.)
     OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 35)
