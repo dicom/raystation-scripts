@@ -127,13 +127,15 @@ def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choic
   return results
 
 
-# Displays a warning for a prescription which have been considered invalid for a given region code.
-# Halts the script execution after the warning has been displayed.
-def handle_invalid_prescription(prescription, region_code):
-  title = "Advarsel"
-  text = "Ukjent fraksjonering angitt!\n\nFraksjoneringen (" + prescription.description() + ") er ikke gjenkjent for følgende regionkode:\n" + str(region_code) + "\n\nVennligst undersøk om du kan ha skrevet feil i fraksjonering eller regionkode, eller om dette eventuelt er en uvanlig fraksjonering som ikke står i prosedyren."
-  messagebox.showinfo(title, text)
-  sys.exit(0)
+# Displays a warning for a prescription which is unknown for a given region code.
+# The user is then given the choice to continue script execution or to stop.
+def handle_invalid_prescription(prescription, region_code, region_text):
+  title = "Advarsel!"
+  text = "Ukjent fraksjonering angitt!\n\nFraksjoneringen (" + prescription.description() + ") er ikke gjenkjent for følgende regionkode:\n" + str(region_code) + " (" + region_text + ")\n\nVennligst undersøk om du kan ha skrevet feil i fraksjonering eller regionkode, eller om dette eventuelt er en uvanlig fraksjonering som ikke står i prosedyren.\n\nØnsker du å fortsette?"
+  result = messagebox.askquestion(title, text)
+  # Stop script execution if the user clicks 'no' (on the question to continue):
+  if result != 'yes':
+    sys.exit(0)
 
 
 # Handles the situation of a missing target.

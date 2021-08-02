@@ -101,7 +101,7 @@ class Plan(object):
     # Validate the prescription:
     valid = PRES.validate_prescription(prescription, region_code)
     if not valid:
-      GUIF.handle_invalid_prescription(prescription, region_code)
+      GUIF.handle_invalid_prescription(prescription, region_code, region_text)
     
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
