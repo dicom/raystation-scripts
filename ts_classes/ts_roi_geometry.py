@@ -66,8 +66,9 @@ class TSROIGeometry(object):
     except Exception:
       contours = None
     # If the ROI geometry is derived, we will not perform this test on it:
-    if self.roi_geometry.PrimaryShape.DerivedRoiStatus:
-      contours = None
+    if self.roi_geometry.PrimaryShape:
+      if self.roi_geometry.PrimaryShape.DerivedRoiStatus:
+        contours = None
     # Also skip this test for ROIs where organ type is "Other" or "Unknown" (to avoid testing e.g. dose derived volumes):
     if self.roi_geometry.OfRoi.OrganData.OrganType in ['Other', 'Unknown']:
       contours = None
