@@ -18,10 +18,14 @@ class DefProstate(object):
     if region == 'prostate':
       # Choice 2: Fractionation - normo or hypo?
       frac = choices[2]
+      # Add OARs:
       if frac == 'palliative':
         site.add_oars(DEF.prostate_palliative_oars)
       else:
-        site.add_oars(DEF.prostate_oars)
+        if choices[3] == 'without':
+          site.add_oars(DEF.prostate_oars)
+        else:
+          site.add_oars(DEF.prostate_nodes_oars)
       # Conventionally fractionated prostate with vesicles (2.2Gy x 35):
       if frac == 'normo':
         # Choice 3: Nodes - included or not?
@@ -99,11 +103,16 @@ class DefProstate(object):
         site.add_targets([ptv, ctv, ROIS.prostate, ROIS.vesicles])
     # Prostate bed:
     else:
-      # Choice 2: Nodes - included or not?
+      # Choice 2: Fractionation - normo or hypo?
       frac = choices[2]
-      site.add_oars(DEF.prostate_bed_oars)
-      # With nodes:
+      # Add OARs:
+      if choices[3] == 'without':
+        site.add_oars(DEF.prostate_bed_oars)
+      else:
+        site.add_oars(DEF.prostate_bed_nodes_oars)
+      # Fractionation:
       if frac == 'normo':
+        # Choice 3: Nodes - included or not?
         nodes = choices[3]
         if nodes == 'without':
           ctv_70 = ROI.ROIExpanded(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_high, source = ROIS.ctv_sb)
