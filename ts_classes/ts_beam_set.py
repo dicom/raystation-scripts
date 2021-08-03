@@ -527,7 +527,6 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-
   # Tests that in cases of full arcs, if the last arc of the beam set is clockwise, which gives a more efficient patient takedown.
   def vmat_full_arc_rotation_of_last_beam_test(self):
     t = TEST.Test("Siste bue i en VMAT plan skal som hovedregel være med klokken når det er en full bue", 'Clockwise', self.vmat)
@@ -540,17 +539,18 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests that sequential arcs have opposite rotation direction.
+  # Tests for optimal arc sequencing
+  # (that the start angle of following arcs are equal to the stop angle of the previous arc).
   def vmat_arc_sequence_test(self):
-    t = TEST.Test("Ved flerbue-oppsett skal påfølgende buer ha motsatt rotasjonsretning", None, self.vmat)
-    previous_arc_direction = None
-    failed_beam = None
+    t = TEST.Test("Ved flerbue-oppsett bør påfølgende buer ha startvinkel lik stoppvinkel til forrige bue", None, self.vmat)
     if self.is_vmat():
+      previous_gantry_stop_angle = None
+      failed_beam = None
       for beam in self.beam_set.Beams:
-        if previous_arc_direction:
-          if beam.ArcRotationDirection == previous_arc_direction:
+        if previous_gantry_stop_angle:
+          if beam.GantryAngle != previous_gantry_stop_angle:
             failed_beam = beam.Number
-        previous_arc_direction = beam.ArcRotationDirection
+        previous_gantry_stop_angle = beam.ArcStopGantryAngle
       if failed_beam:
         return t.fail(failed_beam)
       else:
