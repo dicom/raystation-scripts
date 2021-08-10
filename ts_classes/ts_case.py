@@ -56,7 +56,7 @@ class TSCase(object):
   
   # Tests if a POI exists for specifying where the breath measurement point is.
   def breath_measurement_point_for_lung_sbrt_test(self):
-    t = TEST.Test("For lunge stereotaksi skal det finnes en 'Pust' POI for markering av målepunkt for pustebevegelse", True, self.param)
+    t = TEST.Test("For lunge stereotaksi (som behandles i DIBH) skal det finnes en 'Pust' POI for markering av målepunkt for pustebevegelse", True, self.param)
     # Only relevant to run this test for lung region and stereotactic treatment:
     if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
       match = False
@@ -71,7 +71,7 @@ class TSCase(object):
   # Tests if the breath measurement point is not too far offset from the isocenter.
   # (such that it falls in the shadow of the gantry from the Catalyst camera's point of view)
   def breath_measurement_point_not_in_gantry_shadow_for_lung_sbrt_test(self):
-    t = TEST.Test("For lunge stereotaksi bør avstanden mellom isocenter og 'Pust' POIen ikke være såpass stor at pustepunktet kommer i skyggen av gantry (fra Catalyst kameraet sitt synspunkt)", True, self.param)
+    t = TEST.Test("For lunge stereotaksi (som behandles i DIBH) bør avstanden mellom isocenter og 'Pust' POIen ikke være såpass stor at pustepunktet kommer i skyggen av gantry (fra Catalyst kameraet sitt synspunkt)", True, self.param)
     # Only relevant to run this test for lung region and stereotactic treatment:
     if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
       match = False
