@@ -370,8 +370,8 @@ def lung_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_3fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority4),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
     ])
   elif region_code in [247, 249]: # Left
     lung.extend([
@@ -379,8 +379,8 @@ def lung_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_3fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority4),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
     ])
   else:
     lung.extend([
@@ -392,10 +392,10 @@ def lung_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_3fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority4),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6),
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
     ])
   return lung
 
@@ -432,8 +432,8 @@ def lung_stereotactic_5fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   elif region_code in [247, 249]: # Left
     lung.extend([
@@ -441,8 +441,8 @@ def lung_stereotactic_5fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   else:
     lung.extend([
@@ -454,10 +454,10 @@ def lung_stereotactic_5fx_oars(region_code):
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.rib_x_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
       CG.ClinicalGoal(ROIS.rib_y_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.rib_x_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
-      CG.ClinicalGoal(ROIS.rib_y_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.rib_y_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.rib_x_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6),
+      CG.ClinicalGoal(ROIS.rib_x_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   return lung
 
@@ -494,9 +494,9 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   elif region_code in [247, 249]: # Left
     lung.extend([
@@ -504,9 +504,9 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   else:
     lung.extend([
@@ -518,12 +518,12 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
-      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
-      CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4)
+      CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
+      CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6),
+      CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
     ])
   return lung
 
