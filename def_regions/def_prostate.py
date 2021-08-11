@@ -22,10 +22,10 @@ class DefProstate(object):
       if frac == 'palliative':
         site.add_oars(DEF.prostate_palliative_oars)
       else:
-        if choices[3] == 'without':
-          site.add_oars(DEF.prostate_oars)
-        else:
+        if 'with' in choices[3]:
           site.add_oars(DEF.prostate_nodes_oars)
+        else:
+          site.add_oars(DEF.prostate_oars)
       # Conventionally fractionated prostate with vesicles (2.2Gy x 35):
       if frac == 'normo':
         # Choice 3: Nodes - included or not?
@@ -36,7 +36,7 @@ class DefProstate(object):
         rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_77], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
         wall_ptv_77 = ROI.ROIWall(ROIS.z_ptv_77_wall.name, ROIS.z_ptv_77_wall.type, COLORS.wall, ptv_77, 0.5, 0)
         # With nodes:
-        if nodes == 'without':
+        if nodes == 'no':
           ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70_sib.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
           ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
           ptv_70_77 =  ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_10mm_expansion)
@@ -106,7 +106,7 @@ class DefProstate(object):
       # Choice 2: Fractionation - normo or hypo?
       frac = choices[2]
       # Add OARs:
-      if choices[3] == 'without':
+      if choices[3] == 'no':
         site.add_oars(DEF.prostate_bed_oars)
       else:
         site.add_oars(DEF.prostate_bed_nodes_oars)

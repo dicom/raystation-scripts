@@ -107,7 +107,7 @@ prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', pa
 
 # Prosate/bed: Lymph nodes:
 for p in [prostate_normo, prostate_bed_normo]:
-  prostate_without_ln =  P.Property('Uten lymfeknuter', 'without',  parent = p, next_category ='', default = True)
+  prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = p, next_category ='', default = True)
   prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = p, next_category ='')
   prostate_with_ln_boost =  P.Property('Med lymfeknuter og boost til positiv lymfeknute', 'with_node', parent = p, next_category ='')
 
