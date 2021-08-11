@@ -313,7 +313,7 @@ def breast_oars(ss, region_code, nr_fractions, target):
 
 
 # Lung:
-# In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs'.
+# (In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs')
 def lung_oars(ss):
   lung = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
@@ -321,7 +321,7 @@ def lung_oars(ss):
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, TOL.esophagus_v17_adx, priority3),
-	CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6),
+    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6),
     CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6)
   ]
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
