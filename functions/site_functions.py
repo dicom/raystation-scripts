@@ -100,8 +100,10 @@ def site(pm, examination, ss, plan, nr_fractions, total_dose, region_code, targe
     return brain(pm, examination, ss, plan, total_dose, nr_fractions, region_code)
   elif region_code in RC.breast_codes:
     if region_code in RC.breast_not_thorax_codes:
+      # Create a "Markers" ROI:
       breast_target = SSF.determine_breast_primary_target(ss)
       PMF.create_grey_value_intersection_roi(pm, examination, ss, ROIS.temp_markers, breast_target, ROIS.markers, 250, 2500)
+      pm.RegionsOfInterest[ROIS.markers.name].OrganData.OrganType = 'Other'
     return breast(ss, plan, total_dose, region_code, nr_fractions, technique_name, target)
   elif region_code in RC.lung_and_mediastinum_codes:
     return lung(ss, plan, total_dose, nr_fractions, region_code, target)
