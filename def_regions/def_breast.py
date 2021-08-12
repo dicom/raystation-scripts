@@ -31,7 +31,7 @@ class DefBreast(object):
         breast_l = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [breast_l], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
         ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_oars([ROIS.a_lad, breast_l, ctv_sb, ptv_sbc])
+        site.add_oars([breast_l, ctv_sb, ptv_sbc])
     elif region == 'tang':
       # Breast with tangential fields
       site.add_oars(DEF.breast_tang_oars)
@@ -39,7 +39,7 @@ class DefBreast(object):
         site.add_oars([ROIS.breast_r_draft, ROIS.liver])
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       else:
-        site.add_oars([ROIS.a_lad, ROIS.breast_l_draft])
+        site.add_oars([ROIS.breast_l_draft])
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       site.add_targets([ctv, ptv])
@@ -56,7 +56,7 @@ class DefBreast(object):
       if side == 'right':
         site.add_oars([ROIS.humeral_r, ROIS.scalene_muscle_r, ROIS.artery1_r, ROIS.artery2_r, ROIS.artery3_r, ROIS.vein1_r, ROIS.vein2_r, ROIS.vein3_r, ROIS.liver])
       else:
-        site.add_oars([ROIS.humeral_l, ROIS.scalene_muscle_l, ROIS.artery1_l, ROIS.artery2_l, ROIS.vein1_l, ROIS.vein2_l, ROIS.vein3_l, ROIS.a_lad])
+        site.add_oars([ROIS.humeral_l, ROIS.scalene_muscle_l, ROIS.artery1_l, ROIS.artery2_l, ROIS.vein1_l, ROIS.vein2_l, ROIS.vein3_l])
       # Hypofractionated
       if frac == 'hypo':
         if side == 'right':
