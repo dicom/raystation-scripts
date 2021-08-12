@@ -138,26 +138,29 @@ class Plan(object):
     if region_code in RC.brain_codes and region_code not in RC.brain_whole_codes:
       if nr_targets > 1:
         targets = [ROIS.ptv1, ROIS.ptv2, ROIS.ptv3, ROIS.ptv4]
-        for i in range(nr_targets):
-          SSF.create_expanded_and_intersected_volume(pm, examination, ss, targets[i], ROIS.external, ROIS.mask_ptv.name+str(i+1), 1600)
-          patient.SetRoiVisibility(RoiName = ROIS.mask_ptv.name+str(i+1), IsVisible = False)
+        mask_names = [ROIS.mask_ptv.name+'1', ROIS.mask_ptv.name+'2', ROIS.mask_ptv.name+'3', ROIS.mask_ptv.name+'4']
       else:
-        SSF.create_expanded_and_intersected_volume(pm, examination, ss, ROIS.ptv, ROIS.external, ROIS.mask_ptv.name, 1600)
-        patient.SetRoiVisibility(RoiName = ROIS.mask_ptv.name, IsVisible = False)
+        targets = [ROIS.ptv]
+        mask_names = [ROIS.mask_ptv.name]
+      for i in range(nr_targets):
+        SSF.create_expanded_and_intersected_volume(pm, examination, ss, targets[i], ROIS.body, mask_names[i], 1600)
+        patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
+        pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
 
 
     # Create 'Mask_PTV' for stereotactic lung:
     if region_code in RC.lung_codes and BSF.is_stereotactic(nr_fractions, fraction_dose):
       if nr_targets > 1:
         targets = [ROIS.ptv1, ROIS.ptv2, ROIS.ptv3]
-        for i in range(nr_targets):
-          created = SSF.create_roi_subtraction(pm, examination, ss, targets[i], ROIS.chestwall, ROIS.mask_ptv.name+str(i+1), 0)
-          if created:
-            patient.SetRoiVisibility(RoiName = ROIS.mask_ptv.name+str(i+1), IsVisible = False)
+        mask_names = [ROIS.mask_ptv.name+'1', ROIS.mask_ptv.name+'2', ROIS.mask_ptv.name+'3']
       else:
-        created = SSF.create_roi_subtraction(pm, examination, ss, ROIS.ptv, ROIS.chestwall, ROIS.mask_ptv.name, 0)
+        targets = [ROIS.ptv]
+        mask_names = [ROIS.mask_ptv.name]
+      for i in range(nr_targets):
+        created = SSF.create_roi_subtraction(pm, examination, ss, targets[i], ROIS.chestwall, mask_names[i], 0)
         if created:
-          patient.SetRoiVisibility(RoiName = ROIS.mask_ptv.name, IsVisible = False)
+          patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
+          pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
 
 
     # Determine name of the body contour ('External' or 'Body'):
