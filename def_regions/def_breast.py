@@ -36,7 +36,7 @@ class DefBreast(object):
       # Breast with tangential fields
       site.add_oars(DEF.breast_tang_oars)
       if side == 'right':
-        site.add_oars([ROIS.breast_r_draft, ROIS.liver])
+        site.add_oars([ROIS.breast_r_draft])
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       else:
         site.add_oars([ROIS.breast_l_draft])
