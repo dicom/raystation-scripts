@@ -64,18 +64,26 @@ class Plan(object):
     regions = REGIONS.RegionList("C:\\temp\\raystation-scripts\\settings\\regions.tsv")
     region_text = regions.get_text(region_code)
     assert region_text != None
+    
+    # Establish the number of target volumes:
+    nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
+    
+    # Create the prescription object:
+    prescription = PRES.create_prescription(total_dose, nr_fractions, region_code)
+    # Validate the prescription:
+    valid = PRES.validate_prescription(prescription, region_code)
+    if not valid:
+      GUIF.handle_invalid_prescription(prescription, region_code, region_text)
 
 
     # For SBRT brain or lung, if there are multiple targets, an extra form appear where
     # the user has to type region code of the other targets.
-    # FIXME: Bruke funksjon for test fx?
     # FIXME: Vurder hvor denne koden bør ligge.
     target = None
     palliative_choices = None
-    nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if nr_targets > 1:
       if region_code in RC.brain_codes + RC.lung_codes:
-        if BSF.is_stereotactic(nr_fractions, fraction_dose):
+        if prescription.is_stereotactic():
           region_codes = GUIF.multiple_beamset_form(ss, Toplevel())
           GUIF.check_region_codes(region_code, region_codes)
       elif region_code in RC.palliative_codes:
@@ -95,14 +103,6 @@ class Plan(object):
         elif palliative_choices[0] == 'sep_plan':
           target = palliative_choices[1]
 
-
-    # Create the prescription object:
-    prescription = PRES.create_prescription(total_dose, nr_fractions, region_code)
-    # Validate the prescription:
-    valid = PRES.validate_prescription(prescription, region_code)
-    if not valid:
-      GUIF.handle_invalid_prescription(prescription, region_code, region_text)
-    
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
     plan = CF.create_plan(case, examination, region_text)

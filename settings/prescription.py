@@ -42,6 +42,13 @@ class Prescription(object):
   # Gives a description (string) of this Prescription object.
   def description(self):
     return str(self.total_dose) + " Gy / " + str(self.nr_fractions) + " fx @ D" + str(self.volume_percent)
+  
+  # Gives True if the prescription is stereotactic and False if not.
+  def is_stereotactic(self):
+    result = False
+    if self.type == 'DoseAtVolume' and self.volume_percent > 98:
+      result = True
+    return result
 
 
 # Define lists of "known" prescriptions for various sites:
