@@ -8,7 +8,9 @@ from tkinter import messagebox
 
 # Import local files:
 import beam_set_functions as BSF
+import def_choices as DC
 import fractionation_frame as FRAC_FRAME
+import patient_model_functions as PMF
 import plan_choices as PC
 import radio_button as RB
 import radio_button_frame as FRAME
@@ -156,6 +158,28 @@ def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choic
       opt = 'oar'
   results = [technique, technique_name, opt]
   return results
+
+
+# Checks if any ROIs exist, and if they have a contour in the current structure set.
+# If so, ask the user if ROIs are to be deleted.
+# Returns the Tk window object.
+def handle_existing_rois(pm, ss):  
+  if SSF.has_roi_with_contours(ss):
+    delete = RB.RadioButton('Eksisterende ROIs oppdaget', 'Velg:', DC.delete)
+    my_window = Tk()
+    choice_d=[]
+    delete_choice = collect_delete_choice(delete, my_window, choice_d)
+    for i in range(len(delete_choice)):
+      if delete_choice[i] == 'yes':
+        # All ROIs are to be deleted:
+        PMF.delete_all_rois(pm)
+      elif delete_choice[i] == 'some':
+        # Only non-delineated ROIs are to be deleted:
+        PMF.delete_rois_except_manually_contoured(pm, ss)
+    my_window = Toplevel()
+  else:
+    my_window = Tk()
+  return my_window
 
 
 # Displays a warning for a prescription which is unknown for a given region code.
