@@ -84,12 +84,12 @@ class Plan(object):
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
     plan = CF.create_plan(case, examination, region_text)
 
-   
+
     # Set planners initials:
     plan.PlannedBy = initials
 
     my_window = Toplevel()
-	
+
     # Determine which technique and optimization choices which will appear in the form:
     results = GUIF.determine_choices(region_code, nr_fractions, fraction_dose, my_window, [])
     # Chosen technique value ('VMAT' or 'Conformal'):
@@ -145,13 +145,13 @@ class Plan(object):
     beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, nr_fractions)
     # Add prescription:
     BSF.add_prescription(beam_set, nr_fractions, fraction_dose, target)
-	
-	# Set beam set dose grid:
+
+    # Set beam set dose grid:
     BSF.set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose)
-	
+
     # Determine the point which will be our isocenter:
     if nr_targets > 1:
-      if palliative_choices and palliative_choices[0] in ['sep_beamset_iso','beamset']:
+      if palliative_choices and palliative_choices[0] in ['sep_beamset_iso', 'beamset']:
         # Consider all targets when determining isocenter:
         isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets = True)
       else:
@@ -160,6 +160,8 @@ class Plan(object):
     else:
       # Consider all targets when determining isocenter:
       isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets = True)
+    
+    
     # Determine if this patient has any previous beams in Mosaiq (which impacts which beam number is to be used with this plan):
     beam_nr = 1
     if self.mq_patient:
@@ -169,18 +171,17 @@ class Plan(object):
 
 
     # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
-    # FIXME: Bruke funksjon for test fx?
     if nr_targets > 1:
       if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
-        if BSF.is_stereotactic(nr_fractions, fraction_dose):
-          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams = nr_beams)
+        if prescription.is_stereotactic():
+          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = nr_beams)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
         if palliative_choices[0] in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
           if palliative_choices[0] == 'sep_beamset_iso':
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams = nr_beams, isocenter = isocenter)
+            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = nr_beams, isocenter = isocenter)
           else:
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, fraction_dose, nr_fractions, external, energy_name, nr_existing_beams = nr_beams)
+            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = nr_beams)
 
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
