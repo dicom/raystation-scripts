@@ -76,32 +76,9 @@ class Plan(object):
       GUIF.handle_invalid_prescription(prescription, region_code, region_text)
 
 
-    # For SBRT brain or lung, if there are multiple targets, an extra form appear where
-    # the user has to type region code of the other targets.
-    # FIXME: Vurder hvor denne koden bør ligge.
-    target = None
-    palliative_choices = None
-    if nr_targets > 1:
-      if region_code in RC.brain_codes + RC.lung_codes:
-        if prescription.is_stereotactic():
-          region_codes = GUIF.multiple_beamset_form(ss, Toplevel())
-          GUIF.check_region_codes(region_code, region_codes)
-      elif region_code in RC.palliative_codes:
-        # For palliative cases with multiple targets:
-        palliative_choices = GUIF.palliative_beamset_form(ss, Toplevel())
-        if palliative_choices[0] in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
-          region_codes = GUIF.multiple_beamset_form(ss, Toplevel())
-          GUIF.check_region_codes(region_code, region_codes)
-          if SSF.has_roi_with_shape(ss, ROIS.ctv1.name):
-            target = ROIS.ctv1.name
-          elif SSF.has_roi_with_shape(ss, ROIS.ctv2.name):
-            target = ROIS.ctv2.name
-          elif SSF.has_roi_with_shape(ss, ROIS.ctv3.name):
-            target = ROIS.ctv3.name
-          elif SSF.has_roi_with_shape(ss, ROIS.ctv4.name):
-            target = ROIS.ctv4.name
-        elif palliative_choices[0] == 'sep_plan':
-          target = palliative_choices[1]
+    # For SBRT brain or lung, if there are multiple targets, display an extra form
+    # where the user can specify the region code(s) of the other target(s).
+    target, palliative_choices, region_codes = GUIF.collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescription)
 
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:

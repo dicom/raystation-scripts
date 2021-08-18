@@ -91,6 +91,37 @@ def collect_fractionation_choices(my_window):
   return (region_code, fraction_dose, nr_fractions, initials, total_dose)
   
 
+# Returns multiple region codes in cases where this needs to be collected.
+# This means, for SBRT brain or lung, if there are multiple targets, an extra form
+# is displayed where the user can specify the region code(s) of the other target(s).
+def collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescription):
+  region_codes = []
+  target = None
+  palliative_choices = None
+  if nr_targets > 1:
+    if region_code in RC.brain_codes + RC.lung_codes:
+      if prescription.is_stereotactic():
+        region_codes = multiple_beamset_form(ss, Toplevel())
+        check_region_codes(region_code, region_codes)
+    elif region_code in RC.palliative_codes:
+      # For palliative cases with multiple targets:
+      palliative_choices = palliative_beamset_form(ss, Toplevel())
+      if palliative_choices[0] in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
+        region_codes = multiple_beamset_form(ss, Toplevel())
+        check_region_codes(region_code, region_codes)
+        if SSF.has_roi_with_shape(ss, ROIS.ctv1.name):
+          target = ROIS.ctv1.name
+        elif SSF.has_roi_with_shape(ss, ROIS.ctv2.name):
+          target = ROIS.ctv2.name
+        elif SSF.has_roi_with_shape(ss, ROIS.ctv3.name):
+          target = ROIS.ctv3.name
+        elif SSF.has_roi_with_shape(ss, ROIS.ctv4.name):
+          target = ROIS.ctv4.name
+      elif palliative_choices[0] == 'sep_plan':
+        target = palliative_choices[1]
+  return target, palliative_choices, region_codes
+
+
 # Determines what list of technique possibilities will be given for different region codes:
 def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choices):
   # Default technique value, 'VMAT' 
