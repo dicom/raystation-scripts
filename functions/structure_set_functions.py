@@ -34,6 +34,7 @@ def is_approved_roi_structure(ss, roi_name):
 		GUIF.handle_failed_creation_of_roi(roi_name)
 	return match
 
+
 # Returns the name of the appropriately defined body ROI (having contours),
 # which in the case of stereotactic treatment is "Body", and otherwise it is "External".
 def body_roi_name(ss):
@@ -72,16 +73,16 @@ def create_roi_dict(ss):
   for i in range(len(roi)):
     if roi[i].HasContours():
       roi_dict[roi[i].OfRoi.Name] = True
-
   return roi_dict
 
+
+# Creates a dictionary with the names of all undefined ROIs (ROIs lacking contours) in the current structure set.
 def create_roi_dict_not_contours(ss):
   roi_dict = {}
   roi = ss.RoiGeometries
   for i in range(len(roi)):
     if roi[i].HasContours() == False:
       roi_dict[roi[i].OfRoi.Name] = True
-
   return roi_dict
 
 
@@ -106,6 +107,7 @@ def create_roi_subtraction(pm, examination, ss, roi1, roi2, subtraction_name, th
     GUIF.handle_missing_roi_for_derived_rois(subtraction_name, roi2.name)
   return overlap
 
+
 # Gives the name of the CTV which is the primary target for this particular breast treatment plan.
 # The primary target CTV name varies based on whether the plan is partial breast, whole breast or locoregional breast (also fractionation may impact the name).
 def determine_breast_primary_target(ss):
@@ -121,6 +123,7 @@ def determine_breast_primary_target(ss):
     # Normofractionated locoregional (legacy):
     target = ROIS.ctv_50
   return target
+
 
 # Determines the isocenter position to be used for the treatment plan.
 # If an appropriate ISO-POI is defined, its coordiantes will be used.
@@ -215,6 +218,7 @@ def determine_energy(ss, target):
     energy = "6"
   return energy
 
+
 # Determine the treatment machine (i.e. with or without filter) from the size of the given target volume.
 # Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
 def determine_energy_single_target(ss, target):
@@ -262,7 +266,6 @@ def determine_energy_single_target(ss, target):
 # Determines the number of targets from indexed PTV's (for example used for stereotactic brain with multiple targets):
 def determine_nr_of_indexed_ptvs(ss):
   nr_targets = 1
-
   if has_roi_with_shape(ss, ROIS.ptv2.name):
     nr_targets += 1
     if has_roi_with_shape(ss, ROIS.ptv3.name):
@@ -271,13 +274,13 @@ def determine_nr_of_indexed_ptvs(ss):
         nr_targets += 1
   return nr_targets
 
+
 # Determines the prescription target volume of the plan.
-def determine_target(ss, roi_dict, nr_fractions, fraction_dose):
-  total_dose = int(nr_fractions*fraction_dose)
+def determine_target(ss, roi_dict, prescription):
   match = False
-  target_list = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(total_dose), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
+  target_list = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(prescription.total_dose), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
   # Stereotactic brain treatments with multiple targets: PTV is the target
-  if nr_fractions == 3 and fraction_dose in [7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
+  if prescription.nr_fractions == 3 and prescription.fraction_dose in [7, 8, 9] or prescription.nr_fractions == 1 and prescription.fraction_dose > 14:
     if determine_nr_of_indexed_ptvs(ss) > 1:
       target_list.insert(0, ROIS.ptv1.name)
     else:
@@ -285,7 +288,7 @@ def determine_target(ss, roi_dict, nr_fractions, fraction_dose):
     match = True
   # Extracranial stereotactic treatments: PTV is the target
   if match == False:
-    if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
+    if prescription.nr_fractions in [3, 5, 8] and prescription.fraction_dose in [15, 11, 7, 8, 9] or prescription.nr_fractions == 1 and prescription.fraction_dose > 14:
       if determine_nr_of_indexed_ptvs(ss) > 1:
         target_list.insert(0, ROIS.ptv1.name)
       else:
@@ -313,7 +316,6 @@ def find_isocenter(examination, ss, target, external, multiple_targets=False):
   # Patient should always be somewhat centered on the couch. A big offset in x value may be false (e.g. superman position).
   if abs(patient_center_x) > 5:
     patient_center_x = 0
-
   # Determine z coordinate for multiple targets:
   if multiple_targets:
     ptv_max_z = center.z #longitudinal direction
@@ -344,14 +346,12 @@ def find_isocenter(examination, ss, target, external, multiple_targets=False):
           ptv_min_y = ptv_box_min_y
         if ptv_box_max_y > ptv_max_y:
           ptv_max_y = ptv_box_max_y
-
     middle_point_z = abs(ptv_max_z-ptv_min_z)/2
     middle_point_x = abs(ptv_max_x-ptv_min_x)/2
     middle_point_y = abs(ptv_max_y-ptv_min_y)/2
     center.x = ptv_min_x + middle_point_x
     center.y = ptv_min_y + middle_point_y
     center.z = ptv_min_z + middle_point_z
-
   # Difference between isocenter and patient center:
   dx = center.x - patient_center_x
   dy = center.y - patient_center_y
@@ -392,17 +392,14 @@ def find_isocenter_conv_reg_breast(ss, region_code, target, node_target):
   if has_named_roi_with_contours(ss, target):
     isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
     ctv = ss.RoiGeometries[target].GetBoundingBox()
-
     ctv_lat_senter = abs(ctv[0].x - ctv[1].x)/2
     ctv_lat_point = ctv[0].x + ctv_lat_senter #+ 2
     ctv_ant_senter = abs(ctv[0].y - ctv[1].y)/2
     ctv_ant_point = ctv[0].y + ctv_ant_senter #- 2
-
     if region_code in RC.breast_reg_r_codes:
       isocenter.x = ctv_lat_point + 2.5
     else:
       isocenter.x = ctv_lat_point - 2.5
-
     isocenter.y = ctv_ant_point + 2.5
     if has_named_roi_with_contours(ss, node_target):
       ctv_n = ss.RoiGeometries[node_target].GetBoundingBox()
@@ -443,7 +440,6 @@ def find_isocenter_vmat_breast(ss, target):
 def find_isocenter_z(ss, target):
   if has_named_roi_with_contours(ss, target):
     isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
-
     ctv_upper = abs(isocenter.z)
     ctv_lower = abs(isocenter.z)
     for roi in ss.RoiGeometries:
@@ -510,20 +506,23 @@ def has_roi_with_shape(ss, name):
   return match
 
 
+# Returns True if the structure set contains a ROI named PTV primary cropped ('PTVpc').
 def is_breast_hypo(ss):
   if has_roi_with_shape(ss, ROIS.ptv_pc.name):
     return True
   else:
     return False
 
+
+# Returns True if the given target and oar ROIs overlap.
 def is_target_oar_overlapping(ss, target, oar):
   center = ss.RoiGeometries[oar].GetCenterOfRoi()
   roi_box = ss.RoiGeometries[target].GetBoundingBox()
   match = False
   if center.x > roi_box[0].x and center.x < roi_box[1].x and center.y > roi_box[0].y and center.y < roi_box[1].y:
     match = True
-
   return match
+
 
 # Determines if the volume of PTV that overlaps with OARs is less than a given threshold
 # (Used to determine whether to use single or dual arc VMAT at the moment)
@@ -549,7 +548,6 @@ def roi_overlap(pm, examination, ss, roi1, roi2, threshold):
   if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
     overlap = True
   PMF.delete_roi(pm, subtraction.name)
-
   return overlap
 
 
@@ -558,19 +556,6 @@ def rg(ss, roi_name):
   for rg in ss.RoiGeometries:
     if rg.OfRoi.Name == roi_name:
       return rg
-
-
-#Finds the center point of a roi in the x, y and z direction, returns a dictionary object.
-#def roi_center_point(ss, roi):
-  #roi_box = ss.RoiGeometries[roi].GetBoundingBox()
-  #roi_x_middle = (roi_box[1].x-roi_box[0].x)/2
-  #roi_x = roi_box[0].x + roi_x_middle
-  #roi_y_middle = (roi_box[1].y-roi_box[0].y)/2
-  #roi_y = roi_box[0].y + roi_y_middle
-  #roi_z_middle = (roi_box[1].z-roi_box[0].z)/2
-  #roi_z = roi_box[0].z + roi_z_middle
-  #roi = {'x':roi_x,'y':roi_y, 'z':roi_z}
-  #return roi
 
 
 # Finds the center point  in the x direction

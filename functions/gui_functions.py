@@ -125,7 +125,7 @@ def collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescr
 
 
 # Determines what list of technique possibilities will be given for different region codes:
-def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choices):
+def determine_choices(region_code, prescription, my_window, choices):
   # Default technique value, 'VMAT' 
   technique = 'VMAT'
   # Default technique name, 'VMAT' or '3D-CRT'
@@ -154,7 +154,7 @@ def determine_choices(region_code, nr_fractions, fraction_dose, my_window, choic
     # Optimization value
     opt = 'oar'
   else:
-    if region_code in RC.palliative_codes and nr_fractions*fraction_dose < 55 and not BSF.is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.bladder_codes or region_code in RC.prostate_codes and nr_fractions*fraction_dose < 40 or region_code in RC.brain_whole_codes:
+    if region_code in RC.palliative_codes and prescription.total_dose < 55 and not prescription.is_stereotactic() or region_code in RC.bladder_codes or region_code in RC.prostate_codes and prescription.total_dose < 40 or region_code in RC.brain_whole_codes:
       opt = 'oar'
   results = [technique, technique_name, opt]
   return results

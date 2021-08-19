@@ -91,7 +91,7 @@ class Plan(object):
     my_window = Toplevel()
 
     # Determine which technique and optimization choices which will appear in the form:
-    results = GUIF.determine_choices(region_code, nr_fractions, fraction_dose, my_window, [])
+    results = GUIF.determine_choices(region_code, prescription, my_window, [])
     # Chosen technique value ('VMAT' or 'Conformal'):
     technique = results[0]
     # Chosen technique name ('VMAT' or '3D-CRT'):
@@ -103,7 +103,7 @@ class Plan(object):
     # Determine the prescription target volume:
     if not target:
       roi_dict = SSF.create_roi_dict(ss)
-      target = SSF.determine_target(ss, roi_dict, nr_fractions, fraction_dose)
+      target = SSF.determine_target(ss, roi_dict, prescription)
 
 
     # Translate the couch in the longitudinal direction according to the location of the target volume:
