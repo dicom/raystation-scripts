@@ -321,8 +321,8 @@ def lung_oars(ss):
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, TOL.esophagus_v17_adx, priority3),
-    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6),
-    CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority6),
+    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority6),
+    CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority6),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_chemo_v2_adx, pc2, priority6)
   ]
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
@@ -333,8 +333,7 @@ def lung_oars(ss):
     l = ROIS.lungs.name
   lung.extend([
     CG.ClinicalGoal(l, at_most, average_dose, TOL.lung_mean, None, priority3),
-    CG.ClinicalGoal(l, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3),
-    CG.ClinicalGoal(l, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority4)
+    CG.ClinicalGoal(l, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
   ])
   return lung
 
@@ -706,8 +705,7 @@ thorax = [
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc60, TOL.heart_v60_adx, priority3),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc80, TOL.heart_v80_adx, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3),
-  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority4)
+  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
 ]
 thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
@@ -722,8 +720,7 @@ thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc32, TOL.kidney_v32_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
-  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
-  CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc30, TOL.lung_v30_adx, priority4)
+  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3)
 ]
 abdomen = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
