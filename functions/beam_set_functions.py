@@ -16,13 +16,14 @@ import rois as ROIS
 # Contains a collection of beam set functions.
 
 
-# Set presciption (default is median dose, with dose at volume for stereotactic plans).
-def add_prescription(beam_set, nr_fractions, fraction_dose, target):
-  total_dose = nr_fractions*fraction_dose
-  if is_stereotactic(nr_fractions, fraction_dose):
-    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = 'DoseAtVolume', DoseValue = total_dose*100, DoseVolume = 99)
+# Set the beam set presciption.
+def add_prescription(beam_set, presciption, target):
+  if presciption.is_stereotactic():
+    # DoseAtVolume:
+    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100, DoseVolume = presciption.volume_percent)
   else:
-    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = 'MedianDose', DoseValue = total_dose*100)
+    # MedianDose:
+    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100)
 
 
 # Creates two arcs (VMAT).
@@ -238,16 +239,16 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
   b2.Number = beam_index + 1
 
 
-# Creates a label based on region code, fraction dose, number of fractions and technique (VMAT or 3D-CRT). The label is used as beam set name.
-def label(region_code, fraction_dose, nr_fractions, technique, background_dose=0):
+# Creates a label based on region code, presciption and technique (VMAT or 3D-CRT). The label is used as beam set name.
+def label(region_code, presciption, technique, background_dose=0):
   if technique == 'Conformal': # 3D-CRT
     t = 'I:' + str(background_dose) + '-'
   else:
-    if is_stereotactic(nr_fractions, fraction_dose):
+    if presciption.is_stereotactic():
       t = 'S:' + str(background_dose) + '-' #Stereotactic
     else:
       t = 'V:' + str(background_dose) + '-' #VMAT
-  return str(region_code) + t + GF.dynamic_round(background_dose + fraction_dose*nr_fractions) + ':' + str(nr_fractions)
+  return str(region_code) + t + GF.dynamic_round(background_dose + presciption.total_dose) + ':' + str(presciption.nr_fractions)
 
 
 # Creates the label based on region code, fraction dose, number of fractions and which technique (VMAT or 3D-CRT).
@@ -395,6 +396,7 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 			segments.LeafPositions = leaf_positions
 
 # Returns True if the combination of nr_fractions and fraction_dose given appears to be stereotactic.
+# FIXME: This function can be deleted when we have completed the transition to using the prescription object!
 def is_stereotactic(nr_fractions, fraction_dose):
   if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
     return True
@@ -402,9 +404,9 @@ def is_stereotactic(nr_fractions, fraction_dose):
     return False
 
 # Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).
-def set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose):
+def set_dose_grid(beam_set, region_code, presciption):
   # Default grid size:
   size = 0.3
-  if is_stereotactic(nr_fractions, fraction_dose) or region_code in RC.prostate_codes or region_code in RC.brain_codes:
+  if presciption.is_stereotactic() or region_code in RC.prostate_codes or region_code in RC.brain_codes:
     size = 0.2
   beam_set.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})

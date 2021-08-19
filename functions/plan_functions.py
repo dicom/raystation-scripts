@@ -14,6 +14,7 @@ import beam_set_functions as BSF
 import case_functions as CF
 import gui_functions as GUIF
 import objectives as OBJ
+import prescription as PRES
 import region_codes as RC
 import roi_functions as ROIF
 import structure_set_functions as SSF
@@ -40,7 +41,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
           GUIF.handle_missing_ptv()
       # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
-        Name=BSF.label(region_code, prescription.fraction_dose, prescription.nr_fractions, 'VMAT'),
+        Name=BSF.label(region_code, prescription, 'VMAT'),
         ExaminationName=examination.Name,
         MachineName= "ALVersa",
         Modality='Photons',
@@ -48,7 +49,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
         PatientPosition=CF.determine_patient_position(examination),
         NumberOfFractions=prescription.nr_fractions
       )
-      BSF.add_prescription(beam_set, prescription.nr_fractions, prescription.fraction_dose, 'CTV' + str(i+1))
+      BSF.add_prescription(beam_set, prescription, 'CTV' + str(i+1))
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams = nr_existing_beams + nr_beams
@@ -77,7 +78,7 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
           PatientPosition='HeadFirstSupine',
           NumberOfFractions=prescription.nr_fractions
         )
-        BSF.add_prescription(beam_set, prescription.nr_fractions, prescription.fraction_dose, 'PTV' + str(i+1))
+        BSF.add_prescription(beam_set, prescription, 'PTV' + str(i+1))
         # Determine the point which will be our isocenter:
         isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
         # Setup beams or arcs
@@ -103,11 +104,13 @@ def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, 
 # Creates an additional beam set for breast patients with a 2 Gy x 8 boost.
 # (Prescription is set, three conventional beams are set up and common objectives are set)
 def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, roi_name, background_dose=0):
+  # Create prescription:
+  prescription = PRES.create_prescription(16, 8, region_code)
   # Determine first available beam number:
   next_beam_number = first_available_beam_number(plan)
   # Set up beam set and prescription:
   beam_set = plan.AddNewBeamSet(
-    Name=BSF.label(region_code, 2, 8, 'Conformal', background_dose=background_dose),
+    Name=BSF.label(region_code, prescription, 'Conformal', background_dose=background_dose),
     ExaminationName=examination.Name,
     MachineName= "ALVersa",
     Modality='Photons',
@@ -115,7 +118,7 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
     PatientPosition='HeadFirstSupine',
     NumberOfFractions=8
   )
-  BSF.add_prescription(beam_set, 8, 2, roi_name)
+  BSF.add_prescription(beam_set, prescription, roi_name)
   if region_code in RC.breast_l_codes:
     BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2, beam_index=next_beam_number) 
   elif region_code in RC.breast_r_codes:

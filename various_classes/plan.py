@@ -117,7 +117,7 @@ class Plan(object):
 
 
     # Create 'Mask_PTV' for stereotactic lung:
-    if region_code in RC.lung_codes and BSF.is_stereotactic(nr_fractions, fraction_dose):
+    if region_code in RC.lung_codes and prescription.is_stereotactic():
       PMF.create_mask_ptv_lung(patient, pm, examination, ss, nr_targets)
 
 
@@ -138,16 +138,16 @@ class Plan(object):
       energy_name = SSF.determine_energy(ss, target)
 
     # Create beamset name:
-    beam_set_name = BSF.label(region_code, fraction_dose, nr_fractions, technique)
+    beam_set_name = BSF.label(region_code, prescription, technique)
 
 
     # Create primary beam set:
-    beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, nr_fractions)
+    beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, prescription.nr_fractions)
     # Add prescription:
-    BSF.add_prescription(beam_set, nr_fractions, fraction_dose, target)
+    BSF.add_prescription(beam_set, prescription, target)
 
     # Set beam set dose grid:
-    BSF.set_dose_grid(beam_set, region_code, nr_fractions, fraction_dose)
+    BSF.set_dose_grid(beam_set, region_code, prescription)
 
     # Determine the point which will be our isocenter:
     if nr_targets > 1:
@@ -167,7 +167,7 @@ class Plan(object):
     if self.mq_patient:
       beam_nr = self.mq_patient.next_available_field_number()
     # Setup beams (or arcs):
-    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose, technique_name, energy_name, beam_index=beam_nr)
+    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, technique_name, energy_name, beam_index=beam_nr)
 
 
     # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
@@ -186,23 +186,23 @@ class Plan(object):
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
-      PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(fraction_dose*nr_fractions)))
+      PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(prescription.total_dose)))
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
       plan.LoadBeamSet( BeamSetInfo=infos[0])
 
 
     # Determines and sets up isodoses based on region code and fractionation:
-    CF.determine_isodoses(case, ss, region_code, nr_fractions, fraction_dose)
+    CF.determine_isodoses(case, ss, region_code, prescription)
 
 
     # Determine site:
-    site = SF.site(pm, examination, ss, plan, nr_fractions, total_dose, region_code, target, technique_name)
+    site = SF.site(pm, examination, ss, plan, prescription, region_code, target, technique_name)
 
 
     # Set up Clinical Goals:
     es = plan.TreatmentCourse.EvaluationSetup
-    CG.setup_clinical_goals(ss, es, site, total_dose, nr_fractions, target)
+    CG.setup_clinical_goals(ss, es, site, prescription, target)
     # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
     CF.load_plan(case, plan)
 
@@ -222,7 +222,7 @@ class Plan(object):
 
 
     # Set up treat and protect for stereotactic lung:
-    #if region_code in RC.lung_codes and BSF.is_stereotactic(nr_fractions, fraction_dose):
+    #if region_code in RC.lung_codes and prescription.is_stereotactic():
     #  BSF.set_up_treat_and_protect_for_stereotactic_lung(beam_set, target, 0.5)
 
 
@@ -232,7 +232,7 @@ class Plan(object):
       plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
       # Configure optimization parameters for VMAT only:
       if technique_name == 'VMAT':
-        optimization_parameters = OPT.optimization_parameters(region_code, fraction_dose)
+        optimization_parameters = OPT.optimization_parameters(region_code, prescription.fraction_dose)
         optimization_parameters.apply_to(plan_optimization)
       # Run the optimization:
       plan_optimization.RunOptimization()
