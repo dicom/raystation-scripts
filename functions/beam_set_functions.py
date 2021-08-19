@@ -395,13 +395,6 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-1]
 			segments.LeafPositions = leaf_positions
 
-# Returns True if the combination of nr_fractions and fraction_dose given appears to be stereotactic.
-# FIXME: This function can be deleted when we have completed the transition to using the prescription object!
-def is_stereotactic(nr_fractions, fraction_dose):
-  if nr_fractions in [3, 5, 8] and fraction_dose in [15, 11, 7, 8, 9] or nr_fractions == 1 and fraction_dose > 14:
-    return True
-  else:
-    return False
 
 # Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).
 def set_dose_grid(beam_set, region_code, presciption):
