@@ -140,10 +140,12 @@ pc170 = 1.7
 # Create Clinical goals for ORGANS AT RISK
 # (Sorted cranio-caudally)
 
-# Brain:
+# Brain (whole brain/partial brain/brain SRT):
 def brain_oars(nr_fractions, region_code):
+  brain_oars = []
   if region_code in RC.brain_whole_codes:
-    brain_oars = [
+    # Whole brain:
+    brain_oars += [
       CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
       CG.ClinicalGoal(ROIS.cochlea_r.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
       CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_v003_adx, cc0_03, priority3),
@@ -153,8 +155,14 @@ def brain_oars(nr_fractions, region_code):
       CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority6)
 		]
   elif region_code in RC.brain_partial_codes:
-    if nr_fractions == 1: # Stereotactic, one fraction
-      brain_oars = [
+    # Partial brain (SBRT & conventional):
+    brain_oars += [
+      CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
+      CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5)
+    ]
+    if nr_fractions == 1:
+      # Stereotactic, 1 fraction:
+      brain_oars += [
         CG.ClinicalGoal(ROIS.brain_ptv.name, at_most, dose_at_abs_volume, TOL.brain_srt_1fx_v10, cc10, priority2),
         CG.ClinicalGoal(ROIS.brainstem.name, at_most, dose_at_abs_volume, TOL.brainstem_srt_1fx_v0, cc0, priority2),
         CG.ClinicalGoal(ROIS.brainstem.name, at_most, dose_at_abs_volume, TOL.brainstem_srt_1fx_v0_5, cc0_5, priority2),
@@ -171,12 +179,11 @@ def brain_oars(nr_fractions, region_code):
         CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_srt_1fx_v10, cc10, priority4),
         CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_srt_1fx_v0, cc0, priority4),
         CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_srt_1fx_v0, cc0, priority4),
-        CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
-        CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
         CG.ClinicalGoal(ROIS.brain_gtv.name, at_most, dose_at_abs_volume, TOL.brain_srt_1fx_v10, cc10, priority6)
       ]
-    elif nr_fractions == 3: # Stereotactic, three fractions
-      brain_oars = [
+    elif nr_fractions == 3:
+      # Stereotactic, 3 fractions:
+      brain_oars += [
         CG.ClinicalGoal(ROIS.brain_ptv.name, at_most, dose_at_abs_volume, TOL.brain_srt_3fx_v10, cc10, priority2),
         CG.ClinicalGoal(ROIS.brainstem.name, at_most, dose_at_abs_volume, TOL.brainstem_srt_3fx_v0, cc0, priority2),
         CG.ClinicalGoal(ROIS.brainstem.name, at_most, dose_at_abs_volume, TOL.brainstem_srt_3fx_v0_5, cc0_5, priority2),
@@ -193,12 +200,11 @@ def brain_oars(nr_fractions, region_code):
         CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_srt_3fx_v10, cc10, priority3),
         CG.ClinicalGoal(ROIS.lens_r.name, at_most, dose_at_abs_volume, TOL.lens_srt_3fx_v0, cc0, priority4),
         CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_srt_3fx_v0, cc0, priority4),
-        CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
-        CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
         CG.ClinicalGoal(ROIS.brain_gtv.name, at_most, dose_at_abs_volume, TOL.brain_srt_3fx_v10, cc10, priority6)
       ]
-    else: # Partial brain
-      brain_oars = [ 
+    else:
+      # Partial brain:
+      brain_oars += [ 
         CG.ClinicalGoal(ROIS.brainstem_surface.name, at_most, dose_at_abs_volume, TOL.brainstem_surface_v003_adx, cc0_03, priority2),
         CG.ClinicalGoal(ROIS.brainstem_core.name, at_most, dose_at_abs_volume, TOL.brainstem_core_v003_adx, cc0_03, priority2),
         CG.ClinicalGoal(ROIS.optic_chiasm.name, at_most, dose_at_abs_volume, TOL.optic_chiasm_v003_adx, cc0_03, priority2),
@@ -219,8 +225,6 @@ def brain_oars(nr_fractions, region_code):
         CG.ClinicalGoal(ROIS.cornea_l.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority4),
         CG.ClinicalGoal(ROIS.cornea_r.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority4),
         CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority5),
-        CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
-        CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
         CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_v003, cc3, priority5)
       ]
   return brain_oars
@@ -278,10 +282,10 @@ def breast_oars(ss, region_code):
   return breast_oars
 
 
-# Lung:
+# Lung (conventional):
 # (In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs')
 def lung_oars(ss):
-  lung = [
+  lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority3),
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority3),
@@ -291,24 +295,23 @@ def lung_oars(ss):
     CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority6),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_chemo_v2_adx, pc2, priority6)
   ]
+  # Determine which variant to use for the general lungs CG:
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
-    l = ROIS.lungs_gtv.name
+    lungs = ROIS.lungs_gtv.name
   elif SSF.has_roi_with_shape(ss, ROIS.lungs_igtv.name):
-    l = ROIS.lungs_igtv.name
+    lungs = ROIS.lungs_igtv.name
   else:
-    l = ROIS.lungs.name
-  lung.extend([
-    CG.ClinicalGoal(l, at_most, average_dose, TOL.lung_mean, None, priority3),
-    CG.ClinicalGoal(l, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
-  ])
-  return lung
+    lungs = ROIS.lungs.name
+  lung_oars += [
+    CG.ClinicalGoal(lungs, at_most, average_dose, TOL.lung_mean, None, priority3),
+    CG.ClinicalGoal(lungs, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
+  ]
+  return lung_oars
 
 
-# Lung SBRT:
-# For a treatment with three fractions, from the region code, one finds if the
-# tumor is right or left sided and clinical goals are added accordingly.
+# Lung SBRT (3 fx):
 def lung_stereotactic_3fx_oars(region_code):
-  lung = [
+  lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v1_2, cc1_2, priority2),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0, cc0, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v4, cc4, priority2),
@@ -330,26 +333,29 @@ def lung_stereotactic_3fx_oars(region_code):
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_3fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_3fx_v0, cc0, priority4)
   ]
-  if region_code in [248, 250]: # Right
-    lung.extend([
+  if region_code in [248, 250]:
+    # Right:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_3fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
-    ])
-  elif region_code in [247, 249]: # Left
-    lung.extend([
+    ]
+  elif region_code in [247, 249]:
+    # Left:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_3fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
-    ])
+    ]
   else:
-    lung.extend([
+    # Include OARs for both sides:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx_v0, cc0, priority2),
@@ -362,15 +368,13 @@ def lung_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v2, cc2, priority6)
-    ])
-  return lung
+    ]
+  return lung_oars
 
 
-# Lung SBRT:
-# For a treatment with five fractions, from the region code, one finds if the
-# tumor is right or left sided and clinical goals are added accordingly.
+# Lung SBRT (5 fx):
 def lung_stereotactic_5fx_oars(region_code):
-  lung = [
+  lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_5fx_v1_2, cc1_2, priority2),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_5fx_v0, cc0, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_5fx_v4, cc4, priority2),
@@ -392,26 +396,29 @@ def lung_stereotactic_5fx_oars(region_code):
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_5fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_5fx_v0, cc0, priority4)
   ]
-  if region_code in [248, 250]: # Right
-    lung.extend([
+  if region_code in [248, 250]:
+    # Right:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
-  elif region_code in [247, 249]: # Left
-    lung.extend([
+    ]
+  elif region_code in [247, 249]:
+    # Left:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc26, TOL.lung_contra_sbrt_5fx_v26, priority3),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
+    ]
   else:
-    lung.extend([
+    # Include OARs for both sides:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v0, cc0, priority2),
@@ -424,15 +431,13 @@ def lung_stereotactic_5fx_oars(region_code):
       CG.ClinicalGoal(ROIS.rib_y_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.rib_x_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6),
       CG.ClinicalGoal(ROIS.rib_x_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
-  return lung
+    ]
+  return lung_oars
 
 
-# Lung SBRT:
-# For a treatment with eight fractions, from the region code, one finds if the
-# tumor is right or left sided and clinical goals are added accordingly.
+# Lung SBRT (8 fx):
 def lung_stereotactic_8fx_oars(region_code):
-  lung = [
+  lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_5fx_v1_2, cc1_2, priority2),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_8fx_v0, cc0, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_5fx_v4, cc4, priority2),
@@ -454,8 +459,9 @@ def lung_stereotactic_8fx_oars(region_code):
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_5fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_5fx_v0, cc0, priority4)
   ]
-  if region_code in [248, 250]: # Right
-    lung.extend([
+  if region_code in [248, 250]:
+    # Right:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_contra_sbrt_8fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
@@ -463,9 +469,10 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
-  elif region_code in [247, 249]: # Left
-    lung.extend([
+    ]
+  elif region_code in [247, 249]:
+    # Left:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_contra_sbrt_8fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_contra_sbrt_5fx_mean, None, priority3),
@@ -473,9 +480,10 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
+    ]
   else:
-    lung.extend([
+    # Include OARs for both sides:
+    lung_oars += [
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_contra_sbrt_8fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_v4, cc4, priority2),
       CG.ClinicalGoal(ROIS.main_bronchus_r.name, at_most, dose_at_abs_volume, TOL.main_bronchus_contra_sbrt_8fx_v0, cc0, priority2),
@@ -490,8 +498,8 @@ def lung_stereotactic_8fx_oars(region_code):
       CG.ClinicalGoal(ROIS.main_bronchus_l.name, at_most, dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx_v0, cc0, priority4),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6),
       CG.ClinicalGoal(ROIS.ribs_l.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx_v1, cc1, priority6)
-    ])
-  return lung
+    ]
+  return lung_oars
 
 
 # Rectum:
@@ -515,11 +523,15 @@ bladder_oars = [
 ]
 
 
-# Prostate:
+# Prostate (palliative, 20 fx & 35 fx):
 def prostate_oars(ss, total_dose):
+  prostate_oars = [
+    CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
+    CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
+    CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
+  ]
   if total_dose in [55, 60]:
-    prostate = [
-      CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
+    prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc60, TOL.rectum_v40_adx_hypo,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v48_adx_hypo,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc30, TOL.rectum_v52_adx_hypo,  priority3),
@@ -532,13 +544,10 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.anal_canal.name, at_most, volume_at_dose, pc3, TOL.rectum_v60_adx_hypo,  priority3),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v40_adx_hypo, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v48_adx_hypo, priority4),
-      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc5, TOL.bladder_v60_adx_hypo, priority4),
-      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
-      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc5, TOL.bladder_v60_adx_hypo, priority4)
     ]
   elif total_dose > 60:
-    prostate = [
-      CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
+    prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
@@ -552,27 +561,19 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35_adx, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v25_adx, priority4),
-      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc15, TOL.bladder_v15_adx, priority4),
-      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
-      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc15, TOL.bladder_v15_adx, priority4)
     ]
   elif total_dose <40:
-    prostate = [
+    prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority3),
-      CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
-      CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
-      CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority3)
     ]
-  return prostate
+  return prostate_oars
 
 
-# Bone/Spine SBRT:
-# For a treatment with one fraction, from the region code, one finds whether the
-# tumor is in the thoracic or pelvis area, and clinical goals are added accordingly.
-# There is also a separation between spine/non-spine treatment.
+# Bone SBRT (1 fx, thoracic/pelvis, spine/non-spine):
 def bone_stereotactic_1fx_oars(region_code):
-  spine = [
+  bone_oars = [
     CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
     CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
     CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
@@ -582,16 +583,17 @@ def bone_stereotactic_1fx_oars(region_code):
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_1fx_v0, cc0, priority4)
   ]
   if region_code in RC.stereotactic_spine_thorax_codes or region_code in RC.stereotactic_spine_pelvis_codes:
-    spine.extend([
+    # Spine:
+    bone_oars += [
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0_35, cc0_35, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0_1, cc0_1, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc5, priority2)
-    ])
+    ]
     if region_code in RC.stereotactic_spine_thorax_codes:
-      spine.extend([
+      bone_oars += [
         CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v4, cc4, priority2),
         CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v0, cc0, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_1fx_v15, cc15, priority3),
@@ -599,25 +601,23 @@ def bone_stereotactic_1fx_oars(region_code):
         CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lungs_sbrt_1fx_v1000, cc1000, priority3),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v5, cc5, priority3),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v0, cc0, priority3)
-      ])
+      ]
   if region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
-    spine.extend([
+    # Pelvic:
+    bone_oars += [
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v5, cc5, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_1fx_v20, cc20, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_1fx_v20, cc20, priority3)
-    ])
-  return spine
+    ]
+  return bone_oars
 
 
-# Bone/Spine SBRT:
-# For a treatment with three fractions, from the region code, one finds whether the
-# tumor is in the thoracic or pelvis area, and clinical goals are added accordingly.
-# There is also a separation between spine/non-spine treatment.
+# Bone SBRT (3 fx, thoracic/pelvis, spine/non-spine):
 def bone_stereotactic_3fx_oars(region_code):
-  spine = [
+  bone_oars = [
     CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
     CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
     CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_3fx_v200, cc200, priority3),
@@ -625,14 +625,15 @@ def bone_stereotactic_3fx_oars(region_code):
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v0, cc0, priority4)
   ]
   if region_code in RC.stereotactic_spine_thorax_codes or region_code in RC.stereotactic_spine_pelvis_codes:
-    spine.extend([
+  # Spine:
+    bone_oars += [
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v5, cc5, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0, cc0, priority2)
-    ])
+    ]
     if region_code in RC.stereotactic_spine_thorax_codes:
-      spine.extend([
+      bone_oars += [
         CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v4, cc4, priority2),
         CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v0, cc0, priority2),
         CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_3fx_v15, cc15, priority3),
@@ -640,17 +641,18 @@ def bone_stereotactic_3fx_oars(region_code):
         CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lung_sbrt_3fx_v1000, cc1000, priority3),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v5, cc5, priority3),
         CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v0, cc0, priority3)
-      ])
+      ]
   if region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
-    spine.extend([
+    # Pelvic:
+    bone_oars += [
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v5, cc5, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_3fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_3fx_v20, cc20, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_3fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_3fx_v20, cc20, priority3)
-    ])
-  return spine
+    ]
+  return bone_oars
 
 
 # Palliative:
@@ -750,58 +752,63 @@ thorax_targets = [
 # Palliative:
 def palliative_targets(ss, plan, target):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-  targets = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
+  palliative_targets = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
   if nr_targets > 1 and len(list(plan.BeamSets)) > 1:
     for i in range(0, nr_targets):
-      targets.extend([
+      palliative_targets += [
         CG.ClinicalGoal(ROIS.ctv.name+str(i+1), at_least, dose_at_volume, pc99_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv.name+str(i+1), at_most, dose_at_volume, pc100_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv.name+str(i+1), at_least, dose_at_volume, pc98, pc98, priority2),
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc95, pc98, priority4),
         CG.ClinicalGoal(ROIS.ctv.name+str(i+1), at_least, homogeneity_index, pc95, pc98, priority5),
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc90, pc95, priority5)
-      ])
+      ]
   else:
-    targets.extend([
+    palliative_targets += [
       CG.ClinicalGoal(target, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(target, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(target, at_least, dose_at_volume, pc98, pc98, priority2),
       CG.ClinicalGoal(target.replace("C", "P"), at_least, dose_at_volume, pc95, pc98, priority4),
       CG.ClinicalGoal(target, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(target.replace("C", "P"), at_least, conformity_index, pc90, pc95, priority5)
-    ])
+    ]
+  return palliative_targets
 
-  return targets
 
-
-# Brain:
+# Brain (whole brain/partial brain/SRT with single or multiple targets):
 def brain_targets(ss, nr_fractions):
-  if nr_fractions in [1,3]: # Stereotactic, one target
-    brain_targets = [
+  brain_targets = []
+  if nr_fractions in [1,3]:
+    # Stereotactic, single target:
+    brain_targets += [
       CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
       CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc170, cc0, priority4),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5)
     ]
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-    if nr_targets in [2, 3, 4]: # Stereotactic, 2, 3 or 4 targets
-      brain_targets.extend([
+    if nr_targets in [2, 3, 4]:
+      # Stereotactic, multiple targets:
+      brain_targets += [
         CG.ClinicalGoal(ROIS.ptv1.name, at_least, dose_at_volume, pc100, pc99, priority1),
         CG.ClinicalGoal(ROIS.ptv2.name, at_least, dose_at_volume, pc100, pc99, priority1),
         CG.ClinicalGoal(ROIS.ptv1.name, at_least, conformity_index, pc90, pc100, priority5),
         CG.ClinicalGoal(ROIS.ptv2.name, at_least, conformity_index, pc90, pc100, priority5)
-      ])
-      if nr_targets in [3, 4]: # Stereotactic, 3 or 4 targets
-        brain_targets.extend([
+      ]
+      if nr_targets in [3, 4]:
+        # Stereotactic, 3 or 4 targets:
+        brain_targets += [
           CG.ClinicalGoal(ROIS.ptv3.name, at_least, dose_at_volume, pc100, pc99, priority1),
           CG.ClinicalGoal(ROIS.ptv3.name, at_least, conformity_index, pc90, pc100, priority5)
-        ])
-        if nr_targets == 4: # Stereotactic, 4 targets
-          brain_targets.extend([
+        ]
+        if nr_targets == 4:
+          # Stereotactic, 4 targets:
+          brain_targets += [
             CG.ClinicalGoal(ROIS.ptv4.name, at_least, dose_at_volume, pc100, pc99, priority1),
             CG.ClinicalGoal(ROIS.ptv4.name, at_least, conformity_index, pc90, pc100, priority5)
-        ])
-  else: # Whole brain or partial brain
-    brain_targets = [
+        ]
+  else:
+    # Whole brain or partial brain:
+    brain_targets += [
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc98, pc98, priority2),
@@ -813,7 +820,7 @@ def brain_targets(ss, nr_fractions):
   return brain_targets
 
 
-# Breast:
+# Breast (partial/whole/regional):
 def breast_targets(ss, region_code, target):
   breast_targets = []
   if region_code in RC.breast_reg_codes:
@@ -892,32 +899,32 @@ def breast_targets(ss, region_code, target):
   return breast_targets
 
 
-# Lung SBRT:
+# Lung SBRT (single or multiple targets):
 def lung_stereotactic_targets(ss):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-  targets = [
+  lung_targets = [
     CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc140, cc2, priority4),
     CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc150, cc0, priority4)
   ]
   if nr_targets == 1:
-    targets.extend([
+    lung_targets += [
       CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc88, pc100, priority5),
       CG.ClinicalGoal(ROIS.igtv.name, at_most, dose_at_abs_volume, pc150, cc0, priority5)
-    ])
+    ]
   else:
     for i in range(0, nr_targets):
-      targets.extend([
+      lung_targets += [
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc100, pc99, priority1),
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc88, pc100, priority5),
         CG.ClinicalGoal(ROIS.igtv.name+str(i+1), at_most, dose_at_abs_volume, pc150, cc0, priority5)
-      ])
-  return targets
+      ]
+  return lung_targets
 
 
-# Lung:
+# Lung (conventional):
 def lung_targets(ss):
-  lung = [
+  lung_targets = [
     CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc90, pc98, priority2),
     CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc93, pc98, priority5),
     CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc95, priority5),
@@ -925,27 +932,27 @@ def lung_targets(ss):
   ]
   # Some variation in clinical goals whether GTV, CTV or IGTV is defined:
   if SSF.has_roi_with_shape(ss, ROIS.igtv.name):
-    lung.extend([
+    lung_targets += [
       CG.ClinicalGoal(ROIS.ictv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ictv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.igtv.name, at_least, dose_at_volume, pc98, pc98, priority2),
       CG.ClinicalGoal(ROIS.ictv.name, at_least, dose_at_volume, pc95, pc98, priority2),
       CG.ClinicalGoal(ROIS.ictv.name, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ictv.name, at_least, dose_at_volume, pc98, pc98, priority5)
-    ])
+    ]
   elif SSF.has_roi_with_shape(ss, ROIS.ctv.name):
-    lung.extend([
+    lung_targets += [
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc95, pc98, priority2),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc98, pc98, priority5)
-    ])
+    ]
     if SSF.has_roi_with_shape(ss, ROIS.gtv.name):
-      lung.extend([
+      lung_targets += [
         CG.ClinicalGoal(ROIS.gtv.name, at_least, dose_at_volume, pc98, pc98, priority2)
-      ])
-  return lung
+      ]
+  return lung_targets
 
 
 # Bone/Spine SBRT:
@@ -956,11 +963,12 @@ bone_stereotactic_targets = [
 ]
 
 
-# Prostate:
+# Prostate (hypofractionated/conventional fractionation, with or without lymph nodes):
 def prostate_targets(ss, total_dose):
-  prostate = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
-  if total_dose == 77: # Normo-fractionation
-    prostate.extend([
+  prostate_targets = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
+  if total_dose == 77:
+    # Normo-fractionation:
+    prostate_targets += [
       CG.ClinicalGoal(ROIS.ctv_77.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_77.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_least, dose_at_volume, pc90_45, pc50, priority1),
@@ -974,9 +982,10 @@ def prostate_targets(ss, total_dose):
       CG.ClinicalGoal(ROIS.ptv_77.name, at_least, conformity_index, pc90, pc95, priority5),
       CG.ClinicalGoal(ROIS.ptv_70_sib.name, at_most, dose_at_volume, pc95, pc10, priority5),
       CG.ClinicalGoal(ROIS.ptv_70_77.name, at_least, conformity_index, pc75, pc86_36, priority5)
-    ])
-    if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # With lymph node volume
-      prostate.extend([
+    ]
+    if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
+      # With lymph nodes:
+      prostate_targets += [
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc72_36, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv_56.name, at_most, dose_at_volume, pc73_09, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc71_3, pc98, priority2),
@@ -984,9 +993,10 @@ def prostate_targets(ss, total_dose):
         CG.ClinicalGoal(ROIS.ptv_56_70_77.name, at_least, conformity_index, pc78, pc69_1, priority5),
         CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume, pc76_36, pc10, priority5),
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, homogeneity_index, pc95, pc95, priority5)
-      ])
-  elif total_dose == 60: # Hypofractionation
-    prostate.extend([
+      ]
+  elif total_dose == 60:
+    # Hypofractionation:
+    prostate_targets += [
       CG.ClinicalGoal(ROIS.ctv_60.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_60.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_57.name, at_least, dose_at_volume, pc94_52, pc50, priority1),
@@ -1000,22 +1010,23 @@ def prostate_targets(ss, total_dose):
       CG.ClinicalGoal(ROIS.ptv_60.name, at_least, conformity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ptv_57.name, at_most, dose_at_volume, pc99_75, pc2, priority5),
       CG.ClinicalGoal(ROIS.ptv_57_60.name, at_least, conformity_index, pc80, pc90_25, priority5)
-    ])
-  else: # Hypofractionation
-    prostate.extend([
+    ]
+  else:
+    # Palliative:
+    prostate_targets += [
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc98, pc98, priority2),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc95, pc98,  priority4),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, homogeneity_index, pc95, pc98, priority5),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc95, priority5)
-    ])
-  return prostate
+    ]
+  return prostate_targets
 
 
-# Prostate bed:
+# Prostate bed (with or without lymph nodes):
 def prostate_bed_targets(ss):
-  prostate_bed = [
+  prostate_bed_targets = [
     CG.ClinicalGoal(ROIS.ctv_70.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
     CG.ClinicalGoal(ROIS.ctv_70.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
     CG.ClinicalGoal(ROIS.ctv_70.name, at_least, dose_at_volume, pc98, pc98, priority2),
@@ -1024,22 +1035,24 @@ def prostate_bed_targets(ss):
     CG.ClinicalGoal(ROIS.ctv_70.name, at_least, homogeneity_index, pc95, pc95, priority5),
     CG.ClinicalGoal(ROIS.ptv_70.name, at_least, conformity_index, pc90, pc95, priority5)    
   ]
-  if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name): # With lymph node volume
-    prostate_bed.extend([
+  if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
+    # With lymph nodes:
+    prostate_bed_targets += [
       CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc79_6, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_56.name, at_most, dose_at_volume, pc80_4, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc78_4, pc98, priority2),
       CG.ClinicalGoal(ROIS.ptv_56.name, at_least, dose_at_volume, pc76, pc98, priority4),
       CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume,  pc84, pc5, priority5),
       CG.ClinicalGoal(ROIS.ptv_56_70.name, at_least, conformity_index, pc70, pc76, priority5)
-    ])
-  return prostate_bed
+    ]
+  return prostate_bed_targets
 
 
-# Rectum:
+# Rectum (hypofractionated or conventional fractionation):
 def rectum_targets(total_dose):
+  rectum_targets = []
   if total_dose == 50:
-    rectum_targets = [
+    rectum_targets += [
       CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_50.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_47.name, at_least, dose_at_volume, pc93_53, pc50, priority1),
@@ -1056,7 +1069,7 @@ def rectum_targets(total_dose):
       CG.ClinicalGoal(ROIS.ptv_47.name, at_most, dose_at_volume, pc98_7, pc2, priority5),
     ]
   else:
-    rectum_targets = [
+    rectum_targets += [
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc98, pc98, priority2),
