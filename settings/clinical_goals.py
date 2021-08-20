@@ -227,93 +227,55 @@ def brain_oars(nr_fractions, region_code):
 
 
 # Breast (Regional breast/Whole breast/Partial breast):
-# FIXME: Unnecessary code duplication in this function. Should be cleaned up!
-def breast_oars(ss, region_code, nr_fractions, target):
-  if region_code in [241, 243]:
-    # Regional (left):
-    if nr_fractions == 25:
-      breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority4),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
-      ]
-    else:
-      breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority5),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
-      ]
-    # Thyroid absolute volume CG for regional breast:
-    if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
-      volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
-      breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
-  elif region_code in [242, 244]:
-    # Regional (right):
-    if nr_fractions == 25:
-      breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority4),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
-      ]
-    else:
-      breast = [
-        CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority5),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5),
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
-        CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5),
-        CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
-      ]
-    # Thyroid absolute volume CG for regional breast:
-    if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
-      volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
-      breast.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
-  else:
-    # Whole breast and partial breast:
-    breast = [
-      CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-      CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4),
-      CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)
+def breast_oars(ss, region_code):
+  # Common for all breast variants:
+  breast_oars = [
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
+    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5)
+  ]
+  if region_code in RC.breast_reg_codes:
+    # Common for regional left & right:
+    breast_oars += [
+      CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
+      CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5)  
     ]
-    # Partial breast only:
-    if region_code in RC.breast_partial_r_codes:
-      breast.extend([
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)
-      ])
-    elif region_code in RC.breast_partial_l_codes:
-      breast.extend([
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)
-      ])
-  return breast
+    # Thyroid absolute volume CG for regional breast:
+    if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
+      volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
+      breast_oars.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
+    if region_code in RC.breast_reg_l_codes:
+      # Specific for regional left:
+      breast_oars += [
+        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
+        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
+      ]
+    else:
+      # Specific for regional right:
+      breast_oars += [
+        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
+        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+        CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
+      ]
+  else:
+    # Non-regional breast:
+    if region_code in RC.breast_l_codes:
+      # Common for whole breast & partial breast, left:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)]
+    elif region_code in RC.breast_r_codes:
+      # Common for whole breast & partial breast, right:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)]
+    if region_code in RC.breast_partial_l_codes:
+      # Specific for partial breast left:
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)]
+    elif region_code in RC.breast_partial_r_codes:
+      # Specific for partial breast right:
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)]
+  return breast_oars
 
 
 # Lung:
@@ -853,9 +815,12 @@ def brain_targets(ss, nr_fractions):
 
 # Breast:
 def breast_targets(ss, region_code, target):
-  if region_code in RC.breast_reg_codes: # Regional lymph nodes
+  breast_targets = []
+  if region_code in RC.breast_reg_codes:
+    # Regional breast:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_p.name):
-      breast_targets = [
+      # Hypofractionated regional breast:
+      breast_targets += [
         CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc95, pc98, priority2),
@@ -869,7 +834,8 @@ def breast_targets(ss, region_code, target):
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, conformity_index, pc75, pc95, priority5)
       ]
     elif SSF.has_roi_with_shape(ss, ROIS.ctv_50.name):
-      breast_targets = [
+      # Conventionally fractionated regional breast (SIB):
+      breast_targets += [
         CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv_50.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv_47.name, at_least, dose_at_volume, pc93_53, pc50, priority1),
@@ -889,48 +855,40 @@ def breast_targets(ss, region_code, target):
         CG.ClinicalGoal(ROIS.ptv_47c.name, at_least, dose_at_volume, pc89_3, pc98, priority6),
         CG.ClinicalGoal(ROIS.ptv_50c.name, at_least, dose_at_volume, pc95, pc98, priority6)
       ]
-    if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name): # If there is a 2 Gy x 8 boost
-      breast_targets.extend([
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.92*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_most, dose_at_volume, 16.08*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.2*100, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 15.2*100,  pc95, priority2),
-        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc139, cc2, priority4),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*16*100, priority5)
-      ])
-  else: # Tangential
-    breast_targets = [
+  else:
+    # Non-regional breast (whole or partial breast):
+    breast_targets += [
       CG.ClinicalGoal(target, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(target, at_most, dose_at_volume, pc100_5, pc50, priority1),
-      CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)
+      CG.ClinicalGoal(target, at_least, dose_at_volume, pc95, pc98, priority2),
+      CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4),
+      CG.ClinicalGoal(target, at_least, homogeneity_index, pc95, pc95, priority5),
+      CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, conformity_index, pc75, pc95, priority5)
     ]
     if target == ROIS.ctv_sb.name:
-      breast_targets.extend([
-        CG.ClinicalGoal(target, at_least, dose_at_volume, pc95, pc98, priority2),
+      # Partial breast:
+      breast_targets += [
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95, pc98, priority2),
-        CG.ClinicalGoal(target, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, conformity_index, pc75, pc95, priority5)
-      ])
+      ]
     else:
-      breast_targets.extend([
-        CG.ClinicalGoal(target, at_least, dose_at_volume, pc95, pc98, priority2),
+      # Whole breast:
+      breast_targets += [
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc90, pc98, priority2),
-        CG.ClinicalGoal(target, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, conformity_index, pc75, pc95, priority5),
         CG.ClinicalGoal(target, at_least, dose_at_volume, pc96, pc98, priority5),
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95, pc98, priority5)
-      ])
-    if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ctv.name): # If there is a 2 Gy x 8 boost
-      breast_targets.extend([
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.92*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_most, dose_at_volume, 16.08*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.2*100, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 15.2*100,  pc95, priority2),
-        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc147, cc2, priority4),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*16*100, priority5)
-      ])
+      ]
+  if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and region_code not in RC.breast_partial_codes:
+    # Tumour bed boost:
+    breast_targets += [
+      CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.92*100, pc50, priority1),
+      CG.ClinicalGoal(ROIS.ctv_sb.name, at_most, dose_at_volume, 16.08*100, pc50, priority1),
+      CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 15.2*100, pc98, priority2),
+      CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 15.2*100,  pc95, priority2),
+      CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc147, cc2, priority4),
+      CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
+      CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*16*100, priority5)
+    ]
   return breast_targets
 
 
