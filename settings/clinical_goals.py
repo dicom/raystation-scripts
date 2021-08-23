@@ -779,32 +779,23 @@ def palliative_targets(ss, plan, target):
 def brain_targets(ss, nr_fractions):
   brain_targets = []
   if nr_fractions in [1,3]:
-    # Stereotactic, single target:
+    # SRT:
     brain_targets += [
-      CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
       CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc170, cc0, priority4),
-      CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5)
     ]
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-    if nr_targets in [2, 3, 4]:
-      # Stereotactic, multiple targets:
+    if nr_targets == 1:
+      # Single target:
       brain_targets += [
-        CG.ClinicalGoal(ROIS.ptv1.name, at_least, dose_at_volume, pc100, pc99, priority1),
-        CG.ClinicalGoal(ROIS.ptv2.name, at_least, dose_at_volume, pc100, pc99, priority1),
-        CG.ClinicalGoal(ROIS.ptv1.name, at_least, conformity_index, pc90, pc100, priority5),
-        CG.ClinicalGoal(ROIS.ptv2.name, at_least, conformity_index, pc90, pc100, priority5)
+        CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
+        CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5)
       ]
-      if nr_targets in [3, 4]:
-        # Stereotactic, 3 or 4 targets:
+    else:
+      # Multiple targets:
+      for i in range(0, nr_targets):
         brain_targets += [
-          CG.ClinicalGoal(ROIS.ptv3.name, at_least, dose_at_volume, pc100, pc99, priority1),
-          CG.ClinicalGoal(ROIS.ptv3.name, at_least, conformity_index, pc90, pc100, priority5)
-        ]
-        if nr_targets == 4:
-          # Stereotactic, 4 targets:
-          brain_targets += [
-            CG.ClinicalGoal(ROIS.ptv4.name, at_least, dose_at_volume, pc100, pc99, priority1),
-            CG.ClinicalGoal(ROIS.ptv4.name, at_least, conformity_index, pc90, pc100, priority5)
+          CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc100, pc99, priority1),
+          CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc90, pc100, priority5)
         ]
   else:
     # Whole brain or partial brain:
