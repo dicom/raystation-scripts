@@ -141,7 +141,7 @@ pc170 = 1.7
 # (Sorted cranio-caudally)
 
 # Brain (whole brain/partial brain/brain SRT):
-def brain_oars(nr_fractions, region_code):
+def brain_oars(prescription, region_code):
   brain_oars = []
   if region_code in RC.brain_whole_codes:
     # Whole brain:
@@ -160,7 +160,7 @@ def brain_oars(nr_fractions, region_code):
       CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
       CG.ClinicalGoal(ROIS.hippocampus_r.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5)
     ]
-    if nr_fractions == 1:
+    if prescription.nr_fractions == 1:
       # Stereotactic, 1 fraction:
       brain_oars += [
         CG.ClinicalGoal(ROIS.brain_ptv.name, at_most, dose_at_abs_volume, TOL.brain_srt_1fx_v10, cc10, priority2),
@@ -181,7 +181,7 @@ def brain_oars(nr_fractions, region_code):
         CG.ClinicalGoal(ROIS.lens_l.name, at_most, dose_at_abs_volume, TOL.lens_srt_1fx_v0, cc0, priority4),
         CG.ClinicalGoal(ROIS.brain_gtv.name, at_most, dose_at_abs_volume, TOL.brain_srt_1fx_v10, cc10, priority6)
       ]
-    elif nr_fractions == 3:
+    elif prescription.nr_fractions == 3:
       # Stereotactic, 3 fractions:
       brain_oars += [
         CG.ClinicalGoal(ROIS.brain_ptv.name, at_most, dose_at_abs_volume, TOL.brain_srt_3fx_v10, cc10, priority2),
@@ -524,13 +524,13 @@ bladder_oars = [
 
 
 # Prostate (palliative, 20 fx & 35 fx):
-def prostate_oars(ss, total_dose):
+def prostate_oars(ss, prescription):
   prostate_oars = [
     CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowelspace_v195_adx, priority3),
     CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4),
     CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_mean_adx, None, priority4)
   ]
-  if total_dose in [55, 60]:
+  if prescription.total_dose in [55, 60]:
     prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc60, TOL.rectum_v40_adx_hypo,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v48_adx_hypo,  priority3),
@@ -546,7 +546,7 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v48_adx_hypo, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc5, TOL.bladder_v60_adx_hypo, priority4)
     ]
-  elif total_dose > 60:
+  elif prescription.total_dose > 60:
     prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
@@ -563,7 +563,7 @@ def prostate_oars(ss, total_dose):
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc25, TOL.bladder_v25_adx, priority4),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc15, TOL.bladder_v15_adx, priority4)
     ]
-  elif total_dose <40:
+  elif prescription.total_dose <40:
     prostate_oars += [
       CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority3)
@@ -776,9 +776,9 @@ def palliative_targets(ss, plan, target):
 
 
 # Brain (whole brain/partial brain/SRT with single or multiple targets):
-def brain_targets(ss, nr_fractions):
+def brain_targets(ss, prescription):
   brain_targets = []
-  if nr_fractions in [1,3]:
+  if prescription.nr_fractions in [1,3]:
     # SRT:
     brain_targets += [
       CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc170, cc0, priority4),
@@ -955,9 +955,9 @@ bone_stereotactic_targets = [
 
 
 # Prostate (hypofractionated/conventional fractionation, with or without lymph nodes):
-def prostate_targets(ss, total_dose):
+def prostate_targets(ss, prescription):
   prostate_targets = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
-  if total_dose == 77:
+  if prescription.total_dose == 77:
     # Normo-fractionation:
     prostate_targets += [
       CG.ClinicalGoal(ROIS.ctv_77.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
@@ -985,7 +985,7 @@ def prostate_targets(ss, total_dose):
         CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume, pc76_36, pc10, priority5),
         CG.ClinicalGoal(ROIS.ctv_56.name, at_least, homogeneity_index, pc95, pc95, priority5)
       ]
-  elif total_dose == 60:
+  elif prescription.total_dose == 60:
     # Hypofractionation:
     prostate_targets += [
       CG.ClinicalGoal(ROIS.ctv_60.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
@@ -1040,9 +1040,9 @@ def prostate_bed_targets(ss):
 
 
 # Rectum (hypofractionated or conventional fractionation):
-def rectum_targets(total_dose):
+def rectum_targets(prescription):
   rectum_targets = []
-  if total_dose == 50:
+  if prescription.total_dose == 50:
     rectum_targets += [
       CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
       CG.ClinicalGoal(ROIS.ctv_50.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
