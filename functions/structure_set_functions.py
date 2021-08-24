@@ -278,6 +278,7 @@ def determine_nr_of_indexed_ptvs(ss):
 # Determines the prescription target volume of the plan.
 def determine_target(ss, roi_dict, prescription):
   match = False
+  target = None
   target_list = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(prescription.total_dose), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
   # Stereotactic brain treatments with multiple targets: PTV is the target
   if prescription.nr_fractions == 3 and prescription.fraction_dose in [7, 8, 9] or prescription.nr_fractions == 1 and prescription.fraction_dose > 14:
