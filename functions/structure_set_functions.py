@@ -20,7 +20,6 @@ import def_brain as DEF_BRAIN
 import region_codes as RC
 
 
-
 # Checks if a given roi takes part in a approved structure set
 def is_approved_roi_structure(ss, roi_name):
 	match = False
@@ -277,27 +276,18 @@ def determine_nr_of_indexed_ptvs(ss):
 
 # Determines the prescription target volume of the plan.
 def determine_target(ss, roi_dict, prescription):
-  match = False
   target = None
-  target_list = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(prescription.total_dose), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
-  # Stereotactic brain treatments with multiple targets: PTV is the target
-  if prescription.nr_fractions == 3 and prescription.fraction_dose in [7, 8, 9] or prescription.nr_fractions == 1 and prescription.fraction_dose > 14:
+  expected_targets = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(round(prescription.total_dose)), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
+  # SRT/SBRT (where PTV is prescription target, instead of CTV for conventional treatment):
+  if prescription.is_stereotactic():
     if determine_nr_of_indexed_ptvs(ss) > 1:
-      target_list.insert(0, ROIS.ptv1.name)
+      expected_targets.insert(0, ROIS.ptv1.name)
     else:
-      target_list.insert(0, ROIS.ptv.name)
-    match = True
-  # Extracranial stereotactic treatments: PTV is the target
-  if match == False:
-    if prescription.nr_fractions in [3, 5, 8] and prescription.fraction_dose in [15, 11, 7, 8, 9] or prescription.nr_fractions == 1 and prescription.fraction_dose > 14:
-      if determine_nr_of_indexed_ptvs(ss) > 1:
-        target_list.insert(0, ROIS.ptv1.name)
-      else:
-        target_list.insert(0, ROIS.ptv.name)
-  # Pick the first ROI in the target list that gives a match in the ROI dictionary given as a function parameter:
-  for i in range(len(target_list)):
-    if roi_dict.get(target_list[i]):
-      target = target_list[i]
+      expected_targets.insert(0, ROIS.ptv.name)
+  # Pick the first ROI among the expected targets that gives a match in the given ROI dictionary:
+  for i in range(len(expected_targets)):
+    if roi_dict.get(expected_targets[i]):
+      target = expected_targets[i]
       break
   # Return the determined target (or fail gracefully with a dialogue window):
   if target:
