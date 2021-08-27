@@ -1,5 +1,5 @@
 # encoding: utf8
-from tkinter import messagebox
+
 # Import local files:
 import patient_model_functions as PMF
 import rois as ROIS
@@ -21,6 +21,11 @@ class DefSite(object):
   # -External ROI (and Body ROI for brain treatments)
   # -Couch ROI and positions it in the lateral and AP directions (not long direction as we dont know target volume position yet).
   def __init__(self, patient_db, pm, examination, ss, choices, targets, oars):
+    # Verify input:
+    assert isinstance(choices, list), "choices is not a list: %r" % choices
+    assert isinstance(targets, list), "targets is not a list: %r" % targets
+    assert isinstance(oars, list), "oars is not a list: %r" % oars
+    # Assign parameters:
     self.patient_db = patient_db
     self.pm = pm
     self.examination = examination
@@ -28,10 +33,9 @@ class DefSite(object):
     self.choices = choices
     self.targets = targets
     self.oars = oars
-
     # Create localization point:
     PMF.create_localization_point(self.pm, self.examination)
-
+    # Handle creation of external and couch ROIs:
     if self.choices[0] == 'brain':
       if self.choices[1] == 'stereotactic':
         # Create external geometry:
@@ -60,11 +64,21 @@ class DefSite(object):
 
   # Adds target ROIs to the DefSite.
   def add_targets(self, targets):
+    # Verify input:
+    assert isinstance(targets, list), "targets is not a list: %r" % targets
+    for target in targets:
+      assert target.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "target is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % target
+    # Assign targets:
     self.targets.extend(targets)
 
 
   # Add OARs to the DefSite.
   def add_oars(self, oars):
+    # Verify input:
+    assert isinstance(oars, list), "oars is not a list: %r" % oars
+    for oar in oars:
+      assert oar.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "oar is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % oar
+    # Assign oars:
     self.oars.extend(oars)
 
 
@@ -119,6 +133,10 @@ class DefSite(object):
   # The source level is ultimately used to determine in which order ROIs are created in RayStation. I.e. ROIs need to
   # be created in opposite source level order (0 first, highest number last) in order to avoid dependence errors when creating ROIs.
   def set_source_level(self, roi, level):
+    # Verify input:
+    assert roi.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "roi is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % roi
+    assert isinstance(level, int), "level is not a int: %r" % level
+    # Set level:
     if roi.__class__.__name__ != 'ROI':
       if level > roi.source_level:
         roi.source_level = level
