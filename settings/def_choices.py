@@ -18,19 +18,14 @@ brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, default = True)
 brain_partial = P.Property('Del av hjerne', 'part', parent=brain)
 brain_stereotactic = P.Property('Stereotaksi','stereotactic', parent = brain, next_category ='antall målvolum')
 
-# Brain: Partial: Diagnosis:
-#brain_partial_diag1 = P.Property('Glioblastom WHO grad IV', 'glio', parent=brain_partial, default = True)
-#brain_partial_diag2 = P.Property('Anaplastisk astrocytom WHO grad III', 'astro', parent=brain_partial)
-#brain_partial_diag3 = P.Property('Atypisk og anaplastisk meningeom', 'meningeom', parent=brain_partial)
-
 # Brain: Stereotactic
-brain_stereo_nr1 = P.Property('1','one', parent = brain_stereotactic, default = True)
-brain_stereo_nr2 = P.Property('2','two', parent = brain_stereotactic)
-brain_stereo_nr3 = P.Property('3','three', parent = brain_stereotactic)
-brain_stereo_nr4 = P.Property('4','four', parent = brain_stereotactic)
+brain_stereo_nr1 = P.Property('1','1', parent = brain_stereotactic, default = True)
+brain_stereo_nr2 = P.Property('2','2', parent = brain_stereotactic)
+brain_stereo_nr3 = P.Property('3','3', parent = brain_stereotactic)
+brain_stereo_nr4 = P.Property('4','4', parent = brain_stereotactic)
 
 
-# Lung
+# Lung:
 lung_curative = P.Property('Kurativ', 'curative', parent = lung, next_category = 'diagnose', default = True)
 lung_palliative = P.Property('Palliativ','palliative', parent = lung, next_category = '')
 lung_stereotactic = P.Property('Stereotaksi', 'stereotactic', parent = lung, next_category ='side')
@@ -45,38 +40,35 @@ lung_postop =P.Property('Postoperativ', 'postop', parent = lung_curative)
 stereo_lung_right = P.Property('Høyre','right', parent = lung_stereotactic, next_category ='antall målvolum', default = True)
 stereo_lung_left = P.Property('Venstre','left', parent = lung_stereotactic, next_category ='antall målvolum')
 
+# Lung SBRT: Nr of targets:
 for side in [stereo_lung_right, stereo_lung_left]:
   lung_stereo_nr1 = P.Property('1','one', parent = side, default = True)
   lung_stereo_nr2 = P.Property('2','two', parent = side)
   lung_stereo_nr3 = P.Property('3','three', parent = side)
-
 
 # Lung palliative:
 lung_with_4dct = P.Property('Med 4DCT', 'with', parent = lung_palliative, default = True)
 lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
 
 
-#Breast:
+# Breast:
 breast_partial = P.Property('Del av bryst', 'part', parent = breast, next_category = '')
 breast_tangential = P.Property('Bryst/brystvegg', 'tang', parent = breast, next_category = '', default = True)
 breast_locoregional = P.Property('Bryst/brystvegg og regionale lymfeknuter', 'reg', parent = breast, next_category ='side')
 breast_imn = P.Property('Bryst/brystvegg, regionale lymfeknuter og parasternale glandler', 'imn', parent = breast, next_category = 'side')
 
-
 # Breast tangential: Side:
 breast_right_tang = P.Property('Høyre','right', parent = breast_tangential, next_category = '', default = True)
 breast_left_tang = P.Property('Venstre','left', parent = breast_tangential, next_category = '')
 
-
+# Breast/partial: Side:
 breast_right_part = P.Property('Høyre','right', parent = breast_partial, default = True)
 breast_left_part = P.Property('Venstre','left', parent = breast_partial)
-
 
 # Breast youth boost:
 for side in [breast_right_tang, breast_left_tang]:
   breast_with_boost_tang = P.Property('Med ungdomsboost','with', parent = side)
   breast_without_boost_tang = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
-
 
 # Breast regional:
 for b in [breast_locoregional, breast_imn]:
@@ -102,6 +94,7 @@ prostate_hypo_55 = P.Property('Hypofraksjonering, med gull (55 Gy)', 'hypo_55', 
 prostate_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_normal, next_category ='')
 prostate_palliative = P.Property('Palliativ fraksjonering, uten gull', 'palliative', parent = prostate_normal, next_category ='')
 
+# Prostate/bed: Fractionation:
 prostate_bed_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_bed, next_category ='', default = True)
 prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_bed, next_category ='')
 

@@ -32,53 +32,44 @@ class DefBrain(object):
       ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.gtv, margins = MARGINS.uniform_20mm_expansion)
       ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
       site.add_targets([ROIS.gtv, ctv, ptv])
-      # Common for all diagnoses of partial brain:
       # OARs:
       brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
       brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
-      site.add_oars([DEF.brain_partial_oars, brain_gtv, brain_ptv])
+      site.add_oars(DEF.brain_partial_oars +  [brain_gtv, brain_ptv])
     elif region == 'stereotactic':
       # Stereotactic brain:
-      site.add_oars(DEF.brain_stereotactic_oars)
       # Choice 2: Nr of targets.
-      nr_targets= choices[2]
-      # One target:
-      if nr_targets == 'one':
+      nr_targets = int(choices[2])
+      gtvs = []
+      ptvs = []
+      walls = []
+      # How many targets?
+      if nr_targets == 1:
+        # Single target:
         gtv = ROI.ROI('GTV', 'Gtv', ROIS.gtv.color)
-        ptv =  ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, gtv, margins = MARGINS.uniform_2mm_expansion)
-        wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 1, 0)
-        site.add_targets([wall_ptv])
-      # Multiple targets (2, 3 or 4):
-      elif nr_targets in ['two','three','four']:
-        gtv =  ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv1], sourcesB=[ROIS.gtv2])
-        ptv1 =  ROI.ROIExpanded(ROIS.ptv1.name, ROIS.ptv1.type, COLORS.ptv, ROIS.gtv1, margins = MARGINS.uniform_2mm_expansion)
-        ptv2 =  ROI.ROIExpanded(ROIS.ptv2.name, ROIS.ptv2.type, COLORS.ptv, ROIS.gtv2, margins = MARGINS.uniform_2mm_expansion)
-        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptv1], sourcesB=[ptv2])
-        wall_ptv1 = ROI.ROIWall(ROIS.z_ptv1_wall.name, ROIS.z_ptv1_wall.type, COLORS.wall, ptv1, 1, 0)
-        wall_ptv2 = ROI.ROIWall(ROIS.z_ptv2_wall.name, ROIS.z_ptv2_wall.type, COLORS.wall, ptv2, 1, 0)
-        site.add_targets([wall_ptv1, wall_ptv2])
-        site.add_targets([ROIS.gtv1, ROIS.gtv2, ptv1, ptv2])
-        # 3 or 4 targets:
-        if nr_targets in ['three','four']:
-          ptv3 =  ROI.ROIExpanded(ROIS.ptv3.name, ROIS.ptv3.type, COLORS.ptv, ROIS.gtv3, margins = MARGINS.uniform_2mm_expansion)
-          wall_ptv3 = ROI.ROIWall(ROIS.z_ptv3_wall.name, ROIS.z_ptv3_wall.type, COLORS.wall, ptv3, 1, 0)
-          ptv.sourcesB.extend([ptv3])
-          gtv.sourcesB.extend([ROIS.gtv3])
-          site.add_targets([ROIS.gtv3, ptv3])
-          site.add_targets([wall_ptv3])
-          # 4 targets:
-          if nr_targets in ['four']:
-            ptv4 =  ROI.ROIExpanded(ROIS.ptv4.name, ROIS.ptv4.type, COLORS.ptv, ROIS.gtv4, margins = MARGINS.uniform_2mm_expansion)
-            wall_ptv4 = ROI.ROIWall(ROIS.z_ptv4_wall.name, ROIS.z_ptv4_wall.type, COLORS.wall, ptv4, 1, 0)
-            ptv.sourcesB.extend([ptv4])
-            gtv.sourcesB.extend([ROIS.gtv4])
-            site.add_targets([ROIS.gtv4, ptv4])
-            site.add_targets([wall_ptv4])
-      # Common for stereotactic:
-      brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+        ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, gtv, margins = MARGINS.uniform_2mm_expansion)
+        gtvs.append(gtv)
+        ptvs.append(ptv)
+        walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+      else:
+        # Multiple targets (2, 3 or 4):
+        for i in range(0, nr_targets):
+          # Targets:
+          gtvs.append(ROI.ROI('GTV'+str(i+1), 'Gtv', ROIS.gtv.color))
+          ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, gtvs[-1], margins = MARGINS.uniform_2mm_expansion))
+          # OARs:
+          walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name+str(i+1), ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+        # Union target volumes:
+        gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[gtvs[0]], sourcesB=gtvs[1:])
+        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptvs[0]], sourcesB=ptvs[1:])
+        gtvs.append(gtv)
+        ptvs.append(ptv)
+      # Common for single or multiple SRT targets:
+      # Brain with targets excluded:
       brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [gtv], operator = 'Subtraction')
-      site.add_targets([gtv, ptv])
-      site.add_oars([brain_ptv, brain_gtv])
-
+      brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+      # Add to site:
+      site.add_targets(gtvs + ptvs)
+      site.add_oars(DEF.brain_stereotactic_oars + [brain_gtv, brain_ptv] + walls)
     # Create all targets and OARs in RayStation:
     site.create_rois()
