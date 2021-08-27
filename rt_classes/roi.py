@@ -36,6 +36,23 @@ class ROIAlgebra(object):
     # operatorA: 'Union', 'Intersection'
     # operatorB: 'Union', 'Intersection'
     def __init__(self, name, type, color, sourcesA=[], sourcesB=[], operator='Union', operatorA='Union', operatorB='Union', marginsA=MARGINS.zero, marginsB=MARGINS.zero, result_margins=MARGINS.zero):
+      # Verify input:
+      assert isinstance(name, str), "name is not a string: %r" % name
+      assert isinstance(type, str), "type is not a string: %r" % type
+      assert isinstance(color, str), "color is not a string: %r" % color
+      assert isinstance(sourcesA, list), "sourcesA is not a list: %r" % sourcesA
+      assert isinstance(sourcesB, list), "sourcesB is not a list: %r" % sourcesB
+      for sourceA in sourcesA:
+        assert sourceA.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceA is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceA
+      for sourceB in sourcesB:
+        assert sourceB.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceB is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceB
+      assert operator in ['Union', 'Intersection', 'Subtraction'], "operator is not a valid value (Union, Intersection, Subtraction): %r" % operator
+      assert operatorA in ['Union', 'Intersection'], "operatorA is not a valid value (Union, Intersection): %r" % operatorA
+      assert operatorB in ['Union', 'Intersection'], "operatorB is not a valid value (Union, Intersection): %r" % operatorB
+      assert marginsA.__class__.__name__ in ['Expansion', 'Contraction'], "marginsA is not a valid margin class (Expansion or Contraction): %r" % marginsA
+      assert marginsB.__class__.__name__ in ['Expansion', 'Contraction'], "marginsB is not a valid margin class (Expansion or Contraction): %r" % marginsB
+      assert result_margins.__class__.__name__ in ['Expansion', 'Contraction'], "result_margins is not a valid margin class (Expansion or Contraction): %r" % result_margins
+      # Assign parameters:
       self.name = name
       self.type = type
       self.color = color
