@@ -29,8 +29,8 @@ class DefBrain(object):
     elif region == 'part':
       # Partial Brain:
       # Targets:
-      ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.gtv, margins = MARGINS.uniform_20mm_expansion)
-      ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
+      ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA = [ROIS.gtv], sourcesB = [ROIS.brain], operator = 'Intersection', marginsA = MARGINS.uniform_20mm_expansion, marginsB = MARGINS.uniform_1mm_expansion)
+      ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, sourcesA = [ctv], sourcesB = [ROIS.body], operator = 'Intersection', marginsA = MARGINS.uniform_3mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       site.add_targets([ROIS.gtv, ctv, ptv])
       # OARs:
       brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
