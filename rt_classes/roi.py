@@ -100,6 +100,14 @@ class ROIAlgebra(object):
 # ROIWall class - used for derived ROIs which are walls around a single dependence.
 class ROIWall(object):
     def __init__(self, name, type, color, source, outward_dist, inward_dist):
+      # Verify input:
+      assert isinstance(name, str), "name is not a string: %r" % name
+      assert isinstance(type, str), "type is not a string: %r" % type
+      assert isinstance(color, str), "color is not a string: %r" % color
+      assert source.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "source is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % source
+      assert isinstance(outward_dist, (float, int)), "outward_dist is not a float or integer: %r" % outward_dist
+      assert isinstance(inward_dist, (float, int)), "inward_dist is not a float or integer: %r" % inward_dist
+      # Assign parameters:
       self.name = name
       self.type = type
       self.color = color
