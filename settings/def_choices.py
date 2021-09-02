@@ -42,9 +42,9 @@ stereo_lung_left = P.Property('Venstre','left', parent = lung_stereotactic, next
 
 # Lung SBRT: Nr of targets:
 for side in [stereo_lung_right, stereo_lung_left]:
-  lung_stereo_nr1 = P.Property('1','one', parent = side, default = True)
-  lung_stereo_nr2 = P.Property('2','two', parent = side)
-  lung_stereo_nr3 = P.Property('3','three', parent = side)
+  lung_stereo_nr1 = P.Property('1','1', parent = side, default = True)
+  lung_stereo_nr2 = P.Property('2','2', parent = side)
+  lung_stereo_nr3 = P.Property('3','3', parent = side)
 
 # Lung palliative:
 lung_with_4dct = P.Property('Med 4DCT', 'with', parent = lung_palliative, default = True)
