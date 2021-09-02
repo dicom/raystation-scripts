@@ -52,10 +52,10 @@ lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
 
 
 # Breast:
-breast_partial = P.Property('Del av bryst', 'part', parent = breast, next_category = '')
-breast_tangential = P.Property('Bryst/brystvegg', 'tang', parent = breast, next_category = '', default = True)
-breast_locoregional = P.Property('Bryst/brystvegg og regionale lymfeknuter', 'reg', parent = breast, next_category ='side')
-breast_imn = P.Property('Bryst/brystvegg, regionale lymfeknuter og parasternale glandler', 'imn', parent = breast, next_category = 'side')
+breast_partial = P.Property('Del av bryst', 'partial', parent = breast, next_category = '')
+breast_tangential = P.Property('Bryst/brystvegg', 'whole', parent = breast, next_category = '', default = True)
+breast_locoregional = P.Property('Bryst/brystvegg og regionale lymfeknuter', 'regional', parent = breast, next_category ='side')
+breast_imn = P.Property('Bryst/brystvegg, regionale lymfeknuter og parasternale glandler', 'regional_imn', parent = breast, next_category = 'side')
 
 # Breast tangential: Side:
 breast_right_tang = P.Property('Høyre','right', parent = breast_tangential, next_category = '', default = True)
@@ -75,13 +75,9 @@ for b in [breast_locoregional, breast_imn]:
   breast_right = P.Property('Høyre','right', parent = b, next_category = '', default = True)
   breast_left = P.Property('Venstre','left', parent = b, next_category = '')
   for side in [breast_right, breast_left]:
-    # Breast: Fractionation:
-    breast_hypo = P.Property('Hypofraksjonering', 'hypo', parent = side, next_category ='', default = True)
-    breast_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = side, next_category ='')
     # Breast youth boost:
-    for frac in [breast_hypo, breast_normo]:
-      breast_with_boost = P.Property('Med ungdomsboost','with', parent = frac)
-      breast_without_boost = P.Property('Uten ungdomsboost', 'without', parent = frac, default = True)
+    breast_with_boost = P.Property('Med ungdomsboost','with', parent = side)
+    breast_without_boost = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
 
 
 # Prostate:

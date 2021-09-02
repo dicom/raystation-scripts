@@ -17,99 +17,76 @@ class DefBreast(object):
     region = choices[1]
     # Choice 2: Side - Left or right?
     side = choices[2]
-
-    if region == 'part':
-      site.add_oars(DEF.breast_part_oars)
+    # Region:
+    if region == 'partial':
+      # Partial breast only:
       if side == 'right':
-        site.add_oars([ROIS.breast_r_draft])
-        breast_r = ROI.ROIAlgebra(ROIS.breast_r.name, ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-        ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [breast_r], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-        ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_oars([breast_r, ctv_sb, ptv_sbc])
+        # Right:
+        breast_draft = ROIS.breast_r_draft
+        breast = ROI.ROIAlgebra(ROIS.breast_r.name, ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       else:
-        site.add_oars([ROIS.breast_l_draft])
-        breast_l = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-        ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [breast_l], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-        ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_oars([breast_l, ctv_sb, ptv_sbc])
-    elif region == 'tang':
-      # Breast with tangential fields
-      site.add_oars(DEF.breast_tang_oars)
-      if side == 'right':
-        site.add_oars([ROIS.breast_r_draft])
-        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      else:
-        site.add_oars([ROIS.breast_l_draft])
-        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-      site.add_targets([ctv, ptv])
-      # Choice 2: With our without boost?
+        # Left:
+        breast_draft = ROIS.breast_l_draft
+        breast = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+      # Targets:
+      ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+      ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+      site.add_targets([ctv_sb, ptv_sbc])
+      # OARs:
+      site.add_oars(DEF.breast_part_oars + [breast_draft, breast])
+    else:
+      # Whole breast (with or without regional nodes):
+      # Choice 3: With our without boost?
       boost = choices[3]
-    elif region in ['reg','imn']:
-      # Breast where regional lymph nodes or IMN is included
-      # Choice 3: Hypofractionation or not
-      frac = choices[3]
-      # Choice 4: With our without boost?
-      boost = choices[4]
-      site.add_oars(DEF.breast_reg_oars)
-      # Side dependent OARs and support structures for regional treatment:
-      if side == 'right':
-        site.add_oars([ROIS.humeral_r, ROIS.scalene_muscle_r, ROIS.artery1_r, ROIS.artery2_r, ROIS.artery3_r, ROIS.vein1_r, ROIS.vein2_r, ROIS.vein3_r, ROIS.liver])
-      else:
-        site.add_oars([ROIS.humeral_l, ROIS.scalene_muscle_l, ROIS.artery1_l, ROIS.artery2_l, ROIS.vein1_l, ROIS.vein2_l, ROIS.vein3_l])
-      # Hypofractionated
-      if frac == 'hypo':
+      if region == 'whole':
+        # Whole breast:
         if side == 'right':
+          breast_draft = ROIS.breast_r_draft
+        else:
+          breast_draft = ROIS.breast_l_draft
+        # Targets:
+        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+        ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        site.add_targets([ctv, ptv])
+        # OARs:
+        site.add_oars(DEF.breast_whole_oars + [breast_draft])
+      elif region in ['regional','regional_imn']:
+        # Regional breast (with or without IMN):
+        # Side dependent OARs and support structures for regional treatment:
+        if side == 'right':
+          # Targets:
           ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
           ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+          if region == 'regional_imn':
+            imn = ROIS.imn_r
+          # Others:
           site.add_oars([ROIS.breast_r_draft, ROIS.breast_l, ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r])
-        else: # (left)
+          # OARs:
+          site.add_oars(DEF.breast_reg_oars + [ROIS.humeral_r, ROIS.scalene_muscle_r, ROIS.artery1_r, ROIS.artery2_r, ROIS.artery3_r, ROIS.vein1_r, ROIS.vein2_r, ROIS.vein3_r, ROIS.liver])
+        else:
+          # Targets:
           ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
           ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+          if region == 'regional_imn':
+            imn = ROIS.imn_l
+          # Others:
           site.add_oars([ROIS.breast_l_draft, ROIS.breast_r, ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l])
-        # Common for left and right:
+          # OARs:
+          site.add_oars(DEF.breast_reg_oars + [ROIS.humeral_l, ROIS.scalene_muscle_l, ROIS.artery1_l, ROIS.artery2_l, ROIS.vein1_l, ROIS.vein2_l, ROIS.vein3_l])
+        # Common targets for left and right:
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ctv_n], sourcesB = [ctv_p], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv_p = ROI.ROIAlgebra(ROIS.ptv_pc.name, ROIS.ptv_pc.type, ROIS.ptv.color, sourcesA = [ctv_p], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
         ptv_n = ROI.ROIAlgebra(ROIS.ptv_nc.name, ROIS.ptv_nc.type, ROIS.ptv.color, sourcesA = [ctv_n], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
         ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ptv_n], sourcesB = [ptv_p], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      else:
-        if side == 'right':
-          ctv = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-          ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_50.type, ROIS.ctv.color, sourcesA = [ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r], sourcesB = [ctv], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_expansion)
-          site.add_oars([ROIS.breast_r_draft, ROIS.breast_l, ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r])
-        else: # (left)
-          ctv = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-          ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, ROIS.ctv.color, sourcesA = [ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l], sourcesB = [ctv], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_expansion)
-          site.add_oars([ROIS.breast_l_draft, ROIS.breast_r, ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l])
-        # Common for left and right:
-        ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, ROIS.ctv.color, sourcesA = [ctv_47], sourcesB = [ctv], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-        ptv_50c = ROI.ROIAlgebra(ROIS.ptv_50c.name, ROIS.ptv_50.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, ROIS.ptv.color, sourcesA = [ctv_47], sourcesB = [ptv_50c], operator = 'Subtraction', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
-        ptv_47c = ROI.ROIAlgebra(ROIS.ptv_47c.name, ROIS.ptv_47.type, ROIS.ptv.color, sourcesA = [ptv_47], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ptv_47c], sourcesB = [ptv_50c], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-        # Only if IMN is included in target volume:
-      if region == 'imn':
-        if side == 'right':
-          imn = ROIS.imn_r
-        else:
-          imn = ROIS.imn_l
-        site.add_oars([imn])
-        if frac == 'hypo':
+        # IMN:
+        if region == 'regional_imn':
+          site.add_oars([imn])
           ctv_n.sourcesA.extend([imn])
-        else:
-          ctv_47.sourcesA.extend([imn])
-      # Common for all regional:
-      if frac == 'hypo':
+        # Common targets for all regional:
         site.add_targets([ctv_p, ctv_n, ctv, ptv_p, ptv_n, ptv])
-      else:
-        site.add_targets([ctv, ctv_47, ctv_47_50, ptv_50c, ptv_47, ptv_47c, ptv])
-    # Add volumes for boost (2Gy x 8) if selected:
-    if not region == 'part':
+      # Add targets for boost (2 Gy x 8) if selected:
       if boost == 'with':
-        if side == 'right':
-          ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
-        else:
-          ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+        ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
         ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
         site.add_targets([ROIS.surgical_bed, ctv_sb, ptv_sbc])
     # Create all targets and OARs in RayStation:
