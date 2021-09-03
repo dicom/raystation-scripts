@@ -234,14 +234,13 @@ def brain_oars(prescription, region_code):
 def breast_oars(ss, region_code):
   # Common for all breast variants:
   breast_oars = [
-    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
     CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5)
   ]
   if region_code in RC.breast_reg_codes:
     # Common for regional left & right:
     breast_oars += [
       CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
-      CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
