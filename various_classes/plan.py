@@ -185,7 +185,7 @@ class Plan(object):
 
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
-    if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
+    if SSF.breast_boost_is_indicated(ss, region_code):
       PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(prescription.total_dose)))
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
@@ -217,7 +217,7 @@ class Plan(object):
       else:
         BSF.set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan.PlanOptimizations[0], target.replace("C", "P")+"c")
         # Configures the 2 Gy x 8 boost for breast patients, if indicated:
-        if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and SSF.has_roi_with_shape(ss, ROIS.ptv_c.name):
+        if SSF.breast_boost_is_indicated(ss, region_code):
           BSF.set_up_beams_and_optimization_for_tangential_breast(plan, plan.BeamSets[1], plan.PlanOptimizations[1], ROIS.ptv_sbc.name)
 
 

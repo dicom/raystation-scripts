@@ -45,6 +45,16 @@ def body_roi_name(ss):
     return None
 
 
+# Returns True if the structure set and region code indicates that a breast boost is to be given.
+# The determination is based on target volumes present as well as the region code.
+# Returns False if not.
+def breast_boost_is_indicated(ss, region_code):
+  if has_roi_with_shape(ss, ROIS.ctv_sb.name) and has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
+    return True
+  else:
+    return False
+
+
 # Creates a derived ROI using ROI Algebra, where the derived ROI is expanded from the source roi with a margin
 # such that the resulting ROI gets a volume approximately equal to the given threshold_volume. The ROI is also
 # limited by the given intersect_roi (typically an external ROI) by an intersect operation.
