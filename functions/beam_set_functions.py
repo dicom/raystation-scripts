@@ -264,17 +264,17 @@ def set_MU(beam_set, names, mu):
     beam_set.Beams[names[i]].BeamMU = mu[i]
 
 
-def set_up_treat_and_protect_for_stereotactic_lung(beam_set, protect_roi, margin):
-    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
+def set_up_treat_and_protect_for_stereotactic_lung(beam_set, treat_and_protect_roi, margin):
+    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
     for beam in beam_set.Beams:
-        beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = protect_roi)
+        beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = treat_and_protect_roi)
 
 
-def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_optimization, protect_roi):
+def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_optimization, treat_and_protect_roi):
 	beam_set.SetTreatmentTechnique(Technique = 'Conformal')
-	beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
+	beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
 	for beam in beam_set.Beams:
-		beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = protect_roi)
+		beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
 	beam_set.TreatAndProtect(ShowProgress=True)
 	beam_set.CopyBeamsFromBeamSet(BeamSetToCopyFrom = beam_set)
 	beam_set.SetTreatmentTechnique(Technique = 'SMLC')
@@ -294,7 +294,7 @@ def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_opt
 	tss.SegmentConversion.MinSegmentMUPerFraction = 4
 
 
-def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_roi, region_code):
+def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, treat_and_protect_roi, region_code):
 	if region_code in [242,244]:
 		beam_set.CopyBeam(BeamName = 'RPO')
 		if beam_set.FractionationPattern.NumberOfFractions == 15:
@@ -308,9 +308,9 @@ def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, protect_ro
 		elif beam_set.FractionationPattern.NumberOfFractions == 25:
 			set_MU(beam_set,['LPO 1'], [50] )
 	if beam_set.FractionationPattern.NumberOfFractions == 15:
-		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = protect_roi)
+		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
 		for beam in beam_set.Beams:
-			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = protect_roi)
+			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
 		beam_set.TreatAndProtect(ShowProgress=True)
 	elif beam_set.FractionationPattern.NumberOfFractions == 25:
 		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = ROIS.ptv_50c.name)
