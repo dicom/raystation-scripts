@@ -116,15 +116,16 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
     Modality='Photons',
     TreatmentTechnique='Conformal',
     PatientPosition='HeadFirstSupine',
-    NumberOfFractions=8
+    NumberOfFractions=prescription.nr_fractions
   )
   BSF.add_prescription(beam_set, prescription, roi_name)
   if region_code in RC.breast_l_codes:
     BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2, beam_index=next_beam_number) 
+    BSF.set_MU(beam_set,['LPO','LAO','RAO'], [65, 10, 65] )
   elif region_code in RC.breast_r_codes:
     BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2, beam_index=next_beam_number)
-  total_dose = 16
-  OBJ.create_breast_boost_objectives(ss, plan, total_dose)
+    BSF.set_MU(beam_set,['RPO','RAO','LAO'], [65, 10, 65] )
+  OBJ.create_breast_boost_objectives(ss, plan, prescription.total_dose)
 
 
 # Determines the first available beam number for this plan (which is the highest existing beam number + 1).
