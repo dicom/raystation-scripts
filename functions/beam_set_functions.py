@@ -265,135 +265,135 @@ def set_MU(beam_set, names, mu):
 
 
 def set_up_treat_and_protect_for_stereotactic_lung(beam_set, treat_and_protect_roi, margin):
-    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
-    for beam in beam_set.Beams:
-        beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = treat_and_protect_roi)
+  beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
+  for beam in beam_set.Beams:
+    beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = treat_and_protect_roi)
 
 
 def set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan_optimization, treat_and_protect_roi):
-	beam_set.SetTreatmentTechnique(Technique = 'Conformal')
-	beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
-	for beam in beam_set.Beams:
-		beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
-	beam_set.TreatAndProtect(ShowProgress=True)
-	beam_set.CopyBeamsFromBeamSet(BeamSetToCopyFrom = beam_set)
-	beam_set.SetTreatmentTechnique(Technique = 'SMLC')
-	po = plan_optimization
-	tss = po.OptimizationParameters.TreatmentSetupSettings[0]
-	tss.SegmentConversion.UseConformalSequencing = False
-	for bs in tss.BeamSettings:
-		if bs.ForBeam.Name in ['RPO','LPO','LAO','RAO']:
-			bs.EditBeamOptimizationSettings(OptimizationTypes=["None"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
-	po.ResetOptimization()
-	po.AutoScaleToPrescription = False
-	tss.SegmentConversion.UseConformalSequencing = False
-	opt_param = po.OptimizationParameters.DoseCalculation.IterationsInPreparationsPhase = 7
-	po.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
-	tss.SegmentConversion.MaxNumberOfSegments = 10
-	tss.SegmentConversion.MinSegmentArea = 4
-	tss.SegmentConversion.MinSegmentMUPerFraction = 4
+  beam_set.SetTreatmentTechnique(Technique = 'Conformal')
+  beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
+  for beam in beam_set.Beams:
+    beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
+  beam_set.TreatAndProtect(ShowProgress=True)
+  beam_set.CopyBeamsFromBeamSet(BeamSetToCopyFrom = beam_set)
+  beam_set.SetTreatmentTechnique(Technique = 'SMLC')
+  po = plan_optimization
+  tss = po.OptimizationParameters.TreatmentSetupSettings[0]
+  tss.SegmentConversion.UseConformalSequencing = False
+  for bs in tss.BeamSettings:
+    if bs.ForBeam.Name in ['RPO','LPO','LAO','RAO']:
+      bs.EditBeamOptimizationSettings(OptimizationTypes=["None"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
+  po.ResetOptimization()
+  po.AutoScaleToPrescription = False
+  tss.SegmentConversion.UseConformalSequencing = False
+  opt_param = po.OptimizationParameters.DoseCalculation.IterationsInPreparationsPhase = 7
+  po.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
+  tss.SegmentConversion.MaxNumberOfSegments = 10
+  tss.SegmentConversion.MinSegmentArea = 4
+  tss.SegmentConversion.MinSegmentMUPerFraction = 4
 
 
 def set_up_beams_and_optimization_for_regional_breast(plan, beam_set, treat_and_protect_roi, region_code):
-	if region_code in [242,244]:
-		beam_set.CopyBeam(BeamName = 'RPO')
-		if beam_set.FractionationPattern.NumberOfFractions == 15:
-			set_MU(beam_set,['RPO 1'], [60] )
-		elif beam_set.FractionationPattern.NumberOfFractions == 25:
-			set_MU(beam_set,['RPO 1'], [50] )
-	elif region_code in [241, 243]:
-		beam_set.CopyBeam(BeamName = 'LPO')
-		if beam_set.FractionationPattern.NumberOfFractions == 15:
-			set_MU(beam_set,['LPO 1'], [60] )
-		elif beam_set.FractionationPattern.NumberOfFractions == 25:
-			set_MU(beam_set,['LPO 1'], [50] )
-	if beam_set.FractionationPattern.NumberOfFractions == 15:
-		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
-		for beam in beam_set.Beams:
-			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
-		beam_set.TreatAndProtect(ShowProgress=True)
-	elif beam_set.FractionationPattern.NumberOfFractions == 25:
-		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = ROIS.ptv_50c.name)
-		beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = ROIS.ptv_47c.name)
-		for beam in beam_set.Beams:
-			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_50c.name)
-			beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_47c.name)
-		beam_set.TreatAndProtect(ShowProgress=True)
-	for beam in beam_set.Beams:
-		segments = beam.Segments[0]
-		jaw = segments.JawPositions
-		if beam.Name in ['RPO 1','LAO','LPO 1','RAO']: 
-			jaw[3] = 0
-		elif beam.Name in ['Høyre','Forfra','Venstre']:
-			jaw[2] = 0
-		segments.JawPositions = jaw
-	if region_code in [242,244]:
-		beam_set.CopyBeam(BeamName = 'RPO 1')
-		beam_set.CopyBeam(BeamName = 'Høyre')
-		beam_set.CopyBeam(BeamName = 'Forfra')
-		beam_set.CopyBeam(BeamName = 'LAO')
-	elif region_code in [241, 243]:
-		beam_set.CopyBeam(BeamName = 'LPO 1')
-		beam_set.CopyBeam(BeamName = 'Venstre')
-		beam_set.CopyBeam(BeamName = 'Forfra')
-		beam_set.CopyBeam(BeamName = 'RAO')
-	beam_set.SetTreatmentTechnique(Technique = 'SMLC')
-	po = plan.PlanOptimizations[0]
-	tss = po.OptimizationParameters.TreatmentSetupSettings[0]
-	for bs in tss.BeamSettings:
-		if bs.ForBeam.Name in ['RPO','LPO','LAO','RAO','Høyre','Venstre','Forfra','RPO 1','LPO 1']:
-			bs.EditBeamOptimizationSettings(OptimizationTypes=["None"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
-		elif bs.ForBeam.Name in ['RPO 2','LPO 2']:
-			bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
-		elif bs.ForBeam.Name in ['Høyre 1','Venstre 1','Forfra 1']:
-			bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Use limits as max", TopJaw = 0)
-		elif bs.ForBeam.Name in ['LAO 1','RAO 1']:
-			bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Use limits as max", BottomJaw = 0)
-	po.ResetOptimization()
-	po.AutoScaleToPrescription = False
-	tss.SegmentConversion.UseConformalSequencing = False
-	opt_param = po.OptimizationParameters.DoseCalculation.IterationsInPreparationsPhase = 7
-	po.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
-	tss.SegmentConversion.MaxNumberOfSegments = 15
-	tss.SegmentConversion.MinSegmentArea = 4
-	tss.SegmentConversion.MinSegmentMUPerFraction = 4
+  if region_code in [242,244]:
+    beam_set.CopyBeam(BeamName = 'RPO')
+    if beam_set.FractionationPattern.NumberOfFractions == 15:
+      set_MU(beam_set,['RPO 1'], [60] )
+    elif beam_set.FractionationPattern.NumberOfFractions == 25:
+      set_MU(beam_set,['RPO 1'], [50] )
+  elif region_code in [241, 243]:
+    beam_set.CopyBeam(BeamName = 'LPO')
+    if beam_set.FractionationPattern.NumberOfFractions == 15:
+      set_MU(beam_set,['LPO 1'], [60] )
+    elif beam_set.FractionationPattern.NumberOfFractions == 25:
+      set_MU(beam_set,['LPO 1'], [50] )
+  if beam_set.FractionationPattern.NumberOfFractions == 15:
+    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
+    for beam in beam_set.Beams:
+      beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = treat_and_protect_roi)
+    beam_set.TreatAndProtect(ShowProgress=True)
+  elif beam_set.FractionationPattern.NumberOfFractions == 25:
+    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = ROIS.ptv_50c.name)
+    beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = ROIS.ptv_47c.name)
+    for beam in beam_set.Beams:
+      beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_50c.name)
+      beam.SetTreatAndProtectMarginsForBeam(TopMargin = 0.5, BottomMargin = 0.5, LeftMargin = 0.5, RightMargin = 0.5, Roi = ROIS.ptv_47c.name)
+    beam_set.TreatAndProtect(ShowProgress=True)
+  for beam in beam_set.Beams:
+    segments = beam.Segments[0]
+    jaw = segments.JawPositions
+    if beam.Name in ['RPO 1','LAO','LPO 1','RAO']: 
+      jaw[3] = 0
+    elif beam.Name in ['Høyre','Forfra','Venstre']:
+      jaw[2] = 0
+    segments.JawPositions = jaw
+  if region_code in [242,244]:
+    beam_set.CopyBeam(BeamName = 'RPO 1')
+    beam_set.CopyBeam(BeamName = 'Høyre')
+    beam_set.CopyBeam(BeamName = 'Forfra')
+    beam_set.CopyBeam(BeamName = 'LAO')
+  elif region_code in [241, 243]:
+    beam_set.CopyBeam(BeamName = 'LPO 1')
+    beam_set.CopyBeam(BeamName = 'Venstre')
+    beam_set.CopyBeam(BeamName = 'Forfra')
+    beam_set.CopyBeam(BeamName = 'RAO')
+  beam_set.SetTreatmentTechnique(Technique = 'SMLC')
+  po = plan.PlanOptimizations[0]
+  tss = po.OptimizationParameters.TreatmentSetupSettings[0]
+  for bs in tss.BeamSettings:
+    if bs.ForBeam.Name in ['RPO','LPO','LAO','RAO','Høyre','Venstre','Forfra','RPO 1','LPO 1']:
+      bs.EditBeamOptimizationSettings(OptimizationTypes=["None"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
+    elif bs.ForBeam.Name in ['RPO 2','LPO 2']:
+      bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Automatic")
+    elif bs.ForBeam.Name in ['Høyre 1','Venstre 1','Forfra 1']:
+      bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Use limits as max", TopJaw = 0)
+    elif bs.ForBeam.Name in ['LAO 1','RAO 1']:
+      bs.EditBeamOptimizationSettings(OptimizationTypes=["SegmentOpt","SegmentMU"], SelectCollimatorAngle=False, AllowBeamSplit=False, JawMotion="Use limits as max", BottomJaw = 0)
+  po.ResetOptimization()
+  po.AutoScaleToPrescription = False
+  tss.SegmentConversion.UseConformalSequencing = False
+  opt_param = po.OptimizationParameters.DoseCalculation.IterationsInPreparationsPhase = 7
+  po.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
+  tss.SegmentConversion.MaxNumberOfSegments = 15
+  tss.SegmentConversion.MinSegmentArea = 4
+  tss.SegmentConversion.MinSegmentMUPerFraction = 4
 
 
 def close_leaves_behind_jaw_for_regional_breast(beam_set):
-	for beam in beam_set.Beams:
-		if beam.Name in ['Høyre','Venstre','LPO 1','RAO','Forfra','RPO 1','LAO']:
-			segments = beam.Segments[0]
-			leaf_positions = segments.LeafPositions
-			jaw = segments.JawPositions
-			y1 = jaw[2]
-			y2 = jaw[3]
-			first_x1 = leaf_positions[0][1]
-			last_x1 = leaf_positions[0][79]
-			first_x2 = leaf_positions[1][1]
-			last_x2 = leaf_positions[1][79]
-			# Get the last corresponding MLC that is in the field:
-			mlcY1 = math.floor((y1 + 20) * 2) + 1.0
-			mlcY2 = math.ceil ((y2 + 20) * 2)
-			# (Don't forget that MLC number 50 has the index leafPositions[0][49])
-			for i in range(0, int(mlcY1 -2)):
-				leaf_positions[0][i] = first_x1
-				leaf_positions[1][i] = first_x2
-			for j in range(int(mlcY2 +1), 80):
-				leaf_positions[0][j] = last_x1
-				leaf_positions[1][j] = last_x2
-			if beam.Name in ['LAO','LPO 1']:
-				if abs(leaf_positions[1][int(mlcY2)-1]-leaf_positions[1][int(mlcY2)-2]) > 1:
-					leaf_positions[1][int(mlcY2)-1] = leaf_positions[1][int(mlcY2)-2]
-					leaf_positions[1][int(mlcY2)] = leaf_positions[1][int(mlcY2)-2]
-				elif abs(leaf_positions[1][int(mlcY2)-1]-leaf_positions[1][int(mlcY2)])>1:
-					leaf_positions[1][int(mlcY2)] = leaf_positions[1][int(mlcY2)-1]
-			elif beam.Name in ['RPO 1','RAO']:
-				if abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)-2]) > 1:
-					leaf_positions[0][int(mlcY2)-1] = leaf_positions[0][int(mlcY2)-2]
-					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-2]
-				elif abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)])>1:
-					leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-1]
-			segments.LeafPositions = leaf_positions
+  for beam in beam_set.Beams:
+    if beam.Name in ['Høyre','Venstre','LPO 1','RAO','Forfra','RPO 1','LAO']:
+      segments = beam.Segments[0]
+      leaf_positions = segments.LeafPositions
+      jaw = segments.JawPositions
+      y1 = jaw[2]
+      y2 = jaw[3]
+      first_x1 = leaf_positions[0][1]
+      last_x1 = leaf_positions[0][79]
+      first_x2 = leaf_positions[1][1]
+      last_x2 = leaf_positions[1][79]
+      # Get the last corresponding MLC that is in the field:
+      mlcY1 = math.floor((y1 + 20) * 2) + 1.0
+      mlcY2 = math.ceil ((y2 + 20) * 2)
+      # (Don't forget that MLC number 50 has the index leafPositions[0][49])
+      for i in range(0, int(mlcY1 -2)):
+        leaf_positions[0][i] = first_x1
+        leaf_positions[1][i] = first_x2
+      for j in range(int(mlcY2 +1), 80):
+        leaf_positions[0][j] = last_x1
+        leaf_positions[1][j] = last_x2
+      if beam.Name in ['LAO','LPO 1']:
+        if abs(leaf_positions[1][int(mlcY2)-1]-leaf_positions[1][int(mlcY2)-2]) > 1:
+          leaf_positions[1][int(mlcY2)-1] = leaf_positions[1][int(mlcY2)-2]
+          leaf_positions[1][int(mlcY2)] = leaf_positions[1][int(mlcY2)-2]
+        elif abs(leaf_positions[1][int(mlcY2)-1]-leaf_positions[1][int(mlcY2)])>1:
+          leaf_positions[1][int(mlcY2)] = leaf_positions[1][int(mlcY2)-1]
+      elif beam.Name in ['RPO 1','RAO']:
+        if abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)-2]) > 1:
+          leaf_positions[0][int(mlcY2)-1] = leaf_positions[0][int(mlcY2)-2]
+          leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-2]
+        elif abs(leaf_positions[0][int(mlcY2)-1]-leaf_positions[0][int(mlcY2)])>1:
+          leaf_positions[0][int(mlcY2)] = leaf_positions[0][int(mlcY2)-1]
+      segments.LeafPositions = leaf_positions
 
 
 # Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).
