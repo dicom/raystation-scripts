@@ -91,7 +91,6 @@ class DefSite(object):
         PMF.delete_matching_roi_except_manually_contoured(self.pm, self.ss, roi)
     group = self.grouped_rois()
     # Create ROIs (in reverse sorted order):
-    #for key in reversed(sorted(group.iterkeys())):
     for key in reversed(sorted(iter(group))):
       for roi in group[key]:
         # Only create ROI if it doesn't already exist:
