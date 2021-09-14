@@ -55,7 +55,7 @@ lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
 breast_partial = P.Property('Del av bryst', 'partial', parent = breast, next_category = '')
 breast_tangential = P.Property('Bryst/brystvegg', 'whole', parent = breast, next_category = '', default = True)
 breast_locoregional = P.Property('Bryst/brystvegg og regionale lymfeknuter', 'regional', parent = breast, next_category ='side')
-breast_imn = P.Property('Bryst/brystvegg, regionale lymfeknuter og parasternale glandler', 'regional_imn', parent = breast, next_category = 'side')
+breast_imn = P.Property('Bryst/brystvegg og regionale+parasternale lymfeknuter', 'regional_imn', parent = breast, next_category = 'side')
 
 # Breast tangential: Side:
 breast_right_tang = P.Property('Høyre','right', parent = breast_tangential, next_category = '', default = True)
@@ -103,11 +103,11 @@ for p in [prostate_normo, prostate_bed_normo]:
 
 # Rectum:
 rectum_hypo = P.Property('Hypofraksjonering', 'hypo', parent = rectum, next_category ='')
-rectum_normo = P.Property('Konvensjonell fraksjonering med SIB', 'normo', parent = rectum, next_category ='omfang', default = True)
+rectum_normo = P.Property('Konvensjonell fraksjonering (med SIB)', 'normo', parent = rectum, next_category ='omfang', default = True)
 
 # Rectum normo: Nodes:
-rectum_with_nodes = P.Property('Med patologisk forstørrede lymfeglandler i lyskene', 'with', parent = rectum_normo)
-rectum_without_nodes = P.Property('Uten patologisk forstørrede lymfeglandler i lyskene', 'without', parent = rectum_normo, default = True)
+rectum_with_nodes = P.Property('Med patologisk forstørrede lymfeknuter i lyskene', 'with', parent = rectum_normo)
+rectum_without_nodes = P.Property('Uten patologisk forstørrede lymfeknuter i lyskene', 'without', parent = rectum_normo, default = True)
 
 
 # Other (palliative): SBRT:
