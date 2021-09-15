@@ -28,17 +28,20 @@ class DefRectum(object):
         site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
       # Common for groin included or not:
       ctv_50 = ROI.ROIExpanded(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
-      ptv_50 = ROI.ROIExpanded(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, source = ctv_50, margins = MARGINS.rectum_ptv_50_expansion)
-      ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero )
+      ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+      ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if groin == 'with':
         # Specific for groin targets included:
         ctv_47.sourcesA.extend([ROIS.ctv_groin_l, ROIS.ctv_groin_r])
-        ptv_47_tot = ROI.ROIAlgebra(ROIS.ptv_47_tot.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.ctv_groin_l, ROIS.ctv_groin_r], operator = 'Union', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_expansion )
-        ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_47_tot], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero )
-        site.add_targets([ptv_47_tot])
+        ptv_groin_l = ROI.ROIAlgebra(ROIS.ptv_groin_l.name, ROIS.ptv_groin_l.type, COLORS.ptv, sourcesA=[ROIS.ctv_groin_l], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        ptv_groin_r = ROI.ROIAlgebra(ROIS.ptv_groin_r.name, ROIS.ptv_groin_r.type, COLORS.ptv, sourcesA=[ROIS.ctv_groin_r], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        ptv_e = ROI.ROIAlgebra(ROIS.ptv_e.name, ROIS.ptv_e.type, COLORS.ptv, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        ptv_47_tot = ROI.ROIAlgebra(ROIS.ptv_47_tot.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_e], sourcesB=[ptv_groin_l, ptv_groin_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_47_tot], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        site.add_targets([ptv_groin_l, ptv_groin_r, ptv_e, ptv_47_tot])
       else:
         # Specific for groin targets excluded:
-        ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ctv_47], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.zero )
+        ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ctv_47], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.zero)
       # Targets:
       ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, COLORS.ctv_alt, sourcesA = [ctv_47], sourcesB = [ctv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv_47_50 = ROI.ROIAlgebra(ROIS.ptv_47_50.name, ROIS.ptv_47_50.type, COLORS.ptv_low, sourcesA = [ptv_47], sourcesB = [ptv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
@@ -52,7 +55,7 @@ class DefRectum(object):
     else:
       # Hypofractionated treatment (5 Gy x 5):
       # Targets:
-      ctv_p = ROI.ROIExpanded(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, source = ROIS.gtv_p, margins = MARGINS.uniform_10mm_expansion )
+      ctv_p = ROI.ROIExpanded(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, source = ROIS.gtv_p, margins = MARGINS.uniform_10mm_expansion)
       ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ctv_p])
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ctv_p], sourcesB=[ROIS.ctv_e], marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.rectum_ctv_primary_risk_expansion)
       site.add_targets([ROIS.gtv_p, ctv_p, ROIS.ctv_e, ctv, ptv])
