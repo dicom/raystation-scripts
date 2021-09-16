@@ -1,8 +1,7 @@
 # encoding: utf8
 
 # Peforms quality control of the current patient, case and treatment plan (including its beam sets).
-#
-# Verified for RayStation 6.0.
+
 
 # System configuration:
 from connect import *
