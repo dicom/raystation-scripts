@@ -14,9 +14,13 @@ other = P.Property('Palliativ (skjelett og øvrig bløtvev)', 'other', next_cate
 
 
 # Brain: Scope:
-brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, default = True)
+brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, next_category ='involvering av hjernehinne', default = True)
 brain_partial = P.Property('Del av hjerne', 'part', parent=brain)
 brain_stereotactic = P.Property('Stereotaksi','stereotactic', parent = brain, next_category ='antall målvolum')
+
+# Brain: Whole
+brain_whole_default = P.Property('Standard total hjerne','no', parent = brain_whole, default = True)
+brain_whole_with_margin = P.Property('Metastase i hjernehinne (ekstra margin)','yes', parent = brain_whole)
 
 # Brain: Stereotactic
 brain_stereo_nr1 = P.Property('1','1', parent = brain_stereotactic, default = True)

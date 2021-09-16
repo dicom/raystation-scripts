@@ -20,8 +20,14 @@ class DefBrain(object):
     # Region:
     if region== 'whole':
       # Whole brain:
+      # Choice 2: Involvement of menignes.
+      meninges = choices[2]
+      if meninges == 'yes':
+        brain_margin = MARGINS.uniform_1mm_expansion
+      else:
+        brain_margin = MARGINS.zero   
       # Targets:
-      ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.brain)
+      ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.brain, margins = brain_margin)
       ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
       site.add_targets([ctv, ptv])
       # OARs:
