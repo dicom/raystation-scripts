@@ -18,7 +18,7 @@ def brain(pm, examination, ss, plan, prescription, region_code):
   if region_code in RC.brain_whole_codes:
     site = SITE.Site(RC.brain_codes, OBJ.brain_whole_oar_objectives, OBJ.create_whole_brain_objectives(ss, plan, prescription.total_dose), CGS.brain_oars(prescription, region_code), CGS.brain_targets(ss, prescription))
   else:
-    site = SITE.Site(RC.brain_codes, OBJ.brain_oar_objectives, OBJ.create_brain_objectives(pm, examination, ss, plan, prescription.total_dose, prescription.nr_fractions), CGS.brain_oars(prescription, region_code), CGS.brain_targets(ss, prescription))
+    site = SITE.Site(RC.brain_codes, OBJ.brain_oar_objectives, OBJ.create_brain_objectives(pm, examination, ss, plan, prescription), CGS.brain_oars(prescription, region_code), CGS.brain_targets(ss, prescription))
   return site
 
 
