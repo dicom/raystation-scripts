@@ -6,20 +6,18 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
+# Made for RayStation version: 10B
 # Python 3.6
 
 # Import system libraries:
 from connect import *
 import clr, sys, os
-
 import math
 
 # Add necessary folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
-#sys.path.append("C:\\temp\\raystation-scripts\\mosaiqdb")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
@@ -49,4 +47,3 @@ mq_patient = mosaiq.Patient.find_by_ida(patient.PatientID)
     
 # Set up and execute the plan script:
 p = PLAN.Plan(patient, case, mq_patient)
-#p = PLAN.Plan(patient, case, mq_patient=None)

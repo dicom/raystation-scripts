@@ -6,7 +6,7 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
+# Made for RayStation version: 10B
 # Python 3.6
 
 # Import system libraries:
@@ -23,13 +23,8 @@ sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\various_classes")
-# Relative paths would be better, but unfortunately doesnt seem to work when imported into the RayStation database:
+# Relative paths would be better, but unfortunately doesnt seem to work when imported into the RayStation database, e.q.:
 #sys.path.append(os.path.join(sys.path[0],'def_regions'))
-#sys.path.append(os.path.join(sys.path[0],'functions'))
-#sys.path.append(os.path.join(sys.path[0],'gui_classes'))
-#sys.path.append(os.path.join(sys.path[0],'rt_classes'))
-#sys.path.append(os.path.join(sys.path[0],'settings'))
-
 
 
 # Import local files:

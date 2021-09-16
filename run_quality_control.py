@@ -6,7 +6,7 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
+# Made for RayStation version: 10B
 # Python 3.6
 
 # System configuration:
@@ -14,6 +14,7 @@ from connect import *
 import sys
 from tkinter import *
 from tkinter import messagebox
+
 # Add necessary folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
@@ -23,8 +24,6 @@ sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\various_classes")
-
-# GUI framework:
 
 
 # Local script imports:
@@ -52,7 +51,5 @@ qc = QC.QualityControl(patient, case, plan)
 title = "Plan Quality Control"
 summary = qc.result.failure_summary()
 text = str(qc.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
-#root = Tk()
-#root.withdraw()
 messagebox.showinfo(title,text)
 
