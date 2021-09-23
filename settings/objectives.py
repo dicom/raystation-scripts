@@ -17,6 +17,7 @@ import objective_functions as OF
 import region_codes as RC
 import structure_set_functions as SSF
 import tolerance_doses as TOL
+import prescription as PRES
 
 # OAR objectives:
 # Brain
@@ -136,7 +137,7 @@ def create_whole_brain_objectives(ss, plan, total_dose):
 
 # Partial brain (conventional or stereotactic)
 def create_brain_objectives(pm, examination, ss, plan, prescription):
-  assert type(prescription) is Prescription, "prescription is not a Prescription: %r" % prescription
+  assert type(prescription) is PRES.Prescription, "prescription is not a Prescription: %r" % prescription
   total_dose = prescription.total_dose
   nr_fractions = prescription.nr_fractions
   if prescription.is_stereotactic():
