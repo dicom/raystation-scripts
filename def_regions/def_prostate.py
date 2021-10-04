@@ -33,8 +33,8 @@ class DefProstate(object):
           # Prostate only:
           # Targets:
           ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70_sib.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-          ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-          ptv_70_77 = ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_10mm_expansion)
+          ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_8mm_expansion, marginsB = MARGINS.zero)
+          ptv_70_77 = ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
           site.add_targets([ptv_70_77])
           # OARs:
           bladder_ptv.sourcesB.extend([ptv_70])
@@ -46,7 +46,7 @@ class DefProstate(object):
           ctv_n = ROI.ROIExpanded(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.pelvic_nodes, source = ROIS.gtv_n, margins = MARGINS.uniform_5mm_expansion)
           ptv_n = ROI.ROIExpanded(ROIS.ptv_n.name, ROIS.ptv_n.type, ROIS.ptv_n.color, source = ctv_n, margins = MARGINS.prostate_lymph_nodes_seed_expansion)
           ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70_sib.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.vesicles, ctv_n], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-          ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+          ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_8mm_expansion, marginsB = MARGINS.zero)
           ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70_sib.type, ROIS.ptv_70_sib.color, sourcesA = [ptv_semves, ptv_n], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
           ptv_70_77 = ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ptv_70], sourcesB = [ptv_77], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
           ptv_56 = ROI.ROIAlgebra(ROIS.ptv_56.name, ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_77, ptv_70], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_expansion, marginsB = MARGINS.zero)
@@ -63,8 +63,8 @@ class DefProstate(object):
           # Elective nodes:
           # Targets:
           ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70_sib.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-          ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-          ptv_70_77 = ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_10mm_expansion)
+          ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70_sib.name, ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [ROIS.vesicles], sourcesB = [ptv_77], operator = 'Subtraction', marginsA = MARGINS.uniform_8mm_expansion, marginsB = MARGINS.zero)
+          ptv_70_77 = ROI.ROIAlgebra(ROIS.ptv_70_77.name, ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
           ptv_56 = ROI.ROIAlgebra(ROIS.ptv_56.name, ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_77, ptv_70], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_expansion, marginsB = MARGINS.zero)
           ctv_56 = ROI.ROIAlgebra(ROIS.ctv_56.name, ROIS.ctv_56.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_77, ptv_70], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
           ptv_56_70_77 = ROI.ROIAlgebra(ROIS.ptv_56_70_77.name, ROIS.ptv_56_70_77.type, COLORS.ptv_low, sourcesA = [ptv_56, ptv_70], sourcesB = [ptv_77], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
@@ -80,7 +80,7 @@ class DefProstate(object):
       elif frac == 'hypo_60':
         # Hypofractionated prostate with vesicles (3 Gy x 20):
         # Targets:
-        ptv_57_60 = ROI.ROIAlgebra(ROIS.ptv_57_60.name, ROIS.ptv_57_60.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_10mm_expansion)
+        ptv_57_60 = ROI.ROIAlgebra(ROIS.ptv_57_60.name, ROIS.ptv_57_60.type, COLORS.ptv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
         ptv_60 = ROI.ROIExpanded(ROIS.ptv_60.name, ROIS.ptv_60.type, COLORS.ptv_high, source = ROIS.prostate, margins = MARGINS.prostate_seed_expansion)
         ptv_57 = ROI.ROIAlgebra(ROIS.ptv_57.name, ROIS.ptv_57.type, COLORS.ptv_med, sourcesA = [ptv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ctv_57_60 = ROI.ROIAlgebra(ROIS.ctv_57_60.name, ROIS.ctv_57_60.type, COLORS.ctv_low, sourcesA = [ROIS.prostate], sourcesB = [ROIS.vesicles], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
