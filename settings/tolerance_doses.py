@@ -190,6 +190,24 @@ femoral_head_mean = EQD.Tolerance('FemoralHead_L/R', 'Femoral neck fracture (Gri
 femoral_d02pc = EQD.Tolerance('FemoralHead_L/R', 'Hip osteoarthritis (Rasmusson)', ab_femoral, 20, 40, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
 
 
+# Bladder:
+# FIXME: These tolerances will be replaced in an upcoming update!
+rectum_v50_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+rectum_v35_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 60, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+rectum_v25_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 65, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
+rectum_v15_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 75, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+
+
+# Rectum:
+# FIXME: This is a temporary (pragmatic) tolerance - will be replaced in an upcoming update!
+bladder_v2_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_at_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+
+
+# Palliation:
+# FIXME: These tolerances will be replaced in an upcoming update!
+bladder_v50_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 65, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+
+
 # SBRT:
 
 
