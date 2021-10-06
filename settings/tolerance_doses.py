@@ -9,7 +9,7 @@ ab_kidney = 2
 ab_kidneys = 2
 ab_lung = 3
 ab_heart = 3
-ab_bowelspace = 3
+ab_bowel = 3
 ab_spinalcord = 2
 ab_eye = 3
 ab_lens = 1
@@ -18,7 +18,7 @@ ab_thyroid = 3
 ab_brain = 2
 ab_esophagus = 3
 ab_lung = 3
-ab_bladder = 5
+ab_bladder = 6
 ab_rectum = 3
 ab_femoral = 3
 ab_brainstem = 2
@@ -159,30 +159,35 @@ esophagus_v15_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_eso
 thyroid_mean_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 11.8, 'Mean', 'Conventional RT')
 thyroid_v8_5cc_adx_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 20, 'More than 8.5 cm^3 should receive less than the tolerance dose', 'Conventional RT')
 
+
 # Prostate
-# 35 fractions:
-bladder_v50_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 65, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-bladder_v35_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 70, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-bladder_v25_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 75, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
-bladder_v15_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 80, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-rectum_v50_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-rectum_v35_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 60, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-rectum_v25_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 65, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
-rectum_v20_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 70, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
-rectum_v15_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 75, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-femoral_v2_adx = EQD.Tolerance('Femoral_Heads', 'Some failure', ab_femoral, fractions_femoral, 52, 'Volume receiving tolerance dose being less than 2%', 'Conventional RT')
-bladder_v2_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_at_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-bowelspace_v195_adx = EQD.Tolerance('BowelSpace', 'Some failure', ab_bowelspace, fractions_bowelspace, 45, 'Volume receiving tolerance dose being less than 195 cm3', 'Conventional RT')
-femoral_mean_adx = EQD.Tolerance('Femoral_Heads', 'Some failure', ab_femoral, fractions_femoral, 42, 'Mean dose being less than tolerance dose', 'Conventional RT')
-# 20 fractions:
-rectum_v40_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 40.8, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-rectum_v48_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-rectum_v52_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 52.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
-rectum_v57_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 57, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
-rectum_v60_adx_hypo = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum_hypo, 60, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-bladder_v60_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 60, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-bladder_v48_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 48.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-bladder_v40_adx_hypo = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_hypo, 40.8, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
+# Bowel bag:
+bowel_bag_v195cc = EQD.Tolerance('BowelBag', 'Acute GI toxicity (QUANTEC, Roeske)', ab_bowel, 21.5, 43, 'Volume receiving tolerance dose being less than 195 cm^3', 'Conventional RT')
+# Rectum (high risk):
+rectum_v22pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 36, 72, 'Volume receiving tolerance dose being less than 22 %', 'Conventional RT')
+rectum_v38pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 30, 60, 'Volume receiving tolerance dose being less than 38 %', 'Conventional RT')
+rectum_v51pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 25, 50, 'Volume receiving tolerance dose being less than 51 %', 'Conventional RT')
+rectum_v64pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 20, 40, 'Volume receiving tolerance dose being less than 64 %', 'Conventional RT')
+rectum_v80pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 13, 26, 'Volume receiving tolerance dose being less than 80 %', 'Conventional RT')
+# Rectum (low risk):
+rectum_v01pc = EQD.Tolerance('Rectum', 'Low risk of rectal toxicity (Olsson)', ab_rectum, 36, 72, 'Volume receiving tolerance dose being less than 1 %', 'Conventional RT')
+rectum_v18pc = EQD.Tolerance('Rectum', 'Low risk of rectal toxicity (Olsson)', ab_rectum, 30, 60, 'Volume receiving tolerance dose being less than 18 %', 'Conventional RT')
+rectum_v31pc = EQD.Tolerance('Rectum', 'Low risk of rectal toxicity (Olsson)', ab_rectum, 25, 50, 'Volume receiving tolerance dose being less than 31 %', 'Conventional RT')
+rectum_v44pc = EQD.Tolerance('Rectum', 'Low risk of rectal toxicity (Olsson)', ab_rectum, 20, 40, 'Volume receiving tolerance dose being less than 44 %', 'Conventional RT')
+rectum_v60pc = EQD.Tolerance('Rectum', 'Low risk of rectal toxicity (Olsson)', ab_rectum, 13, 26, 'Volume receiving tolerance dose being less than 60 %', 'Conventional RT')
+# Anal canal:
+anal_canal_mean = EQD.Tolerance('AnalCanal', 'Incontinence (Jadon)', ab_rectum, 20, 40, 'Mean', 'Conventional RT')
+# Bladder:
+bladder_v01pc = EQD.Tolerance('Bladder', 'Obstruction (Olsson)', ab_bladder, 40.5, 81, 'Volume receiving tolerance dose being less than 1 %', 'Conventional RT')
+bladder_v20pc = EQD.Tolerance('Bladder', 'Obstruction (Olsson)', ab_bladder, 33, 66, 'Volume receiving tolerance dose being less than 20 %', 'Conventional RT')
+bladder_v05pc = EQD.Tolerance('Bladder', 'Gross hematuria (Olsson)', ab_bladder, 37, 74, 'Volume receiving tolerance dose being less than 5 %', 'Conventional RT')
+bladder_v41pc = EQD.Tolerance('Bladder', 'Microscopic hematuria (Olsson)', ab_bladder, 31.5, 63, 'Volume receiving tolerance dose being less than 41 %', 'Conventional RT')
+bladder_v19pc = EQD.Tolerance('Bladder', 'Dysuria (Olsson)', ab_bladder, 32, 64, 'Volume receiving tolerance dose being less than 19 %', 'Conventional RT')
+bladder_v02pc = EQD.Tolerance('Bladder', 'Urinary urgency (Olsson)', ab_bladder, 41.5, 83, 'Volume receiving tolerance dose being less than 2 %', 'Conventional RT')
+bladder_v41pc_freq = EQD.Tolerance('Bladder', 'Urinary frequency (Olsson)', ab_bladder, 19.5, 39, 'Volume receiving tolerance dose being less than 41 %', 'Conventional RT')
+# Femoral heads:
+femoral_head_mean = EQD.Tolerance('FemoralHead_L/R', 'Femoral neck fracture (Grigsby)', ab_femoral, 21, 42, 'Mean', 'Conventional RT')
+femoral_d02pc = EQD.Tolerance('FemoralHead_L/R', 'Hip osteoarthritis (Rasmusson)', ab_femoral, 20, 40, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
 
 
 # SBRT:
