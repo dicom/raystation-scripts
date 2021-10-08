@@ -243,15 +243,22 @@ class Plan(object):
 
     # Start adaptive optimization if indicated:
     if opt == 'oar':
-      OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
-      if region_code in RC.breast_codes:
+      try:
+        OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
+      except:
+        GUIF.handle_failed_dose_computation()
+      if region_code in RC.breast_codes and technique_name != 'VMAT':
+        # Modify leaves for the open fields in non-VMAT breast:
         if region_code in RC.breast_reg_codes:
           # Close leaves behind jaw for breast regional patients:
           BSF.close_leaves_behind_jaw_for_regional_breast(beam_set)
         # Create 2.5 cm margin to air for breast patient planned with a 3D-CRT technique (for robustness purpuses):
         BSF.create_margin_air_for_3dcrt_breast(ss, beam_set, region_code)
         # Compute dose:
-        beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
+        try:
+          beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
+        except:
+          GUIF.handle_failed_dose_computation()
       # Auto scale to prescription:
       for plan_optimization in plan.PlanOptimizations:
         plan_optimization.AutoScaleToPrescription = True
