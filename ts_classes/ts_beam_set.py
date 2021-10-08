@@ -104,7 +104,7 @@ class TSBeamSet(object):
         if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
           # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
           po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-          if po:
+          if po and po.Objective:
             for objective in po.Objective.ConstituentFunctions:
               if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
                 current_target = roi.GetBoundingBox()
@@ -258,7 +258,7 @@ class TSBeamSet(object):
         if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
           # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
           po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-          if po:
+          if po and po.Objective:
             for objective in po.Objective.ConstituentFunctions:
               if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
                 current_target = roi.GetBoundingBox()
@@ -579,7 +579,7 @@ class TSBeamSet(object):
       objective_target_volumes = {}
       # Create a dictionary of all CTVs defined as an objective.
       po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-      if po:
+      if po and po.Objective:
         for objective in po.Objective.ConstituentFunctions:
           if objective.ForRegionOfInterest.Type == 'Ctv':
             objective_target_volumes[objective.ForRegionOfInterest.Name] = True
