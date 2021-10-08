@@ -34,21 +34,21 @@ class TSPOIGeometry(object):
   # Tests for coordinate definition.
   def is_defined_test(self):
     t = TEST.Test("Skal ha definerte koordinater", True, self.coordinates)
-    # Run test if this structure set corresponds to the examination used for the treatment plan:
-    # (FIXME: This may not be correct for mamma gating)
-    # When the poi geometry is undefined, RayStation seems to represent this with the min float value:
-    if abs(self.poi_geometry.Point.x) not in [abs(sys.float_info.min), abs(sys.float_info.max)]:
-      return t.succeed()
+    if self.poi_geometry.Point:
+      # When the poi geometry is undefined, RayStation seems to represent this with the min float value:
+      if abs(self.poi_geometry.Point.x) not in [abs(sys.float_info.min), abs(sys.float_info.max)]:
+        return t.succeed()
+      else:
+        return t.fail()
     else:
       return t.fail()
 
   # Tests for coordinate definition.
   def is_not_zero_test(self):
     t = TEST.Test("Skal ikke ha koordinater i punktet: 0,0,0", True, self.coordinates)
-    # Run test if this structure set corresponds to the examination used for the treatment plan:
-    # (FIXME: This may not be correct for mamma gating)
-    # When the poi geometry is undefined, RayStation seems to represent this with the min float value:
-    if self.poi_geometry.Point.x == 0 and self.poi_geometry.Point.y == 0 and self.poi_geometry.Point.z == 0:
-      return t.fail()
-    else:
-      return t.succeed()
+    if self.poi_geometry.Point:
+      # When the poi geometry is undefined, RayStation seems to represent this with the min float value:
+      if self.poi_geometry.Point.x == 0 and self.poi_geometry.Point.y == 0 and self.poi_geometry.Point.z == 0:
+        return t.fail()
+      else:
+        return t.succeed()
