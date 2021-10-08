@@ -182,6 +182,13 @@ def handle_existing_rois(pm, ss):
   return my_window
 
 
+# Displays a message informing the user that dose computation failed.
+def handle_failed_dose_computation():
+  title = "Doseberegning mislyktes"
+  text = "Doseberegning mislyktes. Mest sannsynlig er dette forårsaket av at datamaskinen ikke har nødvendig hardware (GPU) for beregning av dose."
+  messagebox.showinfo(title, text)
+
+
 # Displays a warning for a prescription which is unknown for a given region code.
 # The user is then given the choice to continue script execution or to stop.
 def handle_invalid_prescription(prescription, region_code, region_text):

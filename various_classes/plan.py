@@ -234,8 +234,11 @@ class Plan(object):
       if technique_name == 'VMAT':
         optimization_parameters = OPT.optimization_parameters(region_code, prescription.fraction_dose)
         optimization_parameters.apply_to(plan_optimization)
-      # Run the optimization:
-      plan_optimization.RunOptimization()
+      # Run the optimization (may crash if GPU for computation is not available):
+      try:
+        plan_optimization.RunOptimization()
+      except:
+        GUIF.handle_failed_dose_computation()
 
 
     # Start adaptive optimization if indicated:
