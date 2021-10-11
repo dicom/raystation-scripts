@@ -50,7 +50,7 @@ class DefPalliative(object):
       elif region == 'thorax':
         site.add_oars(DEF.palliative_thorax_oars)
       elif region == 'costa':
-        site.add_oars(DEF.palliative_thorax_oars)
+        site.add_oars(DEF.palliative_thorax_abdomen_oars)
       elif region == 'thorax_abdomen':
         site.add_oars(DEF.palliative_thorax_abdomen_oars)
       elif region == 'abdomen':
