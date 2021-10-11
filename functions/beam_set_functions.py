@@ -118,36 +118,38 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
 def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code):
   roi_dict = SSF.create_roi_dict(ss)
   for beam in beam_set.Beams:
-    segment = beam.Segments[0]
-    leaf_positions = segment.LeafPositions
-    jaw = segment.JawPositions
-    y1 = jaw[2]
-    if region_code in RC.breast_reg_codes:
-      if SSF.has_named_roi_with_contours(ss, ROIS.ptv_pc.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_nc.name) and beam.Name in ['RPO','LPO']:
-        nodes = ss.RoiGeometries[ROIS.ptv_nc.name].GetBoundingBox()
-        breast = ss.RoiGeometries[ROIS.ptv_pc.name].GetBoundingBox()
-        y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
-      elif SSF.has_named_roi_with_contours(ss, ROIS.ptv_50c.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_47c.name) and beam.Name in ['RPO','LPO']:
-        nodes = ss.RoiGeometries[ROIS.ptv_47c.name].GetBoundingBox()
-        breast = ss.RoiGeometries[ROIS.ptv_50c.name].GetBoundingBox()
-        y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
+    # Modify first segment (if beam has segments):
+    if len(beam.Segments) > 0:
+      segment = beam.Segments[0]
+      leaf_positions = segment.LeafPositions
+      jaw = segment.JawPositions
+      y1 = jaw[2]
+      if region_code in RC.breast_reg_codes:
+        if SSF.has_named_roi_with_contours(ss, ROIS.ptv_pc.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_nc.name) and beam.Name in ['RPO','LPO']:
+          nodes = ss.RoiGeometries[ROIS.ptv_nc.name].GetBoundingBox()
+          breast = ss.RoiGeometries[ROIS.ptv_pc.name].GetBoundingBox()
+          y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
+        elif SSF.has_named_roi_with_contours(ss, ROIS.ptv_50c.name) and SSF.has_named_roi_with_contours(ss, ROIS.ptv_47c.name) and beam.Name in ['RPO','LPO']:
+          nodes = ss.RoiGeometries[ROIS.ptv_47c.name].GetBoundingBox()
+          breast = ss.RoiGeometries[ROIS.ptv_50c.name].GetBoundingBox()
+          y2 =  jaw[3] - (nodes[1].z - breast[1].z + 1)
+        else:
+          y2 = jaw[3]
       else:
         y2 = jaw[3]
-    else:
-      y2 = jaw[3]
-    # (Don't forget that MLC number 50 has index leafPositions[x][49])
-    mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
-    mlcY2 = int(math.ceil ((y2 + 20) * 2))
-    for leaf in range(mlcY1-1, mlcY2+1):
-      if beam.Name == 'LAO' and region_code in RC.breast_r_codes:
-        leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
-      elif beam.Name == 'RAO' and region_code in RC.breast_l_codes:
-        leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
-      elif beam.Name in ['RPO', 'RPO 1']:
-        leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
-      elif beam.Name in ['LPO', 'LPO 1']:
-        leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
-    segment.LeafPositions = leaf_positions
+      # (Don't forget that MLC number 50 has index leafPositions[x][49])
+      mlcY1 = int(math.floor((y1 + 20) * 2) + 1.0)
+      mlcY2 = int(math.ceil ((y2 + 20) * 2))
+      for leaf in range(mlcY1-1, mlcY2+1):
+        if beam.Name == 'LAO' and region_code in RC.breast_r_codes:
+          leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
+        elif beam.Name == 'RAO' and region_code in RC.breast_l_codes:
+          leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
+        elif beam.Name in ['RPO', 'RPO 1']:
+          leaf_positions[1][leaf] = leaf_positions[1][leaf] + 2.5
+        elif beam.Name in ['LPO', 'LPO 1']:
+          leaf_positions[0][leaf] = leaf_positions[0][leaf] - 2.5
+      segment.LeafPositions = leaf_positions
 
 
 # Creates a single arc (VMAT).
