@@ -128,7 +128,7 @@ class DefLung(object):
           ictvs.append(ROI.ROIExpanded(ROIS.ictv.name+str(i+1), ROIS.ictv.type, COLORS.ctv, igtvs[-1], margins = MARGINS.uniform_5mm_expansion))
           ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, ictvs[-1], margins = MARGINS.uniform_5mm_expansion))
           # OARs / others:
-          walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name+str(i+1), ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+          walls.append(ROI.ROIWall("zPTV"+str(i+1)+"_Wall", ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
         # Union target volumes:
         igtv = ROI.ROIAlgebra(ROIS.igtv.name, ROIS.igtv.type, ROIS.igtv.color, sourcesA=[igtvs[0]], sourcesB=igtvs[1:])
         ictv = ROI.ROIAlgebra(ROIS.ictv.name, ROIS.ictv.type, ROIS.ictv.color, sourcesA=[ictvs[0]], sourcesB=ictvs[1:])

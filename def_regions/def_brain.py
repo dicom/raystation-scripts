@@ -64,7 +64,7 @@ class DefBrain(object):
           gtvs.append(ROI.ROI('GTV'+str(i+1), 'Gtv', ROIS.gtv.color))
           ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, gtvs[-1], margins = MARGINS.uniform_2mm_expansion))
           # OARs:
-          walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name+str(i+1), ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+          walls.append(ROI.ROIWall("zPTV"+str(i+1)+"_Wall", ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
         # Union target volumes:
         gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[gtvs[0]], sourcesB=gtvs[1:])
         ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptvs[0]], sourcesB=ptvs[1:])
