@@ -135,7 +135,6 @@ class QualityControl(object):
       ts_beam_set.prescription_mu_test()
       ts_beam_set.asymmetric_jaw_opening_long_test()
       ts_beam_set.isocenter_centered_test()
-      ts_beam_set.stereotactic_mu_test()
       ts_beam_set.vmat_mu_test()
       ts_beam_set.beam_number_test()
       ts_beam_set.target_volume_normalisation_for_sib_test()

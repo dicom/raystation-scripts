@@ -485,22 +485,6 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the total number of MUs is below 2.0*fraction dose (cGy).
-  def stereotactic_mu_test(self):
-    t = TEST.Test("Bør som hovedregel være innenfor 2.0*fraksjonsdose (cGy)", True, self.mu)
-    mu_total = 0
-    limit = RSU.fraction_dose(self.beam_set) * 200
-    if self.has_prescription():
-      t.expected = "<" + str(limit)
-      if self.ts_label.label.technique:
-        if self.ts_label.label.technique.upper() == 'S':
-          for beam in self.beam_set.Beams:
-            mu_total += beam.BeamMU
-          if mu_total > limit:
-            return t.fail(round(mu_total, 1))
-          else:
-            return t.succeed()
-
   # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC).
   def technique_test(self):
     t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
@@ -561,14 +545,16 @@ class TSBeamSet(object):
     t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
     mu_total = 0
     if self.has_prescription():
-      t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250, 1))
-      if self.is_vmat():
-        for beam in self.beam_set.Beams:
-          mu_total += beam.BeamMU
-        if mu_total > RSU.fraction_dose(self.beam_set) * 250:
-          return t.fail(round(mu_total, 1))
-        else:
-          return t.succeed()
+      # Do not run MU test on SBRT plans:
+      if self.ts_label.label.technique.upper() != 'S':
+        t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250, 1))
+        if self.is_vmat():
+          for beam in self.beam_set.Beams:
+            mu_total += beam.BeamMU
+          if mu_total > RSU.fraction_dose(self.beam_set) * 250:
+            return t.fail(round(mu_total, 1))
+          else:
+            return t.succeed()
 
   # Tests for SIB plans, if the lower doser volumes is normalised to the correct value, within 0.5%.
   def target_volume_normalisation_for_sib_test(self):
