@@ -232,7 +232,7 @@ class Plan(object):
       # Optimization parameters to be used on all cases (3D-CRT and VMAT):
       plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
       # Configure optimization parameters for VMAT only:
-      if technique_name == 'VMAT':
+      if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
         optimization_parameters = OPT.optimization_parameters(region_code, prescription.fraction_dose)
         optimization_parameters.apply_to(plan_optimization)
       # Run the optimization (may crash if GPU for computation is not available):
