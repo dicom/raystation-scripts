@@ -98,8 +98,14 @@ class DefProstate(object):
         # Targets:
         ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, source = ROIS.prostate, margins = MARGINS.zero)
         if frac == 'hypo_55':
-          # Assuming markers:
-          ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv, margins = MARGINS.prostate_seed_expansion)
+          # Choice 3: Seed match or bone match?
+          match = choices[3]
+          if match == 'seeds':
+            # Seed match:
+            ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv, margins = MARGINS.prostate_seed_expansion)
+          else:
+            # Bone match:
+            ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv, margins = MARGINS.prostate_bone_match_expansion)
         elif frac == 'palliative':
           # Assuming no markers:
           ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv, margins = MARGINS.prostate_bone_match_expansion)
