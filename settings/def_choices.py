@@ -144,8 +144,17 @@ for region in [other_head, other_neck, other_costa, other_thorax, other_thorax_a
   other_target_volume_two = P.Property('2','2', parent = region, next_category = '')
   # With or without soft tissue component:
   for tv in [other_target_volume_one, other_target_volume_two]:
-    other_with_gtv = P.Property('Bløtvevskomponent (med GTV)', 'with', parent = tv)
-    other_without_gtv = P.Property('Skjelett (uten GTV)', 'without', parent = tv, default = True)
+    if region == other_neck:
+      # For neck only, selection for whether a mask was used:
+      other_with_gtv = P.Property('Bløtvevskomponent (med GTV)', 'with', parent = tv, next_category = '')
+      other_without_gtv = P.Property('Skjelett (uten GTV)', 'without', parent = tv, next_category = '', default = True)
+      for gtv in [other_with_gtv, other_without_gtv]:
+        mask = P.Property('Fiksering med maske','mask', parent = gtv, next_category = '', default = True)
+        without_mask = P.Property('Løs fiksering (ingen maske)','none', parent = gtv, next_category = '')
+    else:
+      # No mask selection to be made:
+      other_with_gtv = P.Property('Bløtvevskomponent (med GTV)', 'with', parent = tv)
+      other_without_gtv = P.Property('Skjelett (uten GTV)', 'without', parent = tv, default = True)
 
 
 # Lists to be used with radiobutton objects:

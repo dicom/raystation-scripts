@@ -66,9 +66,17 @@ class DefPalliative(object):
       # Determine PTV margins:
       if with_gtv == 'with':
         # Soft tissue target:
-        if region in ['head', 'neck']:
-          # Head/Neck: 3 mm
+        if region in ['head']:
+          # Head: 3 mm
           ptv_margin = MARGINS.uniform_3mm_expansion
+        elif region in ['neck']:
+          # Neck: 3 mm (mask) or 5 mm (no mask)
+          # Choice 5: Mask?
+          mask = choices[5]
+          if mask == 'mask':
+            ptv_margin = MARGINS.uniform_3mm_expansion
+          else:
+            ptv_margin = MARGINS.uniform_5mm_expansion
         elif region in ['thorax_abdomen']:
           # Near lung (affected by breathing motion):
           ptv_margin = MARGINS.abdomen_near_lung_soft_tissue_expansion
@@ -77,9 +85,17 @@ class DefPalliative(object):
           ptv_margin = MARGINS.uniform_7mm_expansion
       else:
         # Bone target:
-        if region in ['head', 'neck']:
-          # Head/Neck: 3 mm
+        if region in ['head']:
+          # Head: 3 mm
           ptv_margin = MARGINS.uniform_3mm_expansion
+        elif region in ['neck']:
+          # Neck: 3 mm (mask) or 5 mm (no mask)
+          # Choice 5: Mask?
+          mask = choices[5]
+          if mask == 'mask':
+            ptv_margin = MARGINS.uniform_3mm_expansion
+          else:
+            ptv_margin = MARGINS.uniform_5mm_expansion
         elif region in ['costa', 'other']:
           # Costa/Extremities: 7 mm
           ptv_margin = MARGINS.uniform_7mm_expansion
