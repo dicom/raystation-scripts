@@ -54,21 +54,21 @@ bladder_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space, 
 
 # Palliative:
 # Head:
-palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.eye_l_prv, ROIS.eye_r_prv, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal_head]
+palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.eye_l_prv, ROIS.eye_r_prv, ROIS.lens_l, ROIS.lens_r, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal_head]
 # Neck:
-palliative_neck_oars = [ROIS.submand_l, ROIS.submand_r, ROIS.spinal_canal_head, ROIS.parotid_l, ROIS.parotid_r, ROIS.parotids, ROIS.submands, ROIS.oral_cavity]
+palliative_neck_oars = [ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.parotids, ROIS.spinal_canal_head, ROIS.submand_l, ROIS.submand_r, ROIS.submands]
 # Thorax:
-palliative_thorax_oars = [ROIS.heart, ROIS.spinal_canal, ROIS.lung_r, ROIS.lung_l, ROIS.lungs]
-palliative_thorax_abdomen_oars = [ROIS.heart, ROIS.spinal_canal, ROIS.lung_r, ROIS.lung_l, ROIS.lungs, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.bowel_space]
+palliative_thorax_oars = [ROIS.heart, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.spinal_canal]
+palliative_thorax_abdomen_oars = [ROIS.bowel_space, ROIS.heart, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.spinal_canal]
 # Abdomen:
-palliative_abdomen_oars = [ROIS.bowel_space, ROIS.kidneys, ROIS.spinal_canal, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys]
+palliative_abdomen_oars = [ROIS.bowel_space, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.spinal_canal]
 # Abdomen and pelvis:
-palliative_abdomen_pelvis_oars = [ROIS.bowel_space, ROIS.kidneys, ROIS.spinal_canal, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.bladder]
+palliative_abdomen_pelvis_oars = [ROIS.bladder, ROIS.bowel_space, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.spinal_canal]
 # Pelvis:
-palliative_pelvis_oars = [ROIS.bowel_space, ROIS.rectum, ROIS.spinal_canal, ROIS.bladder]
+palliative_pelvis_oars = [ROIS.bladder, ROIS.bowel_space, ROIS.rectum, ROIS.spinal_canal]
 # Stereotactic, spine thorax:
-palliative_stereotactic_thorax_oars = [ROIS.lung_r, ROIS.lung_l, ROIS.lungs, ROIS.spinal_cord, ROIS.esophagus, ROIS.heart,  ROIS.trachea, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.skin, ROIS.cauda_equina]
-# Stereotactic, spine pelivs:
-palliative_stereotactic_spine_pelvis_oars = [ROIS.rectum, ROIS.colon, ROIS.small_bowel, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.skin, ROIS.cauda_equina, ROIS.spinal_cord]
+palliative_stereotactic_thorax_oars = [ROIS.esophagus, ROIS.heart, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.skin, ROIS.spinal_cord, ROIS.trachea]
+# Stereotactic, spine pelvis:
+palliative_stereotactic_spine_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord]
 # Stereotactic, pelvis:
-palliative_stereotactic_pelvis_oars = [ROIS.rectum, ROIS.colon, ROIS.small_bowel, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.skin]
+palliative_stereotactic_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.small_bowel]
