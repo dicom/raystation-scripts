@@ -71,4 +71,4 @@ palliative_stereotactic_thorax_oars = [ROIS.esophagus, ROIS.heart, ROIS.kidney_l
 # Stereotactic, spine pelvis:
 palliative_stereotactic_spine_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord]
 # Stereotactic, pelvis:
-palliative_stereotactic_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.small_bowel]
+palliative_stereotactic_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.rectum, ROIS.skin, ROIS.small_bowel]

@@ -133,6 +133,7 @@ def determine_choices(region_code, prescription, my_window, choices):
   # Default optimization value
   opt = ''
   if region_code in RC.breast_tang_codes or region_code in RC.breast_partial_codes:
+    # Partial breast or whole breast:
     # Chosen technique value, 'VMAT' or 'Conformal'
     technique = 'Conformal'
     # Chosen technique name, 'VMAT' or '3D-CRT'
@@ -140,6 +141,7 @@ def determine_choices(region_code, prescription, my_window, choices):
     # Chosen optimization value
     opt = 'oar'
   elif region_code in RC.breast_reg_codes:
+    # Regional breast:
     # Determine which technique choices which will appear in the form
     techniques = RB.RadioButton('Planoppsett ', 'Velg planoppsett: ', PC.techniques)
     # Collects the selected choices from the user
@@ -153,9 +155,21 @@ def determine_choices(region_code, prescription, my_window, choices):
       technique_name = 'VMAT'
     # Optimization value
     opt = 'oar'
-  else:
-    if region_code in RC.palliative_codes and prescription.total_dose < 55 and not prescription.is_stereotactic() or region_code in RC.bladder_codes or region_code in RC.prostate_codes and prescription.total_dose < 40 or region_code in RC.brain_whole_codes:
-      opt = 'oar'
+  elif region_code in RC.palliative_codes and not prescription.is_stereotactic():
+    # Palliative (non-SBRT):
+    opt = 'oar'
+  elif region_code in RC.bladder_codes:
+    # Bladder:
+    opt = 'oar'
+  elif region_code in RC.prostate_codes and prescription.total_dose < 40:
+    # Palliative prostate:
+    opt = 'oar'
+  elif region_code in RC.brain_whole_codes:
+    # Whole brain:
+    opt = 'oar'
+  elif region_code in RC.bone_stereotactic_codes:
+    # Bone SBRT:
+    opt = 'oar'
   results = [technique, technique_name, opt]
   return results
 
