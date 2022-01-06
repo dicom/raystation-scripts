@@ -558,85 +558,107 @@ def prostate_oars(ss, prescription):
 
 # Bone SBRT (1 fx, thoracic/pelvis, spine/non-spine):
 def bone_stereotactic_1fx_oars(region_code):
+  # Common for all bone SBRT:
   bone_oars = [
-    CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
-    CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
-    CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
-    CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
-    CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_1fx_v200, cc200, priority3),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_1fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_1fx_v0, cc0, priority4)
   ]
-  if region_code in RC.stereotactic_spine_thorax_codes or region_code in RC.stereotactic_spine_pelvis_codes:
-    # Spine:
+  if region_code in RC.stereotactic_spine_thorax_codes:
+    # Spine thorax:
     bone_oars += [
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0_35, cc0_35, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0_1, cc0_1, priority2),
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0, cc0, priority2),
-      CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc0, priority2),
-      CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc5, priority2)
+      CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v4, cc4, priority2),
+      CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v0, cc0, priority2),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_1fx_v15, cc15, priority3),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_1fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lungs_sbrt_1fx_v1000, cc1000, priority3),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v5, cc5, priority3),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
+      CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
+      CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_1fx_v200, cc200, priority3)
     ]
-    if region_code in RC.stereotactic_spine_thorax_codes:
-      bone_oars += [
-        CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v4, cc4, priority2),
-        CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_1fx_v0, cc0, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_1fx_v15, cc15, priority3),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_1fx_v0, cc0, priority3),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lungs_sbrt_1fx_v1000, cc1000, priority3),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v5, cc5, priority3),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_1fx_v0, cc0, priority3)
-      ]
-  if region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
-    # Pelvic:
+  elif region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
+    # Common for pelvis spine/non-spine:
     bone_oars += [
+      CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc0, priority2),
+      CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc5, priority2),
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v5, cc5, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_1fx_v20, cc20, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_1fx_v0, cc0, priority3),
-      CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_1fx_v20, cc20, priority3)
+      CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_1fx_v20, cc20, priority3),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_1fx_v003, cc0_03, priority3),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_1fx_v15, cc15, priority3)
     ]
+    if region_code in RC.stereotactic_spine_pelvis_codes:
+      # Spine pelvis:
+      bone_oars += [
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0_35, cc0_35, priority2),
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0, cc0, priority2),
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0_1, cc0_1, priority2),
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_3mm_sbrt_1fx_v0, cc0, priority2),
+        CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
+        CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_hilum_1fx_v66, pc66, priority3),
+        CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
+        CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
+        CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_1fx_v200, cc200, priority3)
+      ]
   return bone_oars
 
 
 # Bone SBRT (3 fx, thoracic/pelvis, spine/non-spine):
 def bone_stereotactic_3fx_oars(region_code):
+  # Common for all bone SBRT:
   bone_oars = [
-    CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
-    CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
-    CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_3fx_v200, cc200, priority3),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v10, cc10, priority4),
-    CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v0, cc0, priority4)
+    CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v0, cc0, priority4),
   ]
-  if region_code in RC.stereotactic_spine_thorax_codes or region_code in RC.stereotactic_spine_pelvis_codes:
-  # Spine:
+  if region_code in RC.stereotactic_spine_thorax_codes:
+    # Spine thorax:
+    bone_oars += [
+      CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
+      CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0, cc0, priority2),
+      CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v4, cc4, priority2),
+      CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v0, cc0, priority2),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_3fx_v15, cc15, priority3),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_3fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lung_sbrt_3fx_v1000, cc1000, priority3),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v5, cc5, priority3),
+      CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v0, cc0, priority3),
+      CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
+      CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
+      CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_3fx_v200, cc200, priority3)
+    ]
+  elif region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
+    # Common for pelvis spine/non-spine:
     bone_oars += [
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v0, cc0, priority2),
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v5, cc5, priority2),
-      CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
-      CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0, cc0, priority2)
-    ]
-    if region_code in RC.stereotactic_spine_thorax_codes:
-      bone_oars += [
-        CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v4, cc4, priority2),
-        CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx_v0, cc0, priority2),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_3fx_v15, cc15, priority3),
-        CG.ClinicalGoal(ROIS.heart.name, at_most, dose_at_abs_volume, TOL.heart_sbrt_3fx_v0, cc0, priority3),
-        CG.ClinicalGoal(ROIS.lungs.name, at_most, dose_at_abs_volume, TOL.lung_sbrt_3fx_v1000, cc1000, priority3),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v5, cc5, priority3),
-        CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_sbrt_3fx_v0, cc0, priority3)
-      ]
-  if region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
-    # Pelvic:
-    bone_oars += [
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.small_bowel.name, at_most, dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v5, cc5, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_3fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.rectum.name, at_most, dose_at_abs_volume, TOL.rectum_sbrt_3fx_v20, cc20, priority3),
       CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_3fx_v0, cc0, priority3),
-      CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_3fx_v20, cc20, priority3)
+      CG.ClinicalGoal(ROIS.colon.name, at_most, dose_at_abs_volume, TOL.colon_sbrt_3fx_v20, cc20, priority3),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_3fx_v003, cc0_03, priority3),
+      CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_3fx_v15, cc15, priority3)
     ]
+    if region_code in RC.stereotactic_spine_pelvis_codes:
+      # Spine pelvis:
+      bone_oars += [
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
+        CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0, cc0, priority2),
+        CG.ClinicalGoal(ROIS.kidney_l.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
+        CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
+        CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_3fx_v200, cc200, priority3)
+      ]
   return bone_oars
 
 
