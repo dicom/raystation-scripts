@@ -30,9 +30,15 @@ class TSPrescription(object):
       self.parent_param = ts_beam_set.param
     else:
       self.parent_param = None
+    # ROI (Name) parameter:
+    # In case SITE prescription is used:
+    try:
+      name = self.prescription.PrimaryDosePrescription.OnStructure.Name
+    except:
+      name = self.prescription.PrimaryDosePrescription.Description
     # Parameters:
     self.param = TEST.Parameter('Prescription', str(prescription.PrimaryDosePrescription.DoseValue/100.0), self.parent_param)
-    self.roi = TEST.Parameter('ROI', self.prescription.PrimaryDosePrescription.OnStructure.Name, self.param)
+    self.roi = TEST.Parameter('ROI', name, self.param)
     self.type = TEST.Parameter('Type', self.prescription.PrimaryDosePrescription.PrescriptionType, self.param)
     self.dose = TEST.Parameter('Dose', '', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
@@ -90,16 +96,23 @@ class TSPrescription(object):
     t = TEST.Test("Skal i utgangspunktet benytte CTV til normalisering.", True, self.roi)
     ts = TEST.Test("Skal i utgangspunktet benytte PTV til normalisering.", True, self.roi)
     if self.ts_beam_set.ts_label.label.technique:
+      # In case SITE prescription is used:
+      try:
+        type = self.prescription.PrimaryDosePrescription.OnStructure.Type == 'Ptv'
+      except:
+        type = self.prescription.PrimaryDosePrescription.Description
       if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-        if self.prescription.PrimaryDosePrescription.OnStructure.Type == 'Ptv':
+        # SBRT (PTV should be prescription volume):
+        if type == 'Ptv':
           ts.succeed()
         else:
-          ts.fail(self.prescription.PrimaryDosePrescription.OnStructure.Type)
+          ts.fail(type)
       else:
-        if self.prescription.PrimaryDosePrescription.OnStructure.Type == 'Ctv':
+        # Conventional RT (CTV should be prescription volume)
+        if type == 'Ctv':
           return t.succeed()
         else:
-          return t.fail(self.prescription.PrimaryDosePrescription.OnStructure.Type)
+          return t.fail(type)
 
   # Tests that the prescription type (dose volume) is as expected.
   # FIXME: Egen prescription test for stereotaksi og om planen har målvolum eller ikke.
@@ -152,26 +165,33 @@ class TSPrescription(object):
       low_dose = round(diff_pr_dose * 0.995, 2)
       high_dose = round(diff_pr_dose * 1.005, 2)
       t.expected = "<" + str(low_dose) + " - " + str(high_dose) + ">"
-      if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
-        norm_poi = ss_poi_geometry(self.ts_beam_set.beam_set, self.prescription.PrimaryDosePrescription.OnStructure)
-        p = {'x': norm_poi.Point.x, 'y': norm_poi.Point.y, 'z': norm_poi.Point.z}
-        real_poi_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.InterpolateDoseInPoint(Point = p)) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-        if real_poi_dose < low_dose or real_poi_dose > high_dose:
-          return t.fail(round(real_poi_dose, 2))
-        else:
-          return t.succeed()
-      if self.prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
-        real_dose_d50 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.50])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-        if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
-          return t.fail(round(real_dose_d50, 2))
-        else:
-          return t.succeed()
-      elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
-        real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = self.prescription.PrimaryDosePrescription.OnStructure.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-        if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
-          return t.fail(round(real_dose_d99, 2))
-        else:
-          return t.succeed()
+      # If the prescription type is "SITE", we are not able to verify the prescription (at least currently):
+      try:
+        struct = self.prescription.PrimaryDosePrescription.OnStructure
+      except:
+        struct = None
+      if struct:
+        # What type of prescription has been used?
+        if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
+          norm_poi = RSU.ss_poi_geometry(self.ts_beam_set.beam_set, struct)
+          p = {'x': norm_poi.Point.x, 'y': norm_poi.Point.y, 'z': norm_poi.Point.z}
+          real_poi_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.InterpolateDoseInPoint(Point = p)) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if real_poi_dose < low_dose or real_poi_dose > high_dose:
+            return t.fail(round(real_poi_dose, 2))
+          else:
+            return t.succeed()
+        if self.prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
+          real_dose_d50 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [0.50])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
+            return t.fail(round(real_dose_d50, 2))
+          else:
+            return t.succeed()
+        elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
+          real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
+            return t.fail(round(real_dose_d99, 2))
+          else:
+            return t.succeed()
 
   # Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.
   def stereotactic_prescription_technique_test(self):
