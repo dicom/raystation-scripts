@@ -541,17 +541,18 @@ class TSBeamSet(object):
         return t.succeed()
 
   # Tests if the total number of MUs is below 2.5*fraction dose (cGy).
+  # (plus a margin of 5 MU to avoid getting a lot of marginally positive outcomes on this test)
   def vmat_mu_test(self):
-    t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy)", True, self.mu)
+    t = TEST.Test("Bør som hovedregel være innenfor 2.5*fraksjonsdose (cGy) (+/- 5 MU)", True, self.mu)
     mu_total = 0
     if self.has_prescription():
       # Do not run MU test on SBRT plans:
       if self.ts_label.label.technique.upper() != 'S':
-        t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250, 1))
+        t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250 + 5, 1))
         if self.is_vmat():
           for beam in self.beam_set.Beams:
             mu_total += beam.BeamMU
-          if mu_total > RSU.fraction_dose(self.beam_set) * 250:
+          if mu_total > RSU.fraction_dose(self.beam_set) * 250 + 5:
             return t.fail(round(mu_total, 1))
           else:
             return t.succeed()
