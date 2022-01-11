@@ -98,7 +98,7 @@ class TSPrescription(object):
     if self.ts_beam_set.ts_label.label.technique:
       # In case SITE prescription is used:
       try:
-        type = self.prescription.PrimaryDosePrescription.OnStructure.Type == 'Ptv'
+        type = self.prescription.PrimaryDosePrescription.OnStructure.Type
       except:
         type = self.prescription.PrimaryDosePrescription.Description
       if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
@@ -187,7 +187,7 @@ class TSPrescription(object):
           else:
             return t.succeed()
         elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
-          real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
           if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
             return t.fail(round(real_dose_d99, 2))
           else:
