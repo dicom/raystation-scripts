@@ -158,6 +158,21 @@ class TSBeam(object):
     else:
       return t.succeed()
 
+  # Tests for SBRT with multiple targets (indexed targets) that the beam index matches the target index.
+  def indexed_prescription_target_matches_beam_index_for_sbrt_test(self):
+    t = TEST.Test("Ved stereotaksi og indekserte målvolum skal normeringsvolumets indeks være likt felt-nummer", self.beam.Number, self.param)
+    # Only run test for SBRT:
+    if self.ts_beam_set.ts_prescription.is_stereotactic():
+      # Extract the numbers from the prescription name:
+      target = self.ts_beam_set.ts_prescription.roi.value
+      target_index = ''.join(n for n in target if n.isdigit())
+      # Only run test for indexed targets:
+      if target_index != '':
+        if int(target_index) != self.beam.Number:
+          return t.fail(target_index)
+        else:
+          return t.succeed()
+
   # Tests for gantry angle on a breast treatment (where we should not have an entry in the opposite posterior quadrant).
   def logical_gantry_angle_breast_test(self):
     t = TEST.Test("Gantryvinkel skrått bakfra fra motsatt side bør ikke forekomme ved brystbestråling", None, self.gantry)
