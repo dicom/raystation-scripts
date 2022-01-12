@@ -876,7 +876,6 @@ def breast_targets(ss, region_code, target):
       # Partial breast:
       breast_targets += [
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95, pc98, priority2),
-        CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, conformity_index, pc75, pc95, priority5)
       ]
     else:
       # Whole breast:
