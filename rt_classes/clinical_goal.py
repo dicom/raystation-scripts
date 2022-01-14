@@ -18,7 +18,31 @@ class ClinicalGoal(object):
     self.tolerance = tolerance
     self.value = value
     self.priority = priority
-
+  
+  # Applies the clinical goal object to a given EvaluationSetup.
+  # Parameters:
+  # es - A RayStation EvaluationSetup instance, in which the clinical goal is to be created
+  # normalized_tolerance - an alternative to the original tolerance (AcceptanceLevel), e.q. recalculated as a percentage value of the prescription dose.
+  # normalized_value - an alternative to the original dose value (ParameterValue), e.q. recalculated as a percentage value of the prescription dose.
+  def apply_to(self, es, normalized_tolerance = None, normalized_value = None):
+    # Use preset values if normalized arguments are not given:
+    if normalized_tolerance is None:
+      normalized_tolerance = self.tolerance
+    if normalized_value is None:
+      normalized_value = self.value
+    try:
+      if self.type == 'AverageDose':
+        # When clinical goal is of type AverageDose, we do not use the ParameterValue when invoking the RayStation AddClinicalGoal function:
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, AcceptanceLevel = normalized_tolerance, Priority = self.priority)
+      else:
+        # Call AddClinicalGoal function with ParameterValue:
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, AcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority)
+    except Exception as e:
+      GUIF.handle_error_on_clinical_goal_creation(self, e)
+  
+  # Gives a text representation of the clinical goal object.
+  def text(self):
+   return f"Name: {self.name}\nCriteria: {self.criteria}\nType: {self.type}\nTolerance: {self.tolerance}\nValue: {self.value}\nPriority: {self.priority}"
 
 # Types:
 volume_at_dose = 'VolumeAtDose'
@@ -38,26 +62,23 @@ def setup_clinical_goals(ss, es, site, prescription, target):
     # Make sure corresponding ROI exists before trying to create clinical goal:
     if SSF.has_roi(ss, cg.name):
       if cg.name in [ROIS.external.name, ROIS.igtv.name, ROIS.gtv.name] and cg.criteria == 'AtMost' and cg.tolerance != 5000:
-        c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = round(cg.tolerance*prescription.total_dose*100,0), ParameterValue = cg.value, Priority = cg.priority)
+        cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
       elif cg.name in [ROIS.ctv_sb.name, ROIS.ptv_sbc.name] and target != ROIS.ctv_sb.name or cg.tolerance == 5000 or cg.type == homogeneity_index:
-        c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = cg.tolerance, ParameterValue = cg.value, Priority = cg.priority)
+        cg.apply_to(es)
       elif cg.type == conformity_index:
-        c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = cg.tolerance, ParameterValue = round(cg.value*prescription.total_dose*100,0), Priority = cg.priority)
+        cg.apply_to(es, normalized_value = round(cg.value*prescription.total_dose*100,0))
       else:
-        c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = round(cg.tolerance*prescription.total_dose*100,0), ParameterValue = cg.value, Priority = cg.priority)
+        cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
     else:
       # Missing ROI:
       GUIF.handle_missing_roi_for_clinical_goal(cg.name)
   for cg in site.oar_clinical_goals:
     # Make sure corresponding ROI exists before trying to create clinical goal:
-    if SSF.has_roi(ss, cg.name):
-      if cg.type != average_dose:
-        if cg.type in [dose_at_volume, dose_at_abs_volume]:
-          c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ParameterValue = cg.value, Priority = cg.priority)
-        else:
-          c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = cg.tolerance, ParameterValue = round(cg.value.equivalent(prescription.nr_fractions)*100,0), Priority = cg.priority)
+    if SSF.has_roi(ss, cg.name):      
+      if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
+        cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0))
       else:
-        c = es.AddClinicalGoal(RoiName = cg.name, GoalCriteria = cg.criteria, GoalType = cg.type, AcceptanceLevel = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), Priority = cg.priority)
+        cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0))
     else:
       # Missing ROI:
       GUIF.handle_missing_roi_for_clinical_goal(cg.name)

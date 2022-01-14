@@ -174,6 +174,13 @@ def determine_choices(region_code, prescription, my_window, choices):
   return results
 
 
+# Handles the sitsuation of a missing ROI when trying to create a clinical goal.
+def handle_error_on_clinical_goal_creation(cg, error):
+  title = "Feilmelding!"
+  text = "Det skjedde en feil ved opprettelse av følgende Clinical Goal:\n\n" + cg.text() + "\n\nFeilmelding:\n" + str(error.args[0]) + "\n\nTa kontakt med skript-ansvarlig for feilsøking!" # {An identical clinical goal already exists.}
+  messagebox.showinfo(title, text)
+
+
 # Checks if any ROIs exist, and if they have a contour in the current structure set.
 # If so, ask the user if ROIs are to be deleted.
 # Returns the Tk window object.
@@ -315,7 +322,6 @@ def multiple_beamset_form(ss, my_window):
   frame = REGION_FRAME.RegionCodeFrame(my_window, ss)
   frame.grid(row = 0, column = 0)
   my_window.mainloop()
-
   # Extract information from the users's selections in the GUI
   if frame.ok:
     region_codes = frame.get_results()
