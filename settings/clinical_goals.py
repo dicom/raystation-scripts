@@ -718,6 +718,7 @@ abdomen_and_pelvis = [
   CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4)
 ]
 pelvis = [
+  CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
   CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4)
