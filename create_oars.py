@@ -137,7 +137,7 @@ if selected_oar_list.get(ROIS.markers)and SSF.has_roi(ss, ROIS.rectum.name):
   selected_oar_list[ROIS.marker3] = True
   selected_oar_list[ROIS.marker4] = True
 if selected_oar_list.get(ROIS.couch):
-  PMF.create_couch(patient_db, pm, examination)
+  PMF.create_couch(patient_db, pm, ss, examination)
 if selected_oar_list.get(ROIS.body):
   PMF.create_stereotactic_body_geometry(pm, examination, ss)
   PMF.create_stereotactic_external_geometry(pm, examination, ss)

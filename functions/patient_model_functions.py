@@ -4,10 +4,11 @@ from tkinter import *
 from tkinter import messagebox
 
 # Import local files:
-import roi as ROI
-import rois as ROIS
 import colors as COLORS
 import gui_functions as GUIF
+import margin as MARGIN
+import roi as ROI
+import rois as ROIS
 import structure_set_functions as SSF
 
 
@@ -61,9 +62,9 @@ def create_algebra_roi(pm, examination, ss, roi):
 
 
 # Creates a couch (support) ROI from a couch template.
-def create_couch(patient_db, pm, examination):
+def create_couch(patient_db, pm, ss, examination):
   for pm_roi in pm.RegionsOfInterest:
-    if pm_roi.Name == "Couch":
+    if pm_roi.Name == 'Couch':
       pm_roi.DeleteRoi()
       break
   templateInfo = patient_db.GetPatientModelTemplateInfo()
@@ -72,13 +73,39 @@ def create_couch(patient_db, pm, examination):
     if template.Name == 'Bordtopp tykk':
       pm.CreateStructuresFromTemplate(
         SourceTemplate=template, 
-        SourceExaminationName= "CT 1",
+        SourceExaminationName= 'CT 1',
         SourceRoiNames=[ROIS.couch.name],
         SourcePoiNames=[],
         AssociateStructuresByName=False,
         TargetExamination=examination,
-        InitializationOption="AlignImageCenters"
+        InitializationOption='AlignImageCenters'
       )
+      # Get the box coordinates of the couch:
+      ss = pm.StructureSets[examination.Name]
+      couch_geometry = ss.RoiGeometries['Couch']
+      couch_box = couch_geometry.GetBoundingBox()
+      # Box coordinates of examination:       
+      examination_box = examination.Series[0].ImageStack.GetBoundingBox()
+      # Slice thickness:
+      slice_thickness = abs(examination.Series[0].ImageStack.SlicePositions[1] - examination.Series[0].ImageStack.SlicePositions[0])
+      # Aim to apply a margin which extends the couch geometry to within one slice from the ends of the CT scan:
+      # Inferior/caudal margin:
+      margin_inferior = couch_box[0].z - (examination_box[0].z + slice_thickness)
+      # Superior/cranial margin:
+      margin_superior = examination_box[1].z - (couch_box[1].z + slice_thickness)
+      # Create corresponding margin object:
+      couch_margin = MARGIN.Expansion(margin_superior, margin_inferior, 0.0, 0.0, 0.0, 0.0)
+      # Create extended couch ROI recipe object:
+      couch_extended = ROI.ROIExpanded('Couch_extended', 'Support', COLORS.couch, ROIS.couch, margins = couch_margin)
+      # Create extended couch ROI in RayStation:
+      create_expanded_roi(pm, examination, ss, couch_extended)
+      # Set the material of the extended couch ROI ('Bordtopp (tykk)'):
+      pm.RegionsOfInterest['Couch_extended'].SetRoiMaterial(Material=pm.Materials[0])
+      # Delete the original Couch ROI:
+      pm.RegionsOfInterest['Couch'].DeleteRoi()
+      # Rename the extended Couch:
+      pm.RegionsOfInterest['Couch_extended'].Name = 'Couch'
+
 
 # Creates an empty ROI from a ROI object.
 def create_empty_roi(pm, roi):
@@ -625,28 +652,3 @@ def translate_couch(pm, ss, examination, external, couch_thickness = 5.55):
     'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
     }
   pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)
-
-
-# Translates the couch in the longitudinal direction based on where the target volume is situated.
-def translate_couch_long(pm, ss, examination, target):
-  isocenter_z = SSF.find_isocenter_z(ss, target)
-  new_couch_z = isocenter_z
-  couch_center_z = SSF.roi_center_z(ss, ROIS.couch.name)
-  img_box = ss.OnExamination.Series[0].ImageStack.GetBoundingBox()
-  img_upper = img_box[1].z
-  img_lower = img_box[0].z
-  couch_length = 36.4
-  if abs(new_couch_z - img_lower) < couch_length/2:
-    new_couch_z = img_lower + couch_length/2
-  elif abs(new_couch_z - img_upper) < couch_length/2:
-    new_couch_z = img_upper -couch_length/2
-  z_translation = new_couch_z - couch_center_z
-  transMat = {
-    'M11':1.0,'M12':0.0,'M13':0.0,'M14':0.0,
-    'M21':0.0,'M22':1.0,'M23':0.0,'M24':0.0,
-    'M31':0.0,'M32':0.0,'M33':1.0,'M34':z_translation,
-    'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
-    }
-  # Only move couch if the translation is above threshold:
-  if z_translation > 1 and SSF.is_approved_roi_structure(ss, ROIS.couch.name) == False:
-    pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)

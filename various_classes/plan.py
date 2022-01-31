@@ -106,11 +106,6 @@ class Plan(object):
       target = SSF.determine_target(ss, roi_dict, prescription)
 
 
-    # Translate the couch in the longitudinal direction according to the location of the target volume:
-    if SSF.has_roi_with_shape(ss, ROIS.couch.name):
-      PMF.translate_couch_long(pm, ss, examination, target)
-
-
     # Create 'Mask_PTV' for partial brain and stereotactic brain:
     if region_code in RC.brain_codes and region_code not in RC.brain_whole_codes:
       PMF.create_mask_ptv_brain(patient, pm, examination, ss, nr_targets)

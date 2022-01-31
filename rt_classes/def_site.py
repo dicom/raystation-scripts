@@ -46,19 +46,19 @@ class DefSite(object):
         PMF.create_stereotactic_body_geometry(self.pm, self.examination, self.ss)
         PMF.create_stereotactic_external_geometry(self.pm, self.examination, self.ss)
         # Create couch:
-        PMF.create_couch(self.patient_db, self.pm, self.examination)
+        PMF.create_couch(self.patient_db, self.pm, self.ss, self.examination)
         PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name, couch_thickness = 11)
       else:
         # Create external geometry:
         PMF.create_external_geometry(self.pm, self.examination, self.ss)
         # Create couch:
-        PMF.create_couch(self.patient_db, self.pm, self.examination)
+        PMF.create_couch(self.patient_db, self.pm, self.ss, self.examination)
         PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name, couch_thickness = 11)
     else:
       # Create external geometry:
       PMF.create_external_geometry(self.pm, self.examination, self.ss)
       # Create couch:
-      PMF.create_couch(self.patient_db, self.pm, self.examination)
+      PMF.create_couch(self.patient_db, self.pm, self.ss, self.examination)
       PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
 
 
