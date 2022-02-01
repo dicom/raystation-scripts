@@ -89,10 +89,12 @@ def create_couch(patient_db, pm, ss, examination):
       # Slice thickness:
       slice_thickness = abs(examination.Series[0].ImageStack.SlicePositions[1] - examination.Series[0].ImageStack.SlicePositions[0])
       # Aim to apply a margin which extends the couch geometry to within one slice from the ends of the CT scan:
-      # Inferior/caudal margin:
+      # Inferior/caudal margin (must be minimum 0):
       margin_inferior = couch_box[0].z - (examination_box[0].z + slice_thickness)
-      # Superior/cranial margin:
+      margin_inferior = max(margin_inferior, 0)
+      # Superior/cranial margin (must be minimum 0):
       margin_superior = examination_box[1].z - (couch_box[1].z + slice_thickness)
+      margin_superior = max(margin_superior, 0)
       # Create corresponding margin object:
       couch_margin = MARGIN.Expansion(margin_superior, margin_inferior, 0.0, 0.0, 0.0, 0.0)
       # Create extended couch ROI recipe object:
