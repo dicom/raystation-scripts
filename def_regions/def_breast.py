@@ -47,7 +47,12 @@ class DefBreast(object):
         # Targets:
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_targets([ctv, ptv])
+        # Robustness evaluation volume:
+        if side == 'right':
+          ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv, margins = MARGINS.breast_right_robustness)
+        else:
+          ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv, margins = MARGINS.breast_left_robustness)
+        site.add_targets([ctv, ptv, ptv_robustness])        
         # OARs:
         site.add_oars(DEF.breast_whole_oars + [breast_draft])
       elif region in ['regional','regional_imn']:
@@ -82,8 +87,13 @@ class DefBreast(object):
         if region == 'regional_imn':
           site.add_oars([imn])
           ctv_n.sourcesA.extend([imn])
+        # Robustness evaluation volume:
+        if side == 'right':
+          ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv_p, margins = MARGINS.breast_right_robustness)
+        else:
+          ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv_p, margins = MARGINS.breast_left_robustness)
         # Common targets for all regional:
-        site.add_targets([ctv_p, ctv_n, ctv, ptv_p, ptv_n, ptv])
+        site.add_targets([ctv_p, ctv_n, ctv, ptv_p, ptv_n, ptv, ptv_robustness])
       # Add targets for boost (2 Gy x 8) if selected:
       if boost == 'with':
         ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
