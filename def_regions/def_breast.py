@@ -63,7 +63,8 @@ class DefBreast(object):
           ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv, margins = MARGINS.breast_right_robustness)
         else:
           ptv_robustness = ROI.ROIExpanded('PTV_robustness', ROIS.ptv.type, COLORS.ptv_high, ptv, margins = MARGINS.breast_left_robustness)
-        site.add_targets([ctv, ptv, ptv_robustness])        
+        # Targets for whole breast:
+        site.add_targets([ctv, ptv, ptv_robustness])
       elif region in ['regional','regional_imn']:
         # Regional breast (with or without IMN):
         # Side dependent OARs and support structures for regional treatment:
@@ -120,3 +121,7 @@ class DefBreast(object):
         site.add_targets([ctv_sb, ptv_sbc])
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    if 'ptv_robustness' in locals():
+      # Change type of robustness volume to avoid problems with dose grid and dose calculation:
+      pm.RegionsOfInterest['PTV_robustness'].Type = "Control"
+      pm.RegionsOfInterest['PTV_robustness'].OrganData.OrganType = "Other"
