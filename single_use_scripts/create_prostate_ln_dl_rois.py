@@ -76,7 +76,9 @@ def create_roi(name, color, type, alternatives):
   return roi
 
 # ROI colors:
-bone_color = '23, 107, 43'
+bone_color1 = 'ForestGreen'
+bone_color2 = 'Lime'
+bone_color3 = 'YellowGreen'
   
 # Create ROIs:
 # External:
@@ -84,89 +86,178 @@ external = create_roi(name = 'External', color = '255, 173, 91', type = 'Externa
 
 # Target volumes:
 # Prostate, vesicles and nodes:
-create_roi(name = 'Prostate', color = 'Magenta', type = 'Organ', alternatives=[])
+create_roi(name = 'Prostate', color = 'DeepPink', type = 'Ctv', alternatives=[])
 pm.RegionsOfInterest['Prostate'].OrganData.OrganType = "Target"
-create_roi(name = 'SeminalVes', color = '255, 128, 255', type = 'Organ', alternatives=['Seminal vesicles'])
+create_roi(name = 'SeminalVes', color = 'Violet', type = 'Ctv', alternatives=['Seminal vesicles'])
 pm.RegionsOfInterest['SeminalVes'].OrganData.OrganType = "Target"
-create_roi(name = 'LN_Iliac', color = 'Magenta', type = 'Organ', alternatives=[])
+create_roi(name = 'LN_Iliac', color = 'Magenta', type = 'Ctv', alternatives=['Pelvic nodes'])
 pm.RegionsOfInterest['LN_Iliac'].OrganData.OrganType = "Target"
 
 # Organs:
 # Intestinal:
-create_roi(name = 'BowelBag', color = '64, 0, 0', type = 'Organ', alternatives=['Bowel space'])
-pm.RegionsOfInterest['BowelBag'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'Liver', color = 'Khaki', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Liver'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'BowelBag_Draft', color = 'SandyBrown', type = 'Organ', alternatives=['Bowel space', 'BowelBag'])
+pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'Rectum', color = 'SaddleBrown', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Rectum'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'AnalCanal', color = '64, 0, 0', type = 'Organ', alternatives=[])
+create_roi(name = 'AnalCanal', color = 'Maroon', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['AnalCanal'].OrganData.OrganType = "OrganAtRisk"
 # Urological:
-create_roi(name = 'Kidney_L', color = '255, 160, 122', type = 'Organ', alternatives=[])
+create_roi(name = 'Kidney_L', color = 'LightSalmon', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Kidney_L'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Kidney_R', color = '255, 160, 122', type = 'Organ', alternatives=[])
+create_roi(name = 'Kidney_R', color = 'LightSalmon', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Kidney_R'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'Ureter_L', color = 'Orange', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Ureter_L'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'Ureter_R', color = 'Orange', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Ureter_R'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Bladder', color = 'Yellow', type = 'Organ', alternatives=[])
+create_roi(name = 'Bladder_Draft', color = 'Yellow', type = 'Organ', alternatives=['Bladder'])
+pm.RegionsOfInterest['Bladder_Draft'].OrganData.OrganType = "OrganAtRisk"
+# Bladder Algebra: Subtract Prostate:
+bladder = create_roi(name = 'Bladder', color = 'Yellow', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Bladder'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Urethra', color = 'Orange', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Urethra'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'PenileBulb', color = '255, 160, 122', type = 'Organ', alternatives=[])
+bladder.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Prostate'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.1, 'Inferior': 0.1, 'Anterior': 0.1, 'Posterior': 0.1, 'Right': 0.1, 'Left': 0.1 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+bladder.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+# (decided to exclude Urethra from this project)
+#create_roi(name = 'Urethra', color = 'Orange', type = 'Organ', alternatives=[])
+#pm.RegionsOfInterest['Urethra'].OrganData.OrganType = "OrganAtRisk"
+# Genital:
+create_roi(name = 'PenileBulb', color = 'PaleVioletRed', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['PenileBulb'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Testis_L', color = '255, 160, 122', type = 'Organ', alternatives=[])
+create_roi(name = 'Testis_L', color = 'Mediumvioletred', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Testis_L'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Testis_R', color = '255, 160, 122', type = 'Organ', alternatives=[])
+create_roi(name = 'Testis_R', color = 'Mediumvioletred', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Testis_R'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'DuctusDeferens_L', color = 'Orange', type = 'Organ', alternatives=[])
+create_roi(name = 'DuctusDeferens_L', color = 'Lightpink', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['DuctusDeferens_L'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'DuctusDeferens_R', color = 'Orange', type = 'Organ', alternatives=[])
+create_roi(name = 'DuctusDeferens_R', color = 'Lightpink', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['DuctusDeferens_R'].OrganData.OrganType = "OrganAtRisk"
 # Nerves:
-create_roi(name = 'SpinalCanal', color = 'Blue', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['SpinalCanal'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'CaudaEquina', color = 'Blue', type = 'Organ', alternatives=[])
+create_roi(name = 'CaudaEquina', color = 'Blue', type = 'Organ', alternatives=['SpinalCanal', 'SpinalCord', 'Spinalkanal', 'Spinal Cord'])
 pm.RegionsOfInterest['CaudaEquina'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'SacralNerveRoots', color = 'Blue', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['SacralNerveRoots'].OrganData.OrganType = "OrganAtRisk"
-# Other organs:
+create_roi(name = 'LumbarNerveRoots_L', color = 'RoyalBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['LumbarNerveRoots_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'LumbarNerveRoots_R', color = 'RoyalBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['LumbarNerveRoots_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'SacralNerveRoots_L', color = 'RoyalBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['SacralNerveRoots_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'SacralNerveRoots_R', color = 'RoyalBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['SacralNerveRoots_R'].OrganData.OrganType = "OrganAtRisk"
 # Vessels:
-create_roi(name = 'A_DescendingAorta', color = 'Red', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['A_DescendingAorta'].OrganData.OrganType = "Other"
-create_roi(name = 'A_InternalIliac', color = 'Red', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['A_InternalIliac'].OrganData.OrganType = "Other"
-create_roi(name = 'A_ExternalIliac', color = 'Red', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['A_ExternalIliac'].OrganData.OrganType = "Other"
-create_roi(name = 'V_InferiorVenaCava', color = 'Blue', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['V_InferiorVenaCava'].OrganData.OrganType = "Other"
-create_roi(name = 'V_InternalIliac', color = 'Blue', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['V_InternalIliac'].OrganData.OrganType = "Other"
-create_roi(name = 'V_ExternalIliac', color = 'Blue', type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['V_ExternalIliac'].OrganData.OrganType = "Other"
+# Arteries:
+create_roi(name = 'A_DescendingAorta', color = 'Maroon', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_DescendingAorta'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_CommonIliac_L', color = 'Red', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_CommonIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_CommonIliac_R', color = 'Red', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_CommonIliac_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_InternalIliac_L', color = 'Tomato', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_InternalIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_InternalIliac_R', color = 'Tomato', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_InternalIliac_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_ExternalIliac_L', color = 'OrangeRed', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_ExternalIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'A_ExternalIliac_R', color = 'OrangeRed', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_ExternalIliac_R'].OrganData.OrganType = "OrganAtRisk"
+# Artery Algebra (union):
+a_pelvic = create_roi(name = 'A_Pelvic', color = 'Red', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['A_Pelvic'].OrganData.OrganType = "OrganAtRisk"
+a_pelvic.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['A_DescendingAorta'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['A_CommonIliac_L', 'A_CommonIliac_R', 'A_ExternalIliac_L', 'A_ExternalIliac_R', 'A_InternalIliac_L', 'A_InternalIliac_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+a_pelvic.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+# Veins:
+create_roi(name = 'V_InferiorVenaCava', color = 'Navy', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_InferiorVenaCava'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_CommonIliac_L', color = 'Blue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_CommonIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_CommonIliac_R', color = 'Blue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_CommonIliac_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_InternalIliac_L', color = 'SlateBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_InternalIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_InternalIliac_R', color = 'SlateBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_InternalIliac_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_ExternalIliac_L', color = 'MediumSlateBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_ExternalIliac_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'V_ExternalIliac_R', color = 'MediumSlateBlue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_ExternalIliac_R'].OrganData.OrganType = "OrganAtRisk"
+# Vein Algebra (union):
+v_pelvic = create_roi(name = 'V_Pelvic', color = 'Blue', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['V_Pelvic'].OrganData.OrganType = "OrganAtRisk"
+v_pelvic.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['V_InferiorVenaCava'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['V_CommonIliac_L', 'V_CommonIliac_R', 'V_ExternalIliac_L', 'V_ExternalIliac_R', 'V_InternalIliac_L', 'V_InternalIliac_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+v_pelvic.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+# Muscles:
+# (decided to use only IliopsoasMuscle in this project)
+#create_roi(name = 'PsoasMuscle_L', color = 'Cyan', type = 'Organ', alternatives=[])
+#pm.RegionsOfInterest['PsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
+#create_roi(name = 'PsoasMuscle_R', color = 'Cyan', type = 'Organ', alternatives=[])
+#pm.RegionsOfInterest['PsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
+#create_roi(name = 'IliacusMuscle_L', color = 'Aquamarine', type = 'Organ', alternatives=[])
+#pm.RegionsOfInterest['IliacusMuscle_L'].OrganData.OrganType = "OrganAtRisk"
+#create_roi(name = 'IliacusMuscle_R', color = 'Aquamarine', type = 'Organ', alternatives=[])
+#pm.RegionsOfInterest['IliacusMuscle_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'IliopsoasMuscle_L', color = 'Darkcyan', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['IliopsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'IliopsoasMuscle_R', color = 'Darkcyan', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['IliopsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
+# Re-arrange muscle ROIs (for the first 5 patients):
+'''
+try:
+  if pm.RegionsOfInterest['PsoasMuscle_L']:
+    for roi in ['IliopsoasMuscle_L', 'IliopsoasMuscle_R']:
+      pm.RegionsOfInterest[roi].Name = roi + '_OLD'
+    muscle1 = create_roi(name = 'IliopsoasMuscle_L', color = 'Darkcyan', type = 'Organ', alternatives=[])
+    pm.RegionsOfInterest['IliopsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
+    muscle1.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['PsoasMuscle_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['IliacusMuscle_L', 'IliopsoasMuscle_L_OLD', ], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+    muscle1.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+    muscle2 = create_roi(name = 'IliopsoasMuscle_R', color = 'Darkcyan', type = 'Organ', alternatives=[])
+    pm.RegionsOfInterest['IliopsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
+    muscle2.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['PsoasMuscle_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['IliacusMuscle_R', 'IliopsoasMuscle_R_OLD', ], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+    muscle2.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+    # Remove the unwanted muscle ROIs:
+    for name in ['PsoasMuscle_L', 'PsoasMuscle_R', 'IliacusMuscle_L', 'IliacusMuscle_R', 'IliopsoasMuscle_L_OLD', 'IliopsoasMuscle_R_OLD']:
+      try:
+        roi = pm.RegionsOfInterest[name]
+        roi.DeleteRoi()
+      except:
+        pass
+except:
+  pass
+'''
 # Bone:
-create_roi(name = 'FemurHeadNeck_L', color = bone_color, type = 'Organ', alternatives=['FemoralHead_L', 'Femoral head left'])
-pm.RegionsOfInterest['FemurHeadNeck_L'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'FemurHeadNeck_R', color = bone_color, type = 'Organ', alternatives=['FemoralHead_R', 'Femoral head right'])
-pm.RegionsOfInterest['FemurHeadNeck_R'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'PelvicGirdle_L', color = bone_color, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['PelvicGirdle_L'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'PelvicGirdle_R', color = bone_color, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['PelvicGirdle_R'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'Sacrum', color = bone_color, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Sacrum'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'L2', color = bone_color, type = 'Organ', alternatives=[])
+create_roi(name = 'L2', color = bone_color1, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['L2'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'L3', color = bone_color, type = 'Organ', alternatives=[])
+create_roi(name = 'L3', color = bone_color2, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['L3'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'L4', color = bone_color, type = 'Organ', alternatives=[])
+create_roi(name = 'L4', color = bone_color1, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['L4'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'L5', color = bone_color, type = 'Organ', alternatives=[])
+create_roi(name = 'L5', color = bone_color2, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['L5'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'PelvicGirdle_L', color = bone_color3, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['PelvicGirdle_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'PelvicGirdle_R', color = bone_color3, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['PelvicGirdle_R'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'Sacrum', color = bone_color1, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Sacrum'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'Coccyx', color = bone_color2, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Coccyx'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'FemurHeadNeck_L', color = bone_color1, type = 'Organ', alternatives=['FemoralHead_L', 'Femoral head left'])
+pm.RegionsOfInterest['FemurHeadNeck_L'].OrganData.OrganType = "OrganAtRisk"
+create_roi(name = 'FemurHeadNeck_R', color = bone_color1, type = 'Organ', alternatives=['FemoralHead_R', 'Femoral head right'])
+pm.RegionsOfInterest['FemurHeadNeck_R'].OrganData.OrganType = "OrganAtRisk"
+
+# ROI Algebra:
+# BowelBag Algebra (subtract Bladder, veins, etc)
+bowel_bag = create_roi(name = 'BowelBag', color = 'SandyBrown', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['BowelBag'].OrganData.OrganType = "OrganAtRisk"
+bowel_bag.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['BowelBag_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft', 'Prostate', 'SeminalVes', 'PelvicGirdle_L', 'PelvicGirdle_R', 'Sacrum', 'L2', 'L3', 'L4', 'L5', 'IliopsoasMuscle_L', 'IliopsoasMuscle_R', 'A_DescendingAorta', 'A_CommonIliac_L', 'A_CommonIliac_R', 'A_ExternalIliac_L', 'A_ExternalIliac_R', 'A_InternalIliac_L', 'A_InternalIliac_R', 'V_InferiorVenaCava', 'V_CommonIliac_L', 'V_CommonIliac_R', 'V_ExternalIliac_L', 'V_ExternalIliac_R', 'V_InternalIliac_L', 'V_InternalIliac_R', 'Ureter_L', 'Ureter_R', 'Ureter_L', 'DuctusDeferens_L', 'DuctusDeferens_R', 'Kidney_L', 'Kidney_R', 'Liver'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.1, 'Inferior': 0.1, 'Anterior': 0.1, 'Posterior': 0.1, 'Right': 0.1, 'Left': 0.1 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+bowel_bag.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+
+
 
 # Non-organs:
 # Prostate seed markers:
 # Does markers exist already? (If so, we'll set up our marker ROI as a union of those)
-marker_candidates = ['Seed 1', 'Seed 2', 'Seed 3', 'Seed 4', 'Marker1', 'Marker2', 'Marker3']
+marker_candidates = ['Markers', 'Seed iso', 'Seed 1', 'Seed 2', 'Seed 3', 'Seed 4', 'Marker1', 'Marker2', 'Marker3']
 marker_rois = []
 # Add ones that exist to our list:
 for candidate in marker_candidates:
@@ -190,30 +281,44 @@ for plan in case.TreatmentPlans:
 delete = [
   'CTV 0-77',
   'CTV 0-70',
+  'CTV 0-56',
+  'CTV 0-77 union',
   'CTV_56',
   'CTV!_56',
   'CTV_77',
   'CTV!_70',
   'CTV_Prostate_SV',
+  'CTV 0-63 bekken glandel sin met',
   'PTV 0-77',
   'PTV 0-70',
+  'PTV 0-56',
+  'PTV 0-63',
+  'PTV 0-77 union',
   'PTV_77',
   'PTV!_70',
   'PTV!_56',
   'PTV_70+77',
   'PTV_56+70+77',
   'PTV_Prostate_SV',
+  'PTV70-dorsrect',
+  'PTV ves sim 0-77',
   'zPTV_77_Wall',
   'zPTV_70+77_Wall',
+  'Wall_PTVp',
   'zBladder',
   'zRectum',
   'zBowelBag',
   'Bowel space - PTV',
   'Rectum - PTV',
   'Bladder - PTV',
+  'Bladder MBS',
   'Dorso_Rektum',
+  'Dorso_Rectum',
   'Wall PTV_77',
   'hjelprektum',
+  'DorsRectum',
+  'rectPTV',
+  'Seed iso',
   'Seed 1',
   'Seed 2',
   'Seed 3',
@@ -221,7 +326,24 @@ delete = [
   'Marker1',
   'Marker2',
   'Marker3',
+  'opt 56',
+  'opt56',
+  'opt561',
+  'opt 60 Gy',
+  'opt70',
+  'opt 70',
+  'opt77',
+  'opt 77',
+  'opt 77-2',
+  'opt 77-3',
+  'opt53,2',
+  'optmax',
+  '53',
+  '66,5',
   '79',
+  '105',
+  '1052',
+  'Ves sem sin innvekst 77GY',
 ]
 
 for name in delete:
