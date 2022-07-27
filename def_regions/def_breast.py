@@ -74,12 +74,15 @@ class DefBreast(object):
       except:
         pass
     # Override the density of the breast string to 'Air' (since it is not present on treatments):
+    # root and db are not reliable variables obviously. We need some reliable way of getting this database parameter...
+    '''
     if side == 'right':
-      #pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=pm.Materials[4])
-      pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=root.TemplateMaterials[''Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' '].Materials[1])
+      #pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=pm.Materials[4])      
+      pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=root.TemplateMaterials["'Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' "].Materials[1])
     else:
       #pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=pm.Materials[4])
-      pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=root.TemplateMaterials[''Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' '].Materials[1])
+      pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=root.TemplateMaterials["'Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' "].Materials[1])
+    '''
     # Exclude some ROIs from export:
     for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name]:
       PMF.exclude_roi_from_export(pm, roi_name)
@@ -202,7 +205,8 @@ class DefBreast(object):
         examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_R", "Breast_R_Draft", "Clips_R", "SurgicalBed_R"])
       # Change type to 'Other' for selected ROIs:
       for roi_name in ['Clips_R','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_R']:
-        pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+        if pm.RegionsOfInterest[roi_name].OrganData.OrganType != "Other":
+          pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
       # OARs:
       if bilateral:
         site.add_oars([ROIS.liver, ROIS.lungs])
