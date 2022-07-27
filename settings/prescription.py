@@ -94,6 +94,7 @@ als = [
 ]
 breast = [
   Prescription(16, 8, 'MedianDose'),
+  Prescription(26, 5, 'MedianDose'),
   Prescription(40.05, 15, 'MedianDose'),
   Prescription(50, 25, 'MedianDose')
 ]
@@ -105,12 +106,14 @@ lung = [
   Prescription(42, 15, 'MedianDose'),
   Prescription(48, 16, 'MedianDose'),
   Prescription(51, 17, 'MedianDose'),
+  Prescription(55, 20, 'MedianDose'),
   Prescription(50, 25, 'MedianDose'),
   Prescription(54, 27, 'MedianDose'),
-  Prescription(45, 30, 'MedianDose'),
+  Prescription(45, 30, 'MedianDose'), # Bi-daily
   Prescription(60, 30, 'MedianDose'),
   Prescription(66, 33, 'MedianDose'),
   Prescription(70, 35, 'MedianDose'),
+  Prescription(60, 40, 'MedianDose'), # Bi-daily
   # Stereotactic:
   Prescription(45, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(54, 3, 'DoseAtVolume', volume_percent=99),
@@ -181,7 +184,7 @@ def create_prescription(total_dose, nr_fractions, region_code):
     if (nr_fractions == 3 and total_dose >= 45) or (nr_fractions == 5 and total_dose >= 55) or (nr_fractions == 8 and total_dose >= 56):
       stereotactic = True
   elif region_code in RC.bone_stereotactic_codes:
-    if (nr_fractions == 1 and total_dose >= 16) or (nr_fractions == 3 and total_dose >= 27):
+    if (nr_fractions == 1 and total_dose >= 16) or (nr_fractions == 3 and total_dose >= 24) or (nr_fractions == 5 and total_dose >= 30):
       stereotactic = True
   if stereotactic:
     p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=99)

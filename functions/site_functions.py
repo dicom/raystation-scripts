@@ -25,23 +25,23 @@ def brain(pm, examination, ss, plan, prescription, region_code):
 
 # Lung:
 def lung(ss, plan, prescription, region_code, target):
-  if prescription.total_dose == 45 and prescription.nr_fractions == 3:
+  if prescription.is_stereotactic() and prescription.nr_fractions == 3:
     site = SITE.Site(RC.lung_codes, OBJ.lung_objectives, OBJ.create_lung_stereotactic_objectives(ss, plan, region_code, prescription.total_dose), CGS.lung_stereotactic_3fx_oars(region_code), CGS.lung_stereotactic_targets(ss))
-  elif prescription.total_dose == 55 and prescription.nr_fractions == 5:
+  elif prescription.is_stereotactic() and prescription.nr_fractions == 5:
     site = SITE.Site(RC.lung_codes, OBJ.lung_objectives, OBJ.create_lung_stereotactic_objectives(ss, plan, region_code, prescription.total_dose), CGS.lung_stereotactic_5fx_oars(region_code), CGS.lung_stereotactic_targets(ss))
-  elif prescription.total_dose == 56 and prescription.nr_fractions == 8:
+  elif prescription.is_stereotactic() and prescription.nr_fractions == 8:
     site = SITE.Site(RC.lung_codes, OBJ.lung_objectives, OBJ.create_lung_stereotactic_objectives(ss, plan, region_code, prescription.total_dose), CGS.lung_stereotactic_8fx_oars(region_code), CGS.lung_stereotactic_targets(ss))
   else:
-    site = SITE.Site(RC.lung_codes, OBJ.lung_objectives, OBJ.create_lung_objectives(ss, plan, target, prescription.total_dose), CGS.lung_oars(ss), CGS.lung_targets(ss))
+    site = SITE.Site(RC.lung_codes, OBJ.lung_objectives, OBJ.create_lung_objectives(ss, plan, target, prescription.total_dose), CGS.lung_oars(ss, prescription), CGS.lung_targets(ss))
   return site
 
 
 # Breast:
 def breast(ss, plan, prescription, region_code, technique_name, target):
   if region_code in RC.breast_reg_codes:
-    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose, technique_name), CGS.breast_oars(ss, region_code), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose, technique_name), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
   else:
-    site = SITE.Site(RC.breast_tang_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, prescription.total_dose, target), CGS.breast_oars(ss, region_code), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_tang_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, prescription.total_dose, target), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
   return site
 
 
@@ -94,7 +94,7 @@ def bone_stereotactic(ss, plan, prescription, region_code):
     oar_objectives = OAR.palliative_stereotactic_pelvis_oars
   if prescription.nr_fractions == 1:
     site = SITE.Site(RC.bone_stereotactic_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_1fx_oars(region_code), CGS.bone_stereotactic_targets)
-  elif prescription.nr_fractions == 3:
+  else:
     site = SITE.Site(RC.bone_stereotactic_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_3fx_oars(region_code), CGS.bone_stereotactic_targets)
   return site
 
@@ -115,12 +115,6 @@ def site(pm, examination, ss, plan, prescription, region_code, target, technique
     site = brain(pm, examination, ss, plan, prescription, region_code)
   elif region_code in RC.breast_codes:
     # Breast:
-    if region_code in RC.breast_not_thorax_codes:
-      # Create a "Markers" ROI:
-      breast_target = SSF.determine_breast_primary_target(ss)
-      PMF.create_grey_value_intersection_roi(pm, examination, ss, ROIS.temp_markers, breast_target, ROIS.markers, 250, 2500)
-      if PMF.has_roi(pm, ROIS.markers.name):
-        pm.RegionsOfInterest[ROIS.markers.name].OrganData.OrganType = 'Other'
     site = breast(ss, plan, prescription, region_code, technique_name, target)
   elif region_code in RC.lung_and_mediastinum_codes:
     # Lung:

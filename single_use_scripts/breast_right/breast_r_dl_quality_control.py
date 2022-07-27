@@ -1,4 +1,4 @@
-# Quality control of ROIs used in the Prostate Deep Learning project.
+# Quality control of ROIs used in the Breast_R Deep Learning project.
 
 # RayStation 10B - Python 3.6
 
@@ -100,87 +100,88 @@ def remove_overlap(master_rois, yielding_roi):
 
 
 # Remove some common overlaps between neighbouring ROIs:
-# From Prostate, extract SeminalVes:
-#remove_overlap(["Prostate"], "SeminalVes")
+# From Lungs and Esophagus, extract Heart:
+remove_overlap(["Lung_R", "Lung_L", "Esophagus"], "Heart")
+# From Lungs and Trachea, extract Esophagus:
+remove_overlap(["Lung_R", "Lung_L", "Trachea"], "Esophagus")
+# From Lung_R, extract V_Brachioceph_R:
+remove_overlap(["Lung_R"], "V_Brachioceph_R")
+# From Lungs, extract A_Brachioceph:
+remove_overlap(["Lung_R", "Lung_L"], "A_Brachioceph")
+# From Sternum and Lung_R, extract LN_IMN_R:
+remove_overlap(["Sternum", "Lung_R"], "LN_IMN_R")
+# From Breast_R, extract LN_Ax_L1_R:
+remove_overlap(["Breast_R"], "LN_Ax_L1_R")
+# From LN_Ax_L1_R, extract LN_Ax_L2_R:
+remove_overlap(["LN_Ax_L1_R"], "LN_Ax_L2_R")
+# From LN_Ax_L3_R, extract LN_Ax_L2_R:
+remove_overlap(["LN_Ax_L3_R"], "LN_Ax_L2_R")
+# From LN_Ax_L3_R, extract LN_Ax_L4_R:
+remove_overlap(["LN_Ax_L3_R"], "LN_Ax_L4_R")
+# From LN_Ax_L1_R and LN_Ax_L2_R and LN_Ax_L3_R, extract LN_Ax_Pectoral_R:
+remove_overlap(["LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R"], "LN_Ax_Pectoral_R")
+# From A_Subclavian_R+A_Axillary_R, extract ScaleneMusc_Ant_R:
+remove_overlap(["A_Subclavian_R+A_Axillary_R"], "ScaleneMusc_Ant_R")
+# From Trachea and A_Carotid_R and V_Jugular_R, extract ThyroidGland:
+remove_overlap(["Trachea", "A_Carotid_R", "V_Jugular_R"], "ThyroidGland")
+# From A_Carotid_R, extract V_Subclavian_R+V_Axillary_R:
+remove_overlap(["A_Carotid_R"], "V_Subclavian_R+V_Axillary_R")
 
 
-'''
-# Remove bony density areas from the CaudaEquina:
+# Remove bony density areas from the SpinalCanal (and SpinalCanalFull):
 # Create a bony ROI by density:
 bone = get_item(pm.RegionsOfInterest, "Bone")
 if bone:
   bone.DeleteRoi()
 bone = pm.CreateRoi(Name = 'Bone', Color = 'Yellow', Type = 'Undefined')
 bone.GrayLevelThreshold(Examination=examination, LowThreshold=250, HighThreshold=3071, PetUnit=r"", CbctUnit=None, BoundingBox=None)
-# From the bony density ROI, extract CaudaEquina:
-remove_overlap(["Bone"], "CaudaEquina")
+# From the bony density ROI, extract SpinalCanalFull:
+remove_overlap(["Bone"], "SpinalCanalFull")
 bone.DeleteRoi()
-'''
+
 
 # ROIs which are used to derive ROIs (they are accepted to be present, but not required to be):
 temp_rois = [
-  'BowelBag_Draft',
-  'Bladder_Draft'
+  'Breast_L_Draft',
+  'Breast_R_Draft'
 ]
 
 # ROIs which are required to always be present:
 required_rois = [
-  'Prostate',
-  'SeminalVes',
-  'LN_Iliac',
+  'Breast_R',
+  'LN_Ax_L1_R',
+  'LN_Ax_L2_R',
+  'LN_Ax_L3_R',
+  'LN_Ax_L4_R',
+  'LN_Ax_Pectoral_R',
+  'LN_IMN_R',
+  'Sternum',
+  'ScaleneMusc_Ant_R',
+  'A_Brachioceph',
+  'A_Subclavian_R+A_Axillary_R',
+  'A_Carotid_R',
+  'V_Brachioceph_R',
+  'V_Subclavian_R+V_Axillary_R',
+  'V_Jugular_R',
   'External',
-  'Markers',
-  'L2',
-  'L3',
-  'L4',
-  'L5',
-  'Sacrum',
-  'Coccyx',
-  'PelvicGirdle_L',
-  'PelvicGirdle_R',
-  'FemurHeadNeck_L',
-  'FemurHeadNeck_R',
-  'A_DescendingAorta',
-  'A_CommonIliac_L',
-  'A_CommonIliac_R',
-  'A_ExternalIliac_L',
-  'A_InternalIliac_L',
-  'A_ExternalIliac_R',
-  'A_InternalIliac_R',
-  'A_Pelvic',
-  'V_InferiorVenaCava',
-  'V_CommonIliac_L',
-  'V_CommonIliac_R',
-  'V_InternalIliac_L',
-  'V_InternalIliac_R',
-  'V_ExternalIliac_L',
-  'V_ExternalIliac_R',
-  'V_Pelvic',
-  'IliopsoasMuscle_L',
-  'IliopsoasMuscle_R',
-  'CaudaEquina',
-  'LumbarNerveRoots_L',
-  'LumbarNerveRoots_R',
-  'SacralNerveRoots_L',
-  'SacralNerveRoots_R',
-  'BowelBag',
-  'Rectum',
-  'AnalCanal',
-  'Kidney_L',
-  'Kidney_R',
-  'Ureter_L',
-  'Ureter_R',
-  'Bladder',
-  'PenileBulb',
-  'DuctusDeferens_L',
-  'DuctusDeferens_R'
+  'Lung_R',
+  'Lung_L',
+  'Heart',
+  'A_LAD',
+  'SpinalCanalFull',
+  'HumeralHead_R',
+  'ThyroidGland',
+  'Trachea',
+  'Esophagus',
+  'Liver',
+  'Breast_L'
 ]
 
 # ROIs which may be defined, depending on the patient case:
 optional_rois = [
-  'Liver',
-  'Testis_L',
-  'Testis_R',
+  'SurgicalBed_R',
+  'Clips_R',
+  'BreastString_R',
   'Couch'
 ]
 
@@ -199,9 +200,14 @@ for roi in pm.RegionsOfInterest:
   
 # Test for type target:
 targets = [
-  'Prostate',
-  'SeminalVes',
-  'LN_Iliac'
+  'Breast_R',
+  'LN_Ax_L1_R',
+  'LN_Ax_L2_R',
+  'LN_Ax_L3_R',
+  'LN_Ax_L4_R',
+  'LN_Ax_Pectoral_R',
+  'LN_IMN_R',
+  'SurgicalBed_R'
 ]
 for target in targets:
   if get_item(pm.RegionsOfInterest, target):
@@ -210,53 +216,18 @@ for target in targets:
 
 # Test for type organ/organ at risk:
 risk_organs = [
-  'L2',
-  'L3',
-  'L4',
-  'L5',
-  'Sacrum',
-  'Coccyx',
-  'PelvicGirdle_L',
-  'PelvicGirdle_R',
-  'FemurHeadNeck_L',
-  'FemurHeadNeck_R',
-  'A_DescendingAorta',
-  'A_CommonIliac_L',
-  'A_CommonIliac_R',
-  'A_ExternalIliac_L',
-  'A_InternalIliac_L',
-  'A_ExternalIliac_R',
-  'A_InternalIliac_R',
-  'A_Pelvic',
-  'V_InferiorVenaCava',
-  'V_CommonIliac_L',
-  'V_CommonIliac_R',
-  'V_InternalIliac_L',
-  'V_InternalIliac_R',
-  'V_ExternalIliac_L',
-  'V_ExternalIliac_R',
-  'V_Pelvic',
-  'IliopsoasMuscle_L',
-  'IliopsoasMuscle_R',
-  'CaudaEquina',
-  'LumbarNerveRoots_L',
-  'LumbarNerveRoots_R',
-  'SacralNerveRoots_L',
-  'SacralNerveRoots_R',
-  'BowelBag',
-  'Rectum',
-  'AnalCanal',
-  'Kidney_L',
-  'Kidney_R',
-  'Ureter_L',
-  'Ureter_R',
-  'Bladder',
-  'PenileBulb',
-  'DuctusDeferens_L',
-  'DuctusDeferens_R',
+  'Sternum',
+  'Lung_R',
+  'Lung_L',
+  'Heart',
+  'A_LAD',
+  'SpinalCanalFull',
+  'HumeralHead_R',
+  'ThyroidGland',
+  'Trachea',
+  'Esophagus',
   'Liver',
-  'Testis_L',
-  'Testis_R'
+  'Breast_L'
 ]
 for organ in risk_organs:
   if get_item(pm.RegionsOfInterest, organ):
@@ -268,7 +239,8 @@ for organ in risk_organs:
 
 # Test for type marker:
 markers = [
-  'Markers'
+  'Clips_R',
+  'BreastString_R'
 ]
 for marker in markers:
   if get_item(pm.RegionsOfInterest, marker):
@@ -277,6 +249,13 @@ for marker in markers:
 
 # Target definition support structures:
 support_organs = [
+  'ScaleneMusc_Ant_R',
+  'A_Brachioceph',
+  'A_Subclavian_R+A_Axillary_R',
+  'A_Carotid_R',
+  'V_Brachioceph_R',
+  'V_Subclavian_R+V_Axillary_R',
+  'V_Jugular_R'
 ]
 # Test for organ type other:
 for organ in support_organs:
@@ -286,6 +265,11 @@ for organ in support_organs:
     else:
       if not pm.RegionsOfInterest[organ].OrganData.OrganType == 'Other':
         failures.append(organ + ' - forventet at denne har OrganType "Other", fant: ' + pm.RegionsOfInterest[organ].OrganData.OrganType)
+
+# If the optional ROI 'Clips_L' exists, then the optional 'SurgicalBed_L' ROI should be defined:
+if get_item(pm.RegionsOfInterest, 'Clips_R'):
+  if not get_item(pm.RegionsOfInterest, 'SurgicalBed_R'):
+    failures.append("Når strukstursettet inneholder 'Clips_R', så skal 'SurgicalBed_R' være definert også!")
 
 # Get the structure set in which we expect to have the ROI geometries defined:
 ss = case.TreatmentPlans[0].BeamSets[0].GetStructureSet()
@@ -299,10 +283,9 @@ for roi in allowed_rois:
 
 # Test for gaps in ROIs:
 rois = required_rois
-rois.extend(optional_rois)
-# Nerve root ROIs are not continuous, and should be removed for this particular test:
-for roi in ['LumbarNerveRoots_L','LumbarNerveRoots_R','SacralNerveRoots_L','SacralNerveRoots_R']:
-  rois.remove(roi)
+rois.append('BreastString_R')
+rois.append('SurgicalBed_R')
+
 for roi in rois:
   if get_item(pm.RegionsOfInterest, roi):
     missing_slices = gaps(roi)
@@ -316,7 +299,7 @@ if len(failures) == 0:
 # Display the results:
 root = Tk()
 root.withdraw()
-title = "Prostate Deep Learning project"
+title = "BREAST_R Deep Learning project"
 text = "\n".join(failures)
 messagebox.showinfo(title, text)
 root.destroy()

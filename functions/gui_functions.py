@@ -132,16 +132,8 @@ def determine_choices(region_code, prescription, my_window, choices):
   technique_name = 'VMAT'
   # Default optimization value
   opt = ''
-  if region_code in RC.breast_tang_codes or region_code in RC.breast_partial_codes:
-    # Partial breast or whole breast:
-    # Chosen technique value, 'VMAT' or 'Conformal'
-    technique = 'Conformal'
-    # Chosen technique name, 'VMAT' or '3D-CRT'
-    technique_name = '3D-CRT'
-    # Chosen optimization value
-    opt = 'oar'
-  elif region_code in RC.breast_reg_codes:
-    # Regional breast:
+  if region_code in RC.breast_codes:
+    # Breast (VMAT is standard, but allow choice of 3D-CRT for a transition period):
     # Determine which technique choices which will appear in the form
     techniques = RB.RadioButton('Planoppsett ', 'Velg planoppsett: ', PC.techniques)
     # Collects the selected choices from the user
@@ -174,6 +166,13 @@ def determine_choices(region_code, prescription, my_window, choices):
   return results
 
 
+# Handles the situation when the attempt to delete a ROI results in a crash.
+def handle_delete_roi_error(roi_name):
+  title = "Feilet å slette ROI"
+  text = "Mislyktes å slette følgende ROI:" + "\n" + roi_name + "\n\n" + "Årsaken kan være at struktursettet er låst (signert)."
+  messagebox.showinfo(title, text)
+
+
 # Handles the sitsuation of a missing ROI when trying to create a clinical goal.
 def handle_error_on_clinical_goal_creation(cg, error):
   title = "Feilmelding!"
@@ -201,13 +200,6 @@ def handle_existing_rois(pm, ss):
   else:
     my_window = Tk()
   return my_window
-
-
-# Displays a message informing the user that dose computation failed.
-def handle_failed_dose_computation():
-  title = "Doseberegning mislyktes"
-  text = "Doseberegning mislyktes. Mest sannsynlig er dette forårsaket av at datamaskinen ikke har nødvendig hardware (GPU) for beregning av dose."
-  messagebox.showinfo(title, text)
 
 
 # Displays a warning for a prescription which is unknown for a given region code.
@@ -300,6 +292,15 @@ def handle_missing_target():
   text = "Mislyktes i gjenkjenne målvolum for denne casen." + "\n\n" + "Årsaken er sannsynligvis at navngivingen på målvolumene avviker fra forventet nomenklatur."
   messagebox.showinfo(title, text)
   sys.exit(0)
+
+
+# Handles an error occuring when doing beam set optimization.
+def handle_optimization_error(po, error):
+  title = "Feilmelding!"
+  msg = error.args[0]
+  msg_intro = msg.partition('--- End of inner exception stack trace')[0]
+  text = "Det skjedde en feil ved optimalisering av følgende beam set:\n" + po.OptimizedBeamSets[0].DicomPlanLabel + "\n\nFeilmelding:\n" + msg_intro + "\n\nEn vanlig årsak kan være manglende GPU til å gjøre beregninger på datamaskinen.\n\nHvis det ser ut til å være en annen feil, kan du vurdere å ta kontakt med skript-ansvarlig for feilsøking!"
+  messagebox.showinfo(title, text)
 
 
 # Handles the situation where the CT selected as primary is not the most recent CT in the case.

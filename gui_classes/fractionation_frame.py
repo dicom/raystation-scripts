@@ -85,7 +85,7 @@ class FractionationFrame(Frame):
             messagebox.showinfo("Ugyldig fraksjonsdose.","Ugyldig fraksjonsdose." )
             sys.exit(0)
             
-        if 0 < int(self.number_of_fractions_entry.get()) < 40:
+        if 0 < int(self.number_of_fractions_entry.get()) <= 40:
             number_of_fractions = int(self.number_of_fractions_entry.get())
         else:
             messagebox.showinfo("Ugyldig antall fraksjoner.","Ugyldig antall fraksjoner." )

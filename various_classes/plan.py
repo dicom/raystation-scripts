@@ -204,7 +204,7 @@ class Plan(object):
 
 
     # Set up beams and optimization for breast patients:
-    if technique_name == 'VMAT' and region_code in RC.breast_reg_codes:
+    if technique_name == 'VMAT' and region_code in RC.breast_codes:
       # Use robust optimization for VMAT breast:
       OBJF.set_robustness_breast(plan, region_code)
     elif technique_name == '3D-CRT' and region_code in RC.breast_codes:
@@ -233,16 +233,16 @@ class Plan(object):
       # Run the optimization (may crash if GPU for computation is not available):
       try:
         plan_optimization.RunOptimization()
-      except:
-        GUIF.handle_failed_dose_computation()
+      except Exception as e:
+        GUIF.handle_optimization_error(plan_optimization, e)
 
 
     # Start adaptive optimization if indicated:
     if opt == 'oar':
       try:
         OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
-      except:
-        GUIF.handle_failed_dose_computation()
+      except Exception as e:
+        GUIF.handle_optimization_error(plan_optimization, e)
       if region_code in RC.breast_codes and technique_name != 'VMAT':
         # Modify leaves for the open fields in non-VMAT breast:
         if region_code in RC.breast_reg_codes:
@@ -253,8 +253,8 @@ class Plan(object):
         # Compute dose:
         try:
           beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
-        except:
-          GUIF.handle_failed_dose_computation()
+        except Exception as e:
+          GUIF.handle_optimization_error(plan_optimization, e)
       # Auto scale to prescription:
       for plan_optimization in plan.PlanOptimizations:
         plan_optimization.AutoScaleToPrescription = True

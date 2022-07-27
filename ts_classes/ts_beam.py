@@ -261,24 +261,15 @@ class TSBeam(object):
   # Tests if the jaw opening on a vmat plan is big enough to risk exposing the electronics of the QA detector.
   # The "limit" towards the electronics is 15 cm away from the gantry from the isocenter.
   def wide_jaw_opening_which_can_hit_vmat_qa_detector_electronics_test(self):
-    t = TEST.Test("Høy kollimator-åpning detektert. Avhengig av kollimatorvinkel og kollimatoråpning, kan man i slik situasjoner risikere å bestråle elektronikken på ArcCheck-detektoren, som bør unngås. Ved asymmetrisk isosenter, bør isosenter vurderes flyttet for å unngå dette.", '<14.3 cm', self.opening)
+    t = TEST.Test("Høy kollimator-åpning detektert. Avhengig av kollimatorvinkel og kollimatoråpning, kan man i slike situasjoner risikere å bestråle elektronikken på ArcCheck-detektoren, som bør unngås. Ved asymmetrisk isosenter, bør isosenter vurderes flyttet for å unngå dette.", '<15 cm', self.opening)
     # Perform the test only for VMAT beams:
-    if self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'HFS':
-      if self.is_vmat():
-        if self.has_segment():
-          jaws = self.beam.Segments[0].JawPositions
-          if jaws[2] < -14.3:
-            return t.fail(round(abs(jaws[2]),1))
-          else:
-            return t.succeed()
-    elif self.ts_beam_set.ts_plan.ts_case.case.Examinations[0].PatientPosition == 'FFS':
-      if self.is_vmat():
-        if self.has_segment():
-          jaws = self.beam.Segments[0].JawPositions
-          if jaws[3] > 14.3:
-            return t.fail(round(jaws[3],1))
-          else:
-            return t.succeed()
+    if self.is_vmat():
+      if self.has_segment():
+        jaws = self.beam.Segments[0].JawPositions
+        if jaws[2] < -15:
+          return t.fail(round(abs(jaws[2]),1))
+        else:
+          return t.succeed()
 
   # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
   def wide_jaw_opening_for_filter_free_energies(self):

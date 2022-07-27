@@ -224,23 +224,48 @@ def brain_oars(prescription, region_code):
         CG.ClinicalGoal(ROIS.pituitary.name, at_most, average_dose, TOL.pituitary_2_mean, None, priority4),
         CG.ClinicalGoal(ROIS.cornea_l.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority4),
         CG.ClinicalGoal(ROIS.cornea_r.name, at_most, dose_at_abs_volume, TOL.cornea_v003_adx, cc0_03, priority4),
-        CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority5),
-        CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_v003, cc3, priority5)
+        CG.ClinicalGoal(ROIS.brain.name, at_most, dose_at_abs_volume, TOL.brain_v003, cc3, priority5),
+        CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority6)
       ]
   return brain_oars
 
 
 # Breast (Regional breast/Whole breast/Partial breast):
-def breast_oars(ss, region_code):
+def breast_oars(ss, region_code, prescription):
   # Common for all breast variants:
   breast_oars = [
-    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_15, None, priority3),
-    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority5)
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_breast, cc0_03, priority2),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
+    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority6),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_low_priority, None, priority6)
   ]
+  if region_code in RC.breast_l_codes:
+    breast_oars += [
+      CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+      CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
+    ]
+  else:
+    breast_oars += [
+      CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
+      CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
+    ]
+  if prescription.nr_fractions == 5:
+    # Tolerances specific for FastForward (5 fractions):
+    breast_oars += [
+      CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.05, TOL.heart_v7_fastforward, priority6),
+      CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.3, TOL.heart_v1_5_fastforward, priority6)
+    ]
+    if region_code in RC.breast_l_codes:
+      breast_oars += [
+        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
+      ]
+    else:
+      breast_oars += [
+        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
+      ]
   if region_code in RC.breast_reg_codes:
     # Common for regional left & right:
     breast_oars += [
-      CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_v2_adx, cc2, priority2),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
@@ -255,14 +280,12 @@ def breast_oars(ss, region_code):
       # Specific for regional left:
       breast_oars += [
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
-        CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_l.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
     else:
       # Specific for regional right:
       breast_oars += [
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
-        CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
         CG.ClinicalGoal(ROIS.humeral_r.name, at_most, volume_at_dose, pc33, TOL.humeral_v33_adx, priority6)
       ]
   else:
@@ -284,17 +307,7 @@ def breast_oars(ss, region_code):
 
 # Lung (conventional):
 # (In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs')
-def lung_oars(ss):
-  lung_oars = [
-    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2),
-    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority3),
-    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, TOL.heart_v25_adx, priority3),
-    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority3),
-    CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, TOL.esophagus_v17_adx, priority3),
-    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority6),
-    CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority6),
-    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcanal_chemo_v2_adx, pc2, priority6)
-  ]
+def lung_oars(ss, prescription):
   # Determine which variant to use for the general lungs CG:
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
     lungs = ROIS.lungs_gtv.name
@@ -302,9 +315,49 @@ def lung_oars(ss):
     lungs = ROIS.lungs_igtv.name
   else:
     lungs = ROIS.lungs.name
-  lung_oars += [
-    CG.ClinicalGoal(lungs, at_most, average_dose, TOL.lung_mean, None, priority3),
-    CG.ClinicalGoal(lungs, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
+  # Once daily or bi-daily fractionation?
+  if prescription.nr_fractions == 40 and prescription.total_dose == 60:
+    # Bi-daily 40 fx:
+    tol_spinalcanal = TOL.spinalcanal_bid_40fx
+    tol_heart_mean = TOL.heart_mean_bid_40fx
+    tol_heart_v25 = TOL.heart_v25_bid_40fx
+    tol_lung_mean = TOL.lung_mean_bid_40fx
+    tol_lung_v35 = TOL.lung_v35_bid_40fx
+    tol_esophagus_mean = TOL.esophagus_mean_bid_40fx
+    tol_esophagus_v17 = TOL.esophagus_v17_bid_40fx
+    tol_spinalcanal_chemo = TOL.spinalcanal_chemo_bid_40fx
+  elif prescription.nr_fractions == 30 and prescription.total_dose == 45:
+    # Bi-daily 30 fx:
+    tol_spinalcanal = TOL.spinalcanal_bid_30fx
+    tol_heart_mean = TOL.heart_mean_bid_30fx
+    tol_heart_v25 = TOL.heart_v25_bid_30fx
+    tol_lung_mean = TOL.lung_mean_bid_30fx
+    tol_lung_v35 = TOL.lung_v35_bid_30fx
+    tol_esophagus_mean = TOL.esophagus_mean_bid_30fx
+    tol_esophagus_v17 = TOL.esophagus_v17_bid_30fx
+    tol_spinalcanal_chemo = TOL.spinalcanal_chemo_bid_30fx
+  else:
+    # Ordinary (once daily) fractionations:
+    tol_spinalcanal = TOL.spinalcanal_v2_adx
+    tol_heart_mean = TOL.heart_mean
+    tol_heart_v25 = TOL.heart_v25_adx
+    tol_lung_mean = TOL.lung_mean
+    tol_lung_v35 = TOL.lung_v35_adx
+    tol_esophagus_mean = TOL.esophagus_mean
+    tol_esophagus_v17 = TOL.esophagus_v17_adx
+    tol_spinalcanal_chemo = TOL.spinalcanal_chemo_v2_adx
+  # Create clinical goals:
+  lung_oars = [
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, tol_spinalcanal, pc2, priority2),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, tol_heart_mean, None, priority3),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, tol_heart_v25, priority3),
+    CG.ClinicalGoal(lungs, at_most, average_dose, tol_lung_mean, None, priority3),
+    CG.ClinicalGoal(lungs, at_most, volume_at_dose, pc35, tol_lung_v35, priority3),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, tol_esophagus_mean, None, priority3),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, tol_esophagus_v17, priority3),
+    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, tol_lung_v35, priority6),
+    CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, tol_lung_v35, priority6),
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal_chemo, 0.03, priority6)
   ]
   return lung_oars
 
@@ -507,7 +560,8 @@ rectum_oars = [
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority2),
   CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
   CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc2, TOL.bladder_v2_adx, priority4)
+  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50, priority3),
+  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35, priority3)
 ]
 
 
@@ -695,6 +749,7 @@ thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc32, TOL.kidney_v32_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
+  CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3)
 ]
 abdomen = [
@@ -704,6 +759,7 @@ abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc32, TOL.kidney_v32_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
+  CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3)
 ]
 abdomen_and_pelvis = [
@@ -713,6 +769,7 @@ abdomen_and_pelvis = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc32, TOL.kidney_v32_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
+  CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
   CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4)

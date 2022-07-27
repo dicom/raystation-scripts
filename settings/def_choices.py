@@ -57,22 +57,23 @@ lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
 
 # Breast:
 breast_partial = P.Property('Del av bryst', 'partial', parent = breast, next_category = '')
-breast_tangential = P.Property('Bryst/brystvegg', 'whole', parent = breast, next_category = '', default = True)
+breast_whole = P.Property('Bryst/brystvegg', 'whole', parent = breast, next_category = '', default = True)
 breast_locoregional = P.Property('Bryst/brystvegg og regionale lymfeknuter', 'regional', parent = breast, next_category ='side')
 breast_imn = P.Property('Bryst/brystvegg og regionale+parasternale lymfeknuter', 'regional_imn', parent = breast, next_category = 'side')
+breast_bilateral = P.Property('Bilateral', 'bilateral', parent = breast, next_category = '')
 
-# Breast tangential: Side:
-breast_right_tang = P.Property('Høyre','right', parent = breast_tangential, next_category = '', default = True)
-breast_left_tang = P.Property('Venstre','left', parent = breast_tangential, next_category = '')
+# Whole breast: Side:
+breast_right_whole = P.Property('Høyre','right', parent = breast_whole, next_category = '', default = True)
+breast_left_whole = P.Property('Venstre','left', parent = breast_whole, next_category = '')
 
 # Breast/partial: Side:
 breast_right_part = P.Property('Høyre','right', parent = breast_partial, default = True)
 breast_left_part = P.Property('Venstre','left', parent = breast_partial)
 
 # Breast youth boost:
-for side in [breast_right_tang, breast_left_tang]:
-  breast_with_boost_tang = P.Property('Med ungdomsboost','with', parent = side)
-  breast_without_boost_tang = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
+for side in [breast_right_whole, breast_left_whole]:
+  breast_with_boost_whole = P.Property('Med ungdomsboost','with', parent = side)
+  breast_without_boost_whole = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
 
 # Breast regional:
 for b in [breast_locoregional, breast_imn]:
@@ -82,6 +83,15 @@ for b in [breast_locoregional, breast_imn]:
     # Breast youth boost:
     breast_with_boost = P.Property('Med ungdomsboost','with', parent = side)
     breast_without_boost = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
+
+# Bilateral breast left side:
+breast_bilateral_left_whole = P.Property('Venstre side: Bryst/Brystvegg', 'bilateral_left_whole', parent = breast_bilateral, next_category = '', default = True)
+breast_bilateral_left_regional = P.Property('Venstre side: Lokoregional', 'bilateral_left_regional', parent = breast_bilateral, next_category = '')
+
+# Bilateral breast right side:
+for t in [breast_bilateral_left_whole, breast_bilateral_left_regional]:
+  breast_bilateral_right_whole = P.Property('Høyre side: Bryst/Brystvegg', 'bilateral_right_whole', parent = t, next_category = '', default = True)
+  breast_bilateral_right_regional = P.Property('Høyre side: Lokoregional', 'bilateral_right_regional', parent = t, next_category = '')
 
 
 # Prostate:

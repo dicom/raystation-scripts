@@ -37,6 +37,7 @@ class TSPlan(object):
     self.isocenter = TEST.Parameter('Isocenter', '', self.param)
     self.numbers = TEST.Parameter('Beam numbers', '', self.param)
     self.defined_roi = TEST.Parameter('Geometri','', self.param)
+    self.localization_point = TEST.Parameter('REF', '', self.param)
 
 
   # Tests if all expected breast OARs are defined, except 'A_LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT).
@@ -63,6 +64,27 @@ class TSPlan(object):
       return t.fail(list(roi_not_contours_dict.keys()))
     else:
       return t.succeed()
+
+
+  # Tests if the same localization point is not placed in the first or last CT slice of the examination.
+  def localization_point_not_in_first_or_last_slice_test(self):
+    t = TEST.Test("Referansepunkt skal (normalt) ikke være plassert i første eller siste snitt (dette er gjerne en indikasjon på at det kan være satt feil)", True, self.localization_point)
+    points = []
+    bs = self.plan.BeamSets[0]
+    if bs:
+      ss = bs.GetStructureSet()
+      # Examination bounding box:
+      bbox = ss.OnExamination.Series[0].ImageStack.GetBoundingBox()
+      # Determine localization point geometry:
+      for pg in ss.PoiGeometries:
+        if pg.OfPoi.Type == 'LocalizationPoint':
+          if pg.Point:
+            slice_pos = pg.Point.z
+            # Check if it is at the image stack boundary:
+            if slice_pos == bbox[0].z or slice_pos == bbox[1].z:
+              return t.fail()
+            else:
+              return t.succeed()
 
 
   # Tests the presence of a planned by label.

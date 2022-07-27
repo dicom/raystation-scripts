@@ -226,7 +226,7 @@ def min_eud(ss, plan, roi_name, dose_level, eud_parameter, weigth, beam_set_inde
 # og flytte innstillingsbiten av koden til en separat fil i "settings" mappen.
 # Sets robustness parameters for vmat breast plans.
 def set_robustness_breast(plan, region_code):
-  if region_code in [242, 244]:
+  if region_code in [240, 242, 244]:
     plan.PlanOptimizations[0].OptimizationParameters.SaveRobustnessParameters(
       PositionUncertaintyAnterior=1,
       PositionUncertaintyPosterior=0,
@@ -242,7 +242,7 @@ def set_robustness_breast(plan, region_code):
       ComputeExactScenarioDoses=False,
       NamesOfNonPlanningExaminations=[]
     )
-  elif region_code in [241, 243]:
+  elif region_code in [239, 241, 243]:
     plan.PlanOptimizations[0].OptimizationParameters.SaveRobustnessParameters(
       PositionUncertaintyAnterior=1,
       PositionUncertaintyPosterior=0,

@@ -137,6 +137,7 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 178	Bløtvev	Hals/Supracl., bilat.	Bløtvev: Hals/Supracl., bilat.	Hals/Supracl. 
 179	Bløtvev	Hals/Supraclav, v.s.	Bløtvev: Hals/Supraclav, v.s.	V.Hals/Supracl
 180	Bløtvev	Hals/Supraclav, h.s.	Bløtvev: Hals/Supraclav, h.s.	H.Hals/Supracl
+181	Bløtvev	Trachea	Bløtvev: Trachea	Trachea
 200	Bløtvev	Overkropp, ins.	Bløtvev: Overkropp, ins.	Overkropp ins.
 201	Bløtvev	Overkropp, mult.lok.	Bløtvev: Overkropp, mult.lok.	Overkropp mult
 202	Bløtvev	Overkropp (hele)	Bløtvev: Overkropp (hele)	Overkropp hele
@@ -192,7 +193,7 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 252	Bløtvev	Axille, h.s.	Bløtvev: Axille, h.s.	Axille hø
 253	Bløtvev	Skulder, v.s	Bløtvev: Skulder, v.s	Skulder ve
 254	Bløtvev	Skulder, h.s	Bløtvev: Skulder, h.s	Skulder hø
-255	Bløtvev	Oesophagus	Bløtvev: Oesophagus	Oesophagus
+255	Bløtvev	Øsofagus	Bløtvev: Øsofagus	Øsofagus
 256	Bløtvev	Mamille, v.s.	Bløtvev: Mamille, v.s.	V.Mamille
 257	Bløtvev	Mamille, h.s	Bløtvev: Mamille, h.s	H.Mamille
 258	Bløtvev	Thymus	Bløtvev: Thymus	Thymus
@@ -212,6 +213,10 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 272	Bløtvev	Hand, h.s.	Bløtvev: Hand, h.s.	Hand hø
 273	Bløtvev	Del av bryst, v.s.	Bløtvev: Del av bryst, v.s.	Delbryst ve
 274	Bløtvev	Del av bryst, h.s.	Bløtvev: Del av bryst, h.s.	Delbryst hø
+275	Bløtvev	Bryst/Brystvegg bilateralt u/Reg.lkn.	Bløtvev: Bryst/Brystvegg bilateralt u/Reg.lkn.	Bilat Bryst/BV
+276	Bløtvev	Bryst/Brystvegg bilateralt m/Reg.lkn.	Bløtvev: Bryst/Brystvegg bilateralt m/Reg.lkn.	Bilat Bryst/LK
+278	Bløtvev	Lunge, h.s./Mediast	Bløtvev: Lunge, h.s./Mediast	H.Lunge/Medias
+279	Bløtvev	Lunge, v.s./Mediast	Bløtvev: Lunge, v.s./Mediast	V.Lunge/Medias
 300	Bløtvev	Underkropp, ins.	Bløtvev: Underkropp, ins.	Underkropp ins
 301	Bløtvev	Underkropp, mult.lok.	Bløtvev: Underkropp, mult.lok.	Underkropp mul
 302	Bløtvev	Underkropp (hele)	Bløtvev: Underkropp (hele)	Underkropp hel
@@ -262,6 +267,10 @@ Kode	Kategori	Tekst	Fulltekst	Kompakt
 354	Bløtvev	Sete, h.s.	Bløtvev: Sete, h.s.	Sete hø
 355	Bløtvev	Prostata/Reg.lkn.	Bløtvev: Prostata/Reg.lkn.	Prostata/LK
 356	Bløtvev	Prostataseng/Reg.lkn.	Bløtvev: Prostataseng/Reg.lkn.	Prost.seng/LK
+357	Bløtvev	Rektum/Reg.lkn.	Bløtvev: Rektum/Reg.lkn.	Rektum/LK
+358	Bløtvev	Anus/Reg.lkn.	Bløtvev: Anus/Reg.lkn.	Anus/LK
+359	Bløtvev	Vesica/Reg.lkn.	Bløtvev: Vesica/Reg.lkn.	Vesica/LK
+360	Bløtvev	Uterus/Reg.lkn.	Bløtvev: Uterus/Reg.lkn.	Uterus/LK
 373	Bløtvev	Hofte, v.s.	Bløtvev: Hofte, v.s.	Hofte ve
 374	Bløtvev	Hofte, h.s.	Bløtvev: Hofte, h.s.	Hofte hø
 375	Bløtvev	Underekstr., ins. v.s.	Bløtvev: Underekstr., ins. v.s.	V.Underekstr.

@@ -4,7 +4,7 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
+# Made for RayStation version: 10B
 # Python 3.6
 
 # Import system libraries:

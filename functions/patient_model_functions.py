@@ -63,50 +63,59 @@ def create_algebra_roi(pm, examination, ss, roi):
 
 # Creates a couch (support) ROI from a couch template.
 def create_couch(patient_db, pm, ss, examination):
+  exists = False
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Name == 'Couch':
-      pm_roi.DeleteRoi()
+      #pm_roi.DeleteRoi()
+      exists = True
       break
-  templateInfo = patient_db.GetPatientModelTemplateInfo()
-  for i in range(0, len(templateInfo)):
-    template = patient_db.LoadTemplatePatientModel(templateName = templateInfo[i]['Name'], lockMode = 'Read')
-    if template.Name == 'Bordtopp tykk':
-      pm.CreateStructuresFromTemplate(
-        SourceTemplate=template, 
-        SourceExaminationName= 'CT 1',
-        SourceRoiNames=[ROIS.couch.name],
-        SourcePoiNames=[],
-        AssociateStructuresByName=False,
-        TargetExamination=examination,
-        InitializationOption='AlignImageCenters'
-      )
-      # Get the box coordinates of the couch:
-      ss = pm.StructureSets[examination.Name]
-      couch_geometry = ss.RoiGeometries['Couch']
-      couch_box = couch_geometry.GetBoundingBox()
-      # Box coordinates of examination:       
-      examination_box = examination.Series[0].ImageStack.GetBoundingBox()
-      # Slice thickness:
-      slice_thickness = abs(examination.Series[0].ImageStack.SlicePositions[1] - examination.Series[0].ImageStack.SlicePositions[0])
-      # Aim to apply a margin which extends the couch geometry to within one slice from the ends of the CT scan:
-      # Inferior/caudal margin (must be minimum 0):
-      margin_inferior = couch_box[0].z - (examination_box[0].z + slice_thickness)
-      margin_inferior = max(margin_inferior, 0)
-      # Superior/cranial margin (must be minimum 0):
-      margin_superior = examination_box[1].z - (couch_box[1].z + slice_thickness)
-      margin_superior = max(margin_superior, 0)
-      # Create corresponding margin object:
-      couch_margin = MARGIN.Expansion(margin_superior, margin_inferior, 0.0, 0.0, 0.0, 0.0)
-      # Create extended couch ROI recipe object:
-      couch_extended = ROI.ROIExpanded('Couch_extended', 'Support', COLORS.couch, ROIS.couch, margins = couch_margin)
-      # Create extended couch ROI in RayStation:
-      create_expanded_roi(pm, examination, ss, couch_extended)
-      # Set the material of the extended couch ROI ('Bordtopp (tykk)'):
-      pm.RegionsOfInterest['Couch_extended'].SetRoiMaterial(Material=pm.Materials[0])
-      # Delete the original Couch ROI:
-      pm.RegionsOfInterest['Couch'].DeleteRoi()
-      # Rename the extended Couch:
-      pm.RegionsOfInterest['Couch_extended'].Name = 'Couch'
+  # For existing Couch, ideally we would copy the ROI geometry from the existing Couch to this new examination.
+  # However it doesnt seem to be possible to copy ROI geometries in RayStation (unless examinations
+  # are co-registered, which may not always be the case). For now we'll just let the Couch remain undefined.
+  if not exists:
+    # Create ROI and ROI geometry:
+    templateInfo = patient_db.GetPatientModelTemplateInfo()
+    for i in range(0, len(templateInfo)):
+      template = patient_db.LoadTemplatePatientModel(templateName = templateInfo[i]['Name'], lockMode = 'Read')
+      if template.Name == 'Bordtopp tykk':
+        pm.CreateStructuresFromTemplate(
+          SourceTemplate=template, 
+          SourceExaminationName= 'CT 1',
+          SourceRoiNames=[ROIS.couch.name],
+          SourcePoiNames=[],
+          AssociateStructuresByName=False,
+          TargetExamination=examination,
+          InitializationOption='AlignImageCenters'
+        )
+        # Get the box coordinates of the couch:
+        ss = pm.StructureSets[examination.Name]
+        couch_geometry = ss.RoiGeometries['Couch']
+        couch_box = couch_geometry.GetBoundingBox()
+        # Box coordinates of examination:       
+        examination_box = examination.Series[0].ImageStack.GetBoundingBox()
+        # Slice thickness:
+        slice_thickness = abs(examination.Series[0].ImageStack.SlicePositions[1] - examination.Series[0].ImageStack.SlicePositions[0])
+        # Aim to apply a margin which extends the couch geometry to within one slice from the ends of the CT scan:
+        # Inferior/caudal margin (must be minimum 0, maximum 15):
+        margin_inferior = couch_box[0].z - (examination_box[0].z + slice_thickness)
+        margin_inferior = max(margin_inferior, 0)
+        margin_inferior = min(margin_inferior, 15)
+        # Superior/cranial margin (must be minimum 0, maximum 15):
+        margin_superior = examination_box[1].z - (couch_box[1].z + slice_thickness)
+        margin_superior = max(margin_superior, 0)
+        margin_superior = min(margin_superior, 15)
+        # Create corresponding margin object:
+        couch_margin = MARGIN.Expansion(margin_superior, margin_inferior, 0.0, 0.0, 0.0, 0.0)
+        # Create extended couch ROI recipe object:
+        couch_extended = ROI.ROIExpanded('Couch_extended', 'Support', COLORS.couch, ROIS.couch, margins = couch_margin)
+        # Create extended couch ROI in RayStation:
+        create_expanded_roi(pm, examination, ss, couch_extended)
+        # Set the material of the extended couch ROI ('Bordtopp (tykk)'):
+        pm.RegionsOfInterest['Couch_extended'].SetRoiMaterial(Material=pm.Materials[0])
+        # Delete the original Couch ROI:
+        pm.RegionsOfInterest['Couch'].DeleteRoi()
+        # Rename the extended Couch:
+        pm.RegionsOfInterest['Couch_extended'].Name = 'Couch'
 
 
 # Creates an empty ROI from a ROI object.
@@ -137,12 +146,15 @@ def create_expanded_roi(pm, examination, ss, roi):
 
 # Creates an external ROI.
 def create_external_geometry(pm, examination, ss):
-  for pm_roi in pm.RegionsOfInterest:
-    if pm_roi.Name == ROIS.external.name:
-      pm_roi.DeleteRoi()
+  exists = False
+  for roi in pm.RegionsOfInterest:
+    if roi.Name == ROIS.external.name:
+      exists = True
       break
-  pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
-  ss.RoiGeometries[ROIS.external.name].OfRoi.CreateExternalGeometry(Examination = examination, ThresholdLevel = None)
+  if not exists:
+    pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
+  # Create the external ROI geometry:
+  pm.RegionsOfInterest[ROIS.external.name].CreateExternalGeometry(Examination=examination, ThresholdLevel=None)
 
 
 # Creates a localization point (if one doesn't already exist).
@@ -547,11 +559,17 @@ def delete_matching_roi_except_manually_contoured(pm, ss, roi):
     if pm_roi.Name == roi.name:
       if pm_roi.DerivedRoiExpression:
         # When it is derived, we delete it:
-        pm_roi.DeleteRoi()
+        try:
+          pm_roi.DeleteRoi()
+        except:
+          GUIF.handle_delete_roi_error(roi.name)
       else:
         # When it is manual, we only delete it if it is empty:
         if is_empty(ss, roi):
-          pm_roi.DeleteRoi()
+          try:
+            pm_roi.DeleteRoi()
+          except:
+            GUIF.handle_delete_roi_error(roi.name)
       break
 
 
@@ -638,19 +656,20 @@ def set_all_undefined_to_organ_type_other(pm):
 
 # Translates the couch such that it lies close to the patient in the anterior-posterior direction and centers it in the left-right direction.
 def translate_couch(pm, ss, examination, external, couch_thickness = 5.55):
-  #couch_thickness = 5.55
-  ext_box = ss.RoiGeometries[external].GetBoundingBox()
-  ext_center = SSF.roi_center_x(ss, external)
-  if abs(ext_center) > 5:
-    ext_center = 0
-  couch_center_x = SSF.roi_center_x(ss, ROIS.couch.name)
-  couch_box = ss.RoiGeometries[ROIS.couch.name].GetBoundingBox()
-  y_translation = -(abs(couch_box[1].y - ext_box[1].y)-couch_thickness)
-  x_translation = ext_center - couch_center_x
-  transMat = {
-    'M11':1.0,'M12':0.0,'M13':0.0,'M14':x_translation,
-    'M21':0.0,'M22':1.0,'M23':0.0,'M24':y_translation,
-    'M31':0.0,'M32':0.0,'M33':1.0,'M34':0.0,
-    'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
-    }
-  pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)
+  # Only attempt manipulation if there is actually a ROI geometry:
+  if ss.RoiGeometries[ROIS.couch.name].PrimaryShape:
+    ext_box = ss.RoiGeometries[external].GetBoundingBox()
+    ext_center = SSF.roi_center_x(ss, external)
+    if abs(ext_center) > 5:
+      ext_center = 0
+    couch_center_x = SSF.roi_center_x(ss, ROIS.couch.name)
+    couch_box = ss.RoiGeometries[ROIS.couch.name].GetBoundingBox()
+    y_translation = -(abs(couch_box[1].y - ext_box[1].y)-couch_thickness)
+    x_translation = ext_center - couch_center_x
+    transMat = {
+      'M11':1.0,'M12':0.0,'M13':0.0,'M14':x_translation,
+      'M21':0.0,'M22':1.0,'M23':0.0,'M24':y_translation,
+      'M31':0.0,'M32':0.0,'M33':1.0,'M34':0.0,
+      'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
+      }
+    pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)

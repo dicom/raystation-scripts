@@ -110,21 +110,20 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
   next_beam_number = first_available_beam_number(plan)
   # Set up beam set and prescription:
   beam_set = plan.AddNewBeamSet(
-    Name=BSF.label(region_code, prescription, 'Conformal', background_dose=background_dose),
+    Name=BSF.label(region_code, prescription, 'VMAT', background_dose=background_dose),
     ExaminationName=examination.Name,
     MachineName= "ALVersa",
     Modality='Photons',
-    TreatmentTechnique='Conformal',
+    TreatmentTechnique='VMAT',
     PatientPosition='HeadFirstSupine',
     NumberOfFractions=prescription.nr_fractions
   )
   BSF.add_prescription(beam_set, prescription, roi_name)
+  # Create arcs:
   if region_code in RC.breast_l_codes:
-    BSF.create_three_beams(beam_set, isocenter, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=2, beam_index=next_beam_number) 
-    BSF.set_MU(beam_set,['LPO','LAO','RAO'], [65, 10, 65] )
+    BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '300', gantry_start_angle = '179', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
   elif region_code in RC.breast_r_codes:
-    BSF.create_three_beams(beam_set, isocenter, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=2, beam_index=next_beam_number)
-    BSF.set_MU(beam_set,['RPO','RAO','LAO'], [65, 10, 65] )
+    BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '60', gantry_start_angle = '181', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
   OBJ.create_breast_boost_objectives(ss, plan, prescription.total_dose)
 
 

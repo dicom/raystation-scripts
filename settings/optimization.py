@@ -70,7 +70,7 @@ def optimization_parameters(region_code, fraction_dose):
       # Partial brain (ordinary fractionation):
       opt = sliding_window
   elif region_code in RC.breast_codes:
-    # Breast with regional lymph nodes:
+    # Partial breast/Whole breast/Regional breast:
     opt = sliding_window
   elif region_code in RC.lung_and_mediastinum_codes:
     # Lung:

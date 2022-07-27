@@ -17,24 +17,24 @@ breast_partial_r_codes = [274]
 breast_partial_codes = breast_partial_l_codes +breast_partial_r_codes 
 breast_tang_l_codes = [239]
 breast_tang_r_codes = [240]
-breast_tang_codes = breast_tang_l_codes + breast_tang_r_codes
+breast_tang_codes = breast_tang_l_codes + breast_tang_r_codes + [275]
 breast_reg_l_codes = [241, 243]
 breast_reg_r_codes = [242, 244]
-breast_reg_codes = breast_reg_l_codes + breast_reg_r_codes
+breast_reg_codes = breast_reg_l_codes + breast_reg_r_codes + [276]
 breast_l_codes = [239, 241, 243, 273]
 breast_r_codes = [240, 242, 244, 274]
 breast_not_thorax_codes = [273, 274, 239, 240, 243, 244]
-breast_codes = breast_partial_r_codes + breast_partial_l_codes +breast_tang_l_codes + breast_tang_r_codes + breast_reg_l_codes + breast_reg_r_codes
+breast_codes = breast_partial_r_codes + breast_partial_l_codes +breast_tang_codes + breast_reg_codes
 
 # Lung:
-lung_codes = [245, 246, 247, 248, 249, 250]
-lung_r_codes = [248, 250]
-lung_l_codes = [247, 249]
-lung_mediastinum_codes = [224, 225, 226, 228, 245, 246]
+lung_r_codes = [248, 250, 278]
+lung_l_codes = [247, 249, 279]
+lung_codes = [245, 246] + lung_r_codes + lung_l_codes
+lung_mediastinum_codes = [181, 224, 225, 226, 228, 245]
 lung_and_mediastinum_codes = lung_codes + lung_mediastinum_codes
 
 # Bladder
-bladder_codes = [341]
+bladder_codes = [341, 359]
 
 # Prostate
 prostate_only_codes = [342]
@@ -45,7 +45,7 @@ prostate_node_codes = [355, 356]
 prostate_codes = prostate_intact_codes + prostate_bed_codes
 
 # Rectum
-rectum_codes = [340]
+rectum_codes = [340, 357, 358]
 
 # Palliative:
 palliative_head_codes = list(range(1, 20+1)) + list(range(100, 126+1))  + list(range(501, 506+1))

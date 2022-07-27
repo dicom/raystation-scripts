@@ -9,8 +9,10 @@ ab_kidney = 2
 ab_kidneys = 2
 ab_lung = 3
 ab_heart = 3
+ab_heart_darby = 2
 ab_bowel = 3
 ab_spinalcord = 2
+ab_spinalcord_dmcg = 0.87
 ab_eye = 3
 ab_lens = 1
 ab_parotid = 3
@@ -44,7 +46,7 @@ ab_kidney_hilum = 2
 ab_cauda = 3
 ab_colon = 3
 ab_bowel = 3
-ab_breast = 3
+ab_breast = 4
 ab_lad = 2
 ab_cornea = 3
 
@@ -120,33 +122,54 @@ parotid_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_pa
 
 
 # Thorax
-kidney_mean = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 15, 'Mean', 'Conventional RT')
-kidney_v20_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 28, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
-kidney_v30_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 23, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
-kidney_v32_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 20, 'Volume receiving tolerance dose being less than 32%', 'Conventional RT')
-kidney_v55_adx = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_kidney, 12, 'Volume receiving tolerance dose being less than 12%', 'Conventional RT')
-lung_mean = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 20, 'Mean', 'Conventional RT')
-lung_v35_adx = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-lung_v65_adx = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_lung, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
-heart_mean = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 20, 'Mean', 'Conventional RT')
-heart_v25_adx = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 50, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
-heart_v30_adx = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 60, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
-heart_v60_adx = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 45, 'Volume receiving tolerance dose being less than 60%', 'Conventional RT')
-heart_v80_adx = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_heart, 40, 'Volume receiving tolerance dose being less than 80%', 'Conventional RT')
-spinalcord_v2_adx = EQD.Tolerance('SpinalCord', 'Some failure', ab_spinalcord, fractions_spinalcord, 50, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
-spinalcanal_v2_adx = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_spinalcord, 50, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
-spinalcanal_chemo_v2_adx = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_spinalcord, 45, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
-esophagus_mean = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 34, 'Mean', 'Conventional RT')
-esophagus_v15_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
-esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+kidney_mean = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 15, 'Mean', 'Conventional RT')
+kidney_v20_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 28, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
+kidney_v30_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 23, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+kidney_v32_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 20, 'Volume receiving tolerance dose being less than 32%', 'Conventional RT')
+kidney_v55_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 12, 'Volume receiving tolerance dose being less than 12%', 'Conventional RT')
+lung_mean = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, fractions_lung, 20, 'Mean', 'Conventional RT')
+lung_v35_adx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, fractions_lung, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+lung_v65_adx = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', ab_lung, fractions_lung, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
+heart_mean = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 20, 'Mean', 'Conventional RT')
+heart_v25_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 50, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+heart_v30_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 60, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+heart_v60_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 45, 'Volume receiving tolerance dose being less than 60%', 'Conventional RT')
+heart_v80_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 40, 'Volume receiving tolerance dose being less than 80%', 'Conventional RT')
+spinalcord_v2_adx = EQD.Tolerance('SpinalCord', 'Myelopathy', ab_spinalcord, fractions_spinalcord, 50, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
+spinalcanal_v2_adx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, fractions_spinalcord, 50, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
+spinalcanal_chemo_v2_adx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, fractions_spinalcord, 45, 'Volume receiving tolerance dose being less than 2 cm3', 'Conventional RT')
+esophagus_mean = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, fractions_esophagus, 34, 'Mean', 'Conventional RT')
+esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+# Bi-daily (30fx*1.5 Gy):
+heart_mean_bid_30fx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, 30, 18.7, 'Mean', 'Conventional RT')
+heart_v25_bid_30fx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, 30, 44.6, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+lung_mean_bid_30fx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, 30, 18.7, 'Mean', 'Conventional RT')
+lung_v35_bid_30fx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, 30, 18.7, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+esophagus_mean_bid_30fx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, 30, 31.7, 'Mean', 'Conventional RT')
+esophagus_v17_bid_30fx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, 30, 54.7, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+spinalcanal_bid_30fx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, 30, 47.1, 'Volume receiving tolerance dose being less than 0.03 cm^3', 'Conventional RT')
+spinalcanal_chemo_bid_30fx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, 30, 43.9, 'Volume receiving tolerance dose being less than 0.03 cm^3', 'Conventional RT')
+# Bi-daily (40fx*1.5 Gy):
+heart_mean_bid_40fx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, 40, 19.6, 'Mean', 'Conventional RT')
+heart_v25_bid_40fx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, 40, 48.3, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
+lung_mean_bid_40fx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, 40, 19.6, 'Mean', 'Conventional RT')
+lung_v35_bid_40fx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, 40, 19.6, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+esophagus_mean_bid_40fx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, 40, 33.8, 'Mean', 'Conventional RT')
+esophagus_v17_bid_40fx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, 40, 59.4, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+spinalcanal_bid_40fx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, 40, 51.8, 'Volume receiving tolerance dose being less than 0.03 cm^3', 'Conventional RT')
+spinalcanal_chemo_bid_40fx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord, 40, 48.2, 'Volume receiving tolerance dose being less than 0.03 cm^3', 'Conventional RT')
 
 
 # Breast
 lung_v15_adx = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-heart_mean_breast = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_breast, 2, 'Mean', 'Conventional RT')
-heart_mean_breast_15 = EQD.Tolerance('Heart', 'Some failure', ab_heart, fractions_breast_15, 2, 'Mean', 'Conventional RT')
+lung_v8_fastforward = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, 5, 8, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+heart_mean_breast = EQD.Tolerance('Heart', 'Ischemic heart disease', ab_heart_darby, 1, 2, 'Mean', 'Conventional RT')
+heart_mean_breast_low_priority = EQD.Tolerance('Heart', 'Ischemic heart disease', ab_heart_darby, 1, 1.2, 'Mean', 'Conventional RT')
+heart_v7_fastforward = EQD.Tolerance('Heart', 'Some failure', ab_heart, 5, 7, 'Volume receiving tolerance dose being less than 5%', 'Conventional RT')
+heart_v1_5_fastforward = EQD.Tolerance('Heart', 'Some failure', ab_heart, 5, 1.5, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
 humeral_v33_adx = EQD.Tolerance('Humeral', 'Some failure', ab_humeral, fractions_breast, 25, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
-contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 3, 'Mean', 'Conventional RT')
+contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 4, 'Mean', 'Conventional RT')
+contralat_breast_mean_young_patients = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 1, 'Mean', 'Conventional RT')
 lung_v35_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v35_adx_15 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v65_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
@@ -156,6 +179,7 @@ ipsilateral_breast_v50_adx = EQD.Tolerance('Breast_L/R','Some failure', ab_heart
 esophagus_mean_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 11, 'Mean', 'Conventional RT')
 esophagus_v30_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 10, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
 esophagus_v15_adx_brt = EQD.Tolerance('Esophagus', 'Esophagitis grade 2', ab_esophagus, 25, 20, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+spinalcanal_breast = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord_dmcg, 22.5, 45, 'Volume receiving tolerance dose being less than 0.03 cm^3', 'Conventional RT')
 thyroid_mean_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 11.8, 'Mean', 'Conventional RT')
 thyroid_v8_5cc_adx_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 20, 'More than 8.5 cm^3 should receive less than the tolerance dose', 'Conventional RT')
 
@@ -199,13 +223,17 @@ rectum_v15_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_re
 
 
 # Rectum:
-# FIXME: This is a temporary (pragmatic) tolerance - will be replaced in an upcoming update!
-bladder_v2_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder_at_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+bladder_v50 = EQD.Tolerance('Rectum','Grade >= 3 late rectal toxicity', 3, 25, 45.8, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+bladder_v35 = EQD.Tolerance('Rectum','Grade >= 3 late rectal toxicity', 3, 25, 54.5, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 
 
 # Palliation:
 # FIXME: These tolerances will be replaced in an upcoming update!
 bladder_v50_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 65, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
+
+
+# General:
+liver_mean = EQD.Tolerance('Liver', 'Classic RILD (QUANTEC)', ab_liver, 15, 30, 'Mean', 'Conventional RT')
 
 
 # SBRT:

@@ -30,6 +30,7 @@ ictv1 = ROI.ROIExpanded('ICTV1', 'Ctv', COLORS.ctv, igtv1, margins = MARGINS.uni
 ictv2 = ROI.ROIExpanded('ICTV2', 'Ctv', COLORS.ctv, igtv2, margins = MARGINS.uniform_5mm_expansion)
 ictv3 = ROI.ROIExpanded('ICTV3', 'Ctv', COLORS.ctv, igtv3, margins = MARGINS.uniform_5mm_expansion)
 iptv = ROI.ROIExpanded('PTV', 'Ptv', COLORS.ptv, ictv, margins = MARGINS.uniform_5mm_expansion)
+iptv_gtv = ROI.ROIExpanded('PTV', 'Ptv', COLORS.ptv, igtv, margins = MARGINS.uniform_5mm_expansion)
 iptv1 = ROI.ROIExpanded('PTV1', 'Ptv', COLORS.ptv, ictv1, margins = MARGINS.uniform_5mm_expansion)
 iptv2 = ROI.ROIExpanded('PTV2', 'Ptv', COLORS.ptv, ictv2, margins = MARGINS.uniform_5mm_expansion)
 iptv3 = ROI.ROIExpanded('PTV3', 'Ptv', COLORS.ptv, ictv3, margins = MARGINS.uniform_5mm_expansion)
@@ -61,7 +62,10 @@ ctv4 = ROI.ROI('CTV4', 'Ctv', COLORS.ctv)
 gtv_sb = ROI.ROI('GTVsb', 'Gtv', COLORS.gtv)
 ctv_sb = ROI.ROI('CTVsb', 'Ctv', COLORS.ctv)
 vb = ROI.ROI('VB','Ctv', COLORS.ctv_med)
-
+ctv_l = ROI.ROI('CTV_L', 'Ctv', COLORS.ctv)
+ctv_r = ROI.ROI('CTV_R', 'Ctv', COLORS.ctv)
+ptvc_l = ROI.ROI('PTVc_L', 'Ptv', COLORS.ptv)
+ptvc_r = ROI.ROI('PTVc_R', 'Ptv', COLORS.ptv)
 
 
 # OARs: Empty (will be delineated manually):
@@ -175,7 +179,6 @@ marker1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
 marker2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
 marker3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
 marker4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
-temp_markers = ROI.ROI('tempMarkers', 'Marker', COLORS.seed)
 
 
 # OARs: MBS (delineated by model based segmentation):

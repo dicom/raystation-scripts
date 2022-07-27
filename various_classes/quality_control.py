@@ -69,7 +69,6 @@ class QualityControl(object):
     # Run tests:
     # Patient tests:
     ts_patient.id_length_test()
-    ts_patient.id_space_test()
     # Case tests:
     ts_case.last_examination_used_test()
     ts_case.localization_points_for_gating_test()
@@ -106,6 +105,7 @@ class QualityControl(object):
     ts_plan.planned_by_test()
     ts_plan.unique_beam_numbers_test()
     ts_plan.breast_oar_defined_test()
+    ts_plan.localization_point_not_in_first_or_last_slice_test()
     
     # Beam set tests:
     for ts_beam_set in ts_plan.ts_beam_sets:

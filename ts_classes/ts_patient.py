@@ -30,16 +30,9 @@ class TSPatient(object):
 
   # Tests the length of the patient's ID.
   def id_length_test(self):
-    t = TEST.Test('Skal være eksakt 12 tegn (ddmmåå xxxxx)', 12, self.id)
-    if len(self.patient.PatientID) != 12:
+    t = TEST.Test('Skal være eksakt 11 tegn (ddmmååxxxxx)', 11, self.id)
+    if len(self.patient.PatientID) != 11:
       return t.fail(len(self.patient.PatientID))
     else:
       return t.succeed()
 
-  # Tests that there is a space between the date and the last part of the id.
-  def id_space_test(self):
-    t = TEST.Test('Skal være mellomrom mellom fødselsdato og personnr (ddmmåå xxxxx)', ' ', self.id)
-    if len(self.patient.PatientID) != 12:
-      return t.fail(len(self.patient.PatientID))
-    else:
-      return t.succeed()

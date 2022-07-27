@@ -97,7 +97,7 @@ pm.RegionsOfInterest['LN_Iliac'].OrganData.OrganType = "Target"
 # Intestinal:
 create_roi(name = 'Liver', color = 'Khaki', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Liver'].OrganData.OrganType = "OrganAtRisk"
-create_roi(name = 'BowelBag_Draft', color = 'SandyBrown', type = 'Organ', alternatives=['Bowel space', 'BowelBag'])
+create_roi(name = 'BowelBag_Draft', color = 'SandyBrown', type = 'Organ', alternatives=['Bowel space', 'BowelBag', 'Spc_Bowel', 'BowelBag_draft'])
 pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'Rectum', color = 'SaddleBrown', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Rectum'].OrganData.OrganType = "OrganAtRisk"
@@ -117,13 +117,13 @@ pm.RegionsOfInterest['Bladder_Draft'].OrganData.OrganType = "OrganAtRisk"
 # Bladder Algebra: Subtract Prostate:
 bladder = create_roi(name = 'Bladder', color = 'Yellow', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Bladder'].OrganData.OrganType = "OrganAtRisk"
-bladder.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Prostate'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.1, 'Inferior': 0.1, 'Anterior': 0.1, 'Posterior': 0.1, 'Right': 0.1, 'Left': 0.1 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+bladder.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Prostate'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.0, 'Inferior': 0.0, 'Anterior': 0.0, 'Posterior': 0.0, 'Right': 0.0, 'Left': 0.0 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
 bladder.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 # (decided to exclude Urethra from this project)
 #create_roi(name = 'Urethra', color = 'Orange', type = 'Organ', alternatives=[])
 #pm.RegionsOfInterest['Urethra'].OrganData.OrganType = "OrganAtRisk"
 # Genital:
-create_roi(name = 'PenileBulb', color = 'PaleVioletRed', type = 'Organ', alternatives=[])
+create_roi(name = 'PenileBulb', color = 'PaleVioletRed', type = 'Organ', alternatives=['Penile bulbi'])
 pm.RegionsOfInterest['PenileBulb'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'Testis_L', color = 'Mediumvioletred', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['Testis_L'].OrganData.OrganType = "OrganAtRisk"
@@ -134,7 +134,7 @@ pm.RegionsOfInterest['DuctusDeferens_L'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'DuctusDeferens_R', color = 'Lightpink', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['DuctusDeferens_R'].OrganData.OrganType = "OrganAtRisk"
 # Nerves:
-create_roi(name = 'CaudaEquina', color = 'Blue', type = 'Organ', alternatives=['SpinalCanal', 'SpinalCord', 'Spinalkanal', 'Spinal Cord'])
+create_roi(name = 'CaudaEquina', color = 'Blue', type = 'Organ', alternatives=['SpinalCanal', 'SpinalCord', 'Spinalkanal', 'Spinal Cord', 'Cauda Equina'])
 pm.RegionsOfInterest['CaudaEquina'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'LumbarNerveRoots_L', color = 'RoyalBlue', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['LumbarNerveRoots_L'].OrganData.OrganType = "OrganAtRisk"
@@ -186,43 +186,10 @@ pm.RegionsOfInterest['V_Pelvic'].OrganData.OrganType = "OrganAtRisk"
 v_pelvic.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['V_InferiorVenaCava'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['V_CommonIliac_L', 'V_CommonIliac_R', 'V_ExternalIliac_L', 'V_ExternalIliac_R', 'V_InternalIliac_L', 'V_InternalIliac_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
 v_pelvic.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 # Muscles:
-# (decided to use only IliopsoasMuscle in this project)
-#create_roi(name = 'PsoasMuscle_L', color = 'Cyan', type = 'Organ', alternatives=[])
-#pm.RegionsOfInterest['PsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
-#create_roi(name = 'PsoasMuscle_R', color = 'Cyan', type = 'Organ', alternatives=[])
-#pm.RegionsOfInterest['PsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
-#create_roi(name = 'IliacusMuscle_L', color = 'Aquamarine', type = 'Organ', alternatives=[])
-#pm.RegionsOfInterest['IliacusMuscle_L'].OrganData.OrganType = "OrganAtRisk"
-#create_roi(name = 'IliacusMuscle_R', color = 'Aquamarine', type = 'Organ', alternatives=[])
-#pm.RegionsOfInterest['IliacusMuscle_R'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'IliopsoasMuscle_L', color = 'Darkcyan', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['IliopsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
 create_roi(name = 'IliopsoasMuscle_R', color = 'Darkcyan', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['IliopsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
-# Re-arrange muscle ROIs (for the first 5 patients):
-'''
-try:
-  if pm.RegionsOfInterest['PsoasMuscle_L']:
-    for roi in ['IliopsoasMuscle_L', 'IliopsoasMuscle_R']:
-      pm.RegionsOfInterest[roi].Name = roi + '_OLD'
-    muscle1 = create_roi(name = 'IliopsoasMuscle_L', color = 'Darkcyan', type = 'Organ', alternatives=[])
-    pm.RegionsOfInterest['IliopsoasMuscle_L'].OrganData.OrganType = "OrganAtRisk"
-    muscle1.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['PsoasMuscle_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['IliacusMuscle_L', 'IliopsoasMuscle_L_OLD', ], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
-    muscle1.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
-    muscle2 = create_roi(name = 'IliopsoasMuscle_R', color = 'Darkcyan', type = 'Organ', alternatives=[])
-    pm.RegionsOfInterest['IliopsoasMuscle_R'].OrganData.OrganType = "OrganAtRisk"
-    muscle2.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['PsoasMuscle_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['IliacusMuscle_R', 'IliopsoasMuscle_R_OLD', ], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
-    muscle2.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
-    # Remove the unwanted muscle ROIs:
-    for name in ['PsoasMuscle_L', 'PsoasMuscle_R', 'IliacusMuscle_L', 'IliacusMuscle_R', 'IliopsoasMuscle_L_OLD', 'IliopsoasMuscle_R_OLD']:
-      try:
-        roi = pm.RegionsOfInterest[name]
-        roi.DeleteRoi()
-      except:
-        pass
-except:
-  pass
-'''
 # Bone:
 create_roi(name = 'L2', color = bone_color1, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['L2'].OrganData.OrganType = "OrganAtRisk"
@@ -249,15 +216,19 @@ pm.RegionsOfInterest['FemurHeadNeck_R'].OrganData.OrganType = "OrganAtRisk"
 # BowelBag Algebra (subtract Bladder, veins, etc)
 bowel_bag = create_roi(name = 'BowelBag', color = 'SandyBrown', type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['BowelBag'].OrganData.OrganType = "OrganAtRisk"
-bowel_bag.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['BowelBag_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft', 'Prostate', 'SeminalVes', 'PelvicGirdle_L', 'PelvicGirdle_R', 'Sacrum', 'L2', 'L3', 'L4', 'L5', 'IliopsoasMuscle_L', 'IliopsoasMuscle_R', 'A_DescendingAorta', 'A_CommonIliac_L', 'A_CommonIliac_R', 'A_ExternalIliac_L', 'A_ExternalIliac_R', 'A_InternalIliac_L', 'A_InternalIliac_R', 'V_InferiorVenaCava', 'V_CommonIliac_L', 'V_CommonIliac_R', 'V_ExternalIliac_L', 'V_ExternalIliac_R', 'V_InternalIliac_L', 'V_InternalIliac_R', 'Ureter_L', 'Ureter_R', 'Ureter_L', 'DuctusDeferens_L', 'DuctusDeferens_R', 'Kidney_L', 'Kidney_R', 'Liver'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.1, 'Inferior': 0.1, 'Anterior': 0.1, 'Posterior': 0.1, 'Right': 0.1, 'Left': 0.1 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+bowel_bag.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['BowelBag_Draft'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Bladder_Draft', 'Prostate', 'SeminalVes', 'LN_Iliac', 'PelvicGirdle_L', 'PelvicGirdle_R', 'Sacrum', 'L2', 'L3', 'L4', 'L5', 'IliopsoasMuscle_L', 'IliopsoasMuscle_R', 'A_DescendingAorta', 'A_CommonIliac_L', 'A_CommonIliac_R', 'A_ExternalIliac_L', 'A_ExternalIliac_R', 'A_InternalIliac_L', 'A_InternalIliac_R', 'V_InferiorVenaCava', 'V_CommonIliac_L', 'V_CommonIliac_R', 'V_ExternalIliac_L', 'V_ExternalIliac_R', 'V_InternalIliac_L', 'V_InternalIliac_R', 'Ureter_L', 'Ureter_R', 'Ureter_L', 'DuctusDeferens_L', 'DuctusDeferens_R', 'Kidney_L', 'Kidney_R', 'Liver'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.0, 'Inferior': 0.0, 'Anterior': 0.0, 'Posterior': 0.0, 'Right': 0.0, 'Left': 0.0 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
 bowel_bag.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
-
+# Vessel Algebra LN help structure (add 7 mm margin, subtract bone, muscles)
+vessels_help = create_roi(name = 'Vessels_with_margin', color = 'Yellow', type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Vessels_with_margin'].OrganData.OrganType = "Target"
+vessels_help.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ["A_Pelvic", "V_Pelvic"], 'MarginSettings': { 'Type': "Expand", 'Superior': 0.7, 'Inferior': 0.7, 'Anterior': 0.7, 'Posterior': 0.7, 'Right': 0.7, 'Left': 0.7 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ["FemurHeadNeck_L", "FemurHeadNeck_R", "Rectum", "L2", "L3", "L4", "L5", "PelvicGirdle_L", "PelvicGirdle_R", "Sacrum", "IliopsoasMuscle_L", "IliopsoasMuscle_R"], 'MarginSettings': { 'Type': "Contract", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Subtraction", ResultMarginSettings={ 'Type': "Contract", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+vessels_help.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 
 
 # Non-organs:
 # Prostate seed markers:
 # Does markers exist already? (If so, we'll set up our marker ROI as a union of those)
-marker_candidates = ['Markers', 'Seed iso', 'Seed 1', 'Seed 2', 'Seed 3', 'Seed 4', 'Marker1', 'Marker2', 'Marker3']
+marker_candidates = ['Markers', 'Seed iso', 'Seed 1', 'Seed 2', 'Seed 3', 'Seed 4', 'Marker1', 'Marker2', 'Marker3', 'Marker4']
 marker_rois = []
 # Add ones that exist to our list:
 for candidate in marker_candidates:
@@ -274,50 +245,111 @@ if len(marker_rois) > 1:
 # of any existing plans to Prostate, before proceeding with deleting ROIs:
 for plan in case.TreatmentPlans:
   for bs in plan.BeamSets:
-    bs.AddDosePrescriptionToRoi(RoiName="Prostate", DoseVolume=0, PrescriptionType="MedianDose", DoseValue=7700, RelativePrescriptionLevel=1, AutoScaleDose=True)
+    if bs.Prescription.PrimaryDosePrescription.OnStructure.Name != 'Prostate':
+      bs.AddDosePrescriptionToRoi(RoiName="Prostate", DoseVolume=0, PrescriptionType="MedianDose", DoseValue=7700, RelativePrescriptionLevel=1, AutoScaleDose=True)
 
 # Delete ROIs:
 # Delete known ROIs which we know we do not want:
 delete = [
+  'CTV',
   'CTV 0-77',
   'CTV 0-70',
   'CTV 0-56',
   'CTV 0-77 union',
   'CTV_56',
   'CTV!_56',
+  'CTV!_66',
+  'CTV_74',
   'CTV_77',
   'CTV!_70',
   'CTV_Prostate_SV',
   'CTV 0-63 bekken glandel sin met',
+  'CTVn',
+  'CTVn_66',
+  'PTV',
   'PTV 0-77',
   'PTV 0-70',
   'PTV 0-56',
   'PTV 0-63',
   'PTV 0-77 union',
+  'PTV_66+74',
+  'PTV_74',
   'PTV_77',
+  'PTVn',
+  'PTVn_66',
+  'PTVnOpt',
+  'PTV77-95%dose',
   'PTV!_70',
   'PTV!_56',
+  'PTV!_66',
+  'PTVc!_56',
+  'PTV_56+66+74',
+  'ptv56opt',
+  'PTV 56 opt',
+  'ptv70opt',
+  'ptv77opt',
+  'PTV56opt',
+  'PTV70opt',
+  'PTV77opt',
   'PTV_70+77',
   'PTV_56+70+77',
+  'PTV56-69%dose',
   'PTV_Prostate_SV',
   'PTV70-dorsrect',
   'PTV ves sim 0-77',
+  'PTV_SeminalVes',
+  'SeminalVes10',
+  'SeminalVes20',
+  'zptv56opt',
+  'zPTV_56',
+  'zPTV_0-77',
+  'zOpt_56',
+  'zWall56',
+  'zPTV56_Wall',
+  'zPTV_56_Wall',
+  'zPTV_56_wall',
+  'zPTV!_56_Wall',
   'zPTV_77_Wall',
   'zPTV_70+77_Wall',
+  'zPTV70+77_Wall',
+  'zWall_PTV56',
+  'zWall_temp',
+  'Walltemp',
+  'Wall_temp',
   'Wall_PTVp',
+  'Wall_PTV77',
   'zBladder',
+  'zAnalCanal',
   'zRectum',
+  'zRectum (1)',
+  'zRectum_Posterior',
   'zBowelBag',
+  'zSpc_Bowel',
+  'AnalCanal1',
+  'Bolus',
+  'Bolus (1)',
   'Bowel space - PTV',
+  'BowelBag_XVI',
   'Rectum - PTV',
+  'Bladder_XVI',
+  'Bladder-XVI',
   'Bladder - PTV',
   'Bladder MBS',
   'Dorso_Rektum',
   'Dorso_Rectum',
+  'External XVI',
+  'Wall PTV',
   'Wall PTV_77',
+  'wall_temp',
+  'wall temp',
+  'hjelp',
   'hjelprektum',
+  'hjelp56',
+  'hjelp77',
   'DorsRectum',
+  'Dorsorect',
   'rectPTV',
+  'red',
   'Seed iso',
   'Seed 1',
   'Seed 2',
@@ -326,23 +358,69 @@ delete = [
   'Marker1',
   'Marker2',
   'Marker3',
+  'Marker4',
+  'opt',
+  'opt2',
+  'opt 26-35',
   'opt 56',
+  'opt 56.2',
+  'opt_56',
   'opt56',
+  'opt56.',
   'opt561',
+  'Opt56nyplan',
   'opt 60 Gy',
   'opt70',
+  'opt_70',
   'opt 70',
+  'opt-70',
+  'Opt70nyplan',
+  'opt73',
   'opt77',
+  'opt_77',
   'opt 77',
+  'opt77_2',
   'opt 77-2',
   'opt 77-3',
+  'opt53',
   'opt53,2',
+  'optctv',
+  'optn',
   'optmax',
+  'optPTV56',
+  'opt_ptv56',
+  'optPTV77',
+  'Opt_ptv70',
+  'opt_ptv70',
+  'opt_PTV77',
   '53',
+  '53,2',
+  '56',
+  '56 - 95',
+  '66',
   '66,5',
+  '69',
+  '69.2',
+  '70',
+  '73',
+  '77',
+  '78',
   '79',
+  '86',
+  '87',
+  '95',
+  '95_1',
+  '95.2',
+  '95_2',
+  '95_56',
+  '95-56',
+  '95_70',
+  '95/70',
+  '95_77',
+  '95/77',
   '105',
   '1052',
+  '105-70',
   'Ves sem sin innvekst 77GY',
 ]
 
