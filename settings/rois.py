@@ -215,17 +215,7 @@ other_ptv = ROI.ROI('Other_PTV', 'Organ', COLORS.other_ptv)
 
 
 # PRVs:
-brainstem_prv = ROI.ROIExpanded('Brainstem_PRV', 'Avoidance', COLORS.prv, source=brainstem, margins=MARGINS.uniform_3mm_expansion)
-eye_l_prv = ROI.ROIExpanded('Eye_PRV_L', 'Avoidance', COLORS.prv, source=eye_l, margins=MARGINS.uniform_3mm_expansion)
-eye_r_prv = ROI.ROIExpanded('Eye_PRV_R', 'Avoidance', COLORS.prv, source=eye_r, margins=MARGINS.uniform_3mm_expansion)
-lens_l_prv = ROI.ROIExpanded('Lens_PRV_L', 'Avoidance', COLORS.prv, source=lens_l, margins=MARGINS.uniform_3mm_expansion)
-lens_r_prv = ROI.ROIExpanded('Lens_PRV_R', 'Avoidance', COLORS.prv, source=lens_r, margins=MARGINS.uniform_3mm_expansion)
-optic_nrv_l_prv = ROI.ROIExpanded('OpticNerve_PRV_L', 'Avoidance', COLORS.prv, source=optic_nrv_l, margins=MARGINS.uniform_3mm_expansion)
-optic_nrv_r_prv = ROI.ROIExpanded('OpticNerve_PRV_R', 'Avoidance', COLORS.prv, source=optic_nrv_r, margins=MARGINS.uniform_3mm_expansion)
-optic_chiasm_prv = ROI.ROIExpanded('OpticChiasm_PRV','Avoidance', COLORS.prv, source=optic_chiasm, margins=MARGINS.uniform_3mm_expansion)
-lacrimal_l_prv =ROI.ROIExpanded('LacrimalGland_PRV_L', 'Avoidance', COLORS.prv, source=lacrimal_l, margins=MARGINS.uniform_3mm_expansion)
-lacrimal_r_prv =ROI.ROIExpanded('LacrimalGland_PRV_R', 'Avoidance', COLORS.prv, source=lacrimal_r, margins=MARGINS.uniform_3mm_expansion)
-spinal_cord_prv = ROI.ROIExpanded('SpinalCord_PRV', 'Avoidance', COLORS.prv, source=spinal_cord, margins=MARGINS.uniform_3mm_expansion)
+spinal_cord_prv = ROI.ROIExpanded('SpinalCord_PRV', 'Avoidance', COLORS.prv, source=spinal_cord, margins=MARGINS.uniform_2mm_expansion)
 
 
 # Walls:

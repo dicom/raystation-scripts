@@ -54,7 +54,7 @@ bladder_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space, 
 
 # Palliative:
 # Head:
-palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.eye_l_prv, ROIS.eye_r_prv, ROIS.lens_l, ROIS.lens_r, ROIS.lens_l_prv, ROIS.lens_r_prv, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal_head]
+palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal_head]
 # Neck:
 palliative_neck_oars = [ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.parotids, ROIS.spinal_canal_head, ROIS.submand_l, ROIS.submand_r, ROIS.submands]
 # Thorax:
