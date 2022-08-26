@@ -22,20 +22,7 @@ class DefBreast(object):
     # Region:
     if region == 'partial':
       # Partial breast only:
-      if side == 'right':
-        # Right:
-        breast_draft = ROIS.breast_r_draft
-        breast = ROI.ROIAlgebra(ROIS.breast_r.name, ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      else:
-        # Left:
-        breast_draft = ROIS.breast_l_draft
-        breast = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      # Targets:
-      ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.surgical_bed], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-      ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-      site.add_targets([ctv_sb, ptv_sbc])
-      # OARs:
-      site.add_oars(DEF.breast_part_oars + [breast_draft, breast])
+      self.add_partial_breast(pm, examination, site, side)
     else:
       # Whole breast (with or without regional nodes):
       # Choice 3: With our without boost?
@@ -87,6 +74,47 @@ class DefBreast(object):
     for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name]:
       PMF.exclude_roi_from_export(pm, roi_name)
 
+  
+  # Adds partial breast (left or right) ROIs to the site object.
+  def add_partial_breast(self, pm, examination, site, side):
+    # ROIs are dependent on side:
+    if side == 'right':
+      breast_draft = ROIS.breast_r_draft
+      sb = ROIS.surgical_bed_r
+      # DL model for right sided breast:
+      examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
+      #breast = ROI.ROIAlgebra(ROIS.breast_r.name, ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+      breast = ROIS.breast_r
+      # Change type to 'Other' for selected ROIs:
+      for roi_name in ['Clips_R','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_R']:
+        if pm.RegionsOfInterest[roi_name].OrganData.OrganType != "Other":
+          pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+      # OARs:
+      site.add_oars([ROIS.breast_l, ROIS.breast_r, ROIS.lungs])
+    else:
+      breast_draft = ROIS.breast_l_draft
+      sb = ROIS.surgical_bed_l
+      # DL model for left sided whole breast:
+      examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
+      #breast = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+      breast = ROIS.breast_l
+      # Change type to 'Other' for selected ROIs:
+      for roi_name in ['Clips_L','BreastString_L','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L']:
+        # Some of these ROIs may not always be defined, and give an error:
+        try:
+          pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+        except:
+          pass
+      # OARs:
+      site.add_oars([ROIS.breast_l, ROIS.breast_r, ROIS.lungs])
+    # Rename DL ROI(s):
+    pm.RegionsOfInterest['SpinalCanalFull'].Name = 'SpinalCanal'
+    # Targets:
+    ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+    ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    # Targets for whole breast:
+    site.add_targets([ctv_sb, ptv_sbc])
+  
   
   # Adds regional breast (left or right) ROIs to the site object.
   def add_regional_breast(self, pm, examination, site, side, boost, bilateral, include_common_oars, include_imn):
@@ -261,7 +289,6 @@ class DefBreast(object):
       sb = ROIS.surgical_bed_r
     else:
       sb = ROIS.surgical_bed_l
-    #site.add_targets([sb])
     ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
     ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     site.add_targets([ctv_sb, ptv_sbc])
