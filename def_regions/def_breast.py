@@ -73,6 +73,12 @@ class DefBreast(object):
     # Exclude some ROIs from export:
     for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name]:
       PMF.exclude_roi_from_export(pm, roi_name)
+    # Only some patients have breast string. Delete the ROI if its volume is less than 0.5 cm^3:
+    for rg in ss.RoiGeometries:
+      if rg.OfRoi.Name in ['BreastString_L', 'BreastString_R']:
+        if rg.GetRoiVolume() < 0.5:
+          # Delete the ROI, as it seems like this patient didnt actually have a breast string:
+          pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
 
   
   # Adds partial breast (left or right) ROIs to the site object.
