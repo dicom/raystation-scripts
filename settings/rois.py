@@ -169,7 +169,6 @@ prosthesis = ROI.ROI('Prosthesis','Undefined', COLORS.prosthesis)
 prosthesis_l = ROI.ROI('Prosthesis_L','Undefined', COLORS.prosthesis)
 prosthesis_r = ROI.ROI('Prosthesis_R','Undefined', COLORS.prosthesis)
 # Markers:
-clips = ROI.ROI('Markers', 'Marker', COLORS.clips)
 markers = ROI.ROI('Markers', 'Marker', COLORS.clips)
 seed1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
 seed2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)

@@ -53,15 +53,16 @@ class TSStructureSet(object):
 
   # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined.
   def breast_seeds_test(self):
-    t = TEST.Test("Mammae-pasienter som skal ha ungdomsboost skal ha " + ROIS.clips.name + " definert.", True, self.geometry)
+    t = TEST.Test("Bryst-pasienter som skal ha ungdomsboost skal ha Clips_L eller Clips_R definert.", True, self.geometry)
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
       if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
         for beam_set in self.ts_case.ts_plan.ts_beam_sets:
           if beam_set.ts_label.label.nr_fractions == '8':
             match = False
             for rg in self.structure_set.RoiGeometries:
-              if rg.OfRoi.Name == ROIS.clips.name and rg.HasContours():
-                match = True
+              if rg.HasContours():
+                if rg.OfRoi.Name == 'Clips_L' or rg.OfRoi.Name == 'Clips_R':
+                  match = True
             if match:
               return t.succeed()
             else:
