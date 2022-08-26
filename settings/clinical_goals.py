@@ -237,6 +237,8 @@ def breast_oars(ss, region_code, prescription):
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_breast, cc0_03, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
     CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority6),
+    CG.ClinicalGoal(ROIS.a_lad.name, at_most, dose_at_abs_volume, TOL.lad_max, cc0_03, priority6),
+    CG.ClinicalGoal(ROIS.a_lad.name, at_most, average_dose, TOL.lad_mean, None, priority6),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_low_priority, None, priority6)
   ]
   if region_code in RC.breast_l_codes:
