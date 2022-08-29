@@ -171,11 +171,9 @@ class TSStructureSet(object):
     else:
       return t.succeed()
 
-  # Tests for presence of localization point.
+  # Tests for presence of localization point POI geometry.
   def localization_point_test(self):
     t = TEST.Test("Skal inneholde et referansepunkt (Localization Point)", True, self.localization_point)
-    # Run test if this structure set corresponds to the examination used for the treatment plan:
-    # (FIXME: This may not be correct for mamma gating)
     match = False
     for pg in self.structure_set.PoiGeometries:
       if pg.OfPoi.Type == 'LocalizationPoint':
