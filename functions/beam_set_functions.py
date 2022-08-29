@@ -27,7 +27,7 @@ def add_prescription(beam_set, presciption, target):
 
 
 # Creates two arcs (VMAT).
-def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', gantry_stop_angle2='179', gantry_start_angle1='179', gantry_start_angle2='181', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1):
+def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', gantry_stop_angle2='179', gantry_start_angle1='179', gantry_start_angle2='181', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreateArcBeam(
     ArcStopGantryAngle = gantry_stop_angle1,
@@ -57,10 +57,12 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
     CouchRotationAngle = couch_angle2
   )
   b2.Number = beam_index + 1
+  if bolus:
+    b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates four beams (3D-CRT).
-def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', name4='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', gantry_angle4='179', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', collimator_angle4='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', couch_angle4 = '0', iso_index = 1, beam_index=1):
+def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', name4='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', gantry_angle4='179', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', collimator_angle4='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', couch_angle4 = '0', iso_index = 1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
     BeamQualityId = energy,
@@ -110,6 +112,8 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
     CouchRotationAngle = couch_angle4
   )
   b4.Number = beam_index + 3
+  if bolus:
+    b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Adjusts leaf positions on the first segment of each beam for 3DCRT breast plans.
@@ -153,7 +157,7 @@ def create_margin_air_for_3dcrt_breast(ss, beam_set, region_code):
 
 
 # Creates a single arc (VMAT).
-def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', gantry_start_angle='181', collimator_angle='5', couch_angle='0', iso_index = 1, beam_index=1):
+def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', gantry_start_angle='181', collimator_angle='5', couch_angle='0', iso_index = 1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b = beam_set.CreateArcBeam(
     ArcStopGantryAngle = gantry_stop_angle,
@@ -169,10 +173,12 @@ def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', 
     CouchRotationAngle = couch_angle
   )
   b.Number = beam_index
+  if bolus:
+    b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates three beams (3D-CRT).
-def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', iso_index = 1, beam_index=1):
+def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', iso_index = 1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
     BeamQualityId = energy,
@@ -210,10 +216,12 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
     CouchRotationAngle = couch_angle3
   )
   b3.Number = beam_index + 2
+  if bolus:
+    b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates two beams (3D-CRT).
-def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry_angle1='181', gantry_angle2='179', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1):
+def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry_angle1='181', gantry_angle2='179', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreatePhotonBeam(
     BeamQualityId = energy,

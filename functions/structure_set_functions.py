@@ -45,6 +45,18 @@ def body_roi_name(ss):
     return None
 
 
+# Gives a bolus ROI geometry (if any) belonging to this structure set.
+# If no bolus type ROI is present, None is returned.
+# If multiple bolus ROI geometries exists, the first instance is returned.
+def bolus(ss):
+  bolus_rg = None
+  for rg in ss.RoiGeometries:
+    if rg.OfRoi.Type == 'Bolus':
+      bolus_rg = rg
+      break
+  return bolus_rg
+
+
 # Returns True if the structure set and region code indicates that a breast boost is to be given.
 # The determination is based on target volumes present as well as the region code.
 # Returns False if not.
