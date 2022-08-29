@@ -56,14 +56,13 @@ sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_l
 
 
 # Set up optimization parameters, based on region code (i.e. treatment site) and fraction dose (i.e. fractionated treatment or SBRT).
-# FIXME: Would be more robust to use the prescription object here, instead of the fraction_dose (for interpreting sbrt/conventional treatment).
-def optimization_parameters(region_code, fraction_dose):
+def optimization_parameters(region_code, prescription):
   # Set default optimization settings:
   opt = default
   # Assign optimization settings based on region code (and in some cases fraction dose):
   if region_code in RC.brain_partial_codes:
     # Partial brain:
-    if fraction_dose > 6:
+    if prescription.is_stereotactic():
       # Stereotactic brain
       opt = sbrt
     else:
@@ -74,11 +73,8 @@ def optimization_parameters(region_code, fraction_dose):
     opt = sliding_window
   elif region_code in RC.lung_and_mediastinum_codes:
     # Lung:
-    if fraction_dose > 9:
+    if prescription.is_stereotactic():
       # Stereotactic lung:
-      opt = sbrt
-    elif fraction_dose == 7:
-      # Stereotactic lung: (7Gy * 8fx)
       opt = sbrt
     else:
       # Conventional lung:
@@ -93,11 +89,8 @@ def optimization_parameters(region_code, fraction_dose):
     opt = sliding_window
   elif region_code in RC.palliative_codes:
     # Palliative treatment:
-    if fraction_dose > 8:
+    if prescription.is_stereotactic():
       # Stereotactic palliative:
-      opt = sbrt
-    elif fraction_dose >= 6 and fraction_dose <= 7:
-      # Stereotactic palliative: (6-7Gy * 5fx)
       opt = sbrt
     else:
       # Conventional palliative:
@@ -105,6 +98,6 @@ def optimization_parameters(region_code, fraction_dose):
         opt = sliding_window
   # Set max number of monitor units (for all non-sbrt optimizations):
   if opt != sbrt:
-    opt.set_max_arc_mu(fraction_dose * 250)
+    opt.set_max_arc_mu(prescription.fraction_dose * 250)
   # Return the assigned optimization settings:
   return opt
