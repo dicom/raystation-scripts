@@ -135,7 +135,6 @@ anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.small_bowel)
 
 # Undefined / Other ROIs
 # Breast organs:
-surgical_bed = ROI.ROI('SurgicalBed','Undefined', COLORS.breast_draft) # FIXME: Will be removed
 surgical_bed_l = ROI.ROI('SurgicalBed_L','Undefined', COLORS.breast_draft)
 surgical_bed_r = ROI.ROI('SurgicalBed_R','Undefined', COLORS.breast_draft)
 imn_l = ROI.ROI('LN_IMN_L', 'Undefined', COLORS.imn)

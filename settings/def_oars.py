@@ -20,15 +20,6 @@ lung_oars = [ROIS.lung_r, ROIS.lung_l, ROIS.lungs, ROIS.spinal_canal, ROIS.esoph
 lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.trachea, ROIS.liver,  ROIS.stomach, ROIS.skin, ROIS.main_bronchus_r, ROIS.main_bronchus_l]
 
 
-# Breast:
-# Partial breast:
-breast_part_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.surgical_bed]
-# Whole breast:
-breast_whole_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal]
-# Regional breast (lymph nodes):
-breast_reg_oars = [ROIS.lung_r, ROIS.lung_l,  ROIS.lungs, ROIS.heart, ROIS.spinal_canal, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.thyroid, ROIS.esophagus, ROIS.liver]
-
-
 # Prostate:
 # Common:
 prostate_common_oars = [ROIS.bladder, ROIS.bowel_space, ROIS.femoral_l, ROIS.femoral_r, ROIS.rectum]
