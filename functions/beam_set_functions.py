@@ -58,7 +58,8 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
   )
   b2.Number = beam_index + 1
   if bolus:
-    b.SetBolus(BolusName = bolus.OfRoi.Name)
+    for b in [b1, b2]:
+      b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates four beams (3D-CRT).
@@ -113,7 +114,8 @@ def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3
   )
   b4.Number = beam_index + 3
   if bolus:
-    b.SetBolus(BolusName = bolus.OfRoi.Name)
+    for b in [b1, b2, b3, b4]:
+      b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Adjusts leaf positions on the first segment of each beam for 3DCRT breast plans.
@@ -217,7 +219,8 @@ def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name
   )
   b3.Number = beam_index + 2
   if bolus:
-    b.SetBolus(BolusName = bolus.OfRoi.Name)
+    for b in [b1, b2, b3]:
+      b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates two beams (3D-CRT).
@@ -247,6 +250,9 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
     CollimatorAngle = collimator_angle2
   )
   b2.Number = beam_index + 1
+  if bolus:
+    for b in [b1, b2]:
+      b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates a label based on region code, presciption and technique (VMAT or 3D-CRT). The label is used as beam set name.
