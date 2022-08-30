@@ -65,6 +65,8 @@ palliative_other_codes.extend((375, 376, 377, 378, 387, 388, 389, 390, 393, 394,
 palliative_codes = palliative_head_codes + palliative_neck_codes + palliative_thorax_codes + palliative_thorax_and_abdomen_codes + palliative_abdomen_codes + palliative_abdomen_and_pelvis_codes + palliative_pelvis_codes + palliative_other_codes
 palliative_columna_codes = list(range(517, 526+1))
 palliative_columna_codes.extend((512, 416, 417, 418, 419))
+# All bone codes:
+bone_codes = list(range(501, 506+1)) + list(range(512, 514+1)) + list(range(517, 527+1)) + list(range(530, 538+1)) + list(range(541, 546+1)) + list(range(549, 550+1)) + list(range(553, 554+1)) + list(range(561, 578+1)) + list(range(585, 590+1)) + list(range(593, 594+1))
 
 # Palliative: Stereotactic
 stereotactic_pelvis_codes = [513, 514, 527, 573, 574, 575, 576, 577, 578, 585, 586]
