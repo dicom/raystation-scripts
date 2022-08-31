@@ -104,7 +104,6 @@ class QualityControl(object):
     # Plan tests:
     ts_plan.planned_by_test()
     ts_plan.unique_beam_numbers_test()
-    ts_plan.breast_oar_defined_test()
     ts_plan.localization_point_not_in_first_or_last_slice_test()
     
     # Beam set tests:

@@ -2,7 +2,7 @@
 
 # Contains treatment plan tests for individual treatment plans.
 #
-# Verified for RayStation 6.0.
+# Verified for RayStation 10B.
 
 # System configuration:
 from connect import *
@@ -38,32 +38,6 @@ class TSPlan(object):
     self.numbers = TEST.Parameter('Beam numbers', '', self.param)
     self.defined_roi = TEST.Parameter('Geometri','', self.param)
     self.localization_point = TEST.Parameter('REF', '', self.param)
-
-
-  # Tests if all expected breast OARs are defined, except 'A_LAD' for right sided breast, and contralateral breast for conventional treatment (ie. not VMAT).
-  # FIXME: Have a look at this function sometime...
-  def breast_oar_defined_test(self):
-    failed_geometries = []
-    t = TEST.Test("Regionen må ha definert volum:", True, self.defined_roi)
-    t.expected = None
-    ss = self.ts_beam_sets[0].ts_structure_set().structure_set
-    roi_not_contours_dict = SSF.create_roi_dict_not_contours(ss)
-    roi_and_region_dict = {ROIS.a_lad.name: RC.breast_r_codes, ROIS.breast_r_draft.name: RC.breast_l_codes, ROIS.breast_r.name: RC.breast_l_codes, ROIS.breast_l.name :RC.breast_r_codes}
-    if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
-      for key, value in roi_and_region_dict.items():
-        if roi_not_contours_dict.get(key) and self.ts_beam_sets[0].ts_label.label.region in value:
-          del roi_not_contours_dict[key]
-    structure_sets = self.ts_case.case.PatientModel.StructureSets
-    for i in range(len(structure_sets)):
-      if structure_sets[i].OnExamination.Name != self.ts_beam_sets[0].ts_structure_set().structure_set.OnExamination.Name:
-        roi = structure_sets[i].RoiGeometries
-        for j in range(len(roi)):
-          if roi[j].HasContours() and roi_not_contours_dict.get(roi[j].OfRoi.Name):
-            del roi_not_contours_dict[roi[j].OfRoi.Name]
-    if len(roi_not_contours_dict.keys()) >= 1:
-      return t.fail(list(roi_not_contours_dict.keys()))
-    else:
-      return t.succeed()
 
 
   # Tests if the same localization point is not placed in the first or last CT slice of the examination.
