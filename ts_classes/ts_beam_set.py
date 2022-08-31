@@ -457,7 +457,6 @@ class TSBeamSet(object):
           return t.succeed()
 
   # Tests if the sequence of beam collimator angles are reasonable.
-  # FIXME: I suspect there are cases where this test doesnt give the correct result...
   # Note that this test only returns one beam in case of several beams with unreasonable values.
   def reasonable_collimator_angles_test(self):
     t = TEST.Test("Tilsynelatende upraktisk stort hopp i kollimatorvinkel brukt på dette feltet i forhold til det forrige. Samme feltform kan oppnås i et mer optimalt oppsett med kollimatorvinkel rotert 180 grader i forhold til gjeldende vinkel.", '', self.collimator_angles)

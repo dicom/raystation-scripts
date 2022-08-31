@@ -2,7 +2,7 @@
 
 # A collection of convenience methods for dealing with the RayStation scripting interface.
 #
-# Verified for RayStation 6.0.
+# Verified for RayStation 10B.
 from tkinter import messagebox
 
 # Gets the optimization BeamSettings that corresponds to the given beam, beam set and plan:
@@ -103,13 +103,6 @@ def f(str):
   else:
     return ''
 
-# Gets the strucutre set POI geometry that corresponds to the given Point of Interest:
-#def ss_poi_geometry(pm, poi):
-  #for struct in pm.StructureSets:
-    #for p in struct.PoiGeometries:
-      #if p.OfPoi == poi:
-        #return p
-
 # Gets the strucutre set POI geometry that corresponds to the given Point of Interest (in a given beam set):
 # This assumes there is a FractionDose structure.
 def ss_poi_geometry(bs, poi):
@@ -117,14 +110,12 @@ def ss_poi_geometry(bs, poi):
     if p.OfPoi == poi:
       return p
 
-
 # Gets the strucutre set ROI geometry that corresponds to the given Region of Interest (in a given beam set):
 def ss_roi_geometry(bs, roi):
   if bs.FractionDose.OnDensity: # (For e.g. imported plans, OnDensity may be missing)
     for r in bs.FractionDose.OnDensity.OutlineGeometry:
       if r.OfRoi.Name == roi:
         return r
-
 
 # Gets the accumulated "typed" (i.e. from beam set label) dose of a beam_set
 # (i.e. different from the directly typed dose for beam sets which use background dose)
@@ -138,13 +129,6 @@ def accumulated_label_dose(plan, beam_set, label):
     if beam_set_opt.BackgroundDose:
       dose += accumulated_label_dose(plan, beam_set_opt.BackgroundDose.ForBeamSet, label)
   return dose
-
-# Checks if two isocenters are equal or not:
-#def equal_iso(iso1, iso2):
-  #if round(iso1.x, 2) == round(iso2.x, 2) and round(iso1.y, 2) == round(iso2.y, 2) and round(iso1.z, 2) == round(iso2.z, 2):
-    #return True
-  #else:
-    #return False
 
 # Returns the beam set (if any) which the given beam set depends on (with background dose).
 def background_beam_set(plan, beam_set):
@@ -188,7 +172,7 @@ def fraction_dose(beam_set):
 def gy(dose):
   return dose / 100
 
-#Returns true if a volume of the given type exists in the structure set
+# Returns true if a volume of the given type exists in the structure set
 def roi_type(ss, type):
   match = False
   for roi in ss.RoiGeometries:
@@ -196,8 +180,7 @@ def roi_type(ss, type):
       match = True
   return match
 
-
-#Returns true if a volume of the given name exists in the structure set
+# Returns true if a volume of the given name exists in the structure set
 def roi_name(ss, name):
   match = False
   for roi in ss.RoiGeometries:
@@ -205,20 +188,19 @@ def roi_name(ss, name):
       match = True
   return match
 
-#Finds the center point  in the x direction
+# Finds the center point  in the x direction
 def roi_center_x(ss, roi):
   roi_box = ss.RoiGeometries[roi].GetBoundingBox()
   roi_x_middle = (roi_box[1].x-roi_box[0].x)/2
   roi_x = roi_box[0].x + roi_x_middle
   return roi_x
 
-#Finds the center point  in the y direction
+# Finds the center point  in the y direction
 def roi_center_y(ss, roi):
   roi_box = ss.RoiGeometries[roi].GetBoundingBox()
   roi_y_middle = (roi_box[1].y-roi_box[0].y)/2
   roi_y = roi_box[0].y + roi_y_middle
   return roi_y
-
 
 # Returns true if the structure set contains a ROI with a defined volume matching the given name.
 def has_roi_with_shape(ss, name):
