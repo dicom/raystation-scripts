@@ -152,8 +152,6 @@ class QualityControl(object):
       if ts_prescription:
         ts_prescription.ctv_prescription_test()
         ts_prescription.prescription_type_test()
-        ts_prescription.prescription_poi_technique_test()
-        ts_prescription.prescription_poi_target_volume_test()
         ts_prescription.prescription_dose_test()
         ts_prescription.prescription_real_dose_test()
         ts_prescription.clinical_max_test()

@@ -114,34 +114,18 @@ class TSPrescription(object):
         else:
           return t.fail(type)
 
-  # Tests that the prescription type (dose volume) is as expected.
-  # FIXME: Egen prescription test for stereotaksi og om planen har målvolum eller ikke.
+  # Tests that the prescription type (MedianDose/DoseAtVolume) is as expected.
   def prescription_type_test(self):
-    t = TEST.Test("Skal være en av disse", ['MedianDose', 'DoseAtPoint', 'DoseAtVolume'], self.type)
-    if self.prescription.PrimaryDosePrescription.PrescriptionType in ('MedianDose', 'DoseAtPoint', 'DoseAtVolume'):
+    t = TEST.Test("Skal være en av disse", ['MedianDose'], self.type)
+    expected = 'MedianDose'
+    if self.is_stereotactic():
+      expected = 'DoseAtVolume'
+      t.expected = [expected]
+    found = self.prescription.PrimaryDosePrescription.PrescriptionType
+    if expected == found:
       return t.succeed()
     else:
-      return t.fail()
-
-  # Tests whether use of point prescription is in combination with the 'U' beam label code.
-  def prescription_poi_technique_test(self):
-    t = TEST.Test("Punktnormering skal bare benyttes i kombinasjon med plan-type 'U'", False, self.type)
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
-      if self.ts_beam_set.ts_label.label.technique:
-        if self.ts_beam_set.ts_label.label.technique.upper() == 'U':
-          return t.succeed()
-        else:
-          return t.fail(True)
-
-  # Tests whether use of point prescription is in combination with target volume-less treatment planning.
-  # FIXME: Bruk struktursett tilhørende aktuell plan istedenfor case.
-  def prescription_poi_target_volume_test(self):
-    t = TEST.Test("Punktnormering skal kun benyttes for planer som ikke har målvolum definert", False, self.type)
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
-      if self.ts_beam_set.ts_plan.ts_case.has_target_volume:
-        return t.fail(True)
-      else:
-        return t.succeed()
+      return t.fail(found)
 
   # Tests if the prescription dose is equal to the dose given in the DICOM plan label.
   def prescription_dose_test(self):
