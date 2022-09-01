@@ -77,7 +77,7 @@ def create_breast_tang_objectives(ss, plan, total_dose, target):
 
 # Breast with regional lymph nodes
 def create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name):
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2.5, 30)
+  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3.5, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 5)
   OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*0.998*100, 15)
