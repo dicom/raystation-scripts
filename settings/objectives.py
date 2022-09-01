@@ -348,7 +348,7 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.min_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*0.98, 150)
     OF.min_dvh(ss, plan, ROIS.ptv_70_sib.name, total_dose*100*0.89, 98, 150)
     OF.max_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*1.02, 70)
-    OF.max_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.935*100, 50)
+    OF.max_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.95*100, 50)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.038, 25)
     OF.max_dvh(ss, plan, ROIS.femoral_l.name, 35*100, 2, 1)
