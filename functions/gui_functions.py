@@ -261,7 +261,7 @@ def handle_failed_creation_of_roi(roi_name):
 # Handles the situation of a crashed attempt to move a roi that takes part of a structure set which has already been approved
 def handle_creation_of_new_roi_because_of_approved_structure_set(roi_name):
   title = "Opprettet roi: " + roi_name
-  text = "Legg merke til at det har blitt opprettet en roi: " + roi_name + "\n\n" "Dette er fordi en tilsvarende roi finnes i et allerede godkjent struktursett." + "\n\n"  + "Hvis denne skal benyttes bør man oppdatere 'Clinical Goals' og evt 'Objectives'"
+  text = "Legg merke til at det har blitt opprettet en ny roi: " + roi_name + "\n\n" "Dette er fordi en tilsvarende roi finnes i et allerede godkjent struktursett." + "\n\n"  + "Hvis denne skal benyttes bør man oppdatere 'Clinical Goals' og evt 'Objectives'"
   messagebox.showinfo(title, text)
 
 
