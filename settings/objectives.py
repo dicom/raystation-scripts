@@ -112,6 +112,7 @@ def create_palliative_objectives(ss, plan, total_dose, target):
   OF.max_dose(ss, plan, target.replace("C", "P"), total_dose*100*1.05, 80)
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+  OF.fall_off(ss, plan, ROIS.wall_ptv.name, total_dose*100, total_dose*0.75*100, 1.0, 2)
 
 
 # Palliative beam sets in cases of multiple (additional) beam sets
@@ -121,6 +122,7 @@ def create_palliative_objectives_for_additional_beamsets(ss, plan, total_dose, b
   OF.max_dose(ss, plan, ROIS.ptv.name+str(beam_set_index+1), total_dose*100*1.05, 80, beam_set_index = beam_set_index)
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = beam_set_index)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = beam_set_index)
+  OF.fall_off(ss, plan, ROIS.wall_ptv.name+str(beam_set_index+1), total_dose*100, total_dose*0.75*100, 1.0, 2, beam_set_index = beam_set_index)
 
 
 
