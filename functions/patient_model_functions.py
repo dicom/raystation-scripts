@@ -32,7 +32,8 @@ def bolus_names(pm):
 
 # Creates an algebra roi from a ROIAlgebra object.
 def create_algebra_roi(pm, examination, ss, roi):
-  pm.CreateRoi(Name = roi.name, Color = roi.color, Type = roi.type)
+  if not SSF.has_roi(ss, roi.name):
+    pm.CreateRoi(Name = roi.name, Color = roi.color, Type = roi.type)
   # Get ROI geometry:
   roi_geometry = SSF.rg(ss, roi.name)
   # Make sure that all ROI sources exists:
@@ -43,20 +44,24 @@ def create_algebra_roi(pm, examination, ss, roi):
     if not SSF.has_roi(ss, source_roi.name):
       missing.append(source_roi.name)
   if len(missing) == 0:
-    roi_geometry.OfRoi.CreateAlgebraGeometry(
-      Examination = examination,
-      ExpressionA = roi.expressionA(),
-      ExpressionB = roi.expressionB(),
-      ResultOperation =roi.operator,
-      ResultMarginSettings = roi.result_margin_settings()
-    )
-    roi_geometry.OfRoi.SetAlgebraExpression(
-      ExpressionA = roi.expressionA(),
-      ExpressionB = roi.expressionB(),
-      ResultOperation =roi.operator,
-      ResultMarginSettings = roi.result_margin_settings()
-    )
-    roi_geometry.OfRoi.UpdateDerivedGeometry(Examination = examination)
+    # Trying to create an algebra on an approved ROI may crash RayStation, so we should check for this:
+    if not SSF.is_approved_roi_structure(ss, roi.name):
+      roi_geometry.OfRoi.CreateAlgebraGeometry(
+        Examination = examination,
+        ExpressionA = roi.expressionA(),
+        ExpressionB = roi.expressionB(),
+        ResultOperation =roi.operator,
+        ResultMarginSettings = roi.result_margin_settings()
+      )
+      roi_geometry.OfRoi.SetAlgebraExpression(
+        ExpressionA = roi.expressionA(),
+        ExpressionB = roi.expressionB(),
+        ResultOperation =roi.operator,
+        ResultMarginSettings = roi.result_margin_settings()
+      )
+      roi_geometry.OfRoi.UpdateDerivedGeometry(Examination = examination)
+    else:
+      GUIF.handle_failed_creation_of_roi(roi.name)
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, missing)
 
@@ -176,9 +181,11 @@ def create_mask_ptv_brain(patient, pm, examination, ss, nr_targets):
     targets = [ROIS.ptv]
     mask_names = [ROIS.mask_ptv.name]
   for i in range(nr_targets):
-    SSF.create_expanded_and_intersected_volume(pm, examination, ss, targets[i], ROIS.body, mask_names[i], 1600)
-    patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
-    pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
+    # Trying to modify an approved ROI may crash RayStation, so we should check for this:
+    if not SSF.is_approved_roi_structure(ss, mask_names[i]):
+      SSF.create_expanded_and_intersected_volume(pm, examination, ss, targets[i], ROIS.body, mask_names[i], 1600)
+      patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
+      pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
 
 
 # Creates mask ptv volumes for one or more lung targets.
@@ -367,41 +374,42 @@ def create_grey_value_intersection_roi(pm, examination, ss, grey_level_roi, sour
 
 # Creates Retina and Cornea ROIs (based on an Eye ROI).
 def create_retina_and_cornea(pm, examination, ss, source_roi, box_roi, roi, intersection_roi, subtraction_roi):
-  if SSF.has_named_roi_with_contours(ss, source_roi.name):
-    center_x = SSF.roi_center_x(ss, source_roi.name)
-    center_z = SSF.roi_center_z(ss, source_roi.name)
-    source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
-    y_min = source_roi_box[1].y
-    if y_min > 0:
-      y_min = -source_roi_box[1].y
-    delete_roi(pm, box_roi.name)
-    box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
-    pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
-    exclude_roi_from_export(pm, box_roi.name)
-    if source_roi.name == ROIS.lens_l.name:
-      wall_roi = ROIS.z_eye_l
-    elif source_roi.name == ROIS.lens_r.name:
-      wall_roi = ROIS.z_eye_r
-    delete_roi(pm, wall_roi.name)
-    create_wall_roi(pm, examination, ss, wall_roi)
-    exclude_roi_from_export(pm, wall_roi.name)
-    if not SSF.is_approved_roi_structure(ss, roi.name):
-      if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
-        intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [box_roi], operator = 'Intersection')
-        # In the rare case that this ROI already exists, delete it (to avoid a crash):
-        delete_roi(pm, intersection.name)
-        create_algebra_roi(pm, examination, ss, intersection)
-        GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
-      else:
-        intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Intersection')
-        subtraction = ROI.ROIAlgebra(subtraction_roi.name, subtraction_roi.type, subtraction_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Subtraction')
-        # In the rare case that this ROI already exists, delete it (to avoid a crash):
-        delete_roi(pm, intersection.name)
-        delete_roi(pm, subtraction.name)
-        create_algebra_roi(pm, examination, ss, intersection)
-        create_algebra_roi(pm, examination, ss, subtraction)
-  else:
-    GUIF.handle_missing_roi_for_derived_rois(intersection_roi.name, source_roi.name)
+  if not is_approved_roi_structure_in_one_of_all_structure_sets(pm, box_roi.name):
+    if SSF.has_named_roi_with_contours(ss, source_roi.name):
+      center_x = SSF.roi_center_x(ss, source_roi.name)
+      center_z = SSF.roi_center_z(ss, source_roi.name)
+      source_roi_box = ss.RoiGeometries[source_roi.name].GetBoundingBox()
+      y_min = source_roi_box[1].y
+      if y_min > 0:
+        y_min = -source_roi_box[1].y
+      delete_roi(pm, box_roi.name)
+      box = pm.CreateRoi(Name = box_roi.name, Color = box_roi.color, Type = box_roi.type)
+      pm.RegionsOfInterest[box_roi.name].CreateBoxGeometry(Size={ 'x': 5, 'y': 5, 'z': 4}, Examination = examination, Center = { 'x': center_x, 'y': y_min+2.5, 'z': center_z })
+      exclude_roi_from_export(pm, box_roi.name)
+      if source_roi.name == ROIS.lens_l.name:
+        wall_roi = ROIS.z_eye_l
+      elif source_roi.name == ROIS.lens_r.name:
+        wall_roi = ROIS.z_eye_r
+      delete_roi(pm, wall_roi.name)
+      create_wall_roi(pm, examination, ss, wall_roi)
+      exclude_roi_from_export(pm, wall_roi.name)
+      if not SSF.is_approved_roi_structure(ss, roi.name):
+        if is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi.name):
+          intersection = ROI.ROIAlgebra(roi.name+"1", roi.type, roi.color, sourcesA = [source_roi], sourcesB = [box_roi], operator = 'Intersection')
+          # In the rare case that this ROI already exists, delete it (to avoid a crash):
+          delete_roi(pm, intersection.name)
+          create_algebra_roi(pm, examination, ss, intersection)
+          GUIF.handle_creation_of_new_roi_because_of_approved_structure_set(intersection.name)
+        else:
+          intersection = ROI.ROIAlgebra(intersection_roi.name, intersection_roi.type, intersection_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Intersection')
+          subtraction = ROI.ROIAlgebra(subtraction_roi.name, subtraction_roi.type, subtraction_roi.color, sourcesA = [wall_roi], sourcesB = [box_roi], operator = 'Subtraction')
+          # In the rare case that this ROI already exists, delete it (to avoid a crash):
+          delete_roi(pm, intersection.name)
+          delete_roi(pm, subtraction.name)
+          create_algebra_roi(pm, examination, ss, intersection)
+          create_algebra_roi(pm, examination, ss, subtraction)
+    else:
+      GUIF.handle_missing_roi_for_derived_rois(intersection_roi.name, source_roi.name)
 
 
 # Creates a Retina ROI (based on an Eye ROI).
@@ -442,6 +450,7 @@ def create_retina(pm, examination, ss, source_roi, box_roi, roi, intersection_ro
 
 # Creates a Cornea ROI (based on an Eye ROI).
 def create_cornea(pm, examination, ss, source_roi, box_roi, roi, subtraction_roi):
+  # Make sure we are not dealing with an approved structure set (as ROI creation will crash in this case):
   if SSF.has_named_roi_with_contours(ss, source_roi.name):
     center_x = SSF.roi_center_x(ss, source_roi.name)
     center_z = SSF.roi_center_z(ss, source_roi.name)
