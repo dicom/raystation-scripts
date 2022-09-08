@@ -165,7 +165,7 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
   # If no ISO POI was found, we need to determine the isocenter coordinates:
   if iso == False:
     # The logic used to determine the isocenter depends on what kind of treatment and technique is used:
-    if region_code in RC.breast_tang_codes:
+    if region_code in RC.breast_whole_codes:
       # Whole breast, conventional treatment technique:
       isocenter = find_isocenter_conv_breast(ss, target)
     elif region_code in RC.breast_reg_codes:

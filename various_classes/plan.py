@@ -217,47 +217,45 @@ class Plan(object):
           BSF.set_up_beams_and_optimization_for_tangential_breast(plan, plan.BeamSets[1], plan.PlanOptimizations[1], ROIS.ptv_sbc.name)
 
 
-    # Set up treat and protect for stereotactic lung:
-    #if region_code in RC.lung_codes and prescription.is_stereotactic():
-    #  BSF.set_up_treat_and_protect_for_stereotactic_lung(beam_set, target, 0.5)
-
-
-    # Run first optimization on each beam set:
-    for plan_optimization in plan.PlanOptimizations:
-      # Optimization parameters to be used on all cases (3D-CRT and VMAT):
-      plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
-      # Configure optimization parameters for VMAT only:
-      if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
-        optimization_parameters = OPT.optimization_parameters(region_code, prescription)
-        optimization_parameters.apply_to(plan_optimization)
-      # Run the optimization (may crash if GPU for computation is not available):
-      try:
-        plan_optimization.RunOptimization()
-      except Exception as e:
-        GUIF.handle_optimization_error(plan_optimization, e)
-
-
-    # Start adaptive optimization if indicated:
-    if opt == 'oar':
-      try:
-        OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
-      except Exception as e:
-        GUIF.handle_optimization_error(plan_optimization, e)
-      if region_code in RC.breast_codes and technique_name != 'VMAT':
-        # Modify leaves for the open fields in non-VMAT breast:
-        if region_code in RC.breast_reg_codes:
-          # Close leaves behind jaw for breast regional patients:
-          BSF.close_leaves_behind_jaw_for_regional_breast(beam_set)
-        # Create 2.5 cm margin to air for breast patient planned with a 3D-CRT technique (for robustness purpuses):
-        BSF.create_margin_air_for_3dcrt_breast(ss, beam_set, region_code)
-        # Compute dose:
+    # Use the site optimizer for sites where it has been implemented:
+    if site.optimizer:
+      site.optimizer.optimize()
+    else:
+      # For legacy sites, use the old optimization procedure:
+      # Run first optimization on each beam set:
+      for plan_optimization in plan.PlanOptimizations:
+        # Optimization parameters to be used on all cases (3D-CRT and VMAT):
+        plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
+        # Configure optimization parameters for VMAT only:
+        if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
+          optimization_parameters = OPT.optimization_parameters(region_code, prescription)
+          optimization_parameters.apply_to(plan_optimization)
+        # Run the optimization (may crash if GPU for computation is not available):
         try:
-          beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
+          plan_optimization.RunOptimization()
         except Exception as e:
           GUIF.handle_optimization_error(plan_optimization, e)
-      # Auto scale to prescription:
-      for plan_optimization in plan.PlanOptimizations:
-        plan_optimization.AutoScaleToPrescription = True
+      # Start adaptive optimization if indicated:
+      if opt == 'oar':
+        try:
+          OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
+        except Exception as e:
+          GUIF.handle_optimization_error(plan_optimization, e)
+        if region_code in RC.breast_codes and technique_name != 'VMAT':
+          # Modify leaves for the open fields in non-VMAT breast:
+          if region_code in RC.breast_reg_codes:
+            # Close leaves behind jaw for breast regional patients:
+            BSF.close_leaves_behind_jaw_for_regional_breast(beam_set)
+          # Create 2.5 cm margin to air for breast patient planned with a 3D-CRT technique (for robustness purpuses):
+          BSF.create_margin_air_for_3dcrt_breast(ss, beam_set, region_code)
+          # Compute dose:
+          try:
+            beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
+          except Exception as e:
+            GUIF.handle_optimization_error(plan_optimization, e)
+        # Auto scale to prescription:
+        for plan_optimization in plan.PlanOptimizations:
+          plan_optimization.AutoScaleToPrescription = True
     # Load plan:
     CF.load_plan(case, plan)
 

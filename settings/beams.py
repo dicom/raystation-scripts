@@ -17,7 +17,7 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
       # Partial breast, left sided:
       BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       BSF.set_MU(beam_set,['LPO','LAO','RAO'], [90, 15, 90] )
-    elif region_code in RC.breast_tang_l_codes:
+    elif region_code in RC.breast_whole_l_codes:
       # Whole breast, left sided:
       BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '310', collimator_angle1 = '343', collimator_angle2 = '17', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       BSF.set_MU(beam_set,['LPO','RAO'], [110, 110] )
@@ -25,7 +25,7 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
       # Partial breast, right sided:
       BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       BSF.set_MU(beam_set,['RPO','RAO','LAO'], [90, 15, 90] )
-    elif region_code in RC.breast_tang_r_codes:
+    elif region_code in RC.breast_whole_r_codes:
       # Whole breast, right sided:
       BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'LAO', gantry_angle1 = '230', gantry_angle2 = '50', collimator_angle1 = '9', collimator_angle2 = '352', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       BSF.set_MU(beam_set,['RPO','LAO'], [110, 110] )
@@ -67,9 +67,11 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
           BSF.create_single_arc(beam_set, isocenter, energy = energy_name, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     # Breast partial/whole/regional:
     elif region_code in RC.breast_l_codes:
-      BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '300', gantry_start_angle = '179', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      #BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '300', gantry_start_angle = '179', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '285', gantry_start_angle = '179', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     elif region_code in RC.breast_r_codes:
-      BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '60', gantry_start_angle = '181', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      #BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '60', gantry_start_angle = '181', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '75', gantry_start_angle = '181', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     # Lung:
     elif region_code in RC.lung_and_mediastinum_codes:
       if region_code in RC.lung_r_codes:

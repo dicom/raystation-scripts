@@ -11,3 +11,9 @@ class Site(object):
       self.opt_objectives = opt_objectives
       self.oar_clinical_goals = oar_clinical_goals
       self.target_clinical_goals = target_clinical_goals
+      self.optimizer = None
+    
+    # Executes plan optimization for this site.
+    def optimize(self):
+      self.optimizer.optimize()
+    

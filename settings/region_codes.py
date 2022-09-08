@@ -14,17 +14,17 @@ als_codes = [122, 123, 124]
 # Breast:
 breast_partial_l_codes = [273]
 breast_partial_r_codes = [274]
-breast_partial_codes = breast_partial_l_codes +breast_partial_r_codes 
-breast_tang_l_codes = [239]
-breast_tang_r_codes = [240]
-breast_tang_codes = breast_tang_l_codes + breast_tang_r_codes + [275]
+breast_partial_codes = breast_partial_l_codes + breast_partial_r_codes 
+breast_whole_l_codes = [239]
+breast_whole_r_codes = [240]
+breast_whole_codes = breast_whole_l_codes + breast_whole_r_codes + [275]
 breast_reg_l_codes = [241, 243]
 breast_reg_r_codes = [242, 244]
 breast_reg_codes = breast_reg_l_codes + breast_reg_r_codes + [276]
 breast_l_codes = [239, 241, 243, 273]
 breast_r_codes = [240, 242, 244, 274]
 breast_not_thorax_codes = [273, 274, 239, 240, 243, 244]
-breast_codes = breast_partial_r_codes + breast_partial_l_codes +breast_tang_codes + breast_reg_codes
+breast_codes = breast_partial_r_codes + breast_partial_l_codes + breast_whole_codes + breast_reg_codes
 
 # Lung:
 lung_r_codes = [248, 250, 278]

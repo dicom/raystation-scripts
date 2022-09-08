@@ -10,6 +10,8 @@ import rois as ROIS
 import patient_model_functions as PMF
 import structure_set_functions as SSF
 
+import breast_optimization as OPT
+
 # Example:
 # SITE.Site(codes, oar_objectives, opt_objectives, oar_clinical_goals, target_clinical_goals)
 
@@ -37,11 +39,13 @@ def lung(ss, plan, prescription, region_code, target):
 
 
 # Breast:
-def breast(ss, plan, prescription, region_code, technique_name, target):
+def breast(ss, plan, prescription, region_code, target):
   if region_code in RC.breast_reg_codes:
-    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose, technique_name), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site.optimizer = OPT.BreastOptimization(ss, plan, site, region_code)
   else:
-    site = SITE.Site(RC.breast_tang_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_tang_objectives(ss, plan, prescription.total_dose, target), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_whole_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_objectives(ss, plan, region_code, prescription.total_dose, target), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site.optimizer = OPT.BreastOptimization(ss, plan, site, region_code)
   return site
 
 
@@ -115,7 +119,7 @@ def site(pm, examination, ss, plan, prescription, region_code, target, technique
     site = brain(pm, examination, ss, plan, prescription, region_code)
   elif region_code in RC.breast_codes:
     # Breast:
-    site = breast(ss, plan, prescription, region_code, technique_name, target)
+    site = breast(ss, plan, prescription, region_code, target)
   elif region_code in RC.lung_and_mediastinum_codes:
     # Lung:
     site = lung(ss, plan, prescription, region_code, target)

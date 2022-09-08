@@ -883,6 +883,7 @@ def breast_targets(ss, region_code, target):
         CG.ClinicalGoal(ROIS.ptv_nc.name, at_least, dose_at_volume, pc90, pc98, priority2),
         CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc96, pc98, priority4),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, dose_at_volume, pc95, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ptv_pc.name, at_least, dose_at_volume, pc95, pc98, priority4),
         CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4),
         CG.ClinicalGoal(ROIS.ctv.name, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, conformity_index, pc75, pc95, priority5)

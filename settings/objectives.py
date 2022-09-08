@@ -62,47 +62,102 @@ def create_common_objectives(ss, plan, total_dose):
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
 
 
+# Breast boost (2 Gy x 8)
+def create_breast_boost_objectives(ss, plan, region_code, total_dose):
+  # External:
+  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = 1)
+  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = 1)
+  # Targets:
+  # CTVsb:
+  OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30, beam_set_index = 1)
+  OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150, beam_set_index = 1)
+  # PTVsbc:
+  OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75, beam_set_index = 1)
+  OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80, beam_set_index = 1)
+  # OARs:
+  # Side-neutral objectives:
+  OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 3, beam_set_index = 1)
+  # Side-dependent objectives:
+  if region_code in RC.breast_l_codes:
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 6*100, 1, 2, beam_set_index = 1)
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 0.5*100, 1, 1, beam_set_index = 1)
+    OF.max_eud(ss, plan, ROIS.breast_r.name, 1*100, 1, 1, beam_set_index = 1)
+  elif region_code in RC.breast_r_codes:
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 6*100, 1, 2, beam_set_index = 1)
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 0.5*100, 1, 1, beam_set_index = 1)
+    OF.max_eud(ss, plan, ROIS.breast_l.name, 1*100, 1, 1, beam_set_index = 1)
+    OF.max_eud(ss, plan, ROIS.liver.name, 0.5*100, 1, 1, beam_set_index = 1)
+  
+
 # Whole breast objectives
-def create_breast_tang_objectives(ss, plan, total_dose, target):
-  OF.uniform_dose(ss, plan, target, total_dose*100, 30)
-  OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 150)
-  OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2.5, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
-  if target == ROIS.ctv_sb.name:
-    OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 1)
+def create_breast_objectives(ss, plan, region_code, total_dose, target):
+  # External dose fall off:
+  if region_code in RC.breast_partial_codes:
+    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
   else:
-    OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 1)
+    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
+  # External max dose:
+  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+  # Targets:
+  # CTV:
+  OF.uniform_dose(ss, plan, target, total_dose*100, 30)
+  OF.min_dose(ss, plan, target, total_dose*100*0.95, 150)
+  # PTVc:
+  OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 100)
+  OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
+  # OARs:
+  # Side-neutral objectives:
+  if target == ROIS.ctv_sb.name:
+    # Note: Does this need to be set differently, or could it be equal, and left to dynamic determination?!
+    OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 3)
+  else:
+    OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
+  # Side-dependent objectives:
+  if region_code in RC.breast_l_codes:
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_l.name, total_dose*0.4*100, 15, 2)
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 1*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.breast_r.name, 3*100, 1, 1)
+  elif region_code in RC.breast_r_codes:
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_r.name, total_dose*0.4*100, 15, 2)
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
 
 
 # Breast with regional lymph nodes
-def create_breast_reg_objectives(ss, plan, region_code, total_dose, technique_name):
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3.5, 30)
+def create_breast_reg_objectives(ss, plan, region_code, total_dose):
+  # External:
+  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
-  OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 5)
-  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*0.998*100, 15)
-  OF.max_dvh(ss, plan, ROIS.ptv_c.name, total_dose*1.044*100, 2, 100)
-  if technique_name == 'VMAT':
-    OF.min_dvh_robust(ss, plan, ROIS.ptv_pc.name, total_dose*0.97*100, 99, 100)
-    OF.min_dvh(ss, plan, ROIS.ptv_c.name, total_dose*0.97*100, 99, 100)
-    if region_code in RC.breast_reg_l_codes:
-      # Left sided target:
-      OF.max_eud(ss, plan, ROIS.breast_r.name, 3*100, 1, 1)
-    else:
-      # Right sided target:
-      OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
-  else:
-    OF.min_dvh(ss, plan, ROIS.ptv_c.name, total_dose*0.97*100, 99, 100)
-
-
-# Breast boost (2 Gy x 8)
-def create_breast_boost_objectives(ss, plan, total_dose):
-  OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30, beam_set_index = 1)
-  OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 150, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80, beam_set_index = 1)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = 1)
-  OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 1, beam_set_index = 1)
+  # Targets:
+  # CTV:
+  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
+  OF.min_dose(ss, plan, ROIS.ctv.name, total_dose*100*0.95, 150)
+  # PTVc:
+  OF.min_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*0.95, 100)
+  OF.max_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*1.05, 80)
+  # PTVpc:
+  OF.min_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*0.95, 100)
+  OF.max_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*1.05, 80)
+  # OARs:
+  # Side-neutral objectives:
+  OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
+  OF.max_eud(ss, plan, ROIS.thyroid.name, 8.7*100, 1, 1)
+  OF.max_eud(ss, plan, ROIS.esophagus.name, 8.2*100, 1, 1)
+  # Side-dependent objectives:
+  if region_code in RC.breast_l_codes:
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_l.name, total_dose*0.4*100, 35, 2)
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 1*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.breast_r.name, 3*100, 1, 1)
+  elif region_code in RC.breast_r_codes:
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_r.name, total_dose*0.4*100, 35, 2)
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
 
 
 # Palliative objectives
