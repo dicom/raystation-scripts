@@ -39,27 +39,26 @@ class DefPalliative(object):
         site.add_targets([ROIS.gtv, ptv])
         # OARs:
         wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
-        site.add_oars(DEF.palliative_stereotactic_pelvis_oars + [wall_ptv])   
+        site.add_oars(DEF.palliative_stereotactic_pelvis_oars + [wall_ptv])
     else:
       # Non-stereotactic:
-      wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
       # Region:
       if region == 'head':
-        site.add_oars(DEF.palliative_head_oars, wall_ptv)
+        site.add_oars(DEF.palliative_head_oars)
       elif region == 'neck':
-        site.add_oars(DEF.palliative_neck_oars, wall_ptv)
+        site.add_oars(DEF.palliative_neck_oars)
       elif region == 'thorax':
-        site.add_oars(DEF.palliative_thorax_oars, wall_ptv)
+        site.add_oars(DEF.palliative_thorax_oars)
       elif region == 'costa':
-        site.add_oars(DEF.palliative_thorax_abdomen_oars, wall_ptv)
+        site.add_oars(DEF.palliative_thorax_abdomen_oars)
       elif region == 'thorax_abdomen':
-        site.add_oars(DEF.palliative_thorax_abdomen_oars, wall_ptv)
+        site.add_oars(DEF.palliative_thorax_abdomen_oars)
       elif region == 'abdomen':
-        site.add_oars(DEF.palliative_abdomen_oars, wall_ptv)
+        site.add_oars(DEF.palliative_abdomen_oars)
       elif region == 'abdomen_pelvis':
-        site.add_oars(DEF.palliative_abdomen_pelvis_oars, wall_ptv)
+        site.add_oars(DEF.palliative_abdomen_pelvis_oars)
       elif region == 'pelvis':
-        site.add_oars(DEF.palliative_pelvis_oars, wall_ptv)
+        site.add_oars(DEF.palliative_pelvis_oars)
       # Choice 3: Number of targets:
       nr_targets = int(choices[3])
       # Choice 4: GTV included?
@@ -136,5 +135,8 @@ class DefPalliative(object):
         ctvs.append(ctv)
         ptvs.append(ptv)
         site.add_targets(ctvs + ptvs)
+        # Add PTV wall:
+        wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
+        site.add_oars([wall_ptv])
     # Create all targets and OARs in RayStation:
     site.create_rois()
