@@ -2,7 +2,7 @@
 
 # Contains treatment plan tests for individual treatment plans.
 #
-# Verified for RayStation 6.0.
+# Verified for RayStation 10B.
 
 # System configuration:
 from connect import *
@@ -69,8 +69,9 @@ class TSROIGeometry(object):
     if self.roi_geometry.PrimaryShape:
       if self.roi_geometry.PrimaryShape.DerivedRoiStatus:
         contours = None
-    # Also skip this test for ROIs where organ type is "Other" or "Unknown" (to avoid testing e.g. dose derived volumes):
-    if self.roi_geometry.OfRoi.OrganData.OrganType in ['Other', 'Unknown']:
+    # Also skip this test for ROIs where organ type is "Unknown" (to avoid testing e.g. dose derived volumes):
+    # (Also skip some known named ROIs which may give some unwanted false positives for this test)
+    if self.roi_geometry.OfRoi.OrganData.OrganType in ['Unknown'] or self.roi_geometry.OfRoi.Name in ['BreastString_L', 'BreastString_R', 'Clips_L', 'Clips_R']:
       contours = None
     # Perform the test if indicated:
     if contours:
