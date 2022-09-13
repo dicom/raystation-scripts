@@ -36,7 +36,7 @@ prostate_palliative_oars = prostate_common_oars
 
 
 # Rectum:
-rectum_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space]
+rectum_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space, ROIS.cauda_equina]
 
 
 # Bladder:

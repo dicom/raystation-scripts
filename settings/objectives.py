@@ -438,6 +438,7 @@ def create_prostate_bed_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2)
     OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, total_dose*100, 56*100, 1, 1)
     OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1)
   else:
@@ -482,6 +483,7 @@ def create_rectum_objectives(ss, plan, total_dose):
     OF.max_dvh(ss, plan, ROIS.femoral_r.name, 35*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 28*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.bowel_space.name, 20*100, 1, 5)
+    OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2)
     OF.fall_off(ss, plan, ROIS.z_ptv_50_wall.name, 49*100, 45*100, 0.5, 5)
     OF.fall_off(ss, plan, ROIS.z_ptv_47_50_wall.name, 50*100, 35*100, 1.0, 1)
   else:
@@ -492,6 +494,7 @@ def create_rectum_objectives(ss, plan, total_dose):
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 16.2*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 14*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 23*100, 2, 2)
 
 
 # Bone/Spine SBRT

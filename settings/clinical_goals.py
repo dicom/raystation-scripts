@@ -559,6 +559,7 @@ def lung_stereotactic_8fx_oars(region_code):
 
 # Rectum:
 rectum_oars = [
+  CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority2),
   CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
   CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
