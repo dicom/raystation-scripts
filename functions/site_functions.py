@@ -52,11 +52,11 @@ def breast(ss, plan, prescription, region_code, target):
 # Prostate:
 def prostate(ss, plan, prescription, region_code, target):
   if prescription.total_dose < 40:
-    site = SITE.Site(RC.prostate_codes, OBJ.palliative_prostate_oar_objectives, OBJ.create_palliative_objectives(ss, plan, prescription.total_dose, target=target), CGS.prostate_oars(ss, prescription), CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.prostate_codes, OBJ.palliative_prostate_oar_objectives, OBJ.create_palliative_objectives(ss, plan, prescription.total_dose, target=target), CGS.prostate_oars(ss, region_code, prescription), CGS.palliative_targets(ss, plan, target))
   elif region_code in RC.prostate_bed_codes:
-    site = SITE.Site(RC.prostate_bed_codes, OBJ.prostate_objectives, OBJ.create_prostate_bed_objectives(ss, plan, prescription.total_dose), CGS.prostate_oars(ss, prescription), CGS.prostate_bed_targets(ss))
+    site = SITE.Site(RC.prostate_bed_codes, OBJ.prostate_objectives, OBJ.create_prostate_bed_objectives(ss, plan, prescription.total_dose), CGS.prostate_oars(ss, region_code, prescription), CGS.prostate_bed_targets(ss))
   else:
-    site = SITE.Site(RC.prostate_codes, OBJ.prostate_objectives, OBJ.create_prostate_objectives(ss, plan, prescription.total_dose), CGS.prostate_oars(ss, prescription), CGS.prostate_targets(ss, prescription))
+    site = SITE.Site(RC.prostate_codes, OBJ.prostate_objectives, OBJ.create_prostate_objectives(ss, plan, prescription.total_dose), CGS.prostate_oars(ss, region_code, prescription), CGS.prostate_targets(ss, prescription))
   return site
 
 

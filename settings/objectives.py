@@ -395,6 +395,7 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 31*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 34*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 14.2*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2)
     OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 71*100, 0.3, 10)
     OF.fall_off(ss, plan, ROIS.z_ptv_70_77_wall.name, total_dose*100, 56*100, 0.5, 5)
   elif total_dose == 77:

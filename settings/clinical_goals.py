@@ -579,8 +579,8 @@ bladder_oars = [
 ]
 
 
-# Prostate (palliative, 20 fx & 35 fx):
-def prostate_oars(ss, prescription):
+# Prostate (palliative fx, 20 fx & 35 fx):
+def prostate_oars(ss, region_code, prescription):
   prostate_oars = [
     # Higher priority:
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.22, TOL.rectum_v22pc,  priority3),
@@ -609,6 +609,12 @@ def prostate_oars(ss, prescription):
     CG.ClinicalGoal(ROIS.femoral_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
     CG.ClinicalGoal(ROIS.femoral_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
   ]
+  # Lymph node irradiation?
+  if region_code in RC.prostate_node_codes:
+    # Cauda equina:
+    prostate_oars += [
+      CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2)
+    ]
   return prostate_oars
 
 
