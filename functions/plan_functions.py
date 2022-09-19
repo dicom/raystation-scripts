@@ -124,7 +124,7 @@ def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, r
     BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '300', gantry_start_angle = '179', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
   elif region_code in RC.breast_r_codes:
     BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '60', gantry_start_angle = '181', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
-  OBJ.create_breast_boost_objectives(ss, plan, prescription.total_dose)
+  OBJ.create_breast_boost_objectives(ss, plan, region_code, prescription.total_dose)
 
 
 # Determines the first available beam number for this plan (which is the highest existing beam number + 1).
