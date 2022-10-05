@@ -120,8 +120,8 @@ for p in [prostate_normo, prostate_bed_normo]:
 
 
 # Rectum:
-rectum_hypo = P.Property('Hypofraksjonering', 'hypo', parent = rectum, next_category ='')
-rectum_normo = P.Property('Konvensjonell fraksjonering (med SIB)', 'normo', parent = rectum, next_category ='omfang', default = True)
+rectum_hypo = P.Property('Hypofraksjonering', 'hypo', parent = rectum, next_category ='', default = True)
+rectum_normo = P.Property('Konvensjonell fraksjonering (med SIB)', 'normo', parent = rectum, next_category ='omfang')
 
 # Rectum normo: Nodes:
 rectum_with_nodes = P.Property('Med patologisk forstørrede lymfeknuter i lyskene', 'with', parent = rectum_normo)
