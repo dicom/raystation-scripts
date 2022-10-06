@@ -499,8 +499,9 @@ rectum_oars = [
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority2),
   CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
   CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50, priority3),
-  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc35, TOL.bladder_v35, priority3)
+  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, 0.41, TOL.bladder_v41pc_freq, priority3),
+  CG.ClinicalGoal(ROIS.femoral_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
+  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
 ]
 
 
