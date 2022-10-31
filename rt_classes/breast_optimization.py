@@ -87,9 +87,18 @@ class BreastOptimization(object):
       # Log finish time:
       time_end = datetime.datetime.now()
       elapsed_time = time_end - time_start
-      minutes = elapsed_time.seconds // 60 % 60
-      seconds = elapsed_time.seconds - minutes * 60
-      optimization_comment += "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
+      if elapsed_time.seconds > 3600:
+        hours = elapsed_time.seconds // 3600 % 3600
+        minutes = (elapsed_time.seconds - hours * 3600) // 60 % 60
+        seconds = elapsed_time.seconds - hours * 3600 - minutes * 60
+      else:
+        hours = 0
+        minutes = elapsed_time.seconds // 60 % 60
+        seconds = elapsed_time.seconds - minutes * 60
+      if hours > 0:
+        optimization_comment += "Tidsbruk: " +str(hours) + " time(r) " + str(minutes) + " min " + str(seconds) + " sek"
+      else:
+        optimization_comment += "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
       po.OptimizedBeamSets[0].Comment = optimization_comment
 
   # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
