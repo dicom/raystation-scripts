@@ -310,6 +310,7 @@ def breast_oars(ss, region_code, prescription):
 # Lung (conventional):
 # (In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs')
 def lung_oars(ss, prescription):
+  lung_oars = []
   # Determine which variant to use for the general lungs CG:
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
     lungs = ROIS.lungs_gtv.name
@@ -345,11 +346,12 @@ def lung_oars(ss, prescription):
     tol_heart_v25 = TOL.heart_v25_adx
     tol_lung_mean = TOL.lung_mean
     tol_lung_v35 = TOL.lung_v35_adx
+    lung_oars += [CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.51, TOL.lung_v51_adx, priority3)] # This particular tolerance is not defined for BID fx.
     tol_esophagus_mean = TOL.esophagus_mean
     tol_esophagus_v17 = TOL.esophagus_v17_adx
     tol_spinalcanal_chemo = TOL.spinalcanal_chemo_v2_adx
   # Create clinical goals:
-  lung_oars = [
+  lung_oars += [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, tol_spinalcanal, pc2, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, tol_heart_mean, None, priority3),
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, tol_heart_v25, priority3),

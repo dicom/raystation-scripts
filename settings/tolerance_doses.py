@@ -129,6 +129,7 @@ kidney_v32_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, frac
 kidney_v55_adx = EQD.Tolerance('Kidney', 'Acute kidney failure', ab_kidney, fractions_kidney, 12, 'Volume receiving tolerance dose being less than 12%', 'Conventional RT')
 lung_mean = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, fractions_lung, 20, 'Mean', 'Conventional RT')
 lung_v35_adx = EQD.Tolerance('Lung', 'Radiation pneumonitis', ab_lung, fractions_lung, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
+lung_v51_adx = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', ab_lung, 2.5, 5, 'Volume receiving tolerance dose being less than 51%', 'Conventional RT')
 lung_v65_adx = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', ab_lung, fractions_lung, 5, 'Volume receiving tolerance dose being less than 65%', 'Conventional RT')
 heart_mean = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 20, 'Mean', 'Conventional RT')
 heart_v25_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 50, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
