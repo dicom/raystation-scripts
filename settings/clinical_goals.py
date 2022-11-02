@@ -246,7 +246,7 @@ def breast_oars(ss, region_code, prescription):
       CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
       CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
     ]
-  else:
+  elif region_code in RC.breast_r_codes:
     breast_oars += [
       CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
       CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
