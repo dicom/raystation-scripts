@@ -24,6 +24,7 @@ breast_reg_codes = breast_reg_l_codes + breast_reg_r_codes + [276]
 breast_l_codes = [239, 241, 243, 273]
 breast_r_codes = [240, 242, 244, 274]
 breast_not_thorax_codes = [273, 274, 239, 240, 243, 244]
+breast_bilateral_codes = [275, 276]
 breast_codes = breast_partial_r_codes + breast_partial_l_codes + breast_whole_codes + breast_reg_codes
 
 # Lung:
