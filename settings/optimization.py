@@ -32,6 +32,8 @@ class Optimization(object):
   
   # Applies the parameters of this Optimization object to a RayStation PlanOptimization object.
   def apply_to(self, plan_optimization):
+    assert hasattr(plan_optimization, 'OptimizationParameters'), 'plan_optimization lacks OptimizationParameters' 
+    assert len(plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings) > 0, "plan_optimization.OptimizationParameters.TreatmentSetupSettings[0] does not contain any BeamSettings"
     plan_optimization.OptimizationParameters.Algorithm.MaxNumberOfIterations = self.max_number_of_iterations
     plan_optimization.OptimizationParameters.Algorithm.OptimalityTolerance = self.optimality_tolerance
     plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = self.compute_final_dose
