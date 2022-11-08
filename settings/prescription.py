@@ -87,7 +87,9 @@ brain_partial = [
   Prescription(22.5, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(24, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(25.5, 3, 'DoseAtVolume', volume_percent=99),
-  Prescription(27, 3, 'DoseAtVolume', volume_percent=99)
+  Prescription(27, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(28.5, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(30, 3, 'DoseAtVolume', volume_percent=99)
 ]
 als = [
   Prescription(7.5, 1, 'MedianDose')
