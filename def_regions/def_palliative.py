@@ -18,7 +18,7 @@ class DefPalliative(object):
     region = choices[2]
     if stereotactic == 'yes':
       # Stereotactic:
-      if region in ['col thorax', 'col pelvis']:
+      if region in ['col cervical', 'col thorax', 'col pelvis']:
         # Targets:
         ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_med, ROIS.gtv, margins = MARGINS.uniform_3mm_expansion)
         ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ctv], sourcesB=[ROIS.vb])
@@ -26,7 +26,9 @@ class DefPalliative(object):
         ptv_spinal = ROI.ROIAlgebra(ROIS.ptv_spinal.name, ROIS.ptv_spinal.type, COLORS.ptv_med, sourcesA = [ptv], sourcesB = [ROIS.spinal_cord_prv], operator='Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_1mm_expansion)
         site.add_targets([ROIS.gtv, ROIS.vb, ptv_gtv, ptv_spinal, ctv, ptv])
         # OARs:
-        if region == 'col thorax':
+        if region == 'col cervical':
+          site.add_oars(DEF.palliative_stereotactic_cervical_oars)
+        elif region == 'col thorax':
           site.add_oars(DEF.palliative_stereotactic_thorax_oars)
         elif region == 'col pelvis':
           site.add_oars(DEF.palliative_stereotactic_spine_pelvis_oars)

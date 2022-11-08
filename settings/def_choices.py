@@ -144,6 +144,7 @@ other_pelvis = P.Property('Bekken', 'pelvis', parent=other_non_stereotactic, nex
 other_other = P.Property('Ekstremiteter', 'other', parent=other_non_stereotactic, next_category = 'antall målvolum')
 
 # Other SBRT: Region:
+other_stereotactic_col_cervical =  P.Property('Columna - cervical', 'col cervical', parent=other_stereotactic)
 other_stereotactic_col_thorax =  P.Property('Columna - thorax', 'col thorax', parent=other_stereotactic)
 other_stereotactic_col_pelvis =  P.Property('Columna - bekken', 'col pelvis', parent=other_stereotactic)
 other_stereotactic_pelvis  = P.Property('Bekken', 'pelvis', parent=other_stereotactic, default = True)
