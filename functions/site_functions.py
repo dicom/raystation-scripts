@@ -90,16 +90,18 @@ def palliative(ss, plan, prescription, region_code, target):
 # Stereotactic bone/spine:
 def bone_stereotactic(ss, plan, prescription, region_code):
   oar_objectives = OBJ.palliative_other_oar_objectives
-  if region_code in RC.palliative_thorax_codes:
+  if region_code in RC.palliative_head_codes or region_code in RC.palliative_neck_codes:
+    oar_objectives = OAR.palliative_stereotactic_cervical_oars
+  elif region_code in RC.palliative_thorax_codes:
     oar_objectives = OAR.palliative_stereotactic_thorax_oars
   elif region_code in RC.palliative_abdomen_codes:
     oar_objectives = OAR.palliative_stereotactic_thorax_oars
   elif region_code in RC.palliative_pelvis_codes:
     oar_objectives = OAR.palliative_stereotactic_pelvis_oars
   if prescription.nr_fractions == 1:
-    site = SITE.Site(RC.bone_stereotactic_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_1fx_oars(region_code), CGS.bone_stereotactic_targets)
+    site = SITE.Site(RC.bone_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_1fx_oars(region_code), CGS.bone_stereotactic_targets)
   else:
-    site = SITE.Site(RC.bone_stereotactic_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_3fx_oars(region_code), CGS.bone_stereotactic_targets)
+    site = SITE.Site(RC.bone_codes, oar_objectives, OBJ.create_bone_stereotactic_objectives(ss, plan, prescription.total_dose), CGS.bone_stereotactic_3fx_oars(region_code), CGS.bone_stereotactic_targets)
   return site
 
 

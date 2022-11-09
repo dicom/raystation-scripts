@@ -73,8 +73,6 @@ bone_codes = list(range(501, 506+1)) + list(range(512, 514+1)) + list(range(517,
 stereotactic_pelvis_codes = [513, 514, 527, 573, 574, 575, 576, 577, 578, 585, 586]
 stereotactic_spine_thorax_codes = [520, 521, 522]
 stereotactic_spine_pelvis_codes = [523, 524, 525]
-# FIXME: Why doesnt this contain all bone codes (e.g. cervical spine?)
-bone_stereotactic_codes = stereotactic_pelvis_codes + stereotactic_spine_thorax_codes + stereotactic_spine_pelvis_codes
 
 # Whole pelvis:
 whole_pelvis_codes = [512]

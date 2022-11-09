@@ -159,7 +159,7 @@ def determine_choices(region_code, prescription, my_window, choices):
   elif region_code in RC.brain_whole_codes:
     # Whole brain:
     opt = 'oar'
-  elif region_code in RC.bone_stereotactic_codes:
+  elif region_code in RC.bone_codes and prescription.is_stereotactic():
     # Bone SBRT:
     opt = 'oar'
   results = [technique, technique_name, opt]

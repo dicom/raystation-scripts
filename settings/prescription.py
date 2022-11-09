@@ -185,7 +185,7 @@ def create_prescription(total_dose, nr_fractions, region_code):
   elif region_code in RC.lung_and_mediastinum_codes:
     if (nr_fractions == 3 and total_dose >= 45) or (nr_fractions == 5 and total_dose >= 55) or (nr_fractions == 8 and total_dose >= 56):
       stereotactic = True
-  elif region_code in RC.bone_stereotactic_codes:
+  elif region_code in RC.bone_codes:
     if (nr_fractions == 1 and total_dose >= 16) or (nr_fractions == 3 and total_dose >= 24) or (nr_fractions == 5 and total_dose >= 30):
       stereotactic = True
   if stereotactic:
