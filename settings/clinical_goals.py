@@ -355,7 +355,7 @@ def lung_oars(ss, prescription):
     tol_spinalcanal_chemo = TOL.spinalcanal_chemo_v2_adx
   # Create clinical goals:
   lung_oars += [
-    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, tol_spinalcanal, pc2, priority2),
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal, 0.03, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, tol_heart_mean, None, priority3),
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, tol_heart_v25, priority3),
     CG.ClinicalGoal(lungs, at_most, average_dose, tol_lung_mean, None, priority3),
