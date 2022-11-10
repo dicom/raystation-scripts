@@ -7,7 +7,7 @@ import property as P
 brain = P.Property('Hjerne', 'brain', next_category='omfang', default = True)
 lung = P.Property('Lunge', 'lung', next_category = 'intensjon')
 breast = P.Property('Bryst', 'breast', next_category = 'omfang')
-bladder = P.Property('Blære', 'bladder')
+bladder = P.Property('Blære', 'bladder', next_category = 'intensjon')
 prostate = P.Property('Prostata', 'prostate', next_category = 'omfang')
 rectum = P.Property('Rektum', 'rectum', next_category = 'fraksjonering')
 other = P.Property('Palliativ (skjelett og øvrig bløtvev)', 'other', next_category = '')
@@ -92,6 +92,11 @@ breast_bilateral_left_regional = P.Property('Venstre side: Lokoregional', 'bilat
 for t in [breast_bilateral_left_whole, breast_bilateral_left_regional]:
   breast_bilateral_right_whole = P.Property('Høyre side: Bryst/Brystvegg', 'bilateral_right_whole', parent = t, next_category = '', default = True)
   breast_bilateral_right_regional = P.Property('Høyre side: Lokoregional', 'bilateral_right_regional', parent = t, next_category = '')
+
+
+# Bladder:
+bladder_curative = P.Property('Kurativ', 'curative', parent = bladder, next_category = '', default = True)
+bladder_palliative = P.Property('Palliativ','palliative', parent = bladder, next_category = '')
 
 
 # Prostate:
