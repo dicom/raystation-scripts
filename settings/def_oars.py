@@ -28,7 +28,7 @@ prostate_bed_oars = prostate_common_oars
 # Prostate bed with nodes:
 prostate_bed_nodes_oars = prostate_common_oars + [ROIS.cauda_equina]
 # Curative intact prostate:
-prostate_oars = prostate_common_oars + [ROIS.seed1, ROIS.seed2, ROIS.seed3]
+prostate_oars = prostate_common_oars + [ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra]
 # Curative intact prostate with nodes:
 prostate_nodes_oars = prostate_common_oars + [ROIS.cauda_equina, ROIS.seed1, ROIS.seed2, ROIS.seed3]
 # Palliative prostate:

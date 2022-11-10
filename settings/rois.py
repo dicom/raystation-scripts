@@ -128,6 +128,7 @@ rectum = ROI.ROI('Rectum', 'Organ', COLORS.rectum)
 pelvic_nodes = ROI.ROI('LN_Iliac', 'Ctv', COLORS.pelvic_nodes)
 prostate = ROI.ROI('Prostate', 'Ctv', COLORS.prostate)
 prostate_bed = ROI.ROI('SurgicalBed', 'Ctv', COLORS.prostate_bed)
+urethra = ROI.ROI('Urethra', 'Organ', COLORS.urethra)
 vesicles = ROI.ROI('SeminalVes', 'Ctv', COLORS.vesicles)
 anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.small_bowel)
 

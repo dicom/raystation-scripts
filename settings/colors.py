@@ -84,6 +84,7 @@ brainstem_core = 'Khaki'
 brainstem_surface = '255, 128, 0'
 cornea = 'Yellow'
 retina = '229, 77, 0'
+urethra = 'Orange'
 
 # PRVs:
 prv = '128, 128, 128'
