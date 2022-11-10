@@ -50,6 +50,11 @@ qc = QC.QualityControl(patient, case, plan)
 # Display the results of the quality control:
 title = "Plan Quality Control"
 summary = qc.result.failure_summary()
-text = str(qc.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
+if qc.result.nr_failures() == 0:
+  # Zero failures:
+  text = "Ingen problemer ble funnet! :)\n\n"
+else:
+  # 1 or more failures:
+  text = str(qc.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
 messagebox.showinfo(title,text)
 
