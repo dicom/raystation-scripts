@@ -1,30 +1,69 @@
-# Quality control of ROIs used in the Prostate Deep Learning project.
+# Quality control of ROIs used in the prostate pelvic model Deep Learning project.
 
 # RayStation 10B - Python 3.6
 
 # System files:
 from connect import *
 import sys
+import datetime
 
 # Used for GUI dialogues:
 from tkinter import *
 from tkinter import messagebox
 
-# Load the patient case:
+# Log start time:
+time_start = datetime.datetime.now()
+
+# Load the patient case, examination and structure set:
 try:
+  # Case:
   case = get_current('Case')
-  examination = get_current('Examination')
+  # Patient model:
+  pm = case.PatientModel
+  # Examination:
+  examination = case.Examinations['CT 1']
+  # Structure set:
+  ss = case.PatientModel.StructureSets['CT 1']
 except SystemError:
   raise IOError("No case loaded. Load patient and case.")
 
-# Load the patient model:
-pm = case.PatientModel
 
 # Store test results in this list:
 failures = []
 
-# Determine the slice thickness for this examination:
+# Determine the slice thickness of our examination:
 slice_thickness = round(abs(examination.Series[0].ImageStack.SlicePositions[1] - examination.Series[0].ImageStack.SlicePositions[0]), 1)
+
+# Creates a ROI.
+# If the ROI already exists, do not create a duplicate.
+# If a ROI with name of known_variants exists, do not create a duplicate,
+# but instead rename that variant according to the given name.
+def create_roi(name, color, type, alternatives):
+  try:
+    roi = pm.RegionsOfInterest[name]
+  except:
+    roi = None
+  if not roi:
+    variant_roi = False
+    for alternative in alternatives:
+      try:
+        variant_roi = pm.RegionsOfInterest[alternative]
+      except:
+        pass
+    if not variant_roi:
+      # Create the ROI:
+      roi = pm.CreateRoi(Name = name, Color = color, Type = type)
+    else:
+      # Process the existing variant ROI:
+      variant_roi.Name = name
+      variant_roi.Color = color
+      variant_roi.Type = type
+      roi = variant_roi
+  else:
+    # The ROI exists with the given name. Make sure it is of correct color and type:
+    roi.Color = color
+    roi.Type = type
+  return roi
 
 # A function which determines if there are any gaps (i.e. definition missing in one or more slices) in the given ROI geometry.
 def gaps(roi_name):
@@ -66,6 +105,20 @@ def get_item(collection, item_name):
       match = item
   return match
 
+# A function which gives the slices (if any) where both given ROIs have contours.
+# If no overlap exists, an empty list is returned.
+def overlapping_slices(ss, name1, name2):
+  rg1 = ss.RoiGeometries[name1]
+  rg2 = ss.RoiGeometries[name2]
+  slices1 = []
+  slices2 = []
+  for contour in rg1.PrimaryShape.Contours:
+    slices1.append(round(contour[0].z, 1))
+  for contour in rg2.PrimaryShape.Contours:
+    slices2.append(round(contour[0].z, 1))
+  return list(set(slices1).intersection(slices2))
+  
+
 # A function for removing the overlap between two volumes.
 def remove_overlap(master_rois, yielding_roi):
   # Verify input:
@@ -100,27 +153,42 @@ def remove_overlap(master_rois, yielding_roi):
 
 
 # Remove some common overlaps between neighbouring ROIs:
-# From Prostate, extract SeminalVes:
-#remove_overlap(["Prostate"], "SeminalVes")
+# remove_overlap([master_rois], yielding_roi)
+# From bone, extract nerves:
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "CaudaEquina")
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "SacralNerveRoots_L")
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "SacralNerveRoots_R")
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "LumbarNerveRoots_L")
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "LumbarNerveRoots_R")
+# From bone, vessels extract muscles:
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum", "PelvicGirdle_L", "A_CommonIliac_L", "A_ExternalIliac_L", "V_ExternalIliac_L", "V_CommonIliac_L", "V_InternalIliac_L", "Ureter_L"], "IliopsoasMuscle_L")
+remove_overlap(["L2", "L3", "L4", "L5", "Sacrum", "PelvicGirdle_R", "V_InferiorVenaCava", "V_CommonIliac_R", "A_ExternalIliac_R", "V_ExternalIliac_R", "V_InternalIliac_R", "Ureter_R"], "IliopsoasMuscle_R")
+# From muscle, extract kidney:
+remove_overlap(["IliopsoasMuscle_L"], "Kidney_L")
+remove_overlap(["IliopsoasMuscle_R"], "Kidney_R")
+# From kidney, vessels, extract liver:
+remove_overlap(["V_InferiorVenaCava", "Kidney_R"], "Liver")
+# From arteries, extract veins:
+remove_overlap(["A_DescendingAorta", "A_CommonIliac_R", "A_CommonIliac_L"], "V_InferiorVenaCava")
+remove_overlap(["A_CommonIliac_R"], "V_CommonIliac_R")
+remove_overlap(["A_CommonIliac_L"], "V_CommonIliac_L")
+remove_overlap(["A_InternalIliac_R"], "V_InternalIliac_R")
+remove_overlap(["A_InternalIliac_L"], "V_InternalIliac_L")
+remove_overlap(["A_ExternalIliac_R"], "V_ExternalIliac_R")
+remove_overlap(["A_ExternalIliac_L"], "V_ExternalIliac_L")
+# From vessels, extract ductus deferens:
+remove_overlap(["A_ExternalIliac_L", "V_ExternalIliac_L"], "DuctusDeferens_L")
+remove_overlap(["A_ExternalIliac_R", "V_ExternalIliac_R"], "DuctusDeferens_R")
+# From penile bulb, extract anal canal:
+remove_overlap(["PenileBulb"], "AnalCanal")
+# From prostate and seminalves, extract rectum:
+remove_overlap(["Prostate", "SeminalVes"], "Rectum")
 
-
-'''
-# Remove bony density areas from the CaudaEquina:
-# Create a bony ROI by density:
-bone = get_item(pm.RegionsOfInterest, "Bone")
-if bone:
-  bone.DeleteRoi()
-bone = pm.CreateRoi(Name = 'Bone', Color = 'Yellow', Type = 'Undefined')
-bone.GrayLevelThreshold(Examination=examination, LowThreshold=250, HighThreshold=3071, PetUnit=r"", CbctUnit=None, BoundingBox=None)
-# From the bony density ROI, extract CaudaEquina:
-remove_overlap(["Bone"], "CaudaEquina")
-bone.DeleteRoi()
-'''
 
 # ROIs which are used to derive ROIs (they are accepted to be present, but not required to be):
 temp_rois = [
-  'BowelBag_Draft',
-  'Bladder_Draft'
+  'Bladder_Draft',
+  'BowelBag_Draft'
 ]
 
 # ROIs which are required to always be present:
@@ -128,6 +196,7 @@ required_rois = [
   'Prostate',
   'SeminalVes',
   'LN_Iliac',
+  'Vessels_with_margin',
   'External',
   'Markers',
   'L2',
@@ -147,7 +216,6 @@ required_rois = [
   'A_InternalIliac_L',
   'A_ExternalIliac_R',
   'A_InternalIliac_R',
-  'A_Pelvic',
   'V_InferiorVenaCava',
   'V_CommonIliac_L',
   'V_CommonIliac_R',
@@ -155,14 +223,14 @@ required_rois = [
   'V_InternalIliac_R',
   'V_ExternalIliac_L',
   'V_ExternalIliac_R',
-  'V_Pelvic',
-  'IliopsoasMuscle_L',
   'IliopsoasMuscle_R',
+  'IliopsoasMuscle_L',
   'CaudaEquina',
   'LumbarNerveRoots_L',
   'LumbarNerveRoots_R',
   'SacralNerveRoots_L',
   'SacralNerveRoots_R',
+  'Liver',
   'BowelBag',
   'Rectum',
   'AnalCanal',
@@ -173,20 +241,29 @@ required_rois = [
   'Bladder',
   'PenileBulb',
   'DuctusDeferens_L',
-  'DuctusDeferens_R'
+  'DuctusDeferens_R',
+  'Testis_L',
+  'Testis_R',
+  'A_Pelvic',
+  'V_Pelvic'
 ]
 
 # ROIs which may be defined, depending on the patient case:
 optional_rois = [
-  'Liver',
-  'Testis_L',
-  'Testis_R',
+  'LevatorAniMuscle_R',
+  'LevatorAniMuscle_L',
   'Couch',
-  'GTVn'
+  
 ]
 
 # All possible allowed ROIs:
 allowed_rois = temp_rois + required_rois + optional_rois
+
+# Some cases contain LevatorAniMuscle ROI. For these cases, rename it to _L and create a _R version as well:
+if get_item(pm.RegionsOfInterest, "LevatorAniMuscle"):
+  pm.RegionsOfInterest["LevatorAniMuscle"].Name = "LevatorAniMuscle_L"
+  create_roi(name = 'LevatorAniMuscle_R', color = 'Darkcyan', type = 'Organ', alternatives=[])
+  pm.RegionsOfInterest['LevatorAniMuscle_R'].OrganData.OrganType = "OrganAtRisk"
 
 # Test for presence of required ROIs:
 for roi in required_rois:
@@ -200,8 +277,8 @@ for roi in pm.RegionsOfInterest:
   
 # Test for type target:
 targets = [
-  'Prostate',
   'SeminalVes',
+  'Prostate',
   'LN_Iliac'
 ]
 for target in targets:
@@ -211,53 +288,18 @@ for target in targets:
 
 # Test for type organ/organ at risk:
 risk_organs = [
-  'L2',
-  'L3',
-  'L4',
-  'L5',
-  'Sacrum',
-  'Coccyx',
-  'PelvicGirdle_L',
-  'PelvicGirdle_R',
-  'FemurHeadNeck_L',
-  'FemurHeadNeck_R',
-  'A_DescendingAorta',
-  'A_CommonIliac_L',
-  'A_CommonIliac_R',
-  'A_ExternalIliac_L',
-  'A_InternalIliac_L',
-  'A_ExternalIliac_R',
-  'A_InternalIliac_R',
-  'A_Pelvic',
-  'V_InferiorVenaCava',
-  'V_CommonIliac_L',
-  'V_CommonIliac_R',
-  'V_InternalIliac_L',
-  'V_InternalIliac_R',
-  'V_ExternalIliac_L',
-  'V_ExternalIliac_R',
-  'V_Pelvic',
-  'IliopsoasMuscle_L',
-  'IliopsoasMuscle_R',
-  'CaudaEquina',
-  'LumbarNerveRoots_L',
-  'LumbarNerveRoots_R',
-  'SacralNerveRoots_L',
-  'SacralNerveRoots_R',
-  'BowelBag',
-  'Rectum',
-  'AnalCanal',
-  'Kidney_L',
-  'Kidney_R',
-  'Ureter_L',
-  'Ureter_R',
-  'Bladder',
-  'PenileBulb',
-  'DuctusDeferens_L',
-  'DuctusDeferens_R',
+  'Sternum',
+  'Lung_R',
+  'Lung_L',
+  'Heart',
+  'A_LAD',
+  'SpinalCanalFull',
+  'HumeralHead_R',
+  'ThyroidGland',
+  'Trachea',
+  'Esophagus',
   'Liver',
-  'Testis_L',
-  'Testis_R'
+  'Breast_L'
 ]
 for organ in risk_organs:
   if get_item(pm.RegionsOfInterest, organ):
@@ -276,48 +318,83 @@ for marker in markers:
     if not pm.RegionsOfInterest[marker].Type == 'Marker':
       failures.append(marker + ' - forventet at denne var type marker ("Marker"), fant: ' + pm.RegionsOfInterest[marker].Type)
 
-# Target definition support structures:
-support_organs = [
-]
-# Test for organ type other:
-for organ in support_organs:
-  if get_item(pm.RegionsOfInterest, organ):
-    if not pm.RegionsOfInterest[organ].Type == 'Organ':
-      failures.append(organ + ' - forventet at denne var type "Organ", fant: ' + pm.RegionsOfInterest[organ].Type)
-    else:
-      if not pm.RegionsOfInterest[organ].OrganData.OrganType == 'Other':
-        failures.append(organ + ' - forventet at denne har OrganType "Other", fant: ' + pm.RegionsOfInterest[organ].OrganData.OrganType)
-
-# Get the structure set in which we expect to have the ROI geometries defined:
-ss = case.TreatmentPlans[0].BeamSets[0].GetStructureSet()
 # Test that ROIs which are defined actually are delinated:
 for roi in allowed_rois:
   if get_item(pm.RegionsOfInterest, roi):
     # Get the Roi Geometry for the chosen structure set:
     rg = ss.RoiGeometries[roi]
     if not rg.HasContours():
-      failures.append(roi + " - denne ROIen har ikke blitt tegnet!")
+      if roi not in ["LevatorAniMuscle_L", "LevatorAniMuscle_R"]:
+        failures.append(roi + " - denne ROIen har ikke blitt tegnet!")
 
 # Test for gaps in ROIs:
 rois = required_rois
-rois.extend(optional_rois)
-# Nerve root ROIs are not continuous, and should be removed for this particular test:
-for roi in ['LumbarNerveRoots_L','LumbarNerveRoots_R','SacralNerveRoots_L','SacralNerveRoots_R']:
-  rois.remove(roi)
+
 for roi in rois:
-  if get_item(pm.RegionsOfInterest, roi):
-    missing_slices = gaps(roi)
-    if len(missing_slices) > 0:
-      failures.append(roi + " mangler definisjon i tilknytning til følgende snitt: " + str(missing_slices))
+  if roi not in ["Markers"]:
+    if get_item(pm.RegionsOfInterest, roi):
+      missing_slices = gaps(roi)
+      if len(missing_slices) > 0:
+        failures.append(roi + " mangler definisjon i tilknytning til følgende snitt: " + str(missing_slices))
+
+# Run an update on all derived ROIs:
+derived_rois = [
+  'A_Pelvic',
+  'V_Pelvic',
+  'BowelBag',
+  'Bladder',
+  'Vessels_with_margin'
+]
+for roi_name in derived_rois:
+  rg = ss.RoiGeometries[roi_name]
+  if rg.PrimaryShape:
+    # Check for dirty shape:
+    if rg.PrimaryShape.DerivedRoiStatus:
+      if rg.PrimaryShape.DerivedRoiStatus.IsShapeDirty == True:
+        # For any dirty ROI, update it:
+        rg.OfRoi.UpdateDerivedGeometry(Examination=ss.OnExamination, Algorithm="Auto")
+    else:
+      # Check for empty, derived ROI:
+      if rg.OfRoi.DerivedRoiExpression:
+        # Construct the ROI by using the update feature:
+        rg.OfRoi.UpdateDerivedGeometry(Examination=ss.OnExamination, Algorithm="Auto")
+
+# Test for overlapping slices:
+# Rectum and BowelBag:
+overlap_slices = overlapping_slices(ss, "BowelBag", "Rectum")
+if len(overlap_slices) > 0:
+  failures.append("BowelBag er definert i overlappende snitt med Rectum: " + str(overlap_slices))
+# Rectum and AnalCanal:
+overlap_slices = overlapping_slices(ss, "AnalCanal", "Rectum")
+if len(overlap_slices) > 0:
+  failures.append("AnalCanal er definert i overlappende snitt med Rectum: " + str(overlap_slices))
 
 # Create a success message if there are zero failures:
 if len(failures) == 0:
   failures.append("PERFEKT!!!  :)")
 
+
+# Log finish time:
+time_end = datetime.datetime.now()
+elapsed_time = time_end - time_start
+if elapsed_time.seconds > 3600:
+  hours = elapsed_time.seconds // 3600 % 3600
+  minutes = (elapsed_time.seconds - hours * 3600) // 60 % 60
+  seconds = elapsed_time.seconds - hours * 3600 - minutes * 60
+else:
+  hours = 0
+  minutes = elapsed_time.seconds // 60 % 60
+  seconds = elapsed_time.seconds - minutes * 60
+if hours > 0:
+  time_str = "Tidsbruk: " +str(hours) + " time(r) " + str(minutes) + " min " + str(seconds) + " sek"
+else:
+  time_str = "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
+
+
 # Display the results:
 root = Tk()
 root.withdraw()
-title = "Prostate Deep Learning project"
-text = "\n".join(failures)
+title = "Prostate pelvic Deep Learning project"
+text = "\n".join(failures) + "\n\n" + time_str
 messagebox.showinfo(title, text)
 root.destroy()
