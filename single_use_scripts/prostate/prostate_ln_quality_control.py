@@ -369,6 +369,84 @@ overlap_slices = overlapping_slices(ss, "AnalCanal", "Rectum")
 if len(overlap_slices) > 0:
   failures.append("AnalCanal er definert i overlappende snitt med Rectum: " + str(overlap_slices))
 
+# Test laterality (that for ROIs which have L/R variants, the _R variant is actually delineated to the right of the _L variant):
+for roi in required_rois:
+  # Is the ROI a left variant?
+  if roi[-2:len(roi)] == "_L":
+    # Get the bounding box of the left and right variants:
+    try:
+      box_l = ss.RoiGeometries[roi].GetBoundingBox()
+      box_r = ss.RoiGeometries[roi.replace('_L', '_R')].GetBoundingBox()
+      mean_x_l = (box_l[0].x + box_l[1].x) / 2
+      mean_x_r = (box_r[0].x + box_r[1].x) / 2
+      # Left x coordinate should be a greater number than right x coordinate:
+      if mean_x_l < mean_x_r:
+        failures.append(roi + " ser ikke ut til å være definert til venstre i forhold til " + roi.replace('_L', '_R') + " (kan tyde på at disse to ROIene er forvekslet/byttet om")
+    except:
+      # The GetBoundingBox() function above will fail if the ROI is undefined. In those cases we can just quitely pass the exception.
+      pass
+
+# Test that the ROIs have a reasonable volume:
+rois = [
+  # [name, minvol, maxvol]
+  ['Prostate', 15, 100],
+  ['SeminalVes', 4, 15],
+  ['LN_Iliac', 400, 700],
+  ['Markers', 0.1, 0.5],
+  ['L2', 60, 100],
+  ['L3', 60, 100],
+  ['L4', 60, 100],
+  ['L5', 60, 100],
+  ['Sacrum', 200, 350],
+  ['Coccyx', 4, 8],
+  ['PelvicGirdle_L', 300, 550],
+  ['PelvicGirdle_R', 300, 550],
+  ['FemurHeadNeck_L', 200, 300],
+  ['FemurHeadNeck_R', 200, 300],
+  ['A_DescendingAorta', 25, 50],
+  ['A_CommonIliac_L', 5, 14],
+  ['A_CommonIliac_R', 5, 12],
+  ['A_ExternalIliac_L', 8, 16],
+  ['A_InternalIliac_L', 3, 11],
+  ['A_ExternalIliac_R', 10, 14],
+  ['A_InternalIliac_R', 3, 8],
+  ['V_InferiorVenaCava', 25, 70],
+  ['V_CommonIliac_L', 12, 21],
+  ['V_CommonIliac_R', 4, 20],
+  ['V_InternalIliac_L', 1.5, 5],
+  ['V_InternalIliac_R', 2, 6],
+  ['V_ExternalIliac_L', 6, 20],
+  ['V_ExternalIliac_R', 8, 20],
+  ['IliopsoasMuscle_R', 230, 450],
+  ['IliopsoasMuscle_L', 230, 450],
+  ['CaudaEquina', 30, 45],
+  ['LumbarNerveRoots_L', 1, 3],
+  ['LumbarNerveRoots_R', 1, 3],
+  ['SacralNerveRoots_L', 1, 3],
+  ['SacralNerveRoots_R', 1, 3],
+  ['Liver', 0, 300],
+  ['BowelBag', 2800, 11000],
+  ['Rectum', 40, 300],
+  ['AnalCanal', 7, 25],
+  ['Kidney_L', 40, 300],
+  ['Kidney_R', 40, 300],
+  ['Ureter_L', 2, 6],
+  ['Ureter_R', 2, 6],
+  ['Bladder', 80, 800],
+  ['PenileBulb', 2, 7],
+  ['DuctusDeferens_L', 1.8, 7],
+  ['DuctusDeferens_R', 1.8, 7],
+  ['Testis_L', 0, 20],
+  ['Testis_R', 0, 20],
+]
+for roi in rois:
+  try:
+    volume = ss.RoiGeometries[roi[0]].GetRoiVolume()
+    if not roi[1] < volume < roi[2]:
+      failures.append(roi[0] + " har uventet volum: " + str(round(volume, 1)) + " Forventet > " + str(roi[1]) + ", < " + str(roi[2]))
+  except:
+    failures.append(roi[0] + " er ikke definert!")
+
 # Create a success message if there are zero failures:
 if len(failures) == 0:
   failures.append("PERFEKT!!!  :)")
