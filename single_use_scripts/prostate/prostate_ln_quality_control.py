@@ -250,6 +250,7 @@ required_rois = [
 
 # ROIs which may be defined, depending on the patient case:
 optional_rois = [
+  'GTVn',
   'LevatorAniMuscle_R',
   'LevatorAniMuscle_L',
   'Couch',
@@ -283,6 +284,8 @@ targets = [
 ]
 for target in targets:
   if get_item(pm.RegionsOfInterest, target):
+    if not pm.RegionsOfInterest[target].Type == 'Ctv':
+      pm.RegionsOfInterest[target].Type = 'Ctv'
     if not pm.RegionsOfInterest[target].Type == 'Ctv':
       failures.append(target + ' - forventet at denne var type target ("Ctv"), fant: ' + pm.RegionsOfInterest[target].Type)
 
@@ -390,52 +393,52 @@ for roi in required_rois:
 rois = [
   # [name, minvol, maxvol]
   ['Prostate', 15, 100],
-  ['SeminalVes', 4, 15],
-  ['LN_Iliac', 400, 700],
+  ['SeminalVes', 3.3, 15],
+  ['LN_Iliac', 340, 700],
   ['Markers', 0.1, 0.5],
-  ['L2', 60, 100],
-  ['L3', 60, 100],
-  ['L4', 60, 100],
-  ['L5', 60, 100],
-  ['Sacrum', 200, 350],
-  ['Coccyx', 4, 8],
-  ['PelvicGirdle_L', 300, 550],
-  ['PelvicGirdle_R', 300, 550],
-  ['FemurHeadNeck_L', 200, 300],
-  ['FemurHeadNeck_R', 200, 300],
-  ['A_DescendingAorta', 25, 50],
-  ['A_CommonIliac_L', 5, 14],
-  ['A_CommonIliac_R', 5, 12],
-  ['A_ExternalIliac_L', 8, 16],
-  ['A_InternalIliac_L', 3, 11],
-  ['A_ExternalIliac_R', 10, 14],
-  ['A_InternalIliac_R', 3, 8],
-  ['V_InferiorVenaCava', 25, 70],
-  ['V_CommonIliac_L', 12, 21],
-  ['V_CommonIliac_R', 4, 20],
+  ['L2', 43, 100],
+  ['L3', 43, 100],
+  ['L4', 43, 100],
+  ['L5', 43, 100],
+  ['Sacrum', 125, 350],
+  ['Coccyx', 3, 8],
+  ['PelvicGirdle_L', 200, 550],
+  ['PelvicGirdle_R', 200, 550],
+  ['FemurHeadNeck_L', 150, 300],
+  ['FemurHeadNeck_R', 150, 300],
+  ['A_DescendingAorta', 16, 65],
+  ['A_CommonIliac_L', 5, 21],
+  ['A_CommonIliac_R', 4, 16],
+  ['A_ExternalIliac_L', 7, 16],
+  ['A_InternalIliac_L', 1.8, 11],
+  ['A_ExternalIliac_R', 7, 16],
+  ['A_InternalIliac_R', 2, 8],
+  ['V_InferiorVenaCava', 22, 70],
+  ['V_CommonIliac_L', 6, 21],
+  ['V_CommonIliac_R', 3.5, 20],
   ['V_InternalIliac_L', 1.5, 5],
-  ['V_InternalIliac_R', 2, 6],
-  ['V_ExternalIliac_L', 6, 20],
-  ['V_ExternalIliac_R', 8, 20],
-  ['IliopsoasMuscle_R', 230, 450],
-  ['IliopsoasMuscle_L', 230, 450],
-  ['CaudaEquina', 30, 45],
+  ['V_InternalIliac_R', 1.7, 6],
+  ['V_ExternalIliac_L', 6, 29],
+  ['V_ExternalIliac_R', 4.5, 22],
+  ['IliopsoasMuscle_R', 200, 460],
+  ['IliopsoasMuscle_L', 200, 460],
+  ['CaudaEquina', 14, 60],
   ['LumbarNerveRoots_L', 1, 3],
   ['LumbarNerveRoots_R', 1, 3],
   ['SacralNerveRoots_L', 1, 3],
   ['SacralNerveRoots_R', 1, 3],
   ['Liver', 0, 300],
-  ['BowelBag', 2800, 11000],
-  ['Rectum', 40, 300],
+  ['BowelBag', 2100, 11000],
+  ['Rectum', 18, 300],
   ['AnalCanal', 7, 25],
-  ['Kidney_L', 40, 300],
-  ['Kidney_R', 40, 300],
-  ['Ureter_L', 2, 6],
-  ['Ureter_R', 2, 6],
+  ['Kidney_L', 15, 300],
+  ['Kidney_R', 15, 300],
+  ['Ureter_L', 1.6, 7],
+  ['Ureter_R', 1.6, 7],
   ['Bladder', 80, 800],
-  ['PenileBulb', 2, 7],
-  ['DuctusDeferens_L', 1.8, 7],
-  ['DuctusDeferens_R', 1.8, 7],
+  ['PenileBulb', 1.8, 7],
+  ['DuctusDeferens_L', 1.4, 7],
+  ['DuctusDeferens_R', 1.4, 7],
   ['Testis_L', 0, 20],
   ['Testis_R', 0, 20],
 ]
@@ -446,6 +449,40 @@ for roi in rois:
       failures.append(roi[0] + " har uventet volum: " + str(round(volume, 1)) + " Forventet > " + str(roi[1]) + ", < " + str(roi[2]))
   except:
     failures.append(roi[0] + " er ikke definert!")
+
+# For patients with a "CT 2", test that select ROIs are defined also on this CT:
+double_definition_rois = [
+  'A_DescendingAorta',
+  'A_CommonIliac_L',
+  'A_CommonIliac_R',
+  'A_ExternalIliac_L',
+  'A_InternalIliac_L',
+  'A_ExternalIliac_R',
+  'A_InternalIliac_R',
+  'V_InferiorVenaCava',
+  'V_CommonIliac_L',
+  'V_CommonIliac_R',
+  'V_InternalIliac_L',
+  'V_InternalIliac_R',
+  'V_ExternalIliac_L',
+  'V_ExternalIliac_R',
+  'Kidney_L',
+  'Kidney_R',
+  'Bladder'
+]
+try:
+  ss2 = case.PatientModel.StructureSets['CT 2']
+except:
+  ss2 = None
+if ss2:
+# Test that select ROIs are defined on the second CT:
+  for roi in double_definition_rois:
+    if get_item(pm.RegionsOfInterest, roi):
+      # Get the Roi Geometry for the chosen structure set:
+      rg = ss2.RoiGeometries[roi]
+      if not rg.HasContours():
+        failures.append("CT 2: " + roi + " - denne ROIen har ikke blitt tegnet!")
+
 
 # Create a success message if there are zero failures:
 if len(failures) == 0:
