@@ -35,9 +35,8 @@ lung_palliative = P.Property('Palliativ','palliative', parent = lung, next_categ
 lung_stereotactic = P.Property('Stereotaksi', 'stereotactic', parent = lung, next_category ='side')
 
 # Lung curative:
-lung_nsclc = P.Property('Ikke-småcellet lungekreft/ Småcellet lungekreft (med 4DCT)','4dct', parent = lung_curative, default = True)
-lung_sclc = P.Property('Småcellet lungekreft (uten 4DCT)','sclc', parent = lung_curative)
-lung_pancoast =P.Property('Pancoast', 'pancoast', parent = lung_curative)
+lung_4d = P.Property('4DCT / DIBH','4dct', parent = lung_curative, default = True)
+lung_free = P.Property('Fripust','freebreath', parent = lung_curative)
 lung_postop =P.Property('Postoperativ', 'postop', parent = lung_curative)
 
 # Lung stereotactic:
@@ -51,8 +50,8 @@ for side in [stereo_lung_right, stereo_lung_left]:
   lung_stereo_nr3 = P.Property('3','3', parent = side)
 
 # Lung palliative:
-lung_with_4dct = P.Property('Med 4DCT', 'with', parent = lung_palliative, default = True)
-lung_without_4dct = P.Property('Uten 4DCT', 'without', parent = lung_palliative)
+lung_with_4dct = P.Property('4DCT / DIBH', 'with', parent = lung_palliative, default = True)
+lung_without_4dct = P.Property('Fripust', 'without', parent = lung_palliative)
 
 
 # Breast:

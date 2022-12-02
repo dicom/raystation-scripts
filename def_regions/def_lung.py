@@ -23,10 +23,10 @@ class DefLung(object):
       # Choice 2: Diagnosis
       diagnosis = choices[2]
       if diagnosis == '4dct':
-        # Non small cell lung cancer (with 4DCT) or small cell lung cancer (with 4DCT):
+        # Curative lung cancer (with 4DCT or DIBH):
         # Targets:
         igtv = ROI.ROIAlgebra(ROIS.igtv.name, ROIS.igtv.type, ROIS.gtv.color, sourcesA=[ROIS.igtv_p], sourcesB=[ROIS.igtv_n])
-        ictv_p = ROI.ROIExpanded(ROIS.ictv_p.name, ROIS.ictv_p.type, COLORS.ctv_high, source = ROIS.igtv_p, margins = MARGINS.uniform_10mm_expansion)
+        ictv_p = ROI.ROIExpanded(ROIS.ictv_p.name, ROIS.ictv_p.type, COLORS.ctv_high, source = ROIS.igtv_p, margins = MARGINS.uniform_5mm_expansion)
         ictv_n = ROI.ROIExpanded(ROIS.ictv_n.name, ROIS.ictv_n.type, COLORS.ctv_high, source = ROIS.igtv_n, margins = MARGINS.uniform_5mm_expansion)
         ictv = ROI.ROIAlgebra(ROIS.ictv.name, ROIS.ictv.type, ROIS.ctv.color, sourcesA=[ictv_p, ictv_n], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, sourcesA = [ictv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
@@ -35,28 +35,19 @@ class DefLung(object):
         lungs_igtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [igtv], operator='Subtraction')
         water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[igtv], operator='Subtraction', operatorA = 'Intersection')
         site.add_oars([lungs_igtv, water])
-      elif diagnosis == 'sclc':
-        # Small cell lung cancer (without 4DCT):
+      elif diagnosis == 'freebreath':
+        # Curative lung cancer (free breath):
         # Targets:
-        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA=[ROIS.ctv_p, ROIS.ctv_n], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv_p = ROI.ROIAlgebra(ROIS.ptv_p.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ROIS.ctv_p], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.lung_sclc_without_4dct, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv_n = ROI.ROIAlgebra(ROIS.ptv_n.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ROIS.ctv_n], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptv_p], sourcesB=[ptv_n])
-        site.add_targets([ROIS.ctv_p, ROIS.ctv_n, ctv, ptv_p, ptv_n, ptv])
+        gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n])
+        ctv_p = ROI.ROIExpanded(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, source = ROIS.gtv_p, margins = MARGINS.uniform_5mm_expansion)
+        ctv_n = ROI.ROIExpanded(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, source = ROIS.gtv_n, margins = MARGINS.uniform_5mm_expansion)
+        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA=[ctv_p, ctv_n], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+        site.add_targets([ROIS.gtv_p, ROIS.gtv_n, gtv, ctv_p, ctv_n, ctv, ptv])
         # OARs / others:
-        water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[ctv], operator='Subtraction', operatorA = 'Intersection')
-        site.add_oars([water])
-      elif diagnosis =='pancoast':
-        # Pancoast tumor (with 4DCT):
-        # Targets:
-        igtv = ROI.ROI(ROIS.igtv.name, ROIS.igtv.type, COLORS.gtv)
-        ictv = ROI.ROIAlgebra(ROIS.ictv.name, ROIS.ictv.type, ROIS.ctv.color, sourcesA=[igtv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ictv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-        site.add_targets([igtv, ictv, ptv])
-        # OARs / others:
-        lungs_igtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [igtv], operator='Subtraction')
-        water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[igtv], operator='Subtraction', operatorA = 'Intersection')
-        site.add_oars([lungs_igtv, water])
+        lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_gtv.name, ROIS.lungs_gtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [gtv], operator='Subtraction')
+        water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[gtv], operator='Subtraction', operatorA = 'Intersection')
+        site.add_oars([lungs_gtv, water])
       elif diagnosis =='postop':
         # Post operative treatment:
         # Targets:
