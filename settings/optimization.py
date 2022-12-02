@@ -83,9 +83,7 @@ def optimization_parameters(region_code, prescription):
       opt = sliding_window
   elif region_code in RC.prostate_codes:
     # Prostate:
-    if region_code in RC.prostate_vesicles_codes or region_code in RC.prostate_node_codes:
-      # Prostate and vesicles or prostate/bed with lymph nodes:
-      opt = sliding_window
+    opt = sliding_window
   elif region_code in RC.rectum_codes:
     # Rectum:
     opt = sliding_window
