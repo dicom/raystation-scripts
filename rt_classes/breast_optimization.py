@@ -105,7 +105,7 @@ class BreastOptimization(object):
   # Returns True if coverage is fulfilled, False if not.
   # Note that for objectives which are not evaluated (e.q. Dose fall-off), True is returned.
   def fulfilled_coverage(self, beam_set, objective, high_ptv_coverage):
-    prescription = beam_set.Prescription.PrimaryDosePrescription.DoseValue
+    prescription = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue
     result = False
     # Criteria:
     # CTV min dose: 98% > 38.05 (95%)
@@ -192,7 +192,7 @@ class BreastOptimization(object):
       # Get PTV D98 (min) dose:
       if obj.DoseFunctionParameters.FunctionType == 'MinDose' and obj.ForRegionOfInterest.Type == 'Ptv':
         achieved_d98 = po.OptimizedBeamSets[0].FractionDose.GetDoseAtRelativeVolumes(RoiName = obj.ForRegionOfInterest.Name, RelativeVolumes = [0.98])[0] * po.OptimizedBeamSets[0].FractionationPattern.NumberOfFractions
-        desired_d98 = po.OptimizedBeamSets[0].Prescription.PrimaryDosePrescription.DoseValue * 0.95
+        desired_d98 = po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference.DoseValue * 0.95
         dose_gap = desired_d98 - achieved_d98 # (cGy)
         # Determine a weight factor dynamically based on the observed dose gap:
         computed_weight_factor = dose_gap * 0.01 * 30
@@ -205,7 +205,7 @@ class BreastOptimization(object):
       obj.DoseFunctionParameters.Weight = round(obj.DoseFunctionParameters.Weight * weight_factor)
     # Keep an extra eye on the Lung DVH requirement, and adjust weight of ipsilateral lung objective if necessary:
     lung_dose_level = 1800 / 15
-    if po.OptimizedBeamSets[0].Prescription.PrimaryDosePrescription == 2600:
+    if po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference == 2600:
       lung_dose_level = 800 / 5
     # For whole breast or regional breast we use an extra lung DVH objective:
     if self.region_code in RC.breast_whole_codes or self.region_code in RC.breast_reg_codes:

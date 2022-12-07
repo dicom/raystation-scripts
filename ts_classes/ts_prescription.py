@@ -33,13 +33,13 @@ class TSPrescription(object):
     # ROI (Name) parameter:
     # In case SITE prescription is used:
     try:
-      name = self.prescription.PrimaryDosePrescription.OnStructure.Name
+      name = self.prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
     except:
-      name = self.prescription.PrimaryDosePrescription.Description
+      name = self.prescription.PrimaryPrescriptionDoseReference.Description
     # Parameters:
-    self.param = TEST.Parameter('Prescription', str(prescription.PrimaryDosePrescription.DoseValue/100.0), self.parent_param)
+    self.param = TEST.Parameter('Prescription', str(prescription.PrimaryPrescriptionDoseReference.DoseValue/100.0), self.parent_param)
     self.roi = TEST.Parameter('ROI', name, self.param)
-    self.type = TEST.Parameter('Type', self.prescription.PrimaryDosePrescription.PrescriptionType, self.param)
+    self.type = TEST.Parameter('Type', self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType, self.param)
     self.dose = TEST.Parameter('Dose', '', self.param)
     self.mu = TEST.Parameter('MU', '', self.param)
     self.max = TEST.Parameter('Klinisk maksdose', '', self.param)
@@ -98,9 +98,9 @@ class TSPrescription(object):
     if self.ts_beam_set.ts_label.label.technique:
       # In case SITE prescription is used:
       try:
-        type = self.prescription.PrimaryDosePrescription.OnStructure.Type
+        type = self.prescription.PrimaryPrescriptionDoseReference.OnStructure.Type
       except:
-        type = self.prescription.PrimaryDosePrescription.Description
+        type = self.prescription.PrimaryPrescriptionDoseReference.Description
       if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
         # SBRT (PTV should be prescription volume):
         if type == 'Ptv':
@@ -121,7 +121,7 @@ class TSPrescription(object):
     if self.is_stereotactic():
       expected = 'DoseAtVolume'
       t.expected = [expected]
-    found = self.prescription.PrimaryDosePrescription.PrescriptionType
+    found = self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType
     if expected == found:
       return t.succeed()
     else:
@@ -151,12 +151,12 @@ class TSPrescription(object):
       t.expected = "<" + str(low_dose) + " - " + str(high_dose) + ">"
       # If the prescription type is "SITE", we are not able to verify the prescription (at least currently):
       try:
-        struct = self.prescription.PrimaryDosePrescription.OnStructure
+        struct = self.prescription.PrimaryPrescriptionDoseReference.OnStructure
       except:
         struct = None
       if struct:
         # What type of prescription has been used?
-        if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtPoint':
+        if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtPoint':
           norm_poi = RSU.ss_poi_geometry(self.ts_beam_set.beam_set, struct)
           p = {'x': norm_poi.Point.x, 'y': norm_poi.Point.y, 'z': norm_poi.Point.z}
           real_poi_dose = RSU.gy(self.ts_beam_set.beam_set.FractionDose.InterpolateDoseInPoint(Point = p)) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
@@ -164,13 +164,13 @@ class TSPrescription(object):
             return t.fail(round(real_poi_dose, 2))
           else:
             return t.succeed()
-        if self.prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
+        if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'MedianDose':
           real_dose_d50 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [0.50])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
           if real_dose_d50 < low_dose or real_dose_d50 > high_dose:
             return t.fail(round(real_dose_d50, 2))
           else:
             return t.succeed()
-        elif self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume':
+        elif self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume':
           real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
           if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
             return t.fail(round(real_dose_d99, 2))
@@ -180,11 +180,11 @@ class TSPrescription(object):
   # Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.
   def stereotactic_prescription_technique_test(self):
     t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
-    if self.prescription.PrimaryDosePrescription.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryDosePrescription.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
+    if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryPrescriptionDoseReference.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
       if self.ts_beam_set.ts_label.label.technique:
         if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
           return t.succeed()
         else:
           return t.fail()
       else:
-        return t.fail(self.prescription.PrimaryDosePrescription.PrescriptionType)
+        return t.fail(self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType)

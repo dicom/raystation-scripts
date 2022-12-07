@@ -486,12 +486,13 @@ def create_cornea(pm, examination, ss, source_roi, box_roi, roi, subtraction_roi
 
  
 # Checks if a given ROI takes part in an approved structure set.
+# FIXME: SS approval has been changed for 12A. Consider changing code related to this function.
 def is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
   match = False
-  for set in pm.StructureSets:
-    for app_set in set.ApprovedStructureSets:
-      for roi in app_set.ApprovedRoiStructures:
-        if roi.OfRoi.Name == roi_name:
+  for ss in pm.StructureSets:
+    for sub_ss in ss.SubStructureSets:
+      if sub_ss.Review:
+        if sub_ss.Review.ApprovalStatus == 'Approved':
           match = True
   return match  
 

@@ -20,10 +20,10 @@ import rois as ROIS
 def add_prescription(beam_set, presciption, target):
   if presciption.is_stereotactic():
     # DoseAtVolume:
-    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100, DoseVolume = presciption.volume_percent)
+    beam_set.AddRoiPrescriptionDoseReference(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100, DoseVolume = presciption.volume_percent)
   else:
     # MedianDose:
-    beam_set.AddDosePrescriptionToRoi(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100)
+    beam_set.AddRoiPrescriptionDoseReference(RoiName = target, PrescriptionType = presciption.type, DoseValue = presciption.total_dose*100)
 
 
 # Creates two arcs (VMAT).

@@ -140,8 +140,8 @@ def background_beam_set(plan, beam_set):
 
 # Gives the prescription dose, in Gy:
 def prescription_dose(beam_set):
-  if beam_set.Prescription.PrimaryDosePrescription:
-    return beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0
+  if beam_set.Prescription.PrimaryPrescriptionDoseReference:
+    return beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0
 
 # Gives the differential prescription dose, in Gy:
 # For beam sets with background dose, this function will return the prescription dose used in
@@ -157,14 +157,14 @@ def differential_prescription_dose(plan, beam_set):
 def background_prescription_dose(plan, beam_set):
   dose = 0
   bg_bs = background_beam_set(plan, beam_set)
-  if bg_bs and bg_bs.Prescription.PrimaryDosePrescription:
+  if bg_bs and bg_bs.Prescription.PrimaryPrescriptionDoseReference:
     dose = prescription_dose(bg_bs) + background_prescription_dose(plan, bg_bs)
   return dose
 
 # Gives the fraction dose, in Gy:
 def fraction_dose(beam_set):
-  if beam_set.Prescription.PrimaryDosePrescription:
-    return (beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0) / beam_set.FractionationPattern.NumberOfFractions
+  if beam_set.Prescription.PrimaryPrescriptionDoseReference:
+    return (beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0) / beam_set.FractionationPattern.NumberOfFractions
   else:
     return 0
 

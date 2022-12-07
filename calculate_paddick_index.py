@@ -39,15 +39,15 @@ for beam_set in plan.BeamSets:
   structure_set = plan.BeamSets[0].GetStructureSet()
   text = ""
   if beam_set.Prescription:
-    if beam_set.Prescription.PrimaryDosePrescription:
+    if beam_set.Prescription.PrimaryPrescriptionDoseReference:
       # Number of fractions
       nr_fractions  = beam_set.FractionationPattern.NumberOfFractions
       # Name of the roi which is used for prescription
-      prescription_roi = beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name
+      prescription_roi = beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
       # For all plans where "MedianDose" is the prescription type
-      if beam_set.Prescription.PrimaryDosePrescription.PrescriptionType == 'MedianDose':
+      if beam_set.Prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'MedianDose':
         # The dose value used is 95 % of the total dose
-        dose_value = beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions*0.95
+        dose_value = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue/nr_fractions*0.95
         # The roi we want to find the conformity index for is the PTV corresponding to the prescription roi
         if prescription_roi[:1] == "C":
           roi = prescription_roi.replace("C", "P")
@@ -57,7 +57,7 @@ for beam_set in plan.BeamSets:
           roi = 'PTV'
       else: # Other prescription types, used for stereotactic treatments
         # The dose value used is 100 % of the total dose
-        dose_value = beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions
+        dose_value = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue/nr_fractions
         # For stereotactic treatments, the prescription roi is the roi we want we to find the conformity index for
         roi = prescription_roi
     else:

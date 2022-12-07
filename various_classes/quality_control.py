@@ -53,7 +53,7 @@ class QualityControl(object):
     for beam_set in plan.BeamSets:
       ts_beam_set = TS_BS.TSBeamSet(beam_set, ts_plan=ts_plan)
       ts_label = TS_L.TSLabel(beam_set.DicomPlanLabel, ts_beam_set=ts_beam_set)
-      if beam_set.Prescription.PrimaryDosePrescription:
+      if beam_set.Prescription.PrimaryPrescriptionDoseReference:
         ts_prescription = TS_PR.TSPrescription(beam_set.Prescription, ts_beam_set=ts_beam_set)
       po = RSU.plan_optimization(plan, beam_set)
       if po:

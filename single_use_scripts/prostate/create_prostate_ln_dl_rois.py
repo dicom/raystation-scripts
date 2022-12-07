@@ -245,7 +245,7 @@ if len(marker_rois) > 1:
 # of any existing plans to Prostate, before proceeding with deleting ROIs:
 for plan in case.TreatmentPlans:
   for bs in plan.BeamSets:
-    if bs.Prescription.PrimaryDosePrescription.OnStructure.Name != 'Prostate':
+    if bs.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name != 'Prostate':
       bs.AddDosePrescriptionToRoi(RoiName="Prostate", DoseVolume=0, PrescriptionType="MedianDose", DoseValue=7700, RelativePrescriptionLevel=1, AutoScaleDose=True)
 
 # Delete ROIs:

@@ -21,17 +21,15 @@ import region_codes as RC
 
 
 # Checks if a given roi takes part in a approved structure set
+# FIXME: It seems that in 12A approval status is per structure set, not per ROI,
+# so we may consider rewriting this code.
 def is_approved_roi_structure(ss, roi_name):
-	match = False
-	for set in ss.ApprovedStructureSets:
-		for roi in set.ApprovedRoiStructures:
-			if roi.OfRoi.Name == roi_name:
-				match = True
-	if match and roi_name == ROIS.couch.name:
-		GUIF.handle_failed_translation_of_roi(roi_name)
-	elif match and roi_name == ROIS.anal_canal.name:
-		GUIF.handle_failed_creation_of_roi(roi_name)
-	return match
+  match = False
+  for sub_ss in ss.SubStructureSets:
+    if sub_ss.Review:
+      if sub_ss.Review.ApprovalStatus == 'Approved':
+        match = True
+  return match
 
 
 # Returns the name of the appropriately defined body ROI (having contours),

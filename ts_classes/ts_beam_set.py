@@ -70,7 +70,7 @@ class TSBeamSet(object):
 
   # Gives true/false if the beam set has a prescription defined.
   def has_prescription(self):
-    if self.beam_set.Prescription.PrimaryDosePrescription:
+    if self.beam_set.Prescription.PrimaryPrescriptionDoseReference:
       return True
     else:
       return False
@@ -84,7 +84,7 @@ class TSBeamSet(object):
 
   # Gives the fraction dose (in Gy).
   def fraction_dose(self):
-    return (self.beam_set.Prescription.PrimaryDosePrescription.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
+    return (self.beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
   # Gives the ts_structure_set which corresponds with this beam set:
   def ts_structure_set(self):
@@ -278,7 +278,7 @@ class TSBeamSet(object):
             for beam in self.beam_set.Beams:
               photon_iso = beam.Isocenter.Position
               for rg in self.ts_structure_set().structure_set.RoiGeometries:
-                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name:
+                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name:
                   target = rg.GetBoundingBox()
                   target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
                   diff = abs(photon_iso.z - target_center_z)

@@ -254,8 +254,9 @@ class Plan(object):
           except Exception as e:
             GUIF.handle_optimization_error(plan_optimization, e)
         # Auto scale to prescription:
-        for plan_optimization in plan.PlanOptimizations:
-          plan_optimization.AutoScaleToPrescription = True
+        # In 12A it seems we cannot set the auto scale to prescription parameter:
+        #for plan_optimization in plan.PlanOptimizations:
+          #plan_optimization.AutoScaleToPrescription = True
     # Load plan:
     CF.load_plan(case, plan)
 

@@ -63,7 +63,7 @@ def is_target_objective(plan, beam_set, roi_dict, target_list, roi_type):
   objective_target_volumes = {}
   target = None
   # Create a dictionary of all CTVs defined as an objective.
-  prescription_roi = beam_set.Prescription.PrimaryDosePrescription.OnStructure.Name
+  prescription_roi = beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
   if roi_dict.get(prescription_roi) and roi_type == 'Ctv':
     target = prescription_roi
   elif roi_dict.get(prescription_roi.replace("C", "P")):
@@ -130,11 +130,11 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
   except:
     print ("Hei")
   
-  if beam_set.Prescription.PrimaryDosePrescription:
-    dose_value = (beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions)*0.95 #fraction dose
+  if beam_set.Prescription.PrimaryPrescriptionDoseReference:
+    dose_value = (beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue/nr_fractions)*0.95 #fraction dose
   else:
     dose_value = 0
-  tot_dose = (beam_set.Prescription.PrimaryDosePrescription.DoseValue)/100 #total dose
+  tot_dose = (beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue)/100 #total dose
   
   try:
     ctv_d98 = nr_fractions*plan_dose.GetDoseAtRelativeVolumes(RoiName=ctv, RelativeVolumes=[.98])[0]/100
@@ -167,7 +167,7 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
     print ("Hei")
 
   try:
-    dose_value_4465 = (beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions)*0.893
+    dose_value_4465 = (beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue/nr_fractions)*0.893
     external_volume = plan.BeamSets[0].GetStructureSet().RoiGeometries[has_roi(roi_dict, external_list)].GetRoiVolume()
     parameter_dict['External, Volum [cc]'] = external_volume
     ext_d2cc = (nr_fractions*plan_dose.GetDoseAtRelativeVolumes(RoiName=has_roi(roi_dict, external_list), RelativeVolumes=[2/external_volume])[0])/100
@@ -283,7 +283,7 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
     except:
       print ("Hei")
     try:
-      dose_value_4465 = (beam_set.Prescription.PrimaryDosePrescription.DoseValue/nr_fractions)*0.893
+      dose_value_4465 = (beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue/nr_fractions)*0.893
       ptv_n_p = has_roi(roi_dict, ptv_n_p_list)
       ptv_n_p_volume = plan.BeamSets[0].GetStructureSet().RoiGeometries[ptv_n_p].GetRoiVolume()
       

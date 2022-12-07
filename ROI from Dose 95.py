@@ -11,7 +11,7 @@ beam_set = get_current('BeamSet')
 plan_dose = plan.TreatmentCourse.TotalDose
 
 # Define the threshold level
-threshold_level =beam_set.Prescription.PrimaryDosePrescription.DoseValue * 0.95
+threshold_level =beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue * 0.95
 
 # Create a new ROI and create its geometry from the plan dose
 # and the threshold level
