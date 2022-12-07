@@ -160,7 +160,7 @@ remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "SacralNerveRoots_L")
 remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "SacralNerveRoots_R")
 remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "LumbarNerveRoots_L")
 remove_overlap(["L2", "L3", "L4", "L5", "Sacrum"], "LumbarNerveRoots_R")
-# From bone, vessels extract muscles:
+# From bone, vessels, ureter extract muscles:
 remove_overlap(["L2", "L3", "L4", "L5", "Sacrum", "PelvicGirdle_L", "A_CommonIliac_L", "A_ExternalIliac_L", "V_ExternalIliac_L", "V_CommonIliac_L", "V_InternalIliac_L", "Ureter_L"], "IliopsoasMuscle_L")
 remove_overlap(["L2", "L3", "L4", "L5", "Sacrum", "PelvicGirdle_R", "V_InferiorVenaCava", "V_CommonIliac_R", "A_ExternalIliac_R", "V_ExternalIliac_R", "V_InternalIliac_R", "Ureter_R"], "IliopsoasMuscle_R")
 # From muscle, extract kidney:
@@ -168,7 +168,7 @@ remove_overlap(["IliopsoasMuscle_L"], "Kidney_L")
 remove_overlap(["IliopsoasMuscle_R"], "Kidney_R")
 # From kidney, vessels, extract liver:
 remove_overlap(["V_InferiorVenaCava", "Kidney_R"], "Liver")
-# From arteries, extract veins:
+# From arteries , extract veins:
 remove_overlap(["A_DescendingAorta", "A_CommonIliac_R", "A_CommonIliac_L"], "V_InferiorVenaCava")
 remove_overlap(["A_CommonIliac_R"], "V_CommonIliac_R")
 remove_overlap(["A_CommonIliac_L"], "V_CommonIliac_L")
@@ -176,13 +176,26 @@ remove_overlap(["A_InternalIliac_R"], "V_InternalIliac_R")
 remove_overlap(["A_InternalIliac_L"], "V_InternalIliac_L")
 remove_overlap(["A_ExternalIliac_R"], "V_ExternalIliac_R")
 remove_overlap(["A_ExternalIliac_L"], "V_ExternalIliac_L")
+# From ureter, extract vessels:
+#remove_overlap(["A_CommonIliac_L",  "A_InternalIliac_L", "A_ExternalIliac_L", "V_InternalIliac_L", "V_ExternalIliac_L"], "Ureter_L")
+remove_overlap(["Ureter_L"], "A_CommonIliac_L")
+remove_overlap(["Ureter_L"], "A_InternalIliac_L")
+remove_overlap(["Ureter_L"], "A_ExternalIliac_L")
+remove_overlap(["Ureter_L"], "V_InternalIliac_L")
+remove_overlap(["Ureter_L"], "V_ExternalIliac_L")
+#remove_overlap(["A_CommonIliac_R",  "A_InternalIliac_R", "A_ExternalIliac_R", "V_InternalIliac_R", "V_ExternalIliac_R"], "Ureter_R")
+remove_overlap(["Ureter_R"], "A_CommonIliac_R")
+remove_overlap(["Ureter_R"], "A_InternalIliac_R")
+remove_overlap(["Ureter_R"], "A_ExternalIliac_R")
+remove_overlap(["Ureter_R"], "V_InternalIliac_R")
+remove_overlap(["Ureter_R"], "V_ExternalIliac_R")
 # From vessels, extract ductus deferens:
 remove_overlap(["A_ExternalIliac_L", "V_ExternalIliac_L"], "DuctusDeferens_L")
 remove_overlap(["A_ExternalIliac_R", "V_ExternalIliac_R"], "DuctusDeferens_R")
-# From penile bulb, extract anal canal:
-remove_overlap(["PenileBulb"], "AnalCanal")
 # From prostate and seminalves, extract rectum:
 remove_overlap(["Prostate", "SeminalVes"], "Rectum")
+# From prostate and penile bulb, extract anal canal:
+remove_overlap(["Prostate", "PenileBulb"], "AnalCanal")
 
 
 # ROIs which are used to derive ROIs (they are accepted to be present, but not required to be):
@@ -392,55 +405,55 @@ for roi in required_rois:
 # Test that the ROIs have a reasonable volume:
 rois = [
   # [name, minvol, maxvol]
-  ['Prostate', 15, 100],
-  ['SeminalVes', 3.3, 15],
+  ['Prostate', 12, 100],
+  ['SeminalVes', 2.8, 18],
   ['LN_Iliac', 340, 700],
   ['Markers', 0.1, 0.5],
   ['L2', 43, 100],
   ['L3', 43, 100],
-  ['L4', 43, 100],
+  ['L4', 43, 103],
   ['L5', 43, 100],
   ['Sacrum', 125, 350],
-  ['Coccyx', 3, 8],
+  ['Coccyx', 2.8, 11.2],
   ['PelvicGirdle_L', 200, 550],
   ['PelvicGirdle_R', 200, 550],
-  ['FemurHeadNeck_L', 150, 300],
-  ['FemurHeadNeck_R', 150, 300],
-  ['A_DescendingAorta', 16, 65],
-  ['A_CommonIliac_L', 5, 21],
-  ['A_CommonIliac_R', 4, 16],
-  ['A_ExternalIliac_L', 7, 16],
-  ['A_InternalIliac_L', 1.8, 11],
-  ['A_ExternalIliac_R', 7, 16],
-  ['A_InternalIliac_R', 2, 8],
-  ['V_InferiorVenaCava', 22, 70],
-  ['V_CommonIliac_L', 6, 21],
+  ['FemurHeadNeck_L', 150, 330],
+  ['FemurHeadNeck_R', 150, 330],
+  ['A_DescendingAorta', 14, 85],
+  ['A_CommonIliac_L', 4.3, 22],
+  ['A_CommonIliac_R', 3.8, 22],
+  ['A_ExternalIliac_L', 4.5, 22],
+  ['A_InternalIliac_L', 1.2, 13],
+  ['A_ExternalIliac_R', 4.5, 25],
+  ['A_InternalIliac_R', 1.7, 8],
+  ['V_InferiorVenaCava', 16, 70],
+  ['V_CommonIliac_L', 5.8, 21],
   ['V_CommonIliac_R', 3.5, 20],
-  ['V_InternalIliac_L', 1.5, 5],
-  ['V_InternalIliac_R', 1.7, 6],
+  ['V_InternalIliac_L', 1.3, 9],
+  ['V_InternalIliac_R', 1.5, 9],
   ['V_ExternalIliac_L', 6, 29],
-  ['V_ExternalIliac_R', 4.5, 22],
-  ['IliopsoasMuscle_R', 200, 460],
-  ['IliopsoasMuscle_L', 200, 460],
+  ['V_ExternalIliac_R', 4.5, 25],
+  ['IliopsoasMuscle_R', 175, 500],
+  ['IliopsoasMuscle_L', 175, 500],
   ['CaudaEquina', 14, 60],
   ['LumbarNerveRoots_L', 1, 3],
   ['LumbarNerveRoots_R', 1, 3],
-  ['SacralNerveRoots_L', 1, 3],
-  ['SacralNerveRoots_R', 1, 3],
+  ['SacralNerveRoots_L', 1, 4.7],
+  ['SacralNerveRoots_R', 1, 4.7],
   ['Liver', 0, 300],
-  ['BowelBag', 2100, 11000],
+  ['BowelBag', 2000, 11000],
   ['Rectum', 18, 300],
-  ['AnalCanal', 7, 25],
-  ['Kidney_L', 15, 300],
-  ['Kidney_R', 15, 300],
-  ['Ureter_L', 1.6, 7],
-  ['Ureter_R', 1.6, 7],
-  ['Bladder', 80, 800],
-  ['PenileBulb', 1.8, 7],
-  ['DuctusDeferens_L', 1.4, 7],
-  ['DuctusDeferens_R', 1.4, 7],
-  ['Testis_L', 0, 20],
-  ['Testis_R', 0, 20],
+  ['AnalCanal', 6.8, 26.5],
+  ['Kidney_L', 12.5, 400],
+  ['Kidney_R', 12.5, 400],
+  ['Ureter_L', 1.5, 8],
+  ['Ureter_R', 1.5, 8],
+  ['Bladder', 50, 950],
+  ['PenileBulb', 1.1, 7],
+  ['DuctusDeferens_L', 1.3, 8],
+  ['DuctusDeferens_R', 1.1, 8],
+  ['Testis_L', 0, 27],
+  ['Testis_R', 0, 27],
 ]
 for roi in rois:
   try:
@@ -466,6 +479,7 @@ double_definition_rois = [
   'V_InternalIliac_R',
   'V_ExternalIliac_L',
   'V_ExternalIliac_R',
+  'Rectum',
   'Kidney_L',
   'Kidney_R',
   'Bladder'
