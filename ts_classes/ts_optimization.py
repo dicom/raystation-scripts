@@ -106,6 +106,9 @@ class TSOptimization(object):
 
   # Tests for proper usage of background dose for three kinds of ROIs: Target volume, external and organ.
   # Our expectation is that background dose is used on OARs, but not on targets or external volumes.
+  # NOTE: In RayStation 12A, ConstituentFunctions (objectives) apparently may have multiple dose distributions
+  # (before they had just a single one). We choose to extract the first dose distribution, but there may
+  # occurs cases where this is wrong!
   def objectives_background_dose_test(self):
     et = TEST.Test("Det skal normalt ikke brukes 'Beam Set + Background' på external-objectives for beam sets basert på background dose.", 0, self.background_dose)
     ot = TEST.Test("Det skal normalt brukes 'Beam Set + Background' på alle risikorgan-objectives for beam sets som basert på background dose.", 0, self.background_dose)
@@ -117,15 +120,15 @@ class TSOptimization(object):
     if self.optimization.BackgroundDose:
       if self.optimization.Objective:
         for obj in self.optimization.Objective.ConstituentFunctions:
-          # An objective is based on background dose if there is no OfDoseDistribution.ForBeamSet defined!
+          # An objective is based on background dose if there is no OfDoseDistributions[0].ForBeamSet defined!
           if obj.ForRegionOfInterest.Type == 'External':
-            if not hasattr(obj.OfDoseDistribution, 'ForBeamSet'): #if obj.OfDoseDistribution.ForBeamSet: # (This more 'normal' code failed to work in this case)
+            if not hasattr(obj.OfDoseDistributions[0], 'ForBeamSet'): #if obj.OfDoseDistributions[0].ForBeamSet: # (This more 'normal' code failed to work in this case)
               external_fails += 1
           elif obj.ForRegionOfInterest.Type == 'Organ':
-            if hasattr(obj.OfDoseDistribution, 'ForBeamSet'):
+            if hasattr(obj.OfDoseDistributions[0], 'ForBeamSet'):
               oar_fails.append(obj.ForRegionOfInterest.Name)
           elif obj.ForRegionOfInterest.Type in ('Gtv', 'Ctv', 'Ptv'):
-            if not hasattr(obj.OfDoseDistribution, 'ForBeamSet'):
+            if not hasattr(obj.OfDoseDistributions[0], 'ForBeamSet'):
               target_fails.append(obj.ForRegionOfInterest.Name)
         if external_fails > 0:
           return et.fail(str(external_fails))

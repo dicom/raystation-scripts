@@ -16,7 +16,10 @@ import region_codes as RC
 
 # Adapts the optimization of a beam set, aiming to achieve a mild sparing of the organs at risk in general.
 # (Typically used in situations where we have an unknown geometry - .i.e. palliative situations)
-#def adapt_optimization_oar(ss, plan, site):
+# NOTE: In RayStation 12A, ConstituentFunctions (objectives) apparently may have multiple dose distributions
+# (before they had just a single one). We choose to extract the first dose distribution, but there may
+# occurs cases where this is wrong!
+#
 def adapt_optimization_oar(ss, plan, oar_list, region_code):
   for i, beam_set in enumerate(plan.BeamSets):
     objective_adaptations = []
@@ -24,11 +27,11 @@ def adapt_optimization_oar(ss, plan, oar_list, region_code):
     # Get OAR average doses of first optimization, and set the initial OAR target average dose as half of that value:
     for oa in objective_adaptations:
       if oa.roi.name == ROIS.spinal_canal.name:
-        v = oa.objective.OfDoseDistribution.GetDoseAtRelativeVolumes(RoiName = oa.roi.name, RelativeVolumes = [0.02])
+        v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi.name, RelativeVolumes = [0.02])
         oa.set_dose_high(v[0])
         oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * v[0]
       else:
-        avg = oa.objective.OfDoseDistribution.GetDoseStatistic(RoiName = oa.roi.name, DoseType = 'Average')
+        avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi.name, DoseType = 'Average')
         oa.set_dose_high(avg)
         oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * avg
     adaptive_optimization(plan, objective_adaptations)
@@ -44,11 +47,11 @@ def objective_adaptations(plan):
 
   for oa in objective_adaptations:
     if oa.roi == ROIS.spinal_canal.name:
-      v = oa.objective.OfDoseDistribution.GetDoseAtRelativeVolumes(RoiName = oa.roi, RelativeVolumes = [0.02])
+      v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi, RelativeVolumes = [0.02])
       oa.set_dose_high(v[0])
       oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * v[0]
     else:
-      avg = oa.objective.OfDoseDistribution.GetDoseStatistic(RoiName = oa.roi, DoseType = 'Average')
+      avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi, DoseType = 'Average')
       oa.set_dose_high(avg)
       oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * avg
 
