@@ -88,7 +88,7 @@ class DefBreast(object):
       breast_draft = ROIS.breast_r_draft
       sb = ROIS.surgical_bed_r
       # DL model for right sided breast:
-      examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
+      examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
       #breast = ROI.ROIAlgebra(ROIS.breast_r.name, ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       breast = ROIS.breast_r
       # Change type to 'Other' for selected ROIs:
@@ -101,7 +101,7 @@ class DefBreast(object):
       breast_draft = ROIS.breast_l_draft
       sb = ROIS.surgical_bed_l
       # DL model for left sided whole breast:
-      examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
+      examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
       #breast = ROI.ROIAlgebra(ROIS.breast_l.name, ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       breast = ROIS.breast_l
       # Change type to 'Other' for selected ROIs:
@@ -139,11 +139,11 @@ class DefBreast(object):
       if include_common_oars:
         # Do not include contralateral breast for bilateral cases:
         if bilateral:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Esophagus", "Heart", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "ThyroidGland", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Esophagus", "Heart", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "ThyroidGland", "Trachea"])
         else:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "ThyroidGland", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "ThyroidGland", "Trachea"])
       else:
-        examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_R", "Breast_R_Draft", "Clips_R", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "SurgicalBed_R"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_R", "Breast_R_Draft", "Clips_R", "HumeralHead_R", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "SurgicalBed_R"])
       # Rename DL ROI(s):
       try:
         pm.RegionsOfInterest['SpinalCanalFull'].Name = 'SpinalCanal'
@@ -170,11 +170,11 @@ class DefBreast(object):
       if include_common_oars:
         # Do not include contralateral breast for bilateral cases:
         if bilateral:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_LAD", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "Esophagus", "Heart", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "Lung_L", "Lung_R", "ScaleneMusc_Ant_L", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "ThyroidGland", "Trachea", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_LAD", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "Esophagus", "Heart", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "Lung_L", "Lung_R", "ScaleneMusc_Ant_L", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "ThyroidGland", "Trachea", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
         else:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_LAD", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "Lung_L", "Lung_R", "ScaleneMusc_Ant_L", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "ThyroidGland", "Trachea", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_LAD", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "Lung_L", "Lung_R", "ScaleneMusc_Ant_L", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "ThyroidGland", "Trachea", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
       else:
-        examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "ScaleneMusc_Ant_L", "SurgicalBed_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "BreastString_L", "Breast_L_Draft", "Clips_L", "HumeralHead_L", "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "ScaleneMusc_Ant_L", "SurgicalBed_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"])
       # Rename DL ROI(s) (note that this ROI doesn't exist if this has been exectued without include_common_oars):
       try:
         pm.RegionsOfInterest['SpinalCanalFull'].Name = 'SpinalCanal'
@@ -232,11 +232,11 @@ class DefBreast(object):
       if include_common_oars:
         # Do not include contralateral breast for bilateral cases:
         if bilateral:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
         else:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_R", "Breast_R_Draft", "Clips_R", "Breast_L_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_R", "Trachea"])
       else:
-        examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Right Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_R", "Breast_R_Draft", "Clips_R", "SurgicalBed_R"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_R", "Breast_R_Draft", "Clips_R", "SurgicalBed_R"])
       # Change type to 'Other' for selected ROIs:
       for roi_name in ['Clips_R','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_R']:
         if pm.RegionsOfInterest[roi_name].OrganData.OrganType != "Other":
@@ -252,11 +252,11 @@ class DefBreast(object):
       if include_common_oars:
         # Do not include contralateral breast for bilateral cases:
         if bilateral:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
         else:
-          examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "BreastString_L", "Breast_L_Draft", "Clips_L", "Breast_R_Draft", "Esophagus", "Heart", "Lung_L", "Lung_R", "SpinalCanalFull", "Sternum", "SurgicalBed_L", "Trachea"])
       else:
-        examination.RunOarSegmentation(ModelName="St. Olavs-Ålesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_L", "Breast_L_Draft", "Clips_L", "SurgicalBed_L"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["BreastString_L", "Breast_L_Draft", "Clips_L", "SurgicalBed_L"])
       # Change type to 'Other' for selected ROIs:
       for roi_name in ['Clips_L','BreastString_L','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L']:
         # Some of these ROIs may not always be defined, and give an error:
