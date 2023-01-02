@@ -51,7 +51,10 @@ class DefRectum(object):
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_47_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       wall_ptv_50 = ROI.ROIWall(ROIS.z_ptv_50_wall.name, ROIS.z_ptv_50_wall.type, COLORS.wall, ptv_50, 0.5, 0)
       wall_ptv_47_50 = ROI.ROIWall(ROIS.z_ptv_47_50_wall.name, ROIS.z_ptv_47_50_wall.type, COLORS.wall, ptv_47_50, 0.5, 0)
-      site.add_oars(DEF.rectum_oars + [bladder_ptv, bowel_ptv, wall_ptv_50, wall_ptv_47_50])
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R"])
+      # Non-DL OARs:
+      site.add_oars([ROIS.bowel_space, ROIS.cauda_equina] + [bladder_ptv, bowel_ptv, wall_ptv_50, wall_ptv_47_50])
     else:
       # Hypofractionated treatment (5 Gy x 5):
       # Targets:
@@ -63,6 +66,9 @@ class DefRectum(object):
       # OARs:
       bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-      site.add_oars(DEF.rectum_oars + [bladder_ptv, bowel_ptv])
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R"])
+      # Non-DL OARs:
+      site.add_oars([ROIS.bowel_space, ROIS.cauda_equina] + [bladder_ptv, bowel_ptv])
     # Create all targets and OARs in RayStation:
     site.create_rois()
