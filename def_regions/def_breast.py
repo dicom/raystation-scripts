@@ -133,8 +133,10 @@ class DefBreast(object):
         suffix = '_L'
     # Side dependent OARs and support structures for regional treatment:
     if side == 'right':
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Liver"])
       # Non-DL OARs:
-      site.add_oars([ROIS.liver, ROIS.scalene_muscle_r, ROIS.artery1_r, ROIS.artery2_r, ROIS.artery3_r, ROIS.vein1_r, ROIS.vein2_r, ROIS.vein3_r])
+      site.add_oars([ROIS.scalene_muscle_r, ROIS.artery1_r, ROIS.artery2_r, ROIS.artery3_r, ROIS.vein1_r, ROIS.vein2_r, ROIS.vein3_r])
       # DL model for right sided regional breast:
       if include_common_oars:
         # Do not include contralateral breast for bilateral cases:
@@ -243,9 +245,15 @@ class DefBreast(object):
           pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
       # OARs:
       if bilateral:
-        site.add_oars([ROIS.liver, ROIS.lungs])
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Liver"])
+        # Non-DL OARs:
+        site.add_oars([ROIS.lungs])
       else:
-        site.add_oars([ROIS.breast_l, ROIS.liver, ROIS.lungs])
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Liver"])
+        # Non-DL OARs:
+        site.add_oars([ROIS.breast_l, ROIS.lungs])
     else:
       breast_draft = ROIS.breast_l_draft
       # DL model for left sided whole breast:
