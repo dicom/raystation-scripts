@@ -30,8 +30,10 @@ class DefBrain(object):
       ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.brain, margins = brain_margin)
       ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
       site.add_targets([ctv, ptv])
-      # OARs:
-      site.add_oars(DEF.brain_whole_oars)
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
+      # Non-DL OARs:
+      site.add_oars([ROIS.skin_brain, ROIS.nasal_cavity])
     elif region == 'part':
       # Partial Brain:
       # Targets:
@@ -41,7 +43,10 @@ class DefBrain(object):
       # OARs:
       brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
       brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
-      site.add_oars(DEF.brain_partial_oars +  [brain_gtv, brain_ptv])
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
+      # Non-DL OARs:
+      site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_gtv, brain_ptv])
     elif region == 'stereotactic':
       # Stereotactic brain:
       # Choice 2: Nr of targets.
@@ -76,6 +81,9 @@ class DefBrain(object):
       brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
       # Add to site:
       site.add_targets(gtvs + ptvs)
-      site.add_oars(DEF.brain_stereotactic_oars + [brain_gtv, brain_ptv] + walls)
+      # DL OARs:
+      examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
+      # Non-DL OARs:
+      site.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls)
     # Create all targets and OARs in RayStation:
     site.create_rois()
