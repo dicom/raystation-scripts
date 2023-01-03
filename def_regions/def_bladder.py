@@ -27,7 +27,9 @@ class DefBladder(object):
       ctv =  ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA=[ctv_p], sourcesB=[ctv_e], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.bladder_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       site.add_targets([ROIS.gtv_p, ctv_p, ctv_e, ctv, ptv])
-    # OARs:
-    site.add_oars(DEF.bladder_oars)
+    # DL OARs:
+    examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+    # Non-DL OARs:
+    site.add_oars([ROIS.bowel_space])
     # Create all targets and OARs in RayStation:
     site.create_rois()
