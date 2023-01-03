@@ -15,7 +15,10 @@ class DefLung(object):
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
   def __init__(self, pm, examination, ss, choices, site):
     # Default OARs:
-    site.add_oars(DEF.lung_oars)
+    # DL OARs:
+    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "ThyroidGland", "Trachea"])
+    # Non-DL OARs:
+    site.add_oars([ROIS.lungs])
     # Choice 1: Intent (curative or palliative)
     intent = choices[1]
     if intent == 'curative':
