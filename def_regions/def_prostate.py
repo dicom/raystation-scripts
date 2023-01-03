@@ -41,7 +41,10 @@ class DefProstate(object):
           # OARs:
           bladder_ptv.sourcesB.extend([ptv_70])
           rectum_ptv.sourcesB.extend([ptv_70])
-          site.add_oars(DEF.prostate_oars + [bladder_ptv, rectum_ptv, wall_ptv_77])
+          # DL OARs:
+          examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+          # Non-DL OARs:
+          site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_77])
         elif nodes == 'with_node':
           # Elective nodes (with positive node):
           # Targets:
@@ -60,7 +63,10 @@ class DefProstate(object):
           rectum_ptv.sourcesB.extend([ptv_70, ptv_56])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_77, ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
           wall_ptv_70_77 = ROI.ROIWall(ROIS.z_ptv_70_77_wall.name, ROIS.z_ptv_70_77_wall.type, COLORS.wall, ptv_70_77, 1, 0)
-          site.add_oars(DEF.prostate_nodes_oars + [bladder_ptv, rectum_ptv, wall_ptv_77] + [bowel_ptv, wall_ptv_70_77])
+          # DL OARs:
+          examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+          # Non-DL OARs:
+          site.add_oars(DEF.prostate_non_dl_oars + [ROIS.cauda_equina, bladder_ptv, rectum_ptv, wall_ptv_77] + [bowel_ptv, wall_ptv_70_77])
         elif nodes == 'with':
           # Elective nodes:
           # Targets:
@@ -76,7 +82,10 @@ class DefProstate(object):
           rectum_ptv.sourcesB.extend([ptv_70, ptv_56])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_77, ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
           wall_ptv_70_77 = ROI.ROIWall(ROIS.z_ptv_70_77_wall.name, ROIS.z_ptv_70_77_wall.type, COLORS.wall, ptv_70_77, 1, 0)
-          site.add_oars(DEF.prostate_nodes_oars + [bladder_ptv, rectum_ptv, wall_ptv_77] + [bowel_ptv, wall_ptv_70_77])
+          # DL OARs:
+          examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+          # Non-DL OARs:
+          site.add_oars(DEF.prostate_non_dl_oars + [ROIS.cauda_equina, bladder_ptv, rectum_ptv, wall_ptv_77] + [bowel_ptv, wall_ptv_70_77])
         # Common ROIs for all conventional fractionation:
         site.add_targets([ROIS.prostate, ROIS.vesicles, semves20, ctv_77, ctv_70, ptv_77, ptv_70])
       elif frac == 'hypo_60':
@@ -96,7 +105,10 @@ class DefProstate(object):
         rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_60, ptv_57], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
         wall_ptv_60 = ROI.ROIWall(ROIS.z_ptv_60_wall.name, ROIS.z_ptv_60_wall.type, COLORS.wall, ptv_60, 0.5, 0)
         wall_ptv_57_60 = ROI.ROIWall(ROIS.z_ptv_57_60_wall.name, ROIS.z_ptv_57_60_wall.type, COLORS.wall, ptv_57_60, 1, 0)
-        site.add_oars(DEF.prostate_oars + [bladder_ptv, rectum_ptv, wall_ptv_60, wall_ptv_57_60])
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        # Non-DL OARs:
+        site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_60, wall_ptv_57_60])
       elif frac in ['hypo_55','palliative']:
         # STAMPEDE (2.75 Gy x 20) or palliative prostate (e.q. 3 Gy x 13):
         # Targets:
@@ -118,7 +130,10 @@ class DefProstate(object):
         bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
         rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
         wall_ptv_55 = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 1, 0)
-        site.add_oars(DEF.prostate_palliative_oars + [bladder_ptv, rectum_ptv, wall_ptv_55])
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        # Non-DL OARs:
+        site.add_oars([ROIS.bowel_space, bladder_ptv, rectum_ptv, wall_ptv_55])
     else:
       # Prostate bed:
       # Choice 2: Fractionation - normo or hypo?
@@ -136,7 +151,6 @@ class DefProstate(object):
           # OARs:
           bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_70], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
           rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_70], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
-          site.add_oars(DEF.prostate_bed_oars + [bladder_ptv, rectum_ptv])
         else:
           # Elective nodes:
           if nodes == 'with':
@@ -165,8 +179,12 @@ class DefProstate(object):
           wall_ptv_70 = ROI.ROIWall(ROIS.z_ptv_70_wall.name, ROIS.z_ptv_70_wall.type, COLORS.wall, ptv_70, 1, 0)
           wall_ptv_56_temp = ROI.ROIWall(ROIS.z_ptv_56_temp.name, ROIS.z_ptv_56_temp.type, COLORS.wall, ptv_56, 1, 0)
           wall_ptv_56 = ROI.ROIAlgebra(ROIS.z_ptv_56_wall.name, ROIS.z_ptv_56_wall.type, COLORS.wall, sourcesA = [wall_ptv_56_temp], sourcesB = [ptv_70, wall_ptv_70], operator='Subtraction', marginsB = MARGINS.zero)
-          site.add_oars(DEF.prostate_bed_nodes_oars + [bladder_ptv, rectum_ptv] + [bowel_ptv, ROIS.bowel_space, wall_ptv_70, wall_ptv_56_temp, wall_ptv_56])
+          site.add_oars([bowel_ptv, wall_ptv_70, wall_ptv_56_temp, wall_ptv_56])
         # Common for all prostate bed (with or without nodes):
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        # Non-DL OARs:
+        site.add_oars([ROIS.bowel_space, ROIS.cauda_equina] + [bladder_ptv, rectum_ptv])
         site.add_targets([ROIS.ctv_sb, ctv_70, ptv_70])
       else:
         # Hypofractionated (palliative):
