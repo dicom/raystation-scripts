@@ -27,7 +27,7 @@ class DefRectum(object):
         gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
         site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
       # Common for groin included or not:
-      ctv_50 = ROI.ROIExpanded(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
+      ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[gtv], sourcesB=[ROIS.ctv_e], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion)
       ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if groin == 'with':
