@@ -493,6 +493,8 @@ def create_rectum_objectives(ss, plan, total_dose):
     OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 50)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.8, 15)
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.max_dvh(ss, plan, ROIS.femoral_l.name, 18*100, 2, 1)
+    OF.max_dvh(ss, plan, ROIS.femoral_r.name, 18*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 16.2*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 14*100, 1, 2)
     OF.max_dvh(ss, plan, ROIS.z_spc_bowel.name, 22*100, 2, 2)
