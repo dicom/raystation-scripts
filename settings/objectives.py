@@ -38,7 +38,7 @@ palliative_thorax_oar_objectives =  [ROIS.spinal_canal, ROIS.heart, ROIS.lungs]
 palliative_thorax_and_abdomen_oar_objectives =  [ROIS.spinal_canal, ROIS.heart, ROIS.lungs, ROIS.kidneys, ROIS.bowel_space]
 palliative_abdomen_oar_objectives =  [ROIS.spinal_canal, ROIS.kidneys, ROIS.bowel_space]
 palliative_abdomen_and_pelvis_objectives = [ROIS.spinal_canal, ROIS.kidneys, ROIS.bowel_space, ROIS.bladder, ROIS.rectum]
-palliative_pelvis_oar_objectives =  [ROIS.bowel_space, ROIS.bladder, ROIS.rectum, ROIS.spinal_canal]
+palliative_pelvis_oar_objectives =  [ROIS.bowel_space, ROIS.bladder, ROIS.rectum, ROIS.cauda_equina]
 palliative_other_oar_objectives =  []
 palliative_prostate_oar_objectives = [ROIS.bowel_space, ROIS.bladder, ROIS.rectum]
 # Bladder
