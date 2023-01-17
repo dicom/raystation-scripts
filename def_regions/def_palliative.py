@@ -70,7 +70,7 @@ class DefPalliative(object):
         site.add_oars([ROIS.parotids, ROIS.submands])
       elif region == 'neck':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Esophagus", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCord", "SubmandGland_L", "SubmandGland_R", "ThyroidGland", "Trachea"])
+        examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Esophagus", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R", "ThyroidGland", "Trachea"])
         # Non-DL OARs:
         site.add_oars([ROIS.parotids, ROIS.submands])
       elif region == 'thorax':
