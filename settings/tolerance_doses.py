@@ -40,7 +40,8 @@ ab_greatves = 3
 ab_bronchus = 3
 ab_liver = 2
 ab_brachial = 2
-ab_stomach = 2
+ab_spleen = 3
+ab_stomach = 3
 ab_skin = 2
 ab_kidney_hilum = 2
 ab_cauda = 3
@@ -220,6 +221,8 @@ bladder_v50_quantec = EQD.Tolerance('Bladder','Grade >= 3 late RTOG', ab_bladder
 heart_mean_quantec = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, 25, 26, 'Mean', 'Conventional RT')
 heart_v46_quantec = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, 25, 30, 'Volume receiving tolerance dose being less than 46 %', 'Conventional RT')
 liver_mean = EQD.Tolerance('Liver', 'Classic RILD (QUANTEC)', ab_liver, 15, 30, 'Mean', 'Conventional RT')
+spleen_mean = EQD.Tolerance('Spleen', 'Lymphopenia', ab_spleen, 25, 10, 'Mean', 'Conventional RT')
+stomach_min = EQD.Tolerance('Stomach', 'Ulceration', ab_stomach, 25, 45, 'Volume receiving tolerance dose being no more than 0 cm^3', 'Conventional RT')
 
 
 

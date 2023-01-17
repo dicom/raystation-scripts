@@ -704,7 +704,9 @@ thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3)
+  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
+  CG.ClinicalGoal(ROIS.spleen.name, at_most, average_dose, TOL.spleen_mean, None, priority3),
+  CG.ClinicalGoal(ROIS.stomach.name, at_most, abs_volume_at_dose, 0, TOL.stomach_min, priority3)
 ]
 abdomen = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
@@ -714,7 +716,9 @@ abdomen = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc30, TOL.kidney_v30_adx, priority3),
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3)
+  CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
+  CG.ClinicalGoal(ROIS.spleen.name, at_most, average_dose, TOL.spleen_mean, None, priority3),
+  CG.ClinicalGoal(ROIS.stomach.name, at_most, abs_volume_at_dose, 0, TOL.stomach_min, priority3)
 ]
 abdomen_and_pelvis = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
