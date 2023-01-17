@@ -154,7 +154,8 @@ class DefPalliative(object):
           site.add_targets([ROIS.gtv, ROIS.ctv_ext])
         else:
           site.add_targets([ROIS.ctv_underived])
-        site.add_targets([ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = ptv_margin, marginsB = MARGINS.uniform_5mm_contraction)])
+        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = ptv_margin, marginsB = MARGINS.uniform_5mm_contraction)
+        site.add_targets([ptv])
       else:
         # Multiple targets (2 or 3):
         gtvs = []
@@ -180,8 +181,8 @@ class DefPalliative(object):
         ctvs.append(ctv)
         ptvs.append(ptv)
         site.add_targets(ctvs + ptvs)
-        # Add PTV wall:
-        wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
-        site.add_oars([wall_ptv])
+      # Add PTV wall:
+      wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
+      site.add_oars([wall_ptv])
     # Create all targets and OARs in RayStation:
     site.create_rois()
