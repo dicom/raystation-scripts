@@ -513,12 +513,18 @@ rectum_oars = [
 # Bladder:
 bladder_oars = [
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc35, TOL.rectum_v35_adx,  priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc25, TOL.rectum_v25_adx,  priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc15, TOL.rectum_v15_adx,  priority3),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.22, TOL.rectum_v22pc,  priority3),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.38, TOL.rectum_v38pc,  priority3),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.51, TOL.rectum_v51pc,  priority3),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.64, TOL.rectum_v64pc,  priority3),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.80, TOL.rectum_v80pc,  priority3),
   CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
-  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4)
+  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.01, TOL.rectum_v01pc,  priority6),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.18, TOL.rectum_v18pc,  priority6),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.31, TOL.rectum_v31pc,  priority6),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.44, TOL.rectum_v44pc,  priority6),
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.60, TOL.rectum_v60pc,  priority6)
 ]
 
 
@@ -679,20 +685,16 @@ neck = [
 ]
 thorax = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc30, TOL.heart_v30_adx, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc60, TOL.heart_v60_adx, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc80, TOL.heart_v80_adx, priority3),
+  CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_quantec, None, priority3),
+  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.46, TOL.heart_v46_quantec, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
 ]
 thorax_and_abdomen = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc30, TOL.heart_v30_adx, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc60, TOL.heart_v60_adx, priority3),
-  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc80, TOL.heart_v80_adx, priority3),
+  CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_quantec, None, priority3),
+  CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.46, TOL.heart_v46_quantec, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3),
@@ -723,14 +725,14 @@ abdomen_and_pelvis = [
   CG.ClinicalGoal(ROIS.kidneys.name, at_most, volume_at_dose, pc20, TOL.kidney_v20_adx, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4)
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.51, TOL.rectum_v51pc,  priority3),
+  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_quantec, priority4)
 ]
 pelvis = [
   CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority3),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, pc50, TOL.rectum_v50_adx,  priority3),
-  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_adx, priority4)
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.51, TOL.rectum_v51pc,  priority3),
+  CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, pc50, TOL.bladder_v50_quantec, priority4)
 ]
 other = []
 

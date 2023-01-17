@@ -215,26 +215,13 @@ femoral_head_mean = EQD.Tolerance('FemoralHead_L/R', 'Femoral neck fracture (Gri
 femoral_d02pc = EQD.Tolerance('FemoralHead_L/R', 'Hip osteoarthritis (Rasmusson)', ab_femoral, 20, 40, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
 
 
-# Bladder:
-# FIXME: These tolerances will be replaced in an upcoming update!
-rectum_v50_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 50, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-rectum_v35_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 60, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-rectum_v25_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 65, 'Volume receiving tolerance dose being less than 25%', 'Conventional RT')
-rectum_v15_adx = EQD.Tolerance('Rectum','Grade >= 2 late rectal toxicity', ab_rectum, fractions_rectum, 75, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-
-
-# Rectum:
-bladder_v50 = EQD.Tolerance('Rectum','Grade >= 3 late rectal toxicity', 3, 25, 45.8, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-bladder_v35 = EQD.Tolerance('Rectum','Grade >= 3 late rectal toxicity', 3, 25, 54.5, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
-
-
-# Palliation:
-# FIXME: These tolerances will be replaced in an upcoming update!
-bladder_v50_adx = EQD.Tolerance('Bladder','Some failure', ab_bladder, fractions_bladder, 65, 'Volume receiving tolerance dose being less than 50%', 'Conventional RT')
-
-
-# General:
+# General / Palliative:
+bladder_v50_quantec = EQD.Tolerance('Bladder','Grade >= 3 late RTOG', ab_bladder, 41, 65, 'Volume receiving tolerance dose being less than 50 %', 'Conventional RT')
+heart_mean_quantec = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, 25, 26, 'Mean', 'Conventional RT')
+heart_v46_quantec = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, 25, 30, 'Volume receiving tolerance dose being less than 46 %', 'Conventional RT')
 liver_mean = EQD.Tolerance('Liver', 'Classic RILD (QUANTEC)', ab_liver, 15, 30, 'Mean', 'Conventional RT')
+
+
 
 
 # SBRT:
