@@ -313,7 +313,7 @@ def determine_target(ss, roi_dict, prescription):
   if target:
     return target
   else:
-    GUIF.handle_missing_target()
+    GUIF.handle_missing_target(expected_targets, list(roi_dict.keys()))
 
 
 # Determines the isocenter based on the CTV, and if it does not exist, the PTV, and External contour, (or the Body contour) provided for the given structure set.

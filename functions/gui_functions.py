@@ -287,9 +287,9 @@ def handle_missing_roi_for_objective(roi_name):
 
 
 # Handles the situation of a missing target.
-def handle_missing_target():
+def handle_missing_target(expected, present):
   title = "Manglende målvolum"
-  text = "Mislyktes i gjenkjenne målvolum for denne casen." + "\n\n" + "Årsaken er sannsynligvis at navngivingen på målvolumene avviker fra forventet nomenklatur."
+  text = "Mislyktes i å gjenkjenne målvolum for denne casen." + "\n\n" + "Årsaken er sannsynligvis at navngivingen på målvolumene avviker fra forventet nomenklatur.\n\n" + "Forventede målvolumskandidater:\n" + str(expected) + "\n\n" + "ROIer tilstede:\n" + str(present)
   messagebox.showinfo(title, text)
   sys.exit(0)
 
