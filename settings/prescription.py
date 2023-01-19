@@ -117,7 +117,6 @@ lung = [
   Prescription(70, 35, 'MedianDose'),
   Prescription(60, 40, 'MedianDose'), # Bi-daily
   # Stereotactic:
-  Prescription(45, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(54, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(55, 5, 'DoseAtVolume', volume_percent=99),
   Prescription(56, 8, 'DoseAtVolume', volume_percent=99)
