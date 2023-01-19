@@ -88,6 +88,35 @@ class DefProstate(object):
           site.add_oars(DEF.prostate_non_dl_oars + [ROIS.cauda_equina, bladder_ptv, rectum_ptv, wall_ptv_77] + [bowel_ptv, wall_ptv_70_77])
         # Common ROIs for all conventional fractionation:
         site.add_targets([ROIS.prostate, ROIS.vesicles, semves20, ctv_77, ctv_70, ptv_77, ptv_70])
+      elif frac == 'hypo_bergen':
+        # Hypofractionated 25 fx: prostate (67.5 Gy) with vesicles (62.5 Gy) and nodes (50 Gy):
+        # Targets:
+        ctv_67_5 = ROI.ROIAlgebra('CTV_67.5', ROIS.ctv_77.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
+        ptv_67_5 = ROI.ROIExpanded('PTV_67.5', ROIS.ptv_77.type, COLORS.ptv_high, source = ctv_67_5, margins = MARGINS.prostate_seed_expansion)
+        # Seminal vesicles (for high risk 20 mm):
+        semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
+        # OARs:
+        bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_67_5], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
+        rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_67_5], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
+        wall_ptv_67_5 = ROI.ROIWall('zPTV_67.5_Wall', ROIS.z_ptv_77_wall.type, COLORS.wall, ptv_67_5, 0.5, 0)
+        # Targets:
+        ctv_62_5 = ROI.ROIAlgebra('CTV!_62.5', ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [semves20], sourcesB = [ptv_67_5], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_62_5 = ROI.ROIAlgebra('PTV!_62.5', ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv_67_5], operator = 'Subtraction', marginsA = MARGINS.uniform_8mm_expansion, marginsB = MARGINS.zero)
+        ptv_62_5_67_5 = ROI.ROIAlgebra('PTV_70+77', ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ctv_67_5], sourcesB = [semves20], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
+        ptv_50 = ROI.ROIAlgebra('PTV!_50', ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_67_5, ptv_62_5], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_expansion, marginsB = MARGINS.zero)
+        ctv_50 = ROI.ROIAlgebra('CTV!_50', ROIS.ctv_56.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_67_5, ptv_62_5], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_50_62_5_67_5 = ROI.ROIAlgebra('PTV_50+62.5+67.5', ROIS.ptv_56_70_77.type, COLORS.ptv_low, sourcesA = [ptv_50, ptv_62_5], sourcesB = [ptv_67_5], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        site.add_targets([ROIS.pelvic_nodes, ctv_50, ptv_50, ptv_62_5_67_5, ptv_50_62_5_67_5])
+        site.add_targets([ROIS.prostate, ROIS.vesicles, semves20, ctv_67_5, ctv_62_5, ptv_67_5, ptv_62_5])
+        # OARs:
+        bladder_ptv.sourcesB.extend([ptv_62_5, ptv_50])
+        rectum_ptv.sourcesB.extend([ptv_62_5, ptv_50])
+        bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_67_5, ptv_62_5, ptv_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
+        wall_ptv_62_5_67_5 = ROI.ROIWall('zPTV_62.5+67.5_Wall', ROIS.z_ptv_70_77_wall.type, COLORS.wall, ptv_62_5_67_5, 1, 0)
+        # DL OARs:
+        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        # Non-DL OARs:
+        site.add_oars(DEF.prostate_non_dl_oars + [ROIS.cauda_equina, bladder_ptv, rectum_ptv, wall_ptv_67_5] + [bowel_ptv, wall_ptv_62_5_67_5])
       elif frac == 'hypo_60':
         # Hypofractionated prostate with vesicles (3 Gy x 20):
         # Targets:

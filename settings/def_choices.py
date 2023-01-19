@@ -104,6 +104,7 @@ prostate_bed = P.Property('Prostataseng', 'bed', parent = prostate, next_categor
 
 # Prostate: Fractionation:
 prostate_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_normal, next_category ='')
+prostate_bergen = P.Property('Hypofraksjonering (67.5 Gy / 25 fx)', 'hypo_bergen', parent = prostate_normal, next_category ='')
 prostate_hypo = P.Property('Hypofraksjonering (60 Gy)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
 prostate_lc = P.Property('Lokal kontroll (STAMPEDE: 55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
 prostate_palliative = P.Property('Palliativ behandling', 'palliative', parent = prostate_normal, next_category ='')
