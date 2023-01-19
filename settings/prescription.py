@@ -136,6 +136,7 @@ prostate = [
   Prescription(39, 13, 'MedianDose'),
   Prescription(55, 20, 'MedianDose'),
   Prescription(60, 20, 'MedianDose'),
+  Prescription(67.5, 25, 'MedianDose'),
   Prescription(77, 35, 'MedianDose')
 ]
 prostate_bed = [
