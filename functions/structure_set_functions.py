@@ -297,7 +297,13 @@ def determine_nr_of_indexed_ptvs(ss):
 # Determines the prescription target volume of the plan.
 def determine_target(ss, roi_dict, prescription):
   target = None
-  expected_targets = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ str(round(prescription.total_dose)), ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
+  # Round prescription dose:
+  if prescription.total_dose == 67.5:
+    # Keep one decimal:
+    total_dose = str(round(prescription.total_dose, 1))
+  else:
+    total_dose = str(round(prescription.total_dose))
+  expected_targets = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ total_dose, ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
   # SRT/SBRT (where PTV is prescription target, instead of CTV for conventional treatment):
   if prescription.is_stereotactic():
     if determine_nr_of_indexed_ptvs(ss) > 1:
