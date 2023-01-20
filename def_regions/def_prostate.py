@@ -102,7 +102,7 @@ class DefProstate(object):
         # Targets:
         ctv_62_5 = ROI.ROIAlgebra('CTV!_62.5', ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [semves20], sourcesB = [ptv_67_5], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv_62_5 = ROI.ROIAlgebra('PTV!_62.5', ROIS.ptv_70.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv_67_5], operator = 'Subtraction', marginsA = MARGINS.uniform_8mm_expansion, marginsB = MARGINS.zero)
-        ptv_62_5_67_5 = ROI.ROIAlgebra('PTV_70+77', ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ctv_67_5], sourcesB = [semves20], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
+        ptv_62_5_67_5 = ROI.ROIAlgebra('PTV_62.5+67.5', ROIS.ptv_70_77.type, COLORS.ptv_low, sourcesA = [ctv_67_5], sourcesB = [semves20], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
         ptv_50 = ROI.ROIAlgebra('PTV!_50', ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_67_5, ptv_62_5], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_expansion, marginsB = MARGINS.zero)
         ctv_50 = ROI.ROIAlgebra('CTV!_50', ROIS.ctv_56.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_67_5, ptv_62_5], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv_50_62_5_67_5 = ROI.ROIAlgebra('PTV_50+62.5+67.5', ROIS.ptv_56_70_77.type, COLORS.ptv_low, sourcesA = [ptv_50, ptv_62_5], sourcesB = [ptv_67_5], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
