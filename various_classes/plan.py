@@ -185,7 +185,7 @@ class Plan(object):
       PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(prescription.total_dose)))
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
-      plan.LoadBeamSet( BeamSetInfo=infos[0])
+      plan.LoadBeamSet( beamSetInfo=infos[0])
 
 
     # Determines and sets up isodoses based on region code and fractionation:
