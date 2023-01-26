@@ -27,6 +27,7 @@ class DefRectum(object):
         gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
         site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
       # Common for groin included or not:
+      ctv_p_default = ROI.ROIExpanded('CTVp_default', ROIS.ctv_50.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
       ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[gtv], sourcesB=[ROIS.ctv_e], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion)
       ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
@@ -45,7 +46,7 @@ class DefRectum(object):
       # Targets:
       ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, COLORS.ctv_alt, sourcesA = [ctv_47], sourcesB = [ctv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv_47_50 = ROI.ROIAlgebra(ROIS.ptv_47_50.name, ROIS.ptv_47_50.type, COLORS.ptv_low, sourcesA = [ptv_47], sourcesB = [ptv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      site.add_targets([ROIS.ctv_e, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
+      site.add_targets([ROIS.ctv_e, ctv_p_default, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
       # OARs:
       bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_47_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_47_50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
@@ -59,10 +60,11 @@ class DefRectum(object):
       # Hypofractionated treatment (5 Gy x 5):
       # Targets:
       gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
+      ctv_p_default = ROI.ROIExpanded('CTVp_default', ROIS.ctv_p.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
       ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA=[gtv], sourcesB=[ROIS.ctv_e], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion)
       ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ctv_p])
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ctv_p], sourcesB=[ROIS.ctv_e], marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.rectum_ctv_primary_risk_expansion)
-      site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, ctv_p, ROIS.ctv_e, ctv, ptv])
+      site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, ctv_p_default, ctv_p, ROIS.ctv_e, ctv, ptv])
       # OARs:
       bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
