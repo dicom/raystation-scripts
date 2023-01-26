@@ -151,10 +151,12 @@ class DefPalliative(object):
       if nr_targets == 1:
         # A single target:
         if with_gtv == 'with':
-          site.add_targets([ROIS.gtv, ROIS.ctv_ext])
+          ctv = ROIS.ctv_ext
+          site.add_targets([ROIS.gtv, ctv])
         else:
-          site.add_targets([ROIS.ctv_underived])
-        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = ptv_margin, marginsB = MARGINS.uniform_5mm_contraction)
+          ctv = ROIS.ctv_underived
+          site.add_targets([ctv])
+        ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = ptv_margin, marginsB = MARGINS.uniform_5mm_contraction)
         site.add_targets([ptv])
       else:
         # Multiple targets (2 or 3):
