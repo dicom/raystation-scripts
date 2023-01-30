@@ -89,7 +89,9 @@ brain_partial = [
   Prescription(25.5, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(27, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(28.5, 3, 'DoseAtVolume', volume_percent=99),
-  Prescription(30, 3, 'DoseAtVolume', volume_percent=99)
+  Prescription(30, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(30, 5, 'DoseAtVolume', volume_percent=99),
+  Prescription(35, 5, 'DoseAtVolume', volume_percent=99)
 ]
 als = [
   Prescription(7.5, 1, 'MedianDose')
@@ -180,7 +182,7 @@ def create_prescription(total_dose, nr_fractions, region_code):
   # Determine if the given information indicates a stereotactic prescription:
   stereotactic = False
   if region_code in RC.brain_partial_codes:
-    if (nr_fractions == 1 and total_dose >= 15) or (nr_fractions == 3 and total_dose >= 21):
+    if (nr_fractions == 1 and total_dose >= 15) or (nr_fractions == 3 and total_dose >= 21) or (nr_fractions == 5 and total_dose > 25):
       stereotactic = True
   elif region_code in RC.lung_and_mediastinum_codes:
     if (nr_fractions == 3 and total_dose >= 45) or (nr_fractions == 5 and total_dose >= 55) or (nr_fractions == 8 and total_dose >= 56):
