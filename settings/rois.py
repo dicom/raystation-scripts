@@ -131,6 +131,7 @@ prostate = ROI.ROI('Prostate', 'Ctv', COLORS.prostate)
 prostate_bed = ROI.ROI('SurgicalBed', 'Ctv', COLORS.prostate_bed)
 urethra = ROI.ROI('Urethra', 'Organ', COLORS.urethra)
 vesicles = ROI.ROI('SeminalVes', 'Ctv', COLORS.vesicles)
+penile_bulb = ROI.ROI('PenileBulb', 'Organ', COLORS.penile_bulb)
 anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.small_bowel)
 
 

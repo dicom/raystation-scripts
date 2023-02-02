@@ -213,7 +213,7 @@ class DefProstate(object):
         # DL OARs:
         examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
         # Non-DL OARs:
-        site.add_oars([ROIS.bowel_space, ROIS.cauda_equina] + [bladder_ptv, rectum_ptv])
+        site.add_oars([ROIS.bowel_space, ROIS.cauda_equina, ROIS.penile_bulb] + [bladder_ptv, rectum_ptv])
         site.add_targets([ROIS.ctv_sb, ctv_70, ptv_70])
       else:
         # Hypofractionated (palliative):
