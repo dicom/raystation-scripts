@@ -38,7 +38,8 @@ class DefPalliative(object):
           site.add_oars([ROIS.parotids, ROIS.skin, ROIS.submands])
         elif region == 'col thorax':
           # DL OARs:
-          examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "Spleen", "Sternum", "Stomach", "Trachea"])
+          examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "Spleen", "Sternum", "Stomach", "Trachea"])
+          examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
           # Non-DL OARs:
           site.add_oars([ROIS.kidneys, ROIS.lungs, ROIS.skin, ROIS.spinal_cord])
         elif region == 'col pelvis':
@@ -75,22 +76,26 @@ class DefPalliative(object):
         site.add_oars([ROIS.parotids, ROIS.submands])
       elif region == 'thorax':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
         # Non-DL OARs:
         site.add_oars([ROIS.kidneys, ROIS.lungs])
       elif region == 'costa':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
         # Non-DL OARs:
         site.add_oars([ROIS.bowel_space, ROIS.kidneys, ROIS.lungs])
       elif region == 'thorax_abdomen':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
         # Non-DL OARs:
         site.add_oars([ROIS.bowel_space, ROIS.kidneys, ROIS.lungs])
       elif region == 'abdomen':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Stomach"])
+        examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Stomach"])
+        examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
         # Non-DL OARs:
         site.add_oars([ROIS.bowel_space, ROIS.kidneys, ROIS.lungs])
       elif region == 'abdomen_pelvis':

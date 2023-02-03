@@ -16,7 +16,9 @@ class DefLung(object):
   def __init__(self, pm, examination, ss, choices, site):
     # Default OARs:
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Lung_L", "Lung_R", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "ThyroidGland", "Trachea"])
+    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "ThyroidGland", "Trachea"])
+    # Use our own breast model for the lungs (because these seems to be sub optimal in the RSL Thorax model):
+    examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
     # Non-DL OARs:
     site.add_oars([ROIS.lungs])
     # Choice 1: Intent (curative or palliative)
