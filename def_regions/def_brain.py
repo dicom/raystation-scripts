@@ -36,8 +36,10 @@ class DefBrain(object):
       site.add_oars([ROIS.skin_brain, ROIS.nasal_cavity])
     elif region == 'part':
       # Partial Brain:
+      # Brain-brainstem (used to aid in CTV definition):
+      brain_brainstem = ROI.ROIAlgebra('Brain-Brainstem', ROIS.brain.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.brainstem], operator = 'Subtraction')
       # Targets:
-      ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA = [ROIS.gtv], sourcesB = [ROIS.brain], operator = 'Intersection', marginsA = MARGINS.uniform_20mm_expansion, marginsB = MARGINS.uniform_1mm_expansion)
+      ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA = [ROIS.gtv], sourcesB = [brain_brainstem], operator = 'Intersection', marginsA = MARGINS.uniform_20mm_expansion, marginsB = MARGINS.zero)
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, sourcesA = [ctv], sourcesB = [ROIS.body], operator = 'Intersection', marginsA = MARGINS.uniform_3mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
       site.add_targets([ROIS.gtv, ctv, ptv])
       # OARs:
@@ -46,7 +48,7 @@ class DefBrain(object):
       # DL OARs:
       examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
       # Non-DL OARs:
-      site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_gtv, brain_ptv])
+      site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, brain_gtv, brain_ptv])
     elif region == 'stereotactic':
       # Stereotactic brain:
       # Choice 2: Nr of targets.
@@ -87,3 +89,9 @@ class DefBrain(object):
       site.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls)
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Change ROI type to "Other" for selected ROIs:
+    for name in [ROIS.brain_gtv.name, ROIS.brain_ptv.name, 'Brain-Brainstem']:
+      try:
+        pm.RegionsOfInterest[name].OrganData.OrganType = "Other"
+      except:
+        pass
