@@ -172,11 +172,15 @@ delete = [
   'PTVpc',
   'PTVnc',
   'PTVsbc',
+  'PTVsbc (robust)',
+  'PTVsbc_Wall',
   'PTV_50c',
   'PTV_47c',
   'PTVopt',
   'Ptv opt',
   'PTV_IMN',
+  'PTV_Robustness',
+  'PTV_robustness',
   'CTV',
   'CTV 0-46',
   'CTV!_47',
@@ -233,6 +237,7 @@ delete = [
   'Skråpute',
   'hevelse',
   'hevelse brys 29-10',
+  'Z_ThyroidGland',
   'Lung left XVI'
 ]
 
