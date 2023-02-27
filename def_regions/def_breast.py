@@ -76,8 +76,11 @@ class DefBreast(object):
     # Only some patients have breast string. Delete the ROI if its volume is less than 0.5 cm^3:
     for rg in ss.RoiGeometries:
       if rg.OfRoi.Name in ['BreastString_L', 'BreastString_R']:
-        if rg.GetRoiVolume() < 0.5:
-          # Delete the ROI, as it seems like this patient didnt actually have a breast string:
+        # Delete the ROI if the patient doesnt seem to have a breast string:
+        if rg.HasContours():
+          if rg.GetRoiVolume() < 0.5:
+            pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
+        else:
           pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
 
   
