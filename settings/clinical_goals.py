@@ -548,6 +548,8 @@ def prostate_oars(ss, region_code, prescription):
     CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
     CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
     # Lower priority:
+    CG.ClinicalGoal(ROIS.penile_bulb.name, at_most, average_dose, TOL.penile_bulb_mean, None, priority6),
+    CG.ClinicalGoal(ROIS.penile_bulb.name, at_most, dose_at_volume, TOL.penile_bulb_d02pc, 0.02, priority6),
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.01, TOL.rectum_v01pc,  priority6),
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.18, TOL.rectum_v18pc,  priority6),
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.31, TOL.rectum_v31pc,  priority6),

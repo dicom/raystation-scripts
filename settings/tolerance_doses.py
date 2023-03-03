@@ -20,7 +20,7 @@ ab_thyroid = 3
 ab_brain = 2
 ab_esophagus = 3
 ab_lung = 3
-ab_bladder = 6
+ab_bladder = 2
 ab_rectum = 3
 ab_femoral = 3
 ab_brainstem = 2
@@ -50,6 +50,7 @@ ab_bowel = 3
 ab_breast = 4
 ab_lad = 2
 ab_cornea = 3
+ab_penile_bulb = 3
 
 
 # Reference number of fractions:
@@ -214,6 +215,9 @@ bladder_v41pc_freq = EQD.Tolerance('Bladder', 'Urinary frequency (Olsson)', ab_b
 # Femoral heads:
 femoral_head_mean = EQD.Tolerance('FemoralHead_L/R', 'Femoral neck fracture (Grigsby)', ab_femoral, 21, 42, 'Mean', 'Conventional RT')
 femoral_d02pc = EQD.Tolerance('FemoralHead_L/R', 'Hip osteoarthritis (Rasmusson)', ab_femoral, 20, 40, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
+# Penile bulb:
+penile_bulb_mean = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)', ab_penile_bulb, 10, 20, 'Mean', 'Conventional RT')
+penile_bulb_d02pc = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)', ab_penile_bulb, 25, 50, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
 
 
 # General / Palliative:
