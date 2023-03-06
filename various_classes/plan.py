@@ -231,10 +231,22 @@ class Plan(object):
           optimization_parameters = OPT.optimization_parameters(region_code, prescription)
           optimization_parameters.apply_to(plan_optimization)
         # Run the optimization (may crash if GPU for computation is not available):
-        try:
-          plan_optimization.RunOptimization()
-        except Exception as e:
-          GUIF.handle_optimization_error(plan_optimization, e)
+        # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)
+        # Assume we may have a beam delivery time error:
+        possible_beam_delivery_time_error = True
+        while possible_beam_delivery_time_error:
+          try:
+            plan_optimization.RunOptimization()
+            # Optimization succeeded, thus there is no time error:
+            possible_beam_delivery_time_error = False
+          except Exception as e:
+            if "is shorter than the minimum feasible time" in e.args[0]:
+              # We need to increase the beam delivery time (and try the optimization again). Increase by 10 seconds:
+              plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
+            else:
+              # Although it did crash, it wasnt because of the time error:
+              possible_beam_delivery_time_error = False
+              GUIF.handle_optimization_error(plan_optimization, e)
       # Start adaptive optimization if indicated:
       if opt == 'oar':
         try:

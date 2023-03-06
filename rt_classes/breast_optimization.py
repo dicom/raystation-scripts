@@ -51,11 +51,22 @@ class BreastOptimization(object):
       optimization_parameters = OPT.sliding_window
       optimization_parameters.apply_to(po)
       # Perform first optimization phase (initial optimization):
-      # (Optimization may crash if e.g. GPU for computation is not available)
-      try:
-        po.RunOptimization()
-      except Exception as e:
-        GUIF.handle_optimization_error(po, e)
+      # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)
+      # Assume we may have a beam delivery time error:
+      possible_beam_delivery_time_error = True
+      while possible_beam_delivery_time_error:
+        try:
+          po.RunOptimization()
+          # Optimization succeeded, thus there is no time error:
+          possible_beam_delivery_time_error = False
+        except Exception as e:
+          if "is shorter than the minimum feasible time" in e.args[0]:
+            # We need to increase the beam delivery time (and try the optimization again). Increase by 10 seconds:
+            po.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
+          else:
+            # Although it did crash, it wasnt because of the time error:
+            possible_beam_delivery_time_error = False
+            GUIF.handle_optimization_error(po, e)
       # Perform second optimization phase: Reduction of OAR doses until target_objectives are compromised:
       if self.has_objective_with_positive_dose_and_further_dose_reduction_potential(organ_objectives):
         nr_reduction_iterations = self.reduce_organ_doses(po, organ_objectives, target_objectives, counter=1)
@@ -70,6 +81,9 @@ class BreastOptimization(object):
         elif self.region_code in RC.breast_l_codes:
           # Left:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=1, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
+        elif self.region_code in RC.breast_bilateral_codes:
+          # Bilateral:
+          po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
         # Set robustness for PTV min & max dose:
         for obj in target_objectives:
           if self.region_code in RC.breast_whole_codes:
@@ -228,7 +242,7 @@ class BreastOptimization(object):
     # Adjustments have been made. Proceed with new optimization:
     po.RunOptimization()
     # If counter is below threshold, and some target objectives are still unfulfilled, repeat target dose escalation:
-    if counter < 15 and self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives):
+    if counter < 7 and self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives):
       counter += 1
       counter = self.improve_target_doses(po, target_objectives, external_objectives, counter)
     return counter
