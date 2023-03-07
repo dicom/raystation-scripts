@@ -115,7 +115,7 @@ class QualityControl(object):
       ts_beam_set.dose_test()
       ts_beam_set.dose_is_clinical_test()
       ts_beam_set.dose_algorithm_test()
-      ts_beam_set.number_of_histories_test()
+      ts_beam_set.electron_mc_uncertainty_test()
       ts_beam_set.beam_energy_equality_test()
       ts_beam_set.photon_energy_for_curative_fractionations_test()
       ts_beam_set.vmat_full_arc_rotation_of_last_beam_test()

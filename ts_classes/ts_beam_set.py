@@ -341,13 +341,13 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests that a sufficient number of histories has been used (in the case of Electron Monte Carlo calculations).
-  def number_of_histories_test(self):
-    t = TEST.Test("Antall historier skal være minst 500.000", '>=500000', self.dose)
+  # Tests that a sufficient low statistical uncertainty has been set (in the case of Electron Monte Carlo dose calculations).
+  def electron_mc_uncertainty_test(self):
+    t = TEST.Test("Statistisk usikkerhet for Monte Carlo doseberegning for elektroner skal være <= 0.1 %", '<=0.001', self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
-        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MonteCarloHistoriesPerAreaFluence < 200000:
-          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MonteCarloHistoriesPerAreaFluence)
+        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MCStatisticalUncertaintyForFinalDose > 0.001:
+          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MCStatisticalUncertaintyForFinalDose)
         else:
           return t.succeed()
 
