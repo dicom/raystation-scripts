@@ -53,6 +53,7 @@ submand = 'DarkOrange'
 thyroid = 'Teal'
 # Muscles:
 muscle = 'Darkcyan'
+levator_ani = 'Cyan'
 # Respiratory:
 trachea = 'Teal'
 main_bronchus = 'Green'

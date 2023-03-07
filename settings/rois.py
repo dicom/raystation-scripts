@@ -133,6 +133,7 @@ urethra = ROI.ROI('Urethra', 'Organ', COLORS.urethra)
 vesicles = ROI.ROI('SeminalVes', 'Ctv', COLORS.vesicles)
 penile_bulb = ROI.ROI('PenileBulb', 'Organ', COLORS.penile_bulb)
 anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.anal_canal)
+levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
 
 
 

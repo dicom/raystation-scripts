@@ -34,7 +34,7 @@ prostate_nodes_oars = prostate_common_oars + [ROIS.cauda_equina, ROIS.seed1, ROI
 # Palliative prostate:
 prostate_palliative_oars = prostate_common_oars
 # ROIs not currently implemented with DL:
-prostate_non_dl_oars = [ROIS.bowel_space, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra, ROIS.penile_bulb]
+prostate_non_dl_oars = [ROIS.bowel_space, ROIS.levator_ani, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra, ROIS.penile_bulb]
 
 
 # Rectum:
