@@ -70,6 +70,9 @@ def optimization_parameters(region_code, prescription):
     else:
       # Partial brain (ordinary fractionation):
       opt = sliding_window
+  elif region_code in RC.brain_whole_codes:
+    # Whole brain:
+    opt = sliding_window
   elif region_code in RC.breast_codes:
     # Partial breast/Whole breast/Regional breast:
     opt = sliding_window
