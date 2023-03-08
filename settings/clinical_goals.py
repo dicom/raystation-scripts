@@ -689,6 +689,7 @@ thorax = [
   CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_volume, TOL.spinalcord_v2_adx, pc2, priority2),
   CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_quantec, None, priority3),
   CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.46, TOL.heart_v46_quantec, priority3),
+  CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean, None, priority3),
   CG.ClinicalGoal(ROIS.liver.name, at_most, average_dose, TOL.liver_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, average_dose, TOL.lung_mean, None, priority3),
   CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx, priority3)
