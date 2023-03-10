@@ -7,6 +7,7 @@ import tolerance_doses as TOL
 import roi_functions as ROIF
 import structure_set_functions as SSF
 import region_codes as RC
+import tolerance as EQD
 
 
 # Criterias:
@@ -315,6 +316,8 @@ def breast_oars(ss, region_code, prescription):
 # Lung (conventional):
 # (In cases where a GTV/IGTV is present, clinical goals are created for 'Lungs-GTV'/'Lungs-IGTV' instead of 'Lungs')
 def lung_oars(ss, prescription):
+  # Create a tolerance equal to the prescription dose:
+  prescription_dose = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', 3, prescription.nr_fractions, prescription.total_dose, 'Max', 'Conventional RT')
   lung_oars = []
   # Determine which variant to use for the general lungs CG:
   if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
@@ -351,7 +354,6 @@ def lung_oars(ss, prescription):
     tol_heart_v25 = TOL.heart_v25_adx
     tol_lung_mean = TOL.lung_mean
     tol_lung_v35 = TOL.lung_v35_adx
-    lung_oars += [CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.51, TOL.lung_v51_adx, priority3)] # This particular tolerance is not defined for BID fx.
     tol_esophagus_mean = TOL.esophagus_mean
     tol_esophagus_v17 = TOL.esophagus_v17_adx
     tol_spinalcanal_chemo = TOL.spinalcanal_chemo_v2_adx
@@ -360,12 +362,26 @@ def lung_oars(ss, prescription):
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal, 0.03, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, tol_heart_mean, None, priority3),
     CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, pc25, tol_heart_v25, priority3),
+    CG.ClinicalGoal(ROIS.a_lad.name, at_most, volume_at_dose, 0.10, TOL.lad_v10, priority3),
     CG.ClinicalGoal(lungs, at_most, average_dose, tol_lung_mean, None, priority3),
     CG.ClinicalGoal(lungs, at_most, volume_at_dose, pc35, tol_lung_v35, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, tol_esophagus_mean, None, priority3),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc17, tol_esophagus_v17, priority3),
-    CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, tol_lung_v35, priority6),
-    CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc35, tol_lung_v35, priority6),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.1, TOL.heart_v10, priority4),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.355, TOL.heart_v355, priority4),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_lymphopenia_mean, None, priority6),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.38, TOL.heart_lymphopenia_v38, priority6),
+    CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.25, TOL.heart_lymphopenia_v25, priority6),
+    CG.ClinicalGoal(ROIS.a_lad.name, at_most, volume_at_dose, 0.01, TOL.lad_v01, priority6),
+    CG.ClinicalGoal(lungs, at_most, average_dose, TOL.lung_lymphopenia_mean, None, priority6),
+    CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.30, TOL.lung_lymphopenia_v30, priority6),
+    CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.45, TOL.lung_lymphopenia_v45, priority6),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, prescription_dose, 0.03, priority6),
+    CG.ClinicalGoal(ROIS.spleen.name, at_most, average_dose, TOL.spleen_lymphopenia_mean, None, priority6),
+    CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.17, TOL.spleen_lymphopenia_v17, priority6),
+    CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.16, TOL.spleen_lymphopenia_v16, priority6),
+    CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.09, TOL.spleen_lymphopenia_v09, priority6),
+    CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.05, TOL.spleen_lymphopenia_v05, priority6),
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal_chemo, 0.03, priority6)
   ]
   return lung_oars
