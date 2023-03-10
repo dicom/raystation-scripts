@@ -239,7 +239,8 @@ def breast_oars(ss, region_code, prescription):
   breast_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_breast, cc0_03, priority2),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast, None, priority3),
-    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, pc65, TOL.lung_v65_adx_25, priority6),
+    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, 0.30, TOL.lung_v30, priority6),
+    CG.ClinicalGoal(ROIS.lungs.name, at_most, volume_at_dose, 0.45, TOL.lung_v45, priority6),
     CG.ClinicalGoal(ROIS.a_lad.name, at_most, dose_at_abs_volume, TOL.lad_max, cc0_03, priority6),
     CG.ClinicalGoal(ROIS.a_lad.name, at_most, average_dose, TOL.lad_mean, None, priority6),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_low_priority, None, priority6)
@@ -271,10 +272,11 @@ def breast_oars(ss, region_code, prescription):
   if region_code in RC.breast_reg_codes:
     # Common for regional left & right:
     breast_oars += [
+      CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean, None, priority4),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_mean_brt, None, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc15, TOL.esophagus_v15_adx_brt, priority5),
       CG.ClinicalGoal(ROIS.esophagus.name, at_most, volume_at_dose, pc30, TOL.esophagus_v30_adx_brt, priority5),
-      CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5)  
+      CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean_brt, None, priority5)
     ]
     # Thyroid absolute volume CG for regional breast:
     if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
