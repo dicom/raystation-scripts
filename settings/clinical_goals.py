@@ -306,10 +306,12 @@ def breast_oars(ss, region_code, prescription):
       breast_oars += [CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)]
     if region_code in RC.breast_partial_l_codes:
       # Specific for partial breast left:
-      breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)]
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, abs_volume_at_dose, 426, TOL.ipsilateral_breast_426cc, priority5)]
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, abs_volume_at_dose, 177, TOL.ipsilateral_breast_177cc, priority6)]
     elif region_code in RC.breast_partial_r_codes:
       # Specific for partial breast right:
-      breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, volume_at_dose, pc50, TOL.ipsilateral_breast_v50_adx, priority5)]
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 426, TOL.ipsilateral_breast_426cc, priority5)]
+      breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 177, TOL.ipsilateral_breast_177cc, priority6)]
   return breast_oars
 
 
