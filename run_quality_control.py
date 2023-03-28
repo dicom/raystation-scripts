@@ -19,7 +19,6 @@ from tkinter import messagebox
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
-sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
