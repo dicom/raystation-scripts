@@ -12,6 +12,7 @@
 #from tkinter import *
 #from tkinter import messagebox
 
+from .control_point import ControlPoint
 from .database import Database
 from .scheduled_field import ScheduledField
 

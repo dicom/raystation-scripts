@@ -63,7 +63,7 @@ class ControlPoint:
     self.meterset_rate = row['Meterset_Rate']
     self.gantry_rotation_id = row['Gantry_Dir_Enum']
     self.couch_pitch_angle = row['Couch_Pitch_Ang']
-    self.couch_roll_angle = row['Couch_Roll_Angle']
+    #self.couch_roll_angle = row['Couch_Roll_Angle'] # for some reason this caused a crash
     self.couch_angle = row['Couch_Ang']
     self.couch_vertical = row['Couch_Vrt']
     self.couch_lateral = row['Couch_Lat']
