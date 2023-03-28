@@ -11,14 +11,18 @@
 from connect import *
 import sys
 # GUI framework (debugging only):
-from tkinter import *
-from tkinter import messagebox
+#from tkinter import *
+#from tkinter import messagebox
 
 # Local script imports:
 import beam_set_label as BSL
 import region_list as REGIONS
-
-
+import test_p as TEST
+#import raystation_utilities as RSU
+import mqv_plan as MQV_P
+import mqv_beam_set as MQV_BS
+import mqv_beam as MQV_B
+import mqv_segment as MQV_S
 
 
 class MosaiqPlanVerification(object):
@@ -30,46 +34,63 @@ class MosaiqPlanVerification(object):
     # Load list of region codes and corresponding region names, and get the region name for our particular region code (raise error if a name is not retrieved):
     self.regions = REGIONS.RegionList("C:\\temp\\raystation-scripts\\settings\\regions.tsv")
     
-    # Iterate beam sets:
-    for beam_set in self.plan.BeamSets:
-      # Beam set label:
-      beam_set_label = beam_set.DicomPlanLabel
-      label = BSL.BeamSetLabel(beam_set_label)
-      mq_label = self.translate(label)
-      # Pass or fail?
-      match = True
-      text = ""
-      # Find the corresponding plan (Rad Rx) in Mosaiq:
-      mq_beam_set = None
-      for p in self.mq_patient.prescriptions():
-        if p.site_name == mq_label:
-          mq_beam_set = p
-      # Proceed with beam set comparison if a match was found:
-      if mq_beam_set:
-        # Test if monitor units of first beam are equal:
-        if round(beam_set.Beams[0].BeamMU, 1) == round(mq_beam_set.fields()[0].meterset, 1):
-          match = True
-          text = "Success!\n\nPlan: " + mq_label + "\n\nMU:\nExpected " + str(round(beam_set.Beams[0].BeamMU,1)) + " - Found " + str(round(mq_beam_set.fields()[0].meterset,1))
-        else:
-          match = False
-          text = "Failed!\n\nPlan: " + mq_label + "\n\nMU:\nExpected " + str(round(beam_set.Beams[0].BeamMU,1)) + " - Found " + str(round(mq_beam_set.fields()[0].meterset,1))
-      else:
-        text = "No matching prescription found in Mosaiq for plan label: " + mq_label
-      # Display the results of the test:      
-      root = Tk()
-      root.withdraw()
-      title = "RayStation and Mosaiq plan comparison"
-      #text = ""
-      messagebox.showinfo(title, text)
-      root.destroy()
+    # Initialize test suites:
+    mqv_plan = MQV_P.MQVPlan(patient, case, plan, mq_patient)
+    for beam_set in plan.BeamSets:
+      mqv_beam_set = MQV_BS.MQVBeamSet(beam_set, mqv_plan=mqv_plan)
+      for beam in beam_set.Beams:
+        mqv_beam = MQV_B.MQVBeam(beam, mqv_beam_set=mqv_beam_set)
+        for segment in beam.Segments:
+          mqv_segment = MQV_S.MQVSegment(segment, mqv_beam=mqv_beam)
+    
+    # Collect & assign the equivalent Mosaiq objects to the RayStation objects (beam sets, beams & segments):    
+    # Beam sets:
+    beam_sets = {}
+    # Collect beam sets:
+    for bs in self.mq_patient.prescriptions():
+      beam_sets[bs.site_name] = bs
+    # Assign beam sets:
+    for mqv_beam_set in mqv_plan.mqv_beam_sets:
+      mqv_beam_set.mq_beam_set = beam_sets[mqv_beam_set.expected_mosaiq_label]
+      # Beams:
+      beams = {}
+      # Collect beams:
+      for b in mqv_beam_set.mq_beam_set.fields():
+        beams[str(b.label)] = b
+      # Assign beams:
+      for mqv_beam in mqv_beam_set.mqv_beams:
+        mqv_beam.mq_beam = beams[str(mqv_beam.nr.value)]
+        # Segments:
+        segments = {}
+        # Collect segments:
+        for s in mqv_beam.mq_beam.control_points():
+          segments[s.number] = s
+        # Assign beams:
+        for mqv_segment in mqv_beam.mqv_segments:
+          mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
+    
+    # Store the plan test results:
+    self.result = mqv_plan.param
 
-  
-  # Translates a RayStation (code format) beam set label to the Mosaiq (readable) version.
-  def translate(self, bs_label):
-    assert type(bs_label) is BSL.BeamSetLabel, "bs_label is not a BeamSetLabel: %r" % bs_label
-    # Get the region text part of the label:
-    region_text = self.regions.get_text(bs_label.region)
-    assert region_text != None
-    # Add the dose part of the label to complete it:
-    mq_label = region_text + " " + str(round(bs_label.start_dose)) + "-" + str(round(bs_label.end_dose))
-    return mq_label
+    # Run tests:
+    # (No tests at the plan level)
+    # Beam set tests:
+    for mqv_beam_set in mqv_plan.mqv_beam_sets:
+      mqv_beam_set.test_matching_beam_set_name()
+      mqv_beam_set.test_technique()
+      mqv_beam_set.test_modality()
+      mqv_beam_set.test_patient_orientation()
+      # Beam tests:
+      for mqv_beam in mqv_beam_set.mqv_beams:
+        mqv_beam.test_matching_beam_number()
+        mqv_beam.test_mu()
+        mqv_beam.test_name()
+        # Segment tests:
+        for mqv_segment in mqv_beam.mqv_segments:
+          mqv_segment.test_matching_segment_number()
+          mqv_segment.test_collimator_angle()
+          mqv_segment.test_jaw_positions()
+          mqv_segment.test_gantry_angle()
+          mqv_segment.test_relative_weight()
+          mqv_segment.test_positions_leaf_bank1()
+          mqv_segment.test_positions_leaf_bank2()

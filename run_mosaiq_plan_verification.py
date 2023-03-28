@@ -21,7 +21,6 @@ from tkinter import messagebox
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
-sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
@@ -55,9 +54,12 @@ mq_patient = mosaiq.Patient.find_by_ida(patient.PatientID)
 mpv = MPV.MosaiqPlanVerification(patient, case, plan, mq_patient)
 
 # Display the results of the quality control:
-# (This is how its done in the quality control script - a similar method may be used in this plan verification script)
-#title = "Mosaiq Plan Verification"
-#summary = mpv.result.failure_summary()
-#text = str(mpv.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
-#messagebox.showinfo(title, text)
-
+title = "Mosaiq Plan Verification"
+summary = mpv.result.failure_summary()
+if mpv.result.nr_failures() == 0:
+  # Zero failures:
+  text = "Ingen problemer ble funnet! :)\n\n"
+else:
+  # 1 or more failures:
+  text = str(mpv.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
+messagebox.showinfo(title,text)
