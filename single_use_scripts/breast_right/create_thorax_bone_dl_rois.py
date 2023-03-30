@@ -80,102 +80,66 @@ cartilage_color = 'PaleGreen'
 # Create ROIs:
 # Humeral Head Neck:
 create_roi(name = 'HumeralHeadNeck_R', color = bone_color1, type = 'Organ', alternatives=['HumeralHead_R'])
-pm.RegionsOfInterest['HumeralHeadNeck_R'].OrganData.OrganType = "Other"
 create_roi(name = 'HumeralHeadNeck_L', color = bone_color1, type = 'Organ', alternatives=['HumeralHead_L'])
-pm.RegionsOfInterest['HumeralHeadNeck_L'].OrganData.OrganType = "Other"
 # Scapula:
 create_roi(name = 'Scapula_R', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Scapula_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Scapula_L', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Scapula_L'].OrganData.OrganType = "Other"
 # Clavicle:
 create_roi(name = 'Clavicle_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Clavicle_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Clavicle_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Clavicle_L'].OrganData.OrganType = "Other"
 # Sternum:
 create_roi(name = 'Sternum', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Sternum'].OrganData.OrganType = "Other"
 # Ribs:
 # Right:
 create_roi(name = 'Rib1_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib1_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib2_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib2_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib3_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib3_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib4_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib4_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib5_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib5_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib6_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib6_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib7_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib7_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib8_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib8_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib9_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib9_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib10_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib10_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib11_R', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib11_R'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib12_R', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib12_R'].OrganData.OrganType = "Other"
 # Left:
 create_roi(name = 'Rib1_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib1_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib2_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib2_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib3_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib3_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib4_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib4_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib5_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib5_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib6_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib6_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib7_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib7_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib8_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib8_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib9_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib9_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib10_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib10_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib11_L', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib11_L'].OrganData.OrganType = "Other"
 create_roi(name = 'Rib12_L', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Rib12_L'].OrganData.OrganType = "Other"
+# Ribs Algebra (union):
+ribs_r = create_roi(name = 'Ribs_R', color = bone_color3, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Ribs_R'].OrganData.OrganType = "Other"
+ribs_r.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Rib1_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Rib2_R', 'Rib3_R', 'Rib4_R', 'Rib5_R', 'Rib6_R', 'Rib7_R', 'Rib8_R', 'Rib9_R', 'Rib10_R', 'Rib11_R', 'Rib12_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+ribs_r.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+ribs_l = create_roi(name = 'Ribs_L', color = bone_color3, type = 'Organ', alternatives=[])
+pm.RegionsOfInterest['Ribs_L'].OrganData.OrganType = "Other"
+ribs_l.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Rib1_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Rib2_L', 'Rib3_L', 'Rib4_L', 'Rib5_L', 'Rib6_L', 'Rib7_L', 'Rib8_L', 'Rib9_L', 'Rib10_L', 'Rib11_L', 'Rib12_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
+ribs_l.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 # Vertebra:
 create_roi(name = 'C7', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['C7'].OrganData.OrganType = "Other"
 create_roi(name = 'Th1', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th1'].OrganData.OrganType = "Other"
 create_roi(name = 'Th2', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th2'].OrganData.OrganType = "Other"
 create_roi(name = 'Th3', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th3'].OrganData.OrganType = "Other"
 create_roi(name = 'Th4', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th4'].OrganData.OrganType = "Other"
 create_roi(name = 'Th5', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th5'].OrganData.OrganType = "Other"
 create_roi(name = 'Th6', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th6'].OrganData.OrganType = "Other"
 create_roi(name = 'Th7', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th7'].OrganData.OrganType = "Other"
 create_roi(name = 'Th8', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th8'].OrganData.OrganType = "Other"
 create_roi(name = 'Th9', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th9'].OrganData.OrganType = "Other"
 create_roi(name = 'Th10', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th10'].OrganData.OrganType = "Other"
 create_roi(name = 'Th11', color = bone_color2, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th11'].OrganData.OrganType = "Other"
 create_roi(name = 'Th12', color = bone_color1, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Th12'].OrganData.OrganType = "Other"
 create_roi(name = 'L1', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['L1'].OrganData.OrganType = "Other"
 # Costal Cartilage:
 create_roi(name = 'CostalCartilage_R', color = cartilage_color, type = 'Organ', alternatives=[])
 pm.RegionsOfInterest['CostalCartilage_R'].OrganData.OrganType = "Other"
@@ -195,10 +159,63 @@ for roi in dl_rois:
   if create:
     examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=[roi])
 
+# Update ROI types:
+# This code is moved a bit after the creation of these ROIs, because of a scaling issue discovered in RayStation.
+# When many ROIs are created, there is a delay which makes RayStation crash if we attempt to edit a ROI immediately after creation.
+pm.RegionsOfInterest['HumeralHeadNeck_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['HumeralHeadNeck_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Scapula_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Scapula_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Clavicle_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib1_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Clavicle_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Sternum'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib2_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib3_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib4_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib5_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib6_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib7_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib8_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib9_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib10_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib11_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib12_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib1_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib2_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib3_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib4_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib5_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib6_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib7_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib8_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib9_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib10_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib11_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Rib12_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['C7'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th1'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th2'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th3'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th4'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th5'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th6'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th7'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th8'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th9'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th10'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th11'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Th12'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['L1'].OrganData.OrganType = "Other"
+
 # Adjust colors:
 for roi in ['Clips_L, Clips_R, BreastString_L', 'BreastString_R']:
   if get_item(pm.RegionsOfInterest, roi):
     pm.RegionsOfInterest[roi].Color = 'Magenta'
+if get_item(pm.RegionsOfInterest, 'Heart'):
+    pm.RegionsOfInterest['Heart'].Color = 'Maroon'
+if get_item(pm.RegionsOfInterest, 'A_LAD'):
+    pm.RegionsOfInterest['A_LAD'].Color = 'Red'
 
 # Delete ROIs:
 # Delete known ROIs which we know we do not want:
@@ -275,8 +292,57 @@ required_rois = [
   'Trachea',
   'Esophagus',
   'Liver',
-  'HumeralHead_R',
-  'HumeralHead_L',
+  'Pancreas',
+  'Spleen',
+  'Stomach',
+  'HumeralHeadNeck_R',
+  'HumeralHeadNeck_L',
+  'Scapula_R',
+  'Scapula_L',
+  'Clavicle_R',
+  'Clavicle_L',
+  'Rib1_R',
+  'Rib2_R',
+  'Rib3_R',
+  'Rib4_R',
+  'Rib5_R',
+  'Rib6_R',
+  'Rib7_R',
+  'Rib8_R',
+  'Rib9_R',
+  'Rib10_R',
+  'Rib11_R',
+  'Rib12_R',
+  'Rib1_L',
+  'Rib2_L',
+  'Rib3_L',
+  'Rib4_L',
+  'Rib5_L',
+  'Rib6_L',
+  'Rib7_L',
+  'Rib8_L',
+  'Rib9_L',
+  'Rib10_L',
+  'Rib11_L',
+  'Rib12_L',
+  'Ribs_R',
+  'Ribs_L',
+  'C7',
+  'Th1',
+  'Th2',
+  'Th3',
+  'Th4',
+  'Th5',
+  'Th6',
+  'Th7',
+  'Th8',
+  'Th9',
+  'Th10',
+  'Th11',
+  'Th12',
+  'L1',
+  'CostalCartilage_R',
+  'CostalCartilage_L',
 ]
 
 # ROIs which may be defined, depending on the patient case:
@@ -352,7 +418,6 @@ for target in targets:
 
 # Test for type organ/organ at risk:
 risk_organs = [
-  'Sternum',
   'Lung_R',
   'Lung_L',
   'Heart',
@@ -363,6 +428,9 @@ risk_organs = [
   'Trachea',
   'Esophagus',
   'Liver',
+  'Pancreas',
+  'Spleen',
+  'Stomach',
 ]
 for organ in risk_organs:
   if get_item(pm.RegionsOfInterest, organ):
@@ -379,8 +447,8 @@ targets_or_oars = [
 ]
 for too in targets_or_oars:
   if get_item(pm.RegionsOfInterest, too):
-    if not pm.RegionsOfInterest[target].Type in ['Ctv', 'Organ']:
-      failures.append(target + ' - forventet at denne var type target ("Ctv") eller "OrganAtRisk", fant: ' + pm.RegionsOfInterest[target].Type)
+    if not pm.RegionsOfInterest[too].Type in ['Ctv', 'Organ']:
+      failures.append(too + ' - forventet at denne var type target ("Ctv") eller "OrganAtRisk", fant: ' + pm.RegionsOfInterest[too].Type)
 
 # Test for type marker:
 markers = [
@@ -392,7 +460,7 @@ for marker in markers:
     if not pm.RegionsOfInterest[marker].Type == 'Marker':
       failures.append(marker + ' - forventet at denne var type marker ("Marker"), fant: ' + pm.RegionsOfInterest[marker].Type)
 
-# Target definition support structures:
+# Other/Target definition support structures:
 support_organs = [
   'ScaleneMusc_Ant_R',
   'A_Brachioceph',
@@ -400,7 +468,53 @@ support_organs = [
   'A_Carotid_R',
   'V_Brachioceph_R',
   'V_Subclavian_R+V_Axillary_R',
-  'V_Jugular_R'
+  'V_Jugular_R',
+  'HumeralHeadNeck_R',
+  'HumeralHeadNeck_L',
+  'Scapula_R',
+  'Scapula_L',
+  'Clavicle_R',
+  'Clavicle_L',
+  'Rib1_R',
+  'Rib2_R',
+  'Rib3_R',
+  'Rib4_R',
+  'Rib5_R',
+  'Rib6_R',
+  'Rib7_R',
+  'Rib8_R',
+  'Rib9_R',
+  'Rib10_R',
+  'Rib11_R',
+  'Rib12_R',
+  'Rib1_L',
+  'Rib2_L',
+  'Rib3_L',
+  'Rib4_L',
+  'Rib5_L',
+  'Rib6_L',
+  'Rib7_L',
+  'Rib8_L',
+  'Rib9_L',
+  'Rib10_L',
+  'Rib11_L',
+  'Rib12_L',
+  'C7',
+  'Th1',
+  'Th2',
+  'Th3',
+  'Th4',
+  'Th5',
+  'Th6',
+  'Th7',
+  'Th8',
+  'Th9',
+  'Th10',
+  'Th11',
+  'Th12',
+  'L1',
+  'CostalCartilage_R',
+  'CostalCartilage_L',
 ]
 # Test for organ type other:
 for organ in support_organs:
@@ -415,6 +529,7 @@ for organ in support_organs:
 if get_item(pm.RegionsOfInterest, 'Clips_R'):
   if not get_item(pm.RegionsOfInterest, 'SurgicalBed_R'):
     failures.append("Når strukstursettet inneholder 'Clips_R', så skal 'SurgicalBed_R' være definert også!")
+
 
 # Create a success message if there are zero failures:
 if len(failures) == 0:
