@@ -209,7 +209,7 @@ pm.RegionsOfInterest['CostalCartilage_R'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['CostalCartilage_L'].OrganData.OrganType = "Other"
 
 # Adjust colors:
-for roi in ['Clips_L, Clips_R, BreastString_L', 'BreastString_R']:
+for roi in ['Clips_L', 'Clips_R', 'BreastString_L', 'BreastString_R']:
   if get_item(pm.RegionsOfInterest, roi):
     pm.RegionsOfInterest[roi].Color = 'Magenta'
 if get_item(pm.RegionsOfInterest, 'Heart'):
