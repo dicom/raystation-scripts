@@ -118,11 +118,9 @@ create_roi(name = 'Rib11_L', color = bone_color2, type = 'Organ', alternatives=[
 create_roi(name = 'Rib12_L', color = bone_color1, type = 'Organ', alternatives=[])
 # Ribs Algebra (union):
 ribs_r = create_roi(name = 'Ribs_R', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Ribs_R'].OrganData.OrganType = "Other"
 ribs_r.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Rib1_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Rib2_R', 'Rib3_R', 'Rib4_R', 'Rib5_R', 'Rib6_R', 'Rib7_R', 'Rib8_R', 'Rib9_R', 'Rib10_R', 'Rib11_R', 'Rib12_R'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
 ribs_r.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 ribs_l = create_roi(name = 'Ribs_L', color = bone_color3, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['Ribs_L'].OrganData.OrganType = "Other"
 ribs_l.SetAlgebraExpression(ExpressionA={ 'Operation': "Union", 'SourceRoiNames': ['Rib1_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ExpressionB={ 'Operation': "Union", 'SourceRoiNames': ['Rib2_L', 'Rib3_L', 'Rib4_L', 'Rib5_L', 'Rib6_L', 'Rib7_L', 'Rib8_L', 'Rib9_L', 'Rib10_L', 'Rib11_L', 'Rib12_L'], 'MarginSettings': { 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 } }, ResultOperation="Union", ResultMarginSettings={ 'Type': "Expand", 'Superior': 0, 'Inferior': 0, 'Anterior': 0, 'Posterior': 0, 'Right': 0, 'Left': 0 })
 ribs_l.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
 # Vertebra:
@@ -142,9 +140,7 @@ create_roi(name = 'Th12', color = bone_color1, type = 'Organ', alternatives=[])
 create_roi(name = 'L1', color = bone_color3, type = 'Organ', alternatives=[])
 # Costal Cartilage:
 create_roi(name = 'CostalCartilage_R', color = cartilage_color, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['CostalCartilage_R'].OrganData.OrganType = "Other"
 create_roi(name = 'CostalCartilage_L', color = cartilage_color, type = 'Organ', alternatives=[])
-pm.RegionsOfInterest['CostalCartilage_L'].OrganData.OrganType = "Other"
 
 # Create DL ROIs:
 ss = case.TreatmentPlans[0].BeamSets[0].GetStructureSet()
@@ -193,6 +189,8 @@ pm.RegionsOfInterest['Rib9_L'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Rib10_L'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Rib11_L'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Rib12_L'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Ribs_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['Ribs_L'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['C7'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Th1'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Th2'].OrganData.OrganType = "Other"
@@ -207,6 +205,8 @@ pm.RegionsOfInterest['Th10'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Th11'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['Th12'].OrganData.OrganType = "Other"
 pm.RegionsOfInterest['L1'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['CostalCartilage_R'].OrganData.OrganType = "Other"
+pm.RegionsOfInterest['CostalCartilage_L'].OrganData.OrganType = "Other"
 
 # Adjust colors:
 for roi in ['Clips_L, Clips_R, BreastString_L', 'BreastString_R']:
