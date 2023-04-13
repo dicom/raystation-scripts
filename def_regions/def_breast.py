@@ -308,4 +308,5 @@ class DefBreast(object):
       sb = ROIS.surgical_bed_l
     ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
     ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    site.add_targets([ctv_sb, ptv_sbc])
+    ctv_p_ctv_sb = ROI.ROIAlgebra('CTVp-CTVsb', ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ctv], sourcesB = [ctv_sb], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    site.add_targets([ctv_sb, ptv_sbc, ctv_p_ctv_sb])
