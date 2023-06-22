@@ -38,7 +38,7 @@ class ClinicalGoal(object):
         # Call AddClinicalGoal function with ParameterValue:
         es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, AcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority)
     except Exception as e:
-      GUIF.handle_error_on_clinical_goal_creation(self, e)
+      GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
   
   # Gives a text representation of the clinical goal object.
   def text(self):
@@ -67,6 +67,9 @@ def setup_clinical_goals(ss, es, site, prescription, target):
         cg.apply_to(es)
       elif cg.type == conformity_index:
         cg.apply_to(es, normalized_value = round(cg.value*prescription.total_dose*100,0))
+      # Attempt fix of VolumeAtDose for targets (had to implement for Breast SIB CTVp-CTVsb):
+      elif cg.type == volume_at_dose:
+        cg.apply_to(es)
       else:
         cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
     else:

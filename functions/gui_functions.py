@@ -174,9 +174,9 @@ def handle_delete_roi_error(roi_name):
 
 
 # Handles the sitsuation of a missing ROI when trying to create a clinical goal.
-def handle_error_on_clinical_goal_creation(cg, error):
+def handle_error_on_clinical_goal_creation(cg, normalized_tolerance, normalized_value, error):
   title = "Feilmelding!"
-  text = "Det skjedde en feil ved opprettelse av følgende Clinical Goal:\n\n" + cg.text() + "\n\nFeilmelding:\n" + str(error.args[0]) + "\n\nTa kontakt med skript-ansvarlig for feilsøking!" # {An identical clinical goal already exists.}
+  text = "Det skjedde en feil ved opprettelse av følgende Clinical Goal:\n\n" + cg.text() + "\nNormalized tolerance: " + str(normalized_tolerance) + "\nNormalized value: " + str(normalized_value) + "\n\nFeilmelding:\n" + str(error.args[0]) + "\n\nTa kontakt med skript-ansvarlig for feilsøking!" # {An identical clinical goal already exists.}
   messagebox.showinfo(title, text)
 
 
