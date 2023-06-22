@@ -99,12 +99,31 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
   # External max dose:
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
   # Targets:
-  # CTV:
-  OF.uniform_dose(ss, plan, target, total_dose*100, 30)
-  OF.min_dose(ss, plan, target, total_dose*100*0.95, 150)
-  # PTVc:
-  OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 100)
-  OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
+  if total_dose == 52.2:
+    # SIB (52.2 & 42.3 Gy in 18 fx):
+    whole_breast_dose = 42.3
+    # Tumor bed:
+    # CTVsb:
+    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150)
+    # PTVsbc:
+    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75)
+    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
+    # Whole breast:
+    # CTV:
+    OF.uniform_dose(ss, plan, ROIS.ctv_ctv_sb.name, whole_breast_dose*100, 30)
+    OF.min_dose(ss, plan, target, whole_breast_dose*100*0.95, 150)
+    # PTVc:
+    OF.min_dose(ss, plan, target.replace("C", "P")+"c", whole_breast_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_c_ptv_sbc.name, whole_breast_dose*100*1.05, 80)
+  else:
+    # Ordinary WBRT:
+    # CTV:
+    OF.uniform_dose(ss, plan, target, total_dose*100, 30)
+    OF.min_dose(ss, plan, target, total_dose*100*0.95, 150)
+    # PTVc:
+    OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
   if target == ROIS.ctv_sb.name:
@@ -132,15 +151,36 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
   # Targets:
-  # CTV:
-  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
-  OF.min_dose(ss, plan, ROIS.ctv.name, total_dose*100*0.95, 150)
-  # PTVc:
-  OF.min_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*0.95, 100)
-  OF.max_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*1.05, 80)
-  # PTVpc:
-  OF.min_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*0.95, 100)
-  OF.max_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*1.05, 80)
+  if total_dose == 52.2:
+    # SIB (52.2 & 42.3 Gy in 18 fx):
+    regional_dose = 42.3
+    # Tumor bed:
+    # CTVsb:
+    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150)
+    # PTVsbc:
+    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75)
+    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
+    # Regional breast:
+    # CTV:
+    OF.uniform_dose(ss, plan, ROIS.ctv_ctv_sb.name, regional_dose*100, 30)
+    # PTVc:
+    OF.min_dose(ss, plan, ROIS.ptv_c.name, regional_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_c_ptv_sbc.name, regional_dose*100*1.05, 80)
+    # PTVpc:
+    OF.min_dose(ss, plan, ROIS.ptv_pc.name, regional_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_pc_ptv_sbc.name, regional_dose*100*1.05, 80)
+  else:
+    # Ordinary regional RT:
+    # CTV:
+    OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv.name, total_dose*100*0.95, 150)
+    # PTVc:
+    OF.min_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*1.05, 80)
+    # PTVpc:
+    OF.min_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)

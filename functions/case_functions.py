@@ -47,6 +47,8 @@ def determine_isodoses(case, ss, region_code, prescription):
   # Apply dose levels based on region and fractionation:
   if region_code in RC.breast_codes and prescription.fraction_dose == 2 or region_code in RC.rectum_codes and prescription.fraction_dose == 2:
     ISODOSES.sib_47_50.apply_to(case)
+  elif region_code in RC.breast_codes and prescription.total_dose == 52.2:
+    ISODOSES.breast_sib_18fx.apply_to(case)
   elif region_code in RC.prostate_codes:
     if prescription.fraction_dose in [2.0, 2.2]:
       if region_code in RC.prostate_bed_codes:

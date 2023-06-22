@@ -41,10 +41,10 @@ def lung(ss, plan, prescription, region_code, target):
 # Breast:
 def breast(ss, plan, prescription, region_code, target):
   if region_code in RC.breast_reg_codes:
-    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, region_code, prescription.total_dose), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target, prescription))
     site.optimizer = OPT.BreastOptimization(ss, plan, site, region_code)
   else:
-    site = SITE.Site(RC.breast_whole_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_objectives(ss, plan, region_code, prescription.total_dose, target), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target))
+    site = SITE.Site(RC.breast_whole_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_objectives(ss, plan, region_code, prescription.total_dose, target), CGS.breast_oars(ss, region_code, prescription), CGS.breast_targets(ss, region_code, target, prescription))
     site.optimizer = OPT.BreastOptimization(ss, plan, site, region_code)
   return site
 

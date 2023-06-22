@@ -181,7 +181,7 @@ class Plan(object):
 
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
-    if SSF.breast_boost_is_indicated(ss, region_code):
+    if SSF.breast_sequentual_boost_is_indicated(ss, region_code, prescription):
       PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(prescription.total_dose)))
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})

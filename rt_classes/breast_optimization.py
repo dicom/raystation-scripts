@@ -85,12 +85,13 @@ class BreastOptimization(object):
           # Bilateral:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
         # Set robustness for PTV min & max dose:
+        # (But not for PTVsbc in SIB cases)
         for obj in target_objectives:
           if self.region_code in RC.breast_whole_codes:
-            if obj.ForRegionOfInterest.Type == 'Ptv':
+            if obj.ForRegionOfInterest.Type == 'Ptv' and obj.ForRegionOfInterest.Name != 'PTVsbc':
               obj.UseRobustness = True
-          elif self.region_code in RC.breast_reg_codes:
-            if obj.ForRegionOfInterest.Name == 'PTVpc':
+          elif self.region_code in RC.breast_reg_codes and obj.ForRegionOfInterest.Name != 'PTVsbc':
+            if obj.ForRegionOfInterest.Name == 'PTVpc' or obj.ForRegionOfInterest.Name == 'PTVpc-PTVsbc':
               obj.UseRobustness = True
       # Proceed to third opimization phase: Increase weights for targets to fullfil target clincal goals.
       if self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives):
@@ -121,6 +122,10 @@ class BreastOptimization(object):
   def fulfilled_coverage(self, beam_set, objective, high_ptv_coverage):
     prescription = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue
     result = False
+    # For SIB (42.3/52.2 Gy), use a modifier for the low dose relative to the thigh dose prescription:
+    mod = 1.0
+    if 'sbc' in objective.ForRegionOfInterest.Name:
+      mod = 0.8103448
     # Criteria:
     # CTV min dose: 98% > 38.05 (95%)
     # PTV min dose: 98% > 36.04 (90%)
@@ -138,18 +143,18 @@ class BreastOptimization(object):
       elif objective.DoseFunctionParameters.FunctionType == 'MinDose':
         d98 = beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = objective.ForRegionOfInterest.Name, RelativeVolumes = [0.98])[0] * beam_set.FractionationPattern.NumberOfFractions
         if objective.ForRegionOfInterest.Type == 'Ctv':
-          if d98 > prescription * 0.95:
+          if d98 > prescription * mod * 0.95:
             result = True
         elif objective.ForRegionOfInterest.Type == 'Ptv':
           if high_ptv_coverage:
-            if d98 > prescription * 0.95:
+            if d98 > prescription * mod * 0.95:
               result = True
           else:
-            if d98 > prescription * 0.90:
+            if d98 > prescription * mod * 0.90:
               result = True
       elif objective.DoseFunctionParameters.FunctionType == 'MaxDose':
         d2 = beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = objective.ForRegionOfInterest.Name, RelativeVolumes = [0.02])[0] * beam_set.FractionationPattern.NumberOfFractions
-        if d2 < prescription * 1.05:
+        if d2 < prescription * mod * 1.05:
           result = True
     else:
       # Objective not evaluated (e.g. Dose Fall-off). Set result as True for this scenario.
@@ -195,6 +200,11 @@ class BreastOptimization(object):
   # Improves target doses (min, max and uniform dose) by increasing target objective weights.
   # Runs recursively until all target dose clinical goals are fullfilled.
   def improve_target_doses(self, po, target_objectives, external_objectives, counter):
+    # Weight max limit (signed int):
+    weight_limit = 2147483647
+    limit_exceeded = False
+    # Store iteration information:
+    po.OptimizedBeamSets[0].Comment = "MV-iterasjoner:" + str(counter)
     # Adjustment settings:
     weight_factors = []
     weight_factor = 1.7
@@ -206,7 +216,9 @@ class BreastOptimization(object):
       # Get PTV D98 (min) dose:
       if obj.DoseFunctionParameters.FunctionType == 'MinDose' and obj.ForRegionOfInterest.Type == 'Ptv':
         achieved_d98 = po.OptimizedBeamSets[0].FractionDose.GetDoseAtRelativeVolumes(RoiName = obj.ForRegionOfInterest.Name, RelativeVolumes = [0.98])[0] * po.OptimizedBeamSets[0].FractionationPattern.NumberOfFractions
-        desired_d98 = po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference.DoseValue * 0.95
+        # Previously used 0.95 * prescription dose, but this doesnt work for SIB cases. Try using the objective doselevel instead:
+        #desired_d98 = po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference.DoseValue * 0.95
+        desired_d98 = obj.DoseFunctionParameters.DoseLevel
         dose_gap = desired_d98 - achieved_d98 # (cGy)
         # Determine a weight factor dynamically based on the observed dose gap:
         computed_weight_factor = dose_gap * 0.01 * 30
@@ -216,7 +228,11 @@ class BreastOptimization(object):
     # Iterate target and external objectives:
     for obj in target_objectives + external_objectives:
       # Increase all target & external objective weights:
-      obj.DoseFunctionParameters.Weight = round(obj.DoseFunctionParameters.Weight * weight_factor)
+      new_weight = round(obj.DoseFunctionParameters.Weight * weight_factor)
+      if new_weight > weight_limit:
+        limit_exceeded = True
+        new_weight = weight_limit
+      obj.DoseFunctionParameters.Weight = new_weight
     # Keep an extra eye on the Lung DVH requirement, and adjust weight of ipsilateral lung objective if necessary:
     lung_dose_level = 1800 / 15
     if po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference == 2600:
@@ -242,7 +258,7 @@ class BreastOptimization(object):
     # Adjustments have been made. Proceed with new optimization:
     po.RunOptimization()
     # If counter is below threshold, and some target objectives are still unfulfilled, repeat target dose escalation:
-    if counter < 7 and self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives):
+    if counter < 7 and self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives) and not limit_exceeded:
       counter += 1
       counter = self.improve_target_doses(po, target_objectives, external_objectives, counter)
     return counter

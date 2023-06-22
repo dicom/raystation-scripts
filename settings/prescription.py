@@ -15,7 +15,7 @@ class Prescription(object):
     if roi_name is not None:
       assert isinstance(roi_name, str), "roi_name is not a string (or None): %r" % roi_name
     # Assign parameters:
-    self.total_dose = float(total_dose)
+    self.total_dose = round(float(total_dose), 2)
     self.nr_fractions = int(nr_fractions)
     self.fraction_dose = self.total_dose / self.nr_fractions
     self.roi_name = roi_name
@@ -100,6 +100,7 @@ breast = [
   Prescription(16, 8, 'MedianDose'),
   Prescription(26, 5, 'MedianDose'),
   Prescription(40.05, 15, 'MedianDose'),
+  Prescription(52.2, 18, 'MedianDose'), # SIB with 42.3 Gy / 18 fx to whole breast
   Prescription(50, 25, 'MedianDose')
 ]
 lung = [
