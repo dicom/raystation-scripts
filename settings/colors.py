@@ -19,6 +19,9 @@ ptv_high = '0, 0, 128'
 # Skin:
 skin = 'White'
 # Bone:
+bone_color1 = 'ForestGreen'
+bone_color2 = 'Lime'
+bone_color3 = 'YellowGreen'
 caput ='Teal'
 rib = 'Navy'
 ribs = 'MidnightBlue'

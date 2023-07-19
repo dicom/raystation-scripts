@@ -101,8 +101,6 @@ spinal_cord = ROI.ROI('SpinalCord', 'Organ', COLORS.spinal_cord)
 heart = ROI.ROI('Heart', 'Organ', COLORS.heart)
 # Breast:
 thyroid = ROI.ROI('ThyroidGland','Organ', COLORS.thyroid)
-humeral_l = ROI.ROI('HumeralHead_L', 'Organ', COLORS.caput)
-humeral_r = ROI.ROI('HumeralHead_R', 'Organ', COLORS.caput)
 a_lad = ROI.ROI('A_LAD','Organ', COLORS.lad)
 # Lung, stereotactic:
 chestwall = ROI.ROI('Chestwall', 'Organ', COLORS.chestwall)
@@ -135,7 +133,20 @@ penile_bulb = ROI.ROI('PenileBulb', 'Organ', COLORS.penile_bulb)
 anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.anal_canal)
 levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
 
-
+# Bone ROIs:
+humeral_l = ROI.ROI('HumeralHead_L', 'Organ', COLORS.bone_color1)
+humeral_r = ROI.ROI('HumeralHead_R', 'Organ', COLORS.bone_color1)
+sternum = ROI.ROI('Sternum', 'Organ', COLORS.bone_color3)
+l2 = ROI.ROI('L2', 'Organ', COLORS.bone_color1)
+l3 = ROI.ROI('L3', 'Organ', COLORS.bone_color2)
+l4 = ROI.ROI('L4', 'Organ', COLORS.bone_color1)
+l5 = ROI.ROI('L5', 'Organ', COLORS.bone_color2)
+sacrum = ROI.ROI('Sacrum', 'Organ', COLORS.bone_color1)
+coccyx = ROI.ROI('Coccyx', 'Organ', COLORS.bone_color2)
+pelvic_girdle_l = ROI.ROI('PelvicGirdle_L', 'Organ', COLORS.bone_color3)
+pelvic_girdle_r = ROI.ROI('PelvicGirdle_R', 'Organ', COLORS.bone_color3)
+femur_head_neck_l = ROI.ROI('FemurHeadNeck_L', 'Organ', COLORS.bone_color1)
+femur_head_neck_r = ROI.ROI('FemurHeadNeck_R', 'Organ', COLORS.bone_color1)
 
 # Undefined / Other ROIs
 # Breast organs:
