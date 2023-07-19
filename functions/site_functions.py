@@ -127,8 +127,6 @@ def site(pm, examination, ss, plan, prescription, region_code, target, technique
     site = lung(ss, plan, prescription, region_code, target)
   elif region_code in RC.prostate_codes:
     # Prostate:
-    if prescription.total_dose > 50:
-      PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
     site = prostate(ss, plan, prescription, region_code, target)
   elif region_code in RC.rectum_codes:
     # Rectum:
