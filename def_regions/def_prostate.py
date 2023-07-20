@@ -4,6 +4,7 @@
 import colors as COLORS
 import def_oars as DEF
 import margins as MARGINS
+import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 
@@ -301,4 +302,9 @@ class DefProstate(object):
     site.add_oars([bone])
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Change type to "Other":
     pm.RegionsOfInterest[bone.name].OrganData.OrganType = "Other"
+    # Exclude some ROIs from export:
+    exclude = bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
+    for roi in exclude:
+      PMF.exclude_roi_from_export(pm, roi.name)
