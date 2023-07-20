@@ -148,6 +148,22 @@ pelvic_girdle_r = ROI.ROI('PelvicGirdle_R', 'Organ', COLORS.bone_color3)
 femur_head_neck_l = ROI.ROI('FemurHeadNeck_L', 'Organ', COLORS.bone_color1)
 femur_head_neck_r = ROI.ROI('FemurHeadNeck_R', 'Organ', COLORS.bone_color1)
 
+# Vessels:
+a_descending_aorta = ROI.ROI('A_DescendingAorta', 'Organ', COLORS.artery_color1)
+a_common_iliac_l = ROI.ROI('A_CommonIliac_L', 'Organ', COLORS.artery_color2)
+a_common_iliac_r = ROI.ROI('A_CommonIliac_R', 'Organ', COLORS.artery_color2)
+a_internal_iliac_l = ROI.ROI('A_InternalIliac_L', 'Organ', COLORS.artery_color3)
+a_internal_iliac_r = ROI.ROI('A_InternalIliac_R', 'Organ', COLORS.artery_color3)
+a_external_iliac_l = ROI.ROI('A_ExternalIliac_L', 'Organ', COLORS.artery_color4)
+a_external_iliac_r = ROI.ROI('A_ExternalIliac_R', 'Organ', COLORS.artery_color4)
+v_inferior_vena_cava = ROI.ROI('V_InferiorVenaCava', 'Organ', COLORS.vein_color1)
+v_common_iliac_l = ROI.ROI('V_CommonIliac_L', 'Organ', COLORS.vein_color2)
+v_common_iliac_r = ROI.ROI('V_CommonIliac_R', 'Organ', COLORS.vein_color2)
+v_internal_iliac_l = ROI.ROI('V_InternalIliac_L', 'Organ', COLORS.vein_color3)
+v_internal_iliac_r = ROI.ROI('V_InternalIliac_R', 'Organ', COLORS.vein_color3)
+v_external_iliac_l = ROI.ROI('V_ExternalIliac_L', 'Organ', COLORS.vein_color4)
+v_external_iliac_r = ROI.ROI('V_ExternalIliac_R', 'Organ', COLORS.vein_color4)
+
 # Undefined / Other ROIs
 # Breast organs:
 surgical_bed_l = ROI.ROI('SurgicalBed_L','Undefined', COLORS.breast_draft)
