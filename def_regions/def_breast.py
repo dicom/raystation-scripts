@@ -71,7 +71,7 @@ class DefBreast(object):
       pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=root.TemplateMaterials["'Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' "].Materials[1])
     '''
     # Exclude some ROIs from export:
-    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name]:
+    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMusc_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
       PMF.exclude_roi_from_export(pm, roi_name)
     # Only some patients have breast string. Delete the ROI if its volume is less than 0.5 cm^3:
     for rg in ss.RoiGeometries:
