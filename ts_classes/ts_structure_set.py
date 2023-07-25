@@ -185,27 +185,22 @@ class TSStructureSet(object):
 
   # Tests if there is a ROI called 'Prosthesis' and if the material is Titanium.
   def prosthesis_titanium_test(self):
-    t = TEST.Test("Hvis proteser er til stedet, skal disse hete " + ROIS.prosthesis.name + ", " + ROIS.prosthesis_r.name + " eller " + ROIS.prosthesis_l.name + " og skal være satt til 'Titanium'", True, self.geometry)
-    # Run test if this structure set corresponds to the examination used for the treatment plan:
-    match = False
+    t = TEST.Test("Hvis proteser er til stede, skal disse hete " + ROIS.prosthesis.name + ", " + ROIS.prosthesis_r.name + " eller " + ROIS.prosthesis_l.name + " og material skal være satt til 'Titanium'", None, self.param)
+    invalid = []
+    # Test for properly named ROI with invalid material:
     for rg in self.structure_set.RoiGeometries:
       if rg.OfRoi.Name in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name]:
-        if rg.OfRoi.Name in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name] and rg.OfRoi.RoiMaterial.OfMaterial.Name == 'Titanium' and rg.OfRoi.RoiMaterial.OfMaterial.MassDensity == 4.54:
-          match = True
-        else:
-          match = False
-      else:
-        match = True
+        if not rg.OfRoi.RoiMaterial or rg.OfRoi.RoiMaterial.OfMaterial.Name != 'Titanium':
+          invalid.append(rg.OfRoi.Name)
+    # Test for ROI with prosthethic material but invalid name:
     for rg in self.structure_set.RoiGeometries:
-      if rg.OfRoi.RoiMaterial:
-        if rg.OfRoi.RoiMaterial.OfMaterial.Name == 'Titanium' and rg.OfRoi.Name not in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name]:
-          match = False
-      else:
-        match = True
-    if match:
+      if rg.OfRoi.RoiMaterial and rg.OfRoi.RoiMaterial.OfMaterial.Name == 'Titanium':
+        if rg.OfRoi.Name not in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name]:
+          invalid.append(rg.OfRoi.Name)
+    if len(invalid) == 0:
       return t.succeed()
     else:
-      return t.fail()
+      return t.fail(str(invalid))
 
   # Tests if the structure set has a dose region or a target volume
   def dose_region_test(self):
