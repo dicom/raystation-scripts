@@ -850,13 +850,11 @@ def breast_targets(ss, region_code, target, prescription):
   mod = 1.0
   if prescription.total_dose == 52.2:
     mod = 0.81034
-    #homogeneity_target = ROIS.ctv_p_ctv_sb.name
-    #prescription_target = ROIS.ctv_p_ctv_sb.name
     homogeneity_target = ROIS.ctv_ctv_sb.name
     prescription_target = ROIS.ctv_ctv_sb.name
   else:
-    homogeneity_target = ROIS.ctv.name
-    prescription_target = ROIS.ctv.name
+    homogeneity_target = target
+    prescription_target = target
   if region_code in RC.breast_reg_codes:
     # Regional breast:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_p.name):

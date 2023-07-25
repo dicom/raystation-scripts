@@ -142,7 +142,8 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
     OF.max_dvh(ss, plan, ROIS.lung_r.name, total_dose*0.4*100, 15, 2)
     OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
-    OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
+    if not region_code in RC.breast_partial_codes:
+      OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
 
 
 # Breast with regional lymph nodes
