@@ -61,6 +61,11 @@ def determine_isodoses(case, ss, region_code, prescription):
           ISODOSES.prostate_56_70_77.apply_to(case)
         else:
           ISODOSES.prostate_70_77.apply_to(case)
+    elif prescription.nr_fractions == 25:
+      if SSF.has_roi_with_shape(ss, ROIS.ctv__50.name):
+        ISODOSES.prostate_50_62_5_67_5.apply_to(case)
+      else:
+        ISODOSES.prostate_62_5_67_5.apply_to(case)
     elif prescription.fraction_dose == 3 and SSF.has_roi_with_shape(ss, ROIS.ctv_57.name):
       ISODOSES.prostate_57_60.apply_to(case)
     else:

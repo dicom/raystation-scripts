@@ -82,9 +82,8 @@ prostate_56_70_77_isodoses.append(Isodose(105, orange))
 
 # Prostate SIB 70/77 isodose setup:
 prostate_70_77_isodoses = []
-prostate_70_77_isodoses.append(Isodose(45.45, sea_green))
-prostate_70_77_isodoses.append(Isodose(63.63, grey))
-prostate_70_77_isodoses.append(Isodose(77.92, white))
+prostate_70_77_isodoses.append(Isodose(30, sea_green))
+prostate_70_77_isodoses.append(Isodose(50, white))
 prostate_70_77_isodoses.append(Isodose(81.81, blue_mid))
 prostate_70_77_isodoses.append(Isodose(86.36, green_mid))
 prostate_70_77_isodoses.append(Isodose(90.09, yellow_low))
@@ -93,11 +92,37 @@ prostate_70_77_isodoses.append(Isodose(100, yellow))
 prostate_70_77_isodoses.append(Isodose(105, orange))
 
 
+# Prostate SIB 50/62.5/67.5 isodose setup:
+prostate_50_62_5_67_5_isodoses = []
+prostate_50_62_5_67_5_isodoses.append(Isodose(30, sea_green))
+prostate_50_62_5_67_5_isodoses.append(Isodose(50, white))
+prostate_50_62_5_67_5_isodoses.append(Isodose(66.67, blue))
+prostate_50_62_5_67_5_isodoses.append(Isodose(70.37, green_low))
+prostate_50_62_5_67_5_isodoses.append(Isodose(74.07, yellow_low))
+prostate_50_62_5_67_5_isodoses.append(Isodose(87.96, green_mid))
+prostate_50_62_5_67_5_isodoses.append(Isodose(92.59, yellow_low))
+prostate_50_62_5_67_5_isodoses.append(Isodose(95, green))
+prostate_50_62_5_67_5_isodoses.append(Isodose(100, yellow))
+prostate_50_62_5_67_5_isodoses.append(Isodose(105, orange))
+
+
+# Prostate SIB 62.5/67.5 isodose setup:
+prostate_62_5_67_5_isodoses = []
+prostate_62_5_67_5_isodoses.append(Isodose(30, sea_green))
+prostate_62_5_67_5_isodoses.append(Isodose(50, white))
+prostate_62_5_67_5_isodoses.append(Isodose(83.33, blue_mid))
+prostate_62_5_67_5_isodoses.append(Isodose(87.96, green_mid))
+prostate_62_5_67_5_isodoses.append(Isodose(92.59, yellow_low))
+prostate_62_5_67_5_isodoses.append(Isodose(95, green))
+prostate_62_5_67_5_isodoses.append(Isodose(100, yellow))
+prostate_62_5_67_5_isodoses.append(Isodose(105, orange))
+
+
 # Prostate SIB 57/60 isodose setup:
 prostate_57_60_isodoses = []
 prostate_57_60_isodoses.append(Isodose(30, sea_green))
-prostate_57_60_isodoses.append(Isodose(70, grey))
-prostate_57_60_isodoses.append(Isodose(85, white))
+prostate_57_60_isodoses.append(Isodose(50, white))
+prostate_57_60_isodoses.append(Isodose(85.5, blue_mid))
 prostate_57_60_isodoses.append(Isodose(90.25, green_mid))
 prostate_57_60_isodoses.append(Isodose(95, green))
 prostate_57_60_isodoses.append(Isodose(100, yellow))
@@ -108,13 +133,13 @@ prostate_57_60_isodoses.append(Isodose(105, orange))
 prostate_bed_56_70_isodoses = []
 prostate_bed_56_70_isodoses.append(Isodose(30, sea_green))
 prostate_bed_56_70_isodoses.append(Isodose(50, white))
-prostate_bed_56_70_isodoses.append(Isodose(72, blue))
+prostate_bed_56_70_isodoses.append(Isodose(72, blue_mid))
 prostate_bed_56_70_isodoses.append(Isodose(76, green_mid))
 prostate_bed_56_70_isodoses.append(Isodose(80, yellow_low))
-prostate_bed_56_70_isodoses.append(Isodose(85.7142, grey))
+prostate_bed_56_70_isodoses.append(Isodose(90, blue))
 prostate_bed_56_70_isodoses.append(Isodose(95, green))
 prostate_bed_56_70_isodoses.append(Isodose(100, yellow))
-prostate_bed_56_70_isodoses.append(Isodose(104.935, orange))
+prostate_bed_56_70_isodoses.append(Isodose(105, orange))
 
 
 # SIB 47/50 isodose setup:
@@ -159,6 +184,8 @@ stereotactic_isodoses.append(Isodose(170, purple))
 standard = ColorTable(standard_isodoses)
 prostate_56_70_77 = ColorTable(prostate_56_70_77_isodoses)
 prostate_70_77 = ColorTable(prostate_70_77_isodoses)
+prostate_50_62_5_67_5 = ColorTable(prostate_50_62_5_67_5_isodoses)
+prostate_62_5_67_5 = ColorTable(prostate_62_5_67_5_isodoses)
 prostate_57_60 = ColorTable(prostate_57_60_isodoses)
 sib_47_50 = ColorTable(sib_47_50_isodoses)
 breast_sib_18fx = ColorTable(breast_sib_18fx_isodoses)
