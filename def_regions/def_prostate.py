@@ -138,11 +138,12 @@ class DefProstate(object):
           rectum_ptv.sourcesB.extend([ptv_62_5, ptv__50])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_67_5, ptv_62_5, ptv__50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
           wall_ptv_62_5_67_5 = ROI.ROIWall(ROIS.z_ptv_62_5_67_5_wall.name, ROIS.z_ptv_62_5_67_5_wall.type, COLORS.wall, ptv_62_5_67_5, 1, 0)
+          wall_ptv_50_62_5_67_5 = ROI.ROIWall(ROIS.z_ptv_50_62_5_67_5_wall.name, ROIS.z_ptv_50_62_5_67_5_wall.type, COLORS.wall, ptv_50_62_5_67_5, 1, 0)
           # DL OARs (and targets):
           examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "Prostate", "SeminalVes"])
           examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["LN_Iliac", "CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "Testis_L", "Testis_R", "IliopsoasMuscle_L", "IliopsoasMuscle_R", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R", "A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"])
           # Non-DL OARs:
-          site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_67_5] + [bowel_ptv, wall_ptv_62_5_67_5])
+          site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_67_5] + [bowel_ptv, wall_ptv_62_5_67_5, wall_ptv_50_62_5_67_5])
         elif nodes == 'with':
           # Elective nodes:
           # Targets:
@@ -158,11 +159,12 @@ class DefProstate(object):
           rectum_ptv.sourcesB.extend([ptv_62_5, ptv__50])
           bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv_67_5, ptv_62_5, ptv__50], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
           wall_ptv_62_5_67_5 = ROI.ROIWall(ROIS.z_ptv_62_5_67_5_wall.name, ROIS.z_ptv_62_5_67_5_wall.type, COLORS.wall, ptv_62_5_67_5, 1, 0)
+          wall_ptv_50_62_5_67_5 = ROI.ROIWall(ROIS.z_ptv_50_62_5_67_5_wall.name, ROIS.z_ptv_50_62_5_67_5_wall.type, COLORS.wall, ptv_50_62_5_67_5, 1, 0)
           # DL OARs (and targets):
           examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "Prostate", "SeminalVes"])
           examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["LN_Iliac", "CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "Testis_L", "Testis_R", "IliopsoasMuscle_L", "IliopsoasMuscle_R", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R", "A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"])
           # Non-DL OARs:
-          site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_67_5] + [bowel_ptv, wall_ptv_62_5_67_5])
+          site.add_oars(DEF.prostate_non_dl_oars + [bladder_ptv, rectum_ptv, wall_ptv_67_5] + [bowel_ptv, wall_ptv_62_5_67_5, wall_ptv_50_62_5_67_5])
         # Common ROIs for all conventional fractionation:
         site.add_targets([ROIS.prostate, ROIS.vesicles, semves20, ctv_67_5, ctv_62_5, ptv_67_5, ptv_62_5]) 
       elif frac == 'hypo_60':
