@@ -546,7 +546,7 @@ class TSBeamSet(object):
     mu_total = 0
     if self.has_prescription():
       # Do not run MU test on SBRT plans:
-      if self.ts_label.label.technique.upper() != 'S':
+      if self.ts_label.label.valid and self.ts_label.label.technique.upper() != 'S':
         t.expected = "<" + str(round(RSU.fraction_dose(self.beam_set) * 250 + 5, 1))
         if self.is_vmat():
           for beam in self.beam_set.Beams:
