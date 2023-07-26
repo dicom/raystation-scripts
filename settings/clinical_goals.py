@@ -249,12 +249,14 @@ def breast_oars(ss, region_code, prescription):
   if region_code in RC.breast_l_codes:
     breast_oars += [
       CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-      CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
+      CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7),
+      CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.contralateral_lung_mean, None, priority7)
     ]
   elif region_code in RC.breast_r_codes:
     breast_oars += [
       CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
-      CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7)
+      CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7),
+      CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.contralateral_lung_mean, None, priority7)
     ]
   if prescription.nr_fractions == 5:
     # Tolerances specific for FastForward (5 fractions):

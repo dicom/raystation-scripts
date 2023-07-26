@@ -201,6 +201,7 @@ spinalcanal_breast = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord_dm
 thyroid_mean = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 15, 21, 'Mean', 'Conventional RT')
 thyroid_mean_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 11.8, 'Mean', 'Conventional RT')
 thyroid_v8_5cc_adx_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 20, 'More than 8.5 cm^3 should receive less than the tolerance dose', 'Conventional RT')
+contralateral_lung_mean = EQD.Tolerance('Contralateral Lung', 'Secondary cancer risk', ab_lung, 25, 2, 'Mean', 'Conventional RT')
 # Induration (for partial breast irradiation):
 ipsilateral_breast_177cc = EQD.Tolerance('Breast_L/R','5 % risk of induration', 3.6, 15, 40,'Volume receiving tolerance dose being less than 177 cc', 'Conventional RT' )
 ipsilateral_breast_426cc = EQD.Tolerance('Breast_L/R','10 % risk of induration', 3.6, 15, 40,'Volume receiving tolerance dose being less than 426 cc', 'Conventional RT' )
