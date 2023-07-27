@@ -877,28 +877,6 @@ def breast_targets(ss, region_code, target, prescription):
         CG.ClinicalGoal(homogeneity_target, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, conformity_index, pc75, pc95*mod, priority5)
       ]
-    elif SSF.has_roi_with_shape(ss, ROIS.ctv_50.name):
-      # Conventionally fractionated regional breast (SIB):
-      breast_targets += [
-        CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_50.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_47.name, at_least, dose_at_volume, pc93_53, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_47.name, at_most, dose_at_volume, pc94_47, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_47.name, at_least, dose_at_volume, pc89_3, pc98,  priority2),
-        CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc95, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_47c.name, at_least, dose_at_volume, pc84_6, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_50c.name, at_least, dose_at_volume, pc90, pc98,  priority2),
-        CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4),
-        CG.ClinicalGoal(ROIS.ctv_47.name, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ctv_50.name, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ptv_47c.name, at_most, dose_at_volume, pc98_7, pc5, priority5),
-        CG.ClinicalGoal(ROIS.ptv_50c.name, at_least, conformity_index, pc70, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ptv_c.name, at_least, conformity_index, pc65, pc90, priority5),
-        CG.ClinicalGoal(ROIS.ctv_47.name, at_least, dose_at_volume, pc90_24, pc98, priority6),
-        CG.ClinicalGoal(ROIS.ctv_50.name, at_least, dose_at_volume, pc96, pc98, priority6),
-        CG.ClinicalGoal(ROIS.ptv_47c.name, at_least, dose_at_volume, pc89_3, pc98, priority6),
-        CG.ClinicalGoal(ROIS.ptv_50c.name, at_least, dose_at_volume, pc95, pc98, priority6)
-      ]
   else:
     # Non-regional breast (whole or partial breast):
     breast_targets += [
