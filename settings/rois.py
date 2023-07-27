@@ -330,6 +330,8 @@ ctv_57 = ROI.ROI('CTV!_57', 'Ctv', COLORS.ctv_med)
 ptv_semves = ROI.ROI('PTV_SeminalVes', 'Ptv', COLORS.ptv_med)
 
 ptv_pc =  ROI.ROI('PTVpc', 'Ptv', COLORS.ptv)
+ptv_pc_l =  ROI.ROI('PTVpc_L', 'Ptv', COLORS.ptv)
+ptv_pc_r =  ROI.ROI('PTVpc_R', 'Ptv', COLORS.ptv)
 ptv_p = ROI.ROI('PTVp', 'Ptv', COLORS.ptv)
 ptv_n =  ROI.ROI('PTVn', 'Ptv', COLORS.ptv)
 ptv_nc =  ROI.ROI('PTVnc', 'Ptv', COLORS.ptv)

@@ -47,6 +47,18 @@ class DefBreast(object):
           self.add_whole_breast(pm, examination, site, 'right', boost, bilateral=True, include_common_oars=False)
         else:
           self.add_regional_breast(pm, examination, site, 'right', boost, bilateral=True, include_common_oars=False, include_imn=True)
+        # If at least one side is locoregional, we should have a PTVpc union:
+        if bilateral_left_side_target != 'bilateral_left_whole' or bilateral_right_side_target != 'bilateral_right_whole':
+          if bilateral_left_side_target == 'bilateral_left_whole':
+            left_primary = ROIS.ptvc_l
+          else:
+            left_primary = ROIS.ptv_pc_l
+          if bilateral_right_side_target == 'bilateral_right_whole':
+            right_primary = ROIS.ptvc_r
+          else:
+            right_primary = ROIS.ptv_pc_r
+          ptv_pc = ROI.ROIAlgebra(ROIS.ptv_pc.name, ROIS.ptv_pc.type, ROIS.ptv_pc.color, sourcesA = [left_primary, right_primary], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+          site.add_targets([ptv_pc])
         # Targets (L+R union):
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.ctv_l], sourcesB = [ROIS.ctv_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ptvc_l, ROIS.ptvc_r], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
