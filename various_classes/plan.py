@@ -138,8 +138,14 @@ class Plan(object):
 
     # Create primary beam set:
     beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, prescription.nr_fractions)
+    
     # Add prescription:
-    BSF.add_prescription(beam_set, prescription, target)
+    # For breast SIB, set the surgical bed as prescription target (for others leave it as is):
+    if prescription.nr_fractions == 18 and prescription.total_dose == 52.2 and region_code in RC.breast_codes:
+      prescription_target = ROIS.ctv_sb.name
+    else:
+      prescription_target = target
+    BSF.add_prescription(beam_set, prescription, prescription_target)
 
     # Set beam set dose grid:
     BSF.set_dose_grid(beam_set, region_code, prescription)
