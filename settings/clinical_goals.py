@@ -954,6 +954,7 @@ def lung_stereotactic_targets(ss):
   if nr_targets == 1:
     lung_targets += [
       CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
+      CG.ClinicalGoal(ROIS.ptv.name, at_most, dose_at_volume, pc140, 0.02, priority4),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc88, pc100, priority5),
       CG.ClinicalGoal(ROIS.igtv.name, at_most, dose_at_abs_volume, pc140, cc0, priority5)
     ]
@@ -961,6 +962,7 @@ def lung_stereotactic_targets(ss):
     for i in range(0, nr_targets):
       lung_targets += [
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc100, pc99, priority1),
+        CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_most, dose_at_volume, pc140, 0.02, priority4),
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc88, pc100, priority5),
         CG.ClinicalGoal(ROIS.igtv.name+str(i+1), at_most, dose_at_abs_volume, pc140, cc0, priority5)
       ]
