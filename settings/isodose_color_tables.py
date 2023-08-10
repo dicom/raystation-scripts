@@ -179,11 +179,11 @@ stereotactic_isodoses.append(Isodose(50, white))
 stereotactic_isodoses.append(Isodose(90, blue))
 stereotactic_isodoses.append(Isodose(95, green))
 stereotactic_isodoses.append(Isodose(100, yellow))
-stereotactic_isodoses.append(Isodose(105, orange))
+stereotactic_isodoses.append(Isodose(110, orange))
 stereotactic_isodoses.append(Isodose(120, pink))
 stereotactic_isodoses.append(Isodose(130, purple_low))
+stereotactic_isodoses.append(Isodose(140, purple))
 stereotactic_isodoses.append(Isodose(150, red))
-stereotactic_isodoses.append(Isodose(170, purple))
 
 
 # Set up the color tables to be used:
