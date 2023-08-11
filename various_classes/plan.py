@@ -69,7 +69,7 @@ class Plan(object):
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     
     # Create the prescription object:
-    prescription = PRES.create_prescription(total_dose, nr_fractions, region_code)
+    prescription = PRES.create_prescription(total_dose, nr_fractions, region_code, ss)
     # Validate the prescription:
     valid = PRES.validate_prescription(prescription, region_code)
     if not valid:

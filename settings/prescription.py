@@ -2,6 +2,8 @@
 
 # Import local files:
 import region_codes as RC
+import rois as ROIS
+import structure_set_functions as SSF
 
 # Prescription class - holds information on total dose, nr of fractions and fraction dose.
 class Prescription(object):
@@ -90,6 +92,7 @@ brain_partial = [
   Prescription(27, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(28.5, 3, 'DoseAtVolume', volume_percent=99),
   Prescription(30, 3, 'DoseAtVolume', volume_percent=99),
+  Prescription(25, 5, 'DoseAtVolume', volume_percent=99),
   Prescription(30, 5, 'DoseAtVolume', volume_percent=99),
   Prescription(35, 5, 'DoseAtVolume', volume_percent=99)
 ]
@@ -175,7 +178,7 @@ palliative = [
 # automatically assigning the prescription type based on it.
 # This method is used because we don't have a selection of Conformal/Stereotactic
 # in our PLAN script (i.e. it has to be inferred).
-def create_prescription(total_dose, nr_fractions, region_code):
+def create_prescription(total_dose, nr_fractions, region_code, ss):
   # Verify input:
   assert 1 <= total_dose <= 100, "total_dose is not in a valid range (1-100): %r" % total_dose
   assert 1 <= nr_fractions <= 40, "nr_fractions is not in a valid range (1-40): %r" % nr_fractions
@@ -183,7 +186,7 @@ def create_prescription(total_dose, nr_fractions, region_code):
   # Determine if the given information indicates a stereotactic prescription:
   stereotactic = False
   if region_code in RC.brain_partial_codes:
-    if (nr_fractions == 1 and total_dose >= 15) or (nr_fractions == 3 and total_dose >= 21) or (nr_fractions == 5 and total_dose > 25):
+    if (nr_fractions == 1 and total_dose >= 15) or (nr_fractions == 3 and total_dose >= 21) or (nr_fractions == 5 and total_dose >= 25 and not SSF.has_roi_with_shape(ss, ROIS.ctv.name)):
       stereotactic = True
   elif region_code in RC.lung_and_mediastinum_codes:
     if (nr_fractions == 3 and total_dose >= 45) or (nr_fractions == 5 and total_dose >= 55) or (nr_fractions == 8 and total_dose >= 56):

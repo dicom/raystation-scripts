@@ -812,7 +812,7 @@ def palliative_targets(ss, plan, target):
 # Brain (whole brain/partial brain/SRT with single or multiple targets):
 def brain_targets(ss, prescription):
   brain_targets = []
-  if prescription.nr_fractions in [1,3]:
+  if prescription.is_stereotactic():
     # SRT:
     brain_targets += [
       CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc150, cc0, priority4),
