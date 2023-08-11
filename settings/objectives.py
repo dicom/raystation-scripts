@@ -460,7 +460,7 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 25*100, 1, 3)
     OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 68*100, 0.3, 15)
-  elif total_dose == 67.5:
+  elif total_dose == 67.5 and SSF.has_roi_with_shape(ss, ROIS.ptv__50.name):
     # Hypo-fractionated prostate prostate with elective nodes:
     OF.uniform_dose(ss, plan, 'CTV!_50', 50*100, 15)
     OF.uniform_dose(ss, plan, 'CTV!_62.5', 62.5*100, 25)
@@ -482,6 +482,23 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2)
     OF.fall_off(ss, plan, 'zPTV_67.5_Wall', total_dose*100, 62*100, 0.3, 10)
     OF.fall_off(ss, plan, 'zPTV_62.5+67.5_Wall', total_dose*100, 50*100, 0.5, 5)
+  elif total_dose == 67.5:
+    # Hypo-fractionated prostate prostate only:
+    OF.uniform_dose(ss, plan, 'CTV!_62.5', 62.5*100, 25)
+    OF.uniform_dose(ss, plan, 'CTV_67.5', 67.5*100, 20)
+    OF.min_dose(ss, plan, 'PTV!_62.5', total_dose*100*0.88, 100)
+    OF.max_dvh(ss, plan, 'PTV!_62.5', total_dose*0.95*100, 5, 50)
+    OF.min_dose(ss, plan, 'PTV_67.5', total_dose*100*0.98, 100)
+    OF.max_dose(ss, plan, 'PTV_67.5', total_dose*100*1.02, 70)
+    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.fall_off(ss, plan, ROIS.external.name, 50*100, 25*100, 2, 15)
+    OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 30*100, 2, 1)
+    OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 30*100, 2, 1)
+    OF.max_dvh(ss, plan, ROIS.rectum.name, 65*100, 5, 10)
+    OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1)
+    OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2)
+    OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2)
+    OF.fall_off(ss, plan, 'zPTV_67.5_Wall', total_dose*100, 62*100, 0.3, 10)
 
 
 # Prostate bed
