@@ -540,13 +540,16 @@ bladder_oars = [
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.51, TOL.rectum_v51pc,  priority3),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.64, TOL.rectum_v64pc,  priority3),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.80, TOL.rectum_v80pc,  priority3),
-  CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
-  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.anal_canal.name, at_most, average_dose, TOL.anal_canal_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.01, TOL.rectum_v01pc,  priority6),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.18, TOL.rectum_v18pc,  priority6),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.31, TOL.rectum_v31pc,  priority6),
   CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.44, TOL.rectum_v44pc,  priority6),
-  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.60, TOL.rectum_v60pc,  priority6)
+  CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.60, TOL.rectum_v60pc,  priority6),
+  CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
+  CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
 ]
 
 

@@ -545,8 +545,8 @@ def create_bladder_objectives(plan, ss, total_dose):
   OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 80)
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
-  OF.max_dvh(ss, plan, ROIS.femoral_l.name, 45*100, 2, 1)
-  OF.max_dvh(ss, plan, ROIS.femoral_r.name, 45*100, 2, 1)
+  OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 45*100, 2, 1)
+  OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 45*100, 2, 1)
 
 
 # Rectum
