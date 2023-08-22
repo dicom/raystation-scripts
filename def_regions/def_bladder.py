@@ -37,3 +37,5 @@ class DefBladder(object):
     site.add_oars([bone])
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Change type to "Other":
+    pm.RegionsOfInterest[bone.name].OrganData.OrganType = "Other"
