@@ -44,10 +44,10 @@ class DefPalliative(object):
           site.add_oars([ROIS.kidneys, ROIS.lungs, ROIS.skin, ROIS.spinal_cord])
         elif region == 'col pelvis':
           # DL OARs:
-          examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Kidney_L", "Kidney_R"])
-          examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+          examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
+          examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
           # Non-DL OARs:
-          site.add_oars([ROIS.cauda_equina, ROIS.colon, ROIS.kidneys, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord])
+          site.add_oars([ROIS.colon, ROIS.kidneys, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord])
         wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
         site.add_oars([ROIS.spinal_cord_prv, wall_ptv])
       else:
@@ -58,9 +58,10 @@ class DefPalliative(object):
         # OARs:
         wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
+        examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
         # Non-DL OARs:
-        site.add_oars([ROIS.cauda_equina, ROIS.colon, ROIS.skin, ROIS.small_bowel, wall_ptv])
+        site.add_oars([ROIS.colon, ROIS.skin, ROIS.small_bowel, wall_ptv])
     else:
       # Non-stereotactic:
       # Region:
@@ -101,14 +102,16 @@ class DefPalliative(object):
       elif region == 'abdomen_pelvis':
         # DL OARs:
         examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Kidney_L", "Kidney_R", "Liver", "SpinalCanal"])
-        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
+        examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
         # Non-DL OARs:
-        site.add_oars([ROIS.bowel_space, ROIS.kidneys])
+        site.add_oars([ROIS.kidneys])
       elif region == 'pelvis':
         # DL OARs:
-        examination.RunOarSegmentation(ModelName="RSL Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder", "FemoralHead_L", "FemoralHead_R", "Rectum"])
+        examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
+        examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
         # Non-DL OARs:
-        site.add_oars([ROIS.bowel_space, ROIS.cauda_equina])
+        site.add_oars([ROIS.kidneys])
       # Choice 3: Number of targets:
       nr_targets = int(choices[3])
       # Choice 4: GTV included?
