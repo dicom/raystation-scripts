@@ -524,11 +524,11 @@ def lung_stereotactic_8fx_oars(region_code):
 rectum_oars = [
   CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2),
   CG.ClinicalGoal(ROIS.bowel_space.name, at_most, abs_volume_at_dose, cc195, TOL.bowel_bag_v195cc, priority2),
-  CG.ClinicalGoal(ROIS.femoral_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
-  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority3),
   CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, 0.41, TOL.bladder_v41pc_freq, priority3),
-  CG.ClinicalGoal(ROIS.femoral_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
-  CG.ClinicalGoal(ROIS.femoral_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
+  CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
+  CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
+  CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
 ]
 
 
