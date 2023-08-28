@@ -194,5 +194,36 @@ class DefPalliative(object):
       # Add PTV wall:
       wall_ptv = ROI.ROIWall(ROIS.wall_ptv.name, ROIS.wall_ptv.type, COLORS.wall, ptv, 1, 0)
       site.add_oars([wall_ptv])
+    # Add bone union ROI:
+    bone = self.add_bone(pm, site)
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Change type to "Other":
+    if bone:
+      pm.RegionsOfInterest[bone.name].OrganData.OrganType = "Other"
+    
+    
+  # Adds a bone union ROI:
+  def add_bone(self, pm, site):
+    bone = None
+    bone_rois = []
+    vertebrae_rois = []
+    # Create "Bone" ROI Algebra:
+    bone_candidates = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
+    vertebrae_candidatates = [ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.sacrum, ROIS.coccyx]
+    for roi in bone_candidates:
+      try:
+        if pm.RegionsOfInterest[roi.name]:
+          bone_rois.insert(0, roi)
+      except:
+        pass
+    for roi in vertebrae_candidatates:
+      try:
+        if pm.RegionsOfInterest[roi.name]:
+          vertebrae_rois.insert(0, roi)
+      except:
+        pass
+    if len(bone_rois) > 0 and len(vertebrae_rois) > 0:
+      bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
+      site.add_oars([bone])
+    return bone
