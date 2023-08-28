@@ -818,13 +818,14 @@ def brain_targets(ss, prescription):
   if prescription.is_stereotactic():
     # SRT:
     brain_targets += [
-      CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc150, cc0, priority4),
+      CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc150, cc2, priority4),
     ]
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if nr_targets == 1:
       # Single target:
       brain_targets += [
         CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
+        CG.ClinicalGoal(ROIS.ptv.name, at_most, dose_at_volume, pc150, 0.02, priority4),
         CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5)
       ]
     else:
@@ -832,6 +833,7 @@ def brain_targets(ss, prescription):
       for i in range(0, nr_targets):
         brain_targets += [
           CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc100, pc99, priority1),
+          CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_most, dose_at_volume, pc140, 0.02, priority4),
           CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc90, pc100, priority5)
         ]
   else:
@@ -958,16 +960,14 @@ def lung_stereotactic_targets(ss):
     lung_targets += [
       CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
       CG.ClinicalGoal(ROIS.ptv.name, at_most, dose_at_volume, pc140, 0.02, priority4),
-      CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc88, pc100, priority5),
-      CG.ClinicalGoal(ROIS.igtv.name, at_most, dose_at_abs_volume, pc140, cc0, priority5)
+      CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc88, pc100, priority5)
     ]
   else:
     for i in range(0, nr_targets):
       lung_targets += [
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, dose_at_volume, pc100, pc99, priority1),
         CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_most, dose_at_volume, pc140, 0.02, priority4),
-        CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc88, pc100, priority5),
-        CG.ClinicalGoal(ROIS.igtv.name+str(i+1), at_most, dose_at_abs_volume, pc140, cc0, priority5)
+        CG.ClinicalGoal(ROIS.ptv.name+str(i+1), at_least, conformity_index, pc88, pc100, priority5)
       ]
   return lung_targets
 
@@ -1008,8 +1008,9 @@ def lung_targets(ss):
 # Bone/Spine SBRT:
 bone_stereotactic_targets = [
   CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
-  CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5),
-  CG.ClinicalGoal(ROIS.gtv.name, at_most, dose_at_abs_volume, pc140, cc0, priority5)
+  CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc140, cc2, priority4),
+  CG.ClinicalGoal(ROIS.ptv.name, at_most, dose_at_volume, pc140, 0.02, priority4),
+  CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc90, pc100, priority5)
 ]
 
 
