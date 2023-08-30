@@ -271,7 +271,7 @@ class DefProstate(object):
         else:
           examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["LN_Iliac", "CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag", "Rectum", "AnalCanal", "Testis_L", "Testis_R", "IliopsoasMuscle_L", "IliopsoasMuscle_R", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R", "A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"])
         # Non-DL OARs:
-        site.add_oars([bladder_ptv, rectum_ptv])
+        site.add_oars([ROIS.penile_bulb, bladder_ptv, rectum_ptv])
         site.add_targets([ROIS.ctv_sb, ctv_70, ptv_70])
       else:
         # Hypofractionated (palliative):
@@ -282,7 +282,7 @@ class DefProstate(object):
         bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
         rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
         wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 1, 0)
-        site.add_oars([bladder_ptv, rectum_ptv, wall_ptv])
+        site.add_oars([ROIS.penile_bulb, bladder_ptv, rectum_ptv, wall_ptv])
     # Change type to 'Other' for selected ROIs:
     for roi_name in ['Prostate','SeminalVes','LN_Iliac']:
       try:
