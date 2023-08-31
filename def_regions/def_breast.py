@@ -72,16 +72,6 @@ class DefBreast(object):
         pm.RegionsOfInterest[r].OrganData.OrganType = "Other"
       except:
         pass
-    # Override the density of the breast string to 'Air' (since it is not present on treatments):
-    # root and db are not reliable variables obviously. We need some reliable way of getting this database parameter...
-    '''
-    if side == 'right':
-      #pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=pm.Materials[4])      
-      pm.RegionsOfInterest['BreastString_R'].SetRoiMaterial(Material=root.TemplateMaterials["'Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' "].Materials[1])
-    else:
-      #pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=pm.Materials[4])
-      pm.RegionsOfInterest['BreastString_L'].SetRoiMaterial(Material=root.TemplateMaterials["'Adipose' 'Air' 'Aluminum 1' 'Aluminum 2' 'Brass' 'Carbon fiber' 'Cartilage' 'Cork' 'Gold' 'Iron' 'Lead' 'Muscle' 'PlasticAE C-552' 'PlasticBE B-100' 'PlasticTE A-150' 'PMI foam' 'PMMA' 'Polystyrene' 'PVC' 'RW3' 'Steel' 'Titanium' 'Water' 'Wax' 'Bone 1' 'Bone 2' 'Lung' 'Aluminum2 Bone1' 'Cartilage1 Bone2' 'Cartilage2 Bone1' 'Cerrobend' 'PLA' 'Polyethylene' 'LiF PE' 'Cranial bone' 'Brain' 'Eye lens' 'Skin' 'Tissue soft' 'Heart' 'Kidney' 'Liver' 'Spleen' 'LN10' 'SB5' 'WT1' 'RB2' 'Silicon' 'Tantalum' "].Materials[1])
-    '''
     # Exclude some ROIs from export:
     for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMusc_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
       PMF.exclude_roi_from_export(pm, roi_name)
@@ -94,6 +84,8 @@ class DefBreast(object):
             pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
         else:
           pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
+    # Override the density of the breast string to 'Air' (since it is not present on treatments):
+    self.set_breaststring_density(pm)
 
   
   # Adds partial breast (left or right) ROIs to the site object.
@@ -328,3 +320,22 @@ class DefBreast(object):
       ctv_p_ctv_sb = ROI.ROIAlgebra(ROIS.ctv_p_ctv_sb.name, ROIS.ctv_p_ctv_sb.type, ROIS.ctv_p_ctv_sb.color, sourcesA = [ctv_p], sourcesB = [ctv_sb], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv_pc_ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_pc_ptv_sbc.name, ROIS.ptv_pc_ptv_sbc.type, ROIS.ptv_pc_ptv_sbc.color, sourcesA = [ptv_pc], sourcesB = [ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       site.add_targets([ctv_p_ctv_sb, ptv_pc_ptv_sbc])
+
+
+  # Sets the density of any breast string ROIs as air.
+  def set_breaststring_density(self, pm):
+    breaststring_rois = []
+    for roi_name in ["BreastString_L", "BreastString_R"]:
+      try:
+        if pm.RegionsOfInterest[roi_name]:
+          breaststring_rois.append(roi_name)
+      except:
+        pass
+    air = None
+    for material in pm.Materials:
+      if material.Name == 'Air':
+        air = material
+        break
+    if air:
+      for roi_name in breaststring_rois:
+        pm.RegionsOfInterest[roi_name].SetRoiMaterial(Material=air)
