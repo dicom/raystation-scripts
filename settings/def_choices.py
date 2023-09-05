@@ -10,7 +10,7 @@ breast = P.Property('Bryst', 'breast', next_category = 'omfang')
 bladder = P.Property('Blære', 'bladder', next_category = 'intensjon')
 prostate = P.Property('Prostata', 'prostate', next_category = 'omfang')
 rectum = P.Property('Rektum', 'rectum', next_category = 'fraksjonering')
-other = P.Property('Palliativ (skjelett og øvrig bløtvev)', 'other', next_category = '')
+other = P.Property('Skjelett og øvrig bløtvev', 'other', next_category = '')
 
 
 # Brain: Scope:
