@@ -100,6 +100,7 @@ class QualityControl(object):
         for ts_roi_geometry in ts_structure_set.ts_roi_geometries:
           ts_roi_geometry.derived_roi_geometry_is_updated_test()
           ts_roi_geometry.gaps_in_definition_test()
+          ts_roi_geometry.max_nr_of_islands_in_slice_test()
     
     # Plan tests:
     ts_plan.planned_by_test()

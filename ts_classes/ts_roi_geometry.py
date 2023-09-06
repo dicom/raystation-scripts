@@ -9,6 +9,7 @@ from connect import *
 import sys
 
 # GUI framework (debugging only):
+#from tkinter import *
 #from tkinter import messagebox
 
 # Local script imports:
@@ -94,3 +95,32 @@ class TSROIGeometry(object):
         return t.fail(str(missing_slices))
       else:
         return t.succeed()
+
+  # Tests if a ROI geometry contains more than an expected nr of "islands" in any given axial slice of its contour.
+  def max_nr_of_islands_in_slice_test(self):
+    limit = 2
+    # This test is currently only run on the LN_Iliac ROI, with a max expected nr of islands of 2.
+    t = TEST.Test("ROIGeometri skal maks inneholde dette antall separate konturer i ethvert aksial-snitt", "<="+str(limit), self.defined_roi)
+    # Only run test if the ROI Name matches:
+    if self.roi_geometry.OfRoi.Name == "LN_Iliac":
+      # Does the RoiGeometry have a shape?
+      if self.roi_geometry.PrimaryShape:
+        # Store contour information in a dict:
+        slices = {}
+        # Iterate contours:
+        for c in self.roi_geometry.PrimaryShape.Contours:
+          z = str(round(c[0].z, 2))
+          if slices.get(z):
+            slices[z] += 1
+          else:
+            slices[z] = 1
+        # Find deviating slices:
+        deviations = {}
+        for pair in slices.items():
+          if pair[1] > limit:
+            deviations[pair[0]] = pair[1]
+        # Determine result:
+        if len(deviations) > 0:
+          return t.fail(str(deviations))
+        else:
+          return t.succeed()
