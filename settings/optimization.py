@@ -54,6 +54,7 @@ class Optimization(object):
 # Categories of optimization settings:
 default = Optimization()
 sliding_window = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=120, use_sliding_window_sequencing=True)
+sliding_window_quick = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=80, use_sliding_window_sequencing=True)
 sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_leaf_travel_distance_per_degree=0.3, use_max_leaf_travel_distance_per_degree=True, use_sliding_window_sequencing=True)
 
 
@@ -86,7 +87,12 @@ def optimization_parameters(region_code, prescription):
       opt = sliding_window
   elif region_code in RC.prostate_codes:
     # Prostate:
-    opt = sliding_window
+    if region_code in RC.prostate_only_codes + RC.prostate_vesicles_codes:
+      # "Simple" prostate cases:
+      opt = sliding_window_quick
+    else:
+      # "Complex" prostate/bed cases:
+      opt = sliding_window
   elif region_code in RC.rectum_codes:
     # Rectum:
     opt = sliding_window

@@ -88,7 +88,7 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
       BSF.create_single_arc(beam_set, isocenter, energy = energy_name, iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     elif region_code in RC.prostate_codes:
       # Prostate:
-      if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
+      if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name) or SSF.has_roi_with_shape(ss, ROIS.ptv__50.name):
         # With lymph nodes:
         BSF.create_single_arc(beam_set, isocenter, energy = energy_name, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       else:
