@@ -313,13 +313,15 @@ class DefBreast(object):
     ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [ctv], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
     ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv_sb.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     ctv_ctv_sb = ROI.ROIAlgebra(ROIS.ctv_ctv_sb.name, ROIS.ctv_ctv_sb.type, ROIS.ctv_ctv_sb.color, sourcesA = [ctv], sourcesB = [ctv_sb], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    ctv_ptv_sbc = ROI.ROIAlgebra(ROIS.ctv_ptv_sbc.name, ROIS.ctv_ptv_sbc.type, ROIS.ctv_ptv_sbc.color, sourcesA = [ctv], sourcesB = [ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     ptv_c_ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_c_ptv_sbc.name, ROIS.ptv_c_ptv_sbc.type, ROIS.ptv_c_ptv_sbc.color, sourcesA = [ptv], sourcesB = [ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    site.add_targets([ctv_sb, ptv_sbc, ctv_ctv_sb, ptv_c_ptv_sbc])
+    site.add_targets([ctv_sb, ptv_sbc, ctv_ctv_sb, ctv_ptv_sbc, ptv_c_ptv_sbc])
     # For regional breast we need separate subracted ROIs for the whole CTV/PTV and the breast CTVp/PTVp:
     if ctv_p:
       ctv_p_ctv_sb = ROI.ROIAlgebra(ROIS.ctv_p_ctv_sb.name, ROIS.ctv_p_ctv_sb.type, ROIS.ctv_p_ctv_sb.color, sourcesA = [ctv_p], sourcesB = [ctv_sb], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      ctv_p_ptv_sbc = ROI.ROIAlgebra(ROIS.ctv_p_ptv_sbc.name, ROIS.ctv_p_ptv_sbc.type, ROIS.ctv_p_ptv_sbc.color, sourcesA = [ctv_p], sourcesB = [ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv_pc_ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_pc_ptv_sbc.name, ROIS.ptv_pc_ptv_sbc.type, ROIS.ptv_pc_ptv_sbc.color, sourcesA = [ptv_pc], sourcesB = [ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      site.add_targets([ctv_p_ctv_sb, ptv_pc_ptv_sbc])
+      site.add_targets([ctv_p_ctv_sb, ctv_p_ptv_sbc, ptv_pc_ptv_sbc])
 
 
   # Sets the density of any breast string ROIs as air.

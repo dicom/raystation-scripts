@@ -111,7 +111,7 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
     OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
     # Whole breast:
     # CTV:
-    OF.uniform_dose(ss, plan, ROIS.ctv_ctv_sb.name, whole_breast_dose*100, 30)
+    OF.uniform_dose(ss, plan, ROIS.ctv_ptv_sbc.name, whole_breast_dose*100, 30)
     OF.min_dose(ss, plan, target, whole_breast_dose*100*0.95, 150)
     # PTVc:
     OF.min_dose(ss, plan, target.replace("C", "P")+"c", whole_breast_dose*100*0.95, 100)
@@ -164,7 +164,7 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
     OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
     # Regional breast:
     # CTV:
-    OF.uniform_dose(ss, plan, ROIS.ctv_ctv_sb.name, regional_dose*100, 30)
+    OF.uniform_dose(ss, plan, ROIS.ctv_ptv_sbc.name, regional_dose*100, 30)
     # PTVc:
     OF.min_dose(ss, plan, ROIS.ptv_c.name, regional_dose*100*0.95, 100)
     OF.max_dose(ss, plan, ROIS.ptv_c_ptv_sbc.name, regional_dose*100*1.05, 80)

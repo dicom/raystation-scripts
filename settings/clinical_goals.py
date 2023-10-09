@@ -857,8 +857,8 @@ def breast_targets(ss, region_code, target, prescription):
   mod = 1.0
   if prescription.total_dose == 52.2:
     mod = 0.81034
-    homogeneity_target = ROIS.ctv_ctv_sb.name
-    prescription_target = ROIS.ctv_ctv_sb.name
+    homogeneity_target = ROIS.ctv_ptv_sbc.name
+    prescription_target = ROIS.ctv_ptv_sbc.name
   else:
     homogeneity_target = target
     prescription_target = target
