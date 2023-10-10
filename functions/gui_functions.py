@@ -132,8 +132,8 @@ def determine_choices(region_code, prescription, my_window, choices):
   technique_name = 'VMAT'
   # Default optimization value
   opt = ''
-  if region_code in RC.breast_codes:
-    # Breast (VMAT is standard, but allow choice of 3D-CRT for a transition period):
+  if region_code in RC.extremity_codes:
+    # For extremities it may be practical to use 3D-CRT in some cases:
     # Determine which technique choices which will appear in the form
     techniques = RB.RadioButton('Planoppsett ', 'Velg planoppsett: ', PC.techniques)
     # Collects the selected choices from the user

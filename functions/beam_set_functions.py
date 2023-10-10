@@ -62,62 +62,6 @@ def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', 
       b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
-# Creates four beams (3D-CRT).
-def create_four_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', name4='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', gantry_angle4='179', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', collimator_angle4='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', couch_angle4 = '0', iso_index = 1, beam_index=1, bolus=None):
-  beam_set.ClearBeams(RemoveBeams = 'True')
-  b1 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name1,
-    Description = '',
-    GantryAngle = gantry_angle1 ,
-    CollimatorAngle = collimator_angle1,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle1
-  )
-  b1.Number = beam_index
-  b2 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name2,
-    Description = '',
-    GantryAngle = gantry_angle2,
-    CollimatorAngle = collimator_angle2,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle2
-  )
-  b2.Number = beam_index + 1
-  b3 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name3,
-    Description = '',
-    GantryAngle = gantry_angle3 ,
-    CollimatorAngle = collimator_angle3,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle3
-  )
-  b3.Number = beam_index + 2
-  b4 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name4,
-    Description = '',
-    GantryAngle = gantry_angle4,
-    CollimatorAngle = collimator_angle4,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle4
-  )
-  b4.Number = beam_index + 3
-  if bolus:
-    for b in [b1, b2, b3, b4]:
-      b.SetBolus(BolusName = bolus.OfRoi.Name)
-
-
 # Adjusts leaf positions on the first segment of each beam for 3DCRT breast plans.
 # Leafs (on anterior-lateral leaf bank) are pulled 2.5 cm out from their initial position.
 # For locoregional plans, this is only done in the part of the field covering the breast.
@@ -177,50 +121,6 @@ def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', 
   b.Number = beam_index
   if bolus:
     b.SetBolus(BolusName = bolus.OfRoi.Name)
-
-
-# Creates three beams (3D-CRT).
-def create_three_beams(beam_set, isocenter, energy='6', name1='', name2='', name3='', gantry_angle1='181', gantry_angle2='179', gantry_angle3='181', collimator_angle1='0', collimator_angle2='0', collimator_angle3='0', couch_angle1='0', couch_angle2 = '0', couch_angle3 = '0', iso_index = 1, beam_index=1, bolus=None):
-  beam_set.ClearBeams(RemoveBeams = 'True')
-  b1 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name1,
-    Description = '',
-    GantryAngle = gantry_angle1 ,
-    CollimatorAngle = collimator_angle1,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle1
-  )
-  b1.Number = beam_index
-  b2 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name2,
-    Description = '',
-    GantryAngle = gantry_angle2,
-    CollimatorAngle = collimator_angle2,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle2
-  )
-  b2.Number = beam_index + 1
-  b3 = beam_set.CreatePhotonBeam(
-    BeamQualityId = energy,
-    IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
-    Name= name3,
-    Description = '',
-    GantryAngle = gantry_angle3 ,
-    CollimatorAngle = collimator_angle3,
-    CouchPitchAngle = '0',
-    CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle3
-  )
-  b3.Number = beam_index + 2
-  if bolus:
-    for b in [b1, b2, b3]:
-      b.SetBolus(BolusName = bolus.OfRoi.Name)
 
 
 # Creates two beams (3D-CRT).

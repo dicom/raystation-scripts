@@ -13,39 +13,13 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
   bolus = SSF.bolus(ss)
   if technique_name == '3D-CRT':
     # 3D-CRT:
-    if region_code in RC.breast_partial_l_codes:
-      # Partial breast, left sided:
-      BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'LAO', name3 = 'RAO', gantry_angle1 = '110', gantry_angle2 = '35', gantry_angle3 = '350', collimator_angle1 = '343', collimator_angle2 = '17', collimator_angle3 = '17', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['LPO','LAO','RAO'], [90, 15, 90] )
-    elif region_code in RC.breast_whole_l_codes:
-      # Whole breast, left sided:
-      BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '310', collimator_angle1 = '343', collimator_angle2 = '17', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['LPO','RAO'], [110, 110] )
-    elif region_code in RC.breast_partial_r_codes:
-      # Partial breast, right sided:
-      BSF.create_three_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'RAO', name3 = 'LAO', gantry_angle1 = '250', gantry_angle2 = '325', gantry_angle3 = '10', collimator_angle1 = '9', collimator_angle2 = '352', collimator_angle3 = '352', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['RPO','RAO','LAO'], [90, 15, 90] )
-    elif region_code in RC.breast_whole_r_codes:
-      # Whole breast, right sided:
-      BSF.create_two_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'LAO', gantry_angle1 = '230', gantry_angle2 = '50', collimator_angle1 = '9', collimator_angle2 = '352', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['RPO','LAO'], [110, 110] )
-    elif region_code in RC.breast_reg_l_codes:
-      # Breast with regional lymph nodes, left sided:
-      BSF.create_four_beams(beam_set, isocenter, energy = energy_name, name1 = 'LPO', name2 = 'Venstre', name3 = 'Forfra', name4 = 'RAO', gantry_angle1 = '130', gantry_angle2 = '90', gantry_angle3 = '0', gantry_angle4 = '309', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      if fraction_dose == 2:
-        BSF.set_MU(beam_set,['LPO','Venstre','Forfra','RAO'], [25, 15, 100, 90] )
-      elif fraction_dose == 2.67:
-        BSF.set_MU(beam_set,['LPO','Venstre','Forfra','RAO'], [40, 25, 115, 105] )
-    elif region_code in RC.breast_reg_r_codes:
-      # Breast with regional lymph nodes, right sided:
-      BSF.create_four_beams(beam_set, isocenter, energy = energy_name, name1 = 'RPO', name2 = 'Høyre', name3 = 'Forfra', name4 = 'LAO', gantry_angle1 = '235', gantry_angle2 = '270', gantry_angle3 = '0', gantry_angle4 = '55', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      if fraction_dose == 2:
-        BSF.set_MU(beam_set,['RPO','Høyre','Forfra','LAO'], [25, 15, 100, 90] )
-      elif fraction_dose == 2.67:
-        BSF.set_MU(beam_set,['RPO','Høyre','Forfra','LAO'], [40, 25, 115, 105] )
+    if region_code in RC.extremity_codes:
+      # Extremities:
+      BSF.create_two_beams(beam_set, isocenter, energy = '6', name1 = 'Forfra', name2 = 'Bakfra', gantry_angle1 = '0', gantry_angle2 = '180', collimator_angle1 = '0', collimator_angle2 = '0', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      BSF.set_MU(beam_set,['Forfra','Bakfra'], [130, 130] )
     elif region_code in RC.brain_whole_codes:
       # Whole brain:
-      BSF.create_two_beams(beam_set, isocenter, energy = '10', name1 = 'Høyre', name2 = 'Venstre', gantry_angle1 = '270', gantry_angle2 = '90', collimator_angle1 = '295', collimator_angle2 = '63', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      BSF.create_two_beams(beam_set, isocenter, energy = '6', name1 = 'Høyre', name2 = 'Venstre', gantry_angle1 = '270', gantry_angle2 = '90', collimator_angle1 = '295', collimator_angle2 = '63', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       BSF.set_MU(beam_set,['Høyre','Venstre'], [130, 130] )
   elif technique_name == 'VMAT':
     # VMAT:
