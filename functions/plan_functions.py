@@ -105,7 +105,7 @@ def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, 
 # (Prescription is set, three conventional beams are set up and common objectives are set)
 def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, roi_name, background_dose=0):
   # Create prescription:
-  prescription = PRES.create_prescription(16, 8, region_code)
+  prescription = PRES.create_prescription(16, 8, region_code, ss)
   # Determine first available beam number:
   next_beam_number = first_available_beam_number(plan)
   # Set up beam set and prescription:

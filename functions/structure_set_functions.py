@@ -60,7 +60,7 @@ def bolus(ss):
 # Returns False if not.
 def breast_sequentual_boost_is_indicated(ss, region_code, prescription):
   if has_roi_with_shape(ss, ROIS.ctv_sb.name) and has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
-    if prescription.total_dose == 52.2:
+    if prescription.total_dose == 48:
       # SIB boost:
       return False
     else:

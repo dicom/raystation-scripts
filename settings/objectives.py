@@ -99,9 +99,9 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
   # External max dose:
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
   # Targets:
-  if total_dose == 52.2:
-    # SIB (52.2 & 42.3 Gy in 18 fx):
-    whole_breast_dose = 42.3
+  if total_dose == 48:
+    # SIB (48 & 40.05 Gy in 15 fx):
+    whole_breast_dose = 40.05
     # Tumor bed:
     # CTVsb:
     OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)
@@ -152,9 +152,9 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
   OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
   OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
   # Targets:
-  if total_dose == 52.2:
-    # SIB (52.2 & 42.3 Gy in 18 fx):
-    regional_dose = 42.3
+  if total_dose == 48:
+    # SIB (48 & 40.05 Gy in 15 fx):
+    regional_dose = 40.05
     # Tumor bed:
     # CTVsb:
     OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)

@@ -314,6 +314,20 @@ def breast_oars(ss, region_code, prescription):
       # Specific for partial breast right:
       breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 426, TOL.ipsilateral_breast_426cc, priority5)]
       breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 177, TOL.ipsilateral_breast_177cc, priority6)]
+  # SIB (Import HIGH protocol):
+  if prescription.total_dose == 48:
+    breast_oars += [CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.10, TOL.heart_v13gy_import_high, priority3)]
+    breast_oars += [CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.02, TOL.heart_v13gy_import_high, priority7)]
+    if region_code in RC.breast_l_codes:
+      # Ipisilateral:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_mean_import_high, None, priority7)]
+      # Contralateral:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, 0.15, TOL.lung_v2_5gy_import_high, priority5)]
+    else:
+      # Ipisilateral:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_mean_import_high, None, priority7)]
+      # Contralateral:
+      breast_oars += [CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, 0.15, TOL.lung_v2_5gy_import_high, priority5)]
   return breast_oars
 
 
@@ -855,8 +869,8 @@ def breast_targets(ss, region_code, target, prescription):
   breast_targets = []
   # Set a modifier to use with nominal target dose for SIB/no-SIB:
   mod = 1.0
-  if prescription.total_dose == 52.2:
-    mod = 0.81034
+  if prescription.total_dose == 48:
+    mod = 0.834375
     homogeneity_target = ROIS.ctv_ptv_sbc.name
     prescription_target = ROIS.ctv_ptv_sbc.name
   else:
@@ -920,13 +934,13 @@ def breast_targets(ss, region_code, target, prescription):
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95*mod, pc98, priority5)
       ]
   if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and region_code not in RC.breast_partial_codes:
-    if prescription.total_dose == 52.2:
-      # SIB boost (42.3 & 52.2 Gy in 18 fx):
+    if prescription.total_dose == 48:
+      # SIB boost (40.05 & 48 Gy in 15 fx):
       breast_targets += [
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 51.939*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_most, dose_at_volume, 52.461*100, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 49.59*100, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 49.59*100,  pc95, priority2),
+        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 48*0.995*100, pc50, priority1),
+        CG.ClinicalGoal(ROIS.ctv_sb.name, at_most, dose_at_volume, 48*1.005*100, pc50, priority1),
+        CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 48*0.95*100, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 48*0.95*100,  pc95, priority2),
         CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*52.2*100, priority5)
       ]
@@ -944,9 +958,9 @@ def breast_targets(ss, region_code, target, prescription):
   # Breast tolerance speficic for 18 fx SIB (Skagen trial):
   # (For regional use CTVp-CTVsb, for whole breast use CTV-CTVsb)
   if SSF.has_roi_with_shape(ss, ROIS.ctv_p_ctv_sb.name):
-    breast_targets += [CG.ClinicalGoal(ROIS.ctv_p_ctv_sb.name, at_most, volume_at_dose, 0.40, 52.2*0.95*100, priority5)]
+    breast_targets += [CG.ClinicalGoal(ROIS.ctv_p_ctv_sb.name, at_most, volume_at_dose, 0.40, 43.46*100, priority5)]
   elif SSF.has_roi_with_shape(ss, ROIS.ctv_ctv_sb.name):
-    breast_targets += [CG.ClinicalGoal(ROIS.ctv_ctv_sb.name, at_most, volume_at_dose, 0.40, 52.2*0.95*100, priority5)]
+    breast_targets += [CG.ClinicalGoal(ROIS.ctv_ctv_sb.name, at_most, volume_at_dose, 0.40, 43.46*100, priority5)]
   return breast_targets
 
 

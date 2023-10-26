@@ -160,16 +160,16 @@ sib_47_50_isodoses.append(Isodose(105, orange))
 sib_47_50_isodoses.append(Isodose(110, red))
 
 # Breast SIB 42.3/52.2 isodose setup:
-breast_sib_18fx_isodoses = []
-breast_sib_18fx_isodoses.append(Isodose(30, sea_green))
-breast_sib_18fx_isodoses.append(Isodose(50, white))
-breast_sib_18fx_isodoses.append(Isodose(72.93, blue))
-breast_sib_18fx_isodoses.append(Isodose(76.98, green_mid))
-breast_sib_18fx_isodoses.append(Isodose(85, orange_mid))
-breast_sib_18fx_isodoses.append(Isodose(95, green))
-breast_sib_18fx_isodoses.append(Isodose(100, yellow))
-breast_sib_18fx_isodoses.append(Isodose(105, orange))
-breast_sib_18fx_isodoses.append(Isodose(110, red))
+breast_sib_15fx_isodoses = []
+breast_sib_15fx_isodoses.append(Isodose(30, sea_green))
+breast_sib_15fx_isodoses.append(Isodose(50, white))
+breast_sib_15fx_isodoses.append(Isodose(75.09375, blue))
+breast_sib_15fx_isodoses.append(Isodose(79.2656, green_mid))
+breast_sib_15fx_isodoses.append(Isodose(85, orange_mid))
+breast_sib_15fx_isodoses.append(Isodose(95, green))
+breast_sib_15fx_isodoses.append(Isodose(100, yellow))
+breast_sib_15fx_isodoses.append(Isodose(105, orange))
+breast_sib_15fx_isodoses.append(Isodose(110, red))
 
 
 # SBRT isodose setup:
@@ -194,6 +194,6 @@ prostate_50_62_5_67_5 = ColorTable(prostate_50_62_5_67_5_isodoses)
 prostate_62_5_67_5 = ColorTable(prostate_62_5_67_5_isodoses)
 prostate_57_60 = ColorTable(prostate_57_60_isodoses)
 sib_47_50 = ColorTable(sib_47_50_isodoses)
-breast_sib_18fx = ColorTable(breast_sib_18fx_isodoses)
+breast_sib_15fx = ColorTable(breast_sib_15fx_isodoses)
 prostate_bed_56_70 = ColorTable(prostate_bed_56_70_isodoses)
 stereotactic = ColorTable(stereotactic_isodoses)

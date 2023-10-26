@@ -103,7 +103,7 @@ breast = [
   Prescription(16, 8, 'MedianDose'),
   Prescription(26, 5, 'MedianDose'),
   Prescription(40.05, 15, 'MedianDose'),
-  Prescription(52.2, 18, 'MedianDose'), # SIB with 42.3 Gy / 18 fx to whole breast
+  Prescription(48, 15, 'MedianDose'), # SIB with 40.05 Gy to the whole breast
   Prescription(50, 25, 'MedianDose')
 ]
 lung = [
