@@ -141,7 +141,7 @@ class Plan(object):
     
     # Add prescription:
     # For breast SIB, set the surgical bed as prescription target (for others leave it as is):
-    if prescription.nr_fractions == 18 and prescription.total_dose == 52.2 and region_code in RC.breast_codes:
+    if prescription.nr_fractions == 15 and prescription.total_dose == 48 and region_code in RC.breast_codes:
       prescription_target = ROIS.ctv_sb.name
     else:
       prescription_target = target

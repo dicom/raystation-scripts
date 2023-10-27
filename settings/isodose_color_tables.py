@@ -159,7 +159,7 @@ sib_47_50_isodoses.append(Isodose(100, yellow))
 sib_47_50_isodoses.append(Isodose(105, orange))
 sib_47_50_isodoses.append(Isodose(110, red))
 
-# Breast SIB 42.3/52.2 isodose setup:
+# Breast SIB 40.05/48 isodose setup:
 breast_sib_15fx_isodoses = []
 breast_sib_15fx_isodoses.append(Isodose(30, sea_green))
 breast_sib_15fx_isodoses.append(Isodose(50, white))

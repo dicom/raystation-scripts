@@ -942,7 +942,7 @@ def breast_targets(ss, region_code, target, prescription):
         CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, dose_at_volume, 48*0.95*100, pc98, priority2),
         CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, dose_at_volume, 48*0.95*100,  pc95, priority2),
         CG.ClinicalGoal(ROIS.ctv_sb.name, at_least, homogeneity_index, pc95, pc95, priority5),
-        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*52.2*100, priority5)
+        CG.ClinicalGoal(ROIS.ptv_sbc.name, at_least, conformity_index, pc75, pc95*48*100, priority5)
       ]
     else:
       # Sequenctial boost (40.05/15 fx & 16 Gy/8 fx):

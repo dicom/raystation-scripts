@@ -122,10 +122,10 @@ class BreastOptimization(object):
   def fulfilled_coverage(self, beam_set, objective, high_ptv_coverage):
     prescription = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue
     result = False
-    # For SIB (42.3/52.2 Gy), use a modifier for the low dose relative to the thigh dose prescription:
+    # For SIB (40.05/48 Gy), use a modifier for the low dose relative to the thigh dose prescription:
     mod = 1.0
     if 'sbc' in objective.ForRegionOfInterest.Name:
-      mod = 0.8103448
+      mod = 0.834375
     # Criteria:
     # CTV min dose: 98% > 38.05 (95%)
     # PTV min dose: 98% > 36.04 (90%)
