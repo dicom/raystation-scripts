@@ -24,7 +24,7 @@ class DefProstate(object):
         # Choice 3: Nodes - included or not?
         nodes = choices[3]
         # Targets:
-        ctv_77 = ROI.ROIAlgebra(ROIS.ctv_77.name, ROIS.ctv_77.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
+        ctv_77 = ROI.ROIAlgebra(ROIS.ctv_77.name, ROIS.ctv_77.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
         ptv_77 = ROI.ROIExpanded(ROIS.ptv_77.name, ROIS.ptv_77.type, COLORS.ptv_high, source = ctv_77, margins = MARGINS.prostate_seed_expansion)
         # Seminal vesicles (for high risk 20 mm):
         semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
@@ -97,7 +97,7 @@ class DefProstate(object):
         # Choice 3: Nodes - included or not?
         nodes = choices[3]
         # Targets:
-        ctv_67_5 = ROI.ROIAlgebra(ROIS.ctv_67_5.name, ROIS.ctv_67_5.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
+        ctv_67_5 = ROI.ROIAlgebra(ROIS.ctv_67_5.name, ROIS.ctv_67_5.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
         ptv_67_5 = ROI.ROIExpanded(ROIS.ptv_67_5.name, ROIS.ptv_67_5.type, COLORS.ptv_high, source = ctv_67_5, margins = MARGINS.prostate_seed_expansion)
         # Seminal vesicles (for high risk 20 mm):
         semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
@@ -172,7 +172,7 @@ class DefProstate(object):
         # Targets:
         # Seminal vesicles (for intermediate risk 10 mm):
         semves10 = ROI.ROIAlgebra('SeminalVes10', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_10mm_expansion)
-        ctv_60 = ROI.ROIAlgebra(ROIS.ctv_60.name, ROIS.ctv_60.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
+        ctv_60 = ROI.ROIAlgebra(ROIS.ctv_60.name, ROIS.ctv_60.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
         ctv_57_60 = ROI.ROIAlgebra(ROIS.ctv_57_60.name, ROIS.ctv_57_60.type, COLORS.ctv_low, sourcesA = [ctv_60], sourcesB = [semves10], marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
         ptv_57_60 = ROI.ROIAlgebra(ROIS.ptv_57_60.name, ROIS.ptv_57_60.type, COLORS.ptv_low, sourcesA = [ctv_60], sourcesB = [semves10], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_8mm_expansion)
         ptv_60 = ROI.ROIExpanded(ROIS.ptv_60.name, ROIS.ptv_60.type, COLORS.ptv_high, source = ctv_60, margins = MARGINS.prostate_seed_expansion)
