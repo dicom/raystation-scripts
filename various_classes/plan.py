@@ -123,8 +123,10 @@ class Plan(object):
 
 
     # Determine the energy quality from the size of the target volume (note that only one target is taken into consideration here).
-    # For those situations where you have two targets and you want to have separate isocenters, then you what to evaluate the targets separately.
-    if target in [ROIS.ctv1.name, ROIS.ctv2.name, ROIS.ctv3.name, ROIS.ctv4.name] and palliative_choices[0] in ['sep_beamset_sep_iso', 'sep_plan']:
+    # For those situations where you have two targets and you want to have separate isocenters, then you want to evaluate the targets separately.
+    if prescription.is_stereotactic():
+      energy_name = '6 FFF'
+    elif target in [ROIS.ctv1.name, ROIS.ctv2.name, ROIS.ctv3.name, ROIS.ctv4.name] and palliative_choices[0] in ['sep_beamset_sep_iso', 'sep_plan']:
       energy_name = SSF.determine_energy_single_target(ss, target)
     elif region_code in RC.breast_codes:
       energy_name = '6'
