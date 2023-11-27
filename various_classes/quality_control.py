@@ -91,6 +91,7 @@ class QualityControl(object):
         ts_structure_set.couch_test()
         ts_structure_set.couch_close_to_patient_test()
         ts_structure_set.breast_seeds_test()
+        ts_structure_set.no_empty_slice_between_rectum_and_analcanal_test()
       
         # POI geometry tests:
         for ts_poi_geometry in ts_structure_set.ts_poi_geometries:

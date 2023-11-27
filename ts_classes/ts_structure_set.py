@@ -225,3 +225,31 @@ class TSStructureSet(object):
           return t.succeed()
         else:
           return t.fail()
+
+  # Tests that there is no empty slice between the rectum and the anal canal ROI geometries.
+  # (which is a known bug/weakness in the current DL segmentation model)
+  def no_empty_slice_between_rectum_and_analcanal_test(self):
+    t = TEST.Test("Pasienter som har Rectum og AnalCanal definert, skal ikke ha et tomt snitt mellom disse ROI geometriene.", None, self.geometry)
+    rectum = None
+    anal_canal = None
+    bb_rectum = None
+    bb_anal_canal = None
+    for rg in self.structure_set.RoiGeometries:
+      if rg.OfRoi.Name == 'Rectum':
+        rectum = rg
+      elif rg.OfRoi.Name == 'AnalCanal':
+        anal_canal = rg
+    try:
+      bb_rectum = rectum.GetBoundingBox()
+      bb_anal_canal = anal_canal.GetBoundingBox()
+    except:
+      pass
+    if bb_rectum and bb_anal_canal:
+      rectum_caudal_limit = bb_rectum[0].z
+      anal_canal_cranial_limit = bb_anal_canal[1].z
+      # Distance between the two ROI geometries in the longitudinal axis:
+      distance = rectum_caudal_limit - anal_canal_cranial_limit
+      if distance > 0.5 * self.slice_thickness:
+        return t.fail(round(distance, 2))
+      else:
+        return t.succeed()
