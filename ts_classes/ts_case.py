@@ -105,6 +105,23 @@ class TSCase(object):
             else:
               return t.succeed()
   
+  # For DIBH cases, tests that there are at least 2 DIBH control examinations present.
+  def dibh_control_examinations_present_on_dibh_case_test(self):
+    t = TEST.Test("DIBH-planer skal ha minst to 'DIBH Kontroll' serier til stede i casen", ">=2", self.param)
+    # Only relevant to run this test if the planning CT name includes 'DIBH':
+    ce = get_current("Examination")
+    if 'DIBH' in ce.Name.upper():
+      dibh_controls = 0
+      for e in self.case.Examinations:
+        if e.Name != ce.Name:
+          # Assume it is a DIBH control series if it includes the string 'DIBH':
+          if 'DIBH' in e.Name.upper():
+            dibh_controls += 1
+      if dibh_controls >= 2:
+        return t.succeed()
+      else:
+        return t.fail(dibh_controls)
+  
   # Tests if the CT image series used for treatment planning is the most recent CT image series in this case.
   # While evaluating against other image series, non-CT modalities, CBCT series and CT image series
   # having the same frame of reference UID as the primary image series are filtered out.
