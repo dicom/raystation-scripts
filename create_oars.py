@@ -166,7 +166,9 @@ for roi in reversed(list(selected_oar_list)):
   # Only create ROI if it doesn't already exist:
   if not PMF.has_roi(pm, roi.name):
     if roi.__class__.__name__ == 'ROI':
-      if roi.model:
+      if roi.dlsm:
+        examination.RunOarSegmentation(ModelName=roi.dlsm, ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=[roi.name])
+      elif roi.model:
         PMF.create_model_roi(pm, examination, roi)
       else:
         PMF.create_empty_roi(pm, roi)

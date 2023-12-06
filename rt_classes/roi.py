@@ -6,12 +6,15 @@ import margins as MARGINS
 # ROI class - used for manually defined ROIs.
 class ROI(object):
 
-    def __init__(self, name, type, color, case=None, model=None):
+    def __init__(self, name, type, color, case=None, model=None, dlsm=None):
       self.name = name
       self.type = type
       self.color = color
       self.case = case # e.g. 'Thorax'
+      # Model based segmentation model:
       self.model = model # e.g. 'SpinalCord (Thorax)'
+      # Deep learning segmentation model:
+      self.dlsm = dlsm # e.g. 'RSL Thorax-Abdomen CT'
       self.source_level = 999
 
 
