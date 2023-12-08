@@ -53,7 +53,7 @@ class DefRectum(object):
       wall_ptv_50 = ROI.ROIWall(ROIS.z_ptv_50_wall.name, ROIS.z_ptv_50_wall.type, COLORS.wall, ptv_50, 0.5, 0)
       wall_ptv_47_50 = ROI.ROIWall(ROIS.z_ptv_47_50_wall.name, ROIS.z_ptv_47_50_wall.type, COLORS.wall, ptv_47_50, 0.5, 0)
       # Non-DL OARs:
-      site.add_oars([bladder_ptv, bowel_ptv, wall_ptv_50, wall_ptv_47_50])
+      site.add_oars([bladder_ptv, wall_ptv_50, wall_ptv_47_50])
     else:
       # Hypofractionated treatment (5 Gy x 5):
       # Targets:
@@ -67,16 +67,17 @@ class DefRectum(object):
       bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       # Non-DL OARs:
-      site.add_oars([bladder_ptv, bowel_ptv])
+      site.add_oars([bladder_ptv])
     # DL OARs:
     examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag_Draft", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
     # Create "Bone" ROI Algebra:
     bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
-    site.add_oars([bone])
+    site.add_oars([bone, ROIS.bowel_bag, bowel_ptv])
     # Create all targets and OARs in RayStation:
     site.create_rois()
     # Change type to "Other":
     pm.RegionsOfInterest[bone.name].OrganData.OrganType = "Other"
+    pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"

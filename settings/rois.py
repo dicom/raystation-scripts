@@ -122,6 +122,7 @@ small_bowel = ROI.ROI('BowelSmall','Organ', COLORS.small_bowel)
 colon = ROI.ROI('Colon','Organ', COLORS.colon)
 brachial = ROI.ROI('BrachialPlexus','Organ', COLORS.brachial)
 # Pelvis, prostate:
+bladder = ROI.ROI('Bladder', 'Organ', COLORS.bladder, case ='PelvicMale',  model = 'Bladder')
 bowel_space = ROI.ROI('BowelBag', 'Organ', COLORS.bowel_space)
 rectum = ROI.ROI('Rectum', 'Organ', COLORS.rectum)
 pelvic_nodes = ROI.ROI('LN_Iliac', 'Ctv', COLORS.pelvic_nodes)
@@ -132,6 +133,8 @@ vesicles = ROI.ROI('SeminalVes', 'Ctv', COLORS.vesicles)
 penile_bulb = ROI.ROI('PenileBulb', 'Organ', COLORS.penile_bulb)
 anal_canal = ROI.ROI('AnalCanal','Organ', COLORS.anal_canal)
 levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
+bowel_bag_draft = ROI.ROI('BowelBag_Draft', 'Other', COLORS.bowel_space)
+bowel_bag = ROI.ROIAlgebra('BowelBag', 'Organ', COLORS.bowel_space, sourcesA = [bowel_bag_draft], sourcesB = [bladder], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
 
 # Bone ROIs:
 humeral_l = ROI.ROI('HumeralHead_L', 'Organ', COLORS.bone_color1)
@@ -221,7 +224,6 @@ lung_l =  ROI.ROI('Lung_L', 'Organ', COLORS.lung, case ='Thorax',  model =  'Lun
 lung_r =  ROI.ROI('Lung_R', 'Organ', COLORS.lung, case ='Thorax',  model = 'Lung (Right)')
 kidney_l = ROI.ROI('Kidney_L', 'Organ', COLORS.kidney, case ='Abdomen',  model = 'Kidney (Left)', dlsm='RSL Thorax-Abdomen CT')
 kidney_r = ROI.ROI('Kidney_R', 'Organ', COLORS.kidney, case ='Abdomen',  model = 'Kidney (Right)', dlsm='RSL Thorax-Abdomen CT')
-bladder = ROI.ROI('Bladder', 'Organ', COLORS.bladder, case ='PelvicMale',  model = 'Bladder')
 femoral_l = ROI.ROI('FemoralHead_L', 'Organ', COLORS.femoral, case = 'PelvicMale', model = 'FemoralHead (Left)')
 femoral_r = ROI.ROI('FemoralHead_R', 'Organ', COLORS.femoral, case = 'PelvicMale', model = 'FemoralHead (Right)')
 
