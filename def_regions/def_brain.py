@@ -48,7 +48,7 @@ class DefBrain(object):
     examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
 
 
-  # Adds whole brain ROIs to the site object.
+  # Adds partial brain ROIs to the site object.
   def add_partial_brain(self, pm, examination, site):
     # Brain-Brainstem (used to aid in CTV definition):
     brain_brainstem = ROI.ROIAlgebra('Brain-Brainstem', ROIS.brain.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.brainstem], operator = 'Subtraction')
@@ -63,7 +63,7 @@ class DefBrain(object):
     site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, brain_gtv, brain_ptv])
   
   
-  # Adds whole brain ROIs to the site object.
+  # Adds stereotactic brain ROIs to the site object.
   def add_stereotactic_brain(self, pm, examination, site, nr_targets):
     gtvs = []
     ptvs = []
