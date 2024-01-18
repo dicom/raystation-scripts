@@ -18,15 +18,19 @@ class DefPalliative(object):
     region = choices[2]
     nr_targets = None
     with_gtv = None
+    mask = None
     if stereotactic == 'no':
       # Choice 3: Number of targets:
       nr_targets = int(choices[3])
       # Choice 4: GTV included?
       with_gtv = choices[4]
+      if region == 'neck':
+        # Choice 5: Mask fixation or not?
+        mask = choices[5]
     # Adds organ at risk ROIs:
     self.add_oars(pm, examination, site, stereotactic, region)
     # Set up target volumes:
-    self.add_targets(pm, examination, site, stereotactic, region, nr_targets, with_gtv)
+    self.add_targets(pm, examination, site, stereotactic, region, nr_targets, with_gtv, mask)
     # Add bone union ROI:
     bone = self.add_bone(pm, site)
     # Create all targets and OARs in RayStation:
@@ -173,9 +177,9 @@ class DefPalliative(object):
   
   
   # Adds target ROIs to the site object.
-  def add_targets(self, pm, examination, site, stereotactic, region, nr_targets, with_gtv):
+  def add_targets(self, pm, examination, site, stereotactic, region, nr_targets, with_gtv, mask):
     # Determine PTV margins:
-    ptv_margin = self.determine_ptv_margin(stereotactic, region, with_gtv)
+    ptv_margin = self.determine_ptv_margin(stereotactic, region, with_gtv, mask)
     if stereotactic == 'yes':
       # Stereotactic:
       if region in ['col cervical', 'col thorax', 'col pelvis']:
@@ -237,7 +241,7 @@ class DefPalliative(object):
   
   
   # Determines the PTV margin to be used for the given region and target type (soft tissue or bone).
-  def determine_ptv_margin(self, stereotactic, region, with_gtv):
+  def determine_ptv_margin(self, stereotactic, region, with_gtv, mask):
     ptv_margin = None
     if stereotactic == 'yes':
       if region in ['col cervical', 'col thorax']:
@@ -253,8 +257,6 @@ class DefPalliative(object):
           ptv_margin = MARGINS.uniform_3mm_expansion
         elif region in ['neck']:
           # Neck: 3 mm (mask) or 5 mm (no mask)
-          # Choice 5: Mask?
-          mask = choices[5]
           if mask == 'mask':
             ptv_margin = MARGINS.uniform_3mm_expansion
           else:
@@ -272,8 +274,6 @@ class DefPalliative(object):
           ptv_margin = MARGINS.uniform_3mm_expansion
         elif region in ['neck']:
           # Neck: 3 mm (mask) or 5 mm (no mask)
-          # Choice 5: Mask?
-          mask = choices[5]
           if mask == 'mask':
             ptv_margin = MARGINS.uniform_3mm_expansion
           else:
