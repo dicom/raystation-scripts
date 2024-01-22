@@ -86,7 +86,7 @@ vein1 = 'Navy'
 vein2 = 'Blue'
 # Gastrointenstinal:
 esophagus = 'Orange'
-stomach = 'SandyBrown'
+stomach = 'RosyBrown'
 bowel_space = 'SandyBrown'
 rectum = 'SaddleBrown'
 anal_canal = 'Brown'
