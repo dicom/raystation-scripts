@@ -51,6 +51,7 @@ ab_breast = 4
 ab_lad = 2
 ab_cornea = 3
 ab_penile_bulb = 3
+ab_blood = 3
 
 
 # Reference number of fractions:
@@ -241,6 +242,8 @@ femoral_d02pc = EQD.Tolerance('FemoralHead_L/R', 'Hip osteoarthritis (Rasmusson)
 # Penile bulb:
 penile_bulb_mean = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)', ab_penile_bulb, 10, 20, 'Mean', 'Conventional RT')
 penile_bulb_d02pc = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)', ab_penile_bulb, 25, 50, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
+# Bone:
+bone_v1000cc = EQD.Tolerance('Bone', 'Reduced hemoglobin levels', ab_blood, 7.5, 15, 'Volume receiving tolerance dose being less than 1000 cm^3', 'Conventional RT')
 
 
 # General / Palliative:

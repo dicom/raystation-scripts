@@ -597,7 +597,8 @@ def prostate_oars(ss, region_code, prescription):
     CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, 0.19, TOL.bladder_v19pc,  priority6),
     CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, 0.41, TOL.bladder_v41pc_freq,  priority6),
     CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
-    CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6)
+    CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
+    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1000, TOL.bone_v1000cc, priority6)
   ]
   # Lymph node irradiation?
   if region_code in RC.prostate_node_codes:

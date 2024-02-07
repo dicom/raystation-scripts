@@ -150,6 +150,7 @@ pelvic_girdle_l = ROI.ROI('PelvicGirdle_L', 'Organ', COLORS.bone_color3)
 pelvic_girdle_r = ROI.ROI('PelvicGirdle_R', 'Organ', COLORS.bone_color3)
 femur_head_neck_l = ROI.ROI('FemurHeadNeck_L', 'Organ', COLORS.bone_color1)
 femur_head_neck_r = ROI.ROI('FemurHeadNeck_R', 'Organ', COLORS.bone_color1)
+bone = ROI.ROI('Bone', 'Organ', COLORS.bone_color1)
 
 # Vessels:
 a_descending_aorta = ROI.ROI('A_DescendingAorta', 'Organ', COLORS.artery_color1)
