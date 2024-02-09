@@ -201,7 +201,7 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
 # Determine the energy quality (i.e. with or without filter) from the size of the target volume.
 # Returns the quality name (e.g. '6' or '6 FFF').
 def determine_energy(ss, target):
-  threshold = 13
+  threshold = 20
   # Establish start values:
   center = ss.RoiGeometries[target].GetCenterOfRoi()
   ptv_max_z = center.z #longitudinal direction
@@ -245,7 +245,7 @@ def determine_energy(ss, target):
 # Determine the treatment machine (i.e. with or without filter) from the size of the given target volume.
 # Returns the machine name (e.g. 'ALVersa' or 'ALVersa_FFF').
 def determine_energy_single_target(ss, target):
-  threshold = 13
+  threshold = 20
   # Establish start values:
   center = ss.RoiGeometries[target].GetCenterOfRoi()
   ptv_max_z = center.z #longitudinal direction
