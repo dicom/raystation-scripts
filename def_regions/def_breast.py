@@ -75,7 +75,7 @@ class DefBreast(object):
       except:
         pass
     # Change organ type to 'Other' for selected ROIs:
-    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R']:
+    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMusc_Ant_L','A_Carotid_L','A_Subclavian_L+A_Axillary_L','V_Brachioceph_L','V_Jugular_L','V_Subclavian_L+V_Axillary_L']:
       # Some of these ROIs may not always be defined, and give an error:
       try:
         pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
