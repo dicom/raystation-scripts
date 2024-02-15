@@ -193,12 +193,22 @@ class TSBeam(object):
           else:
             return t.succeed()
   
-  # Tests for low number of monitor units.
+  
+  # Tests for monitor units being in the range 1000-1001 (which seems to create problems on the Elekta linac sometimes).
+  def mu_1000_test(self):
+    t = TEST.Test("Skal ikke være i intervallet 1000-1001", '<1000 eller >1001', self.mu)    
+    if self.beam.BeamMU >= 1000 and self.beam.BeamMU <= 1001:
+      return t.fail(round(self.beam.BeamMU, 2))
+    else:
+      return t.succeed()
+  
+  
+  # Tests for low number of monitor units, for VMAT beams.
   def mu_beam_vmat_test(self):
     t = TEST.Test("Skal være høyere enn nedre praktiserte grense", '>2', self.mu)
     if self.is_vmat():
       if self.beam.BeamMU < 2:
-        return t.fail(self.beam.BeamMU)
+        return t.fail(round(self.beam.BeamMU, 2))
       else:
         return t.succeed()
 

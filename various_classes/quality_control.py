@@ -174,6 +174,7 @@ class QualityControl(object):
         ts_beam.name_capitalization_test()
         ts_beam.name_of_arc_test()
         ts_beam.mu_beam_vmat_test()
+        ts_beam.mu_1000_test()
         ts_beam.gantry_angle_test()
         ts_beam.logical_gantry_angle_breast_test()
         ts_beam.energy_of_arc_test()
