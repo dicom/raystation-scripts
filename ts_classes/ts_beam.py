@@ -271,9 +271,9 @@ class TSBeam(object):
         else:
           return t.succeed()
 
-  # Tests if the maximal jaw opening is less than 15 cm for filter free energies.
+  # Tests if the maximal jaw opening is large and a filter free energy has been used.
   def wide_jaw_opening_for_filter_free_energies(self):
-    t = TEST.Test("Høy kollimatoråpning detektert, det bør vurderes om filter-energi bør brukes. Maksimal feltstørrelse ved bruk av filter fri energi er 15 cm  ", '<15 cm', self.opening)
+    t = TEST.Test("Høy kollimatoråpning detektert, det bør vurderes om filter-energi bør brukes.", '<25 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
       if self.beam.BeamQualityId == '6 FFF':
@@ -285,14 +285,14 @@ class TSBeam(object):
               maxJawY1 = segment.JawPositions[2]
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
-          if abs(maxJawY1)+abs(maxJawY2) > 15:
+          if abs(maxJawY1)+abs(maxJawY2) > 25:
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
             return t.succeed()
             
-  # Tests if the maximal jaw opening is less than 15 cm and a filter free beam quality has not been used.
+  # Tests if the maximal jaw opening is small and a filter free beam quality has not been used.
   def narrow_jaw_opening_for_filter_energies(self):
-    t = TEST.Test("Liten kollimatoråpning detektert. Det bør vurderes om filterfri-energi kan brukes for å spare tid.", '<15 cm', self.opening)
+    t = TEST.Test("Liten kollimatoråpning detektert. Det bør vurderes om filterfri-energi kan brukes for å spare tid.", '<20 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
       if not 'FFF' in self.beam.BeamQualityId:
@@ -304,7 +304,7 @@ class TSBeam(object):
               maxJawY1 = segment.JawPositions[2]
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
-          if abs(maxJawY1)+abs(maxJawY2) < 14:
+          if abs(maxJawY1)+abs(maxJawY2) < 20:
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
             return t.succeed()
