@@ -309,7 +309,7 @@ def create_brain_objectives(pm, examination, ss, plan, prescription):
           weight = 20
         # Create objective if indicated:
         if weight:
-          if other_oars[i].name in  [ROIS.cochlea_r.name, ROIS.cochlea_l.name, ROIS.lacrimal_l.name, ROIS.lacrimal_r.name, ROIS.hippocampus_l.name, ROIS.hippocampus_r.name]:
+          if other_oars[i].name in  [ROIS.cochlea_r.name, ROIS.cochlea_l.name, ROIS.lacrimal_l.name, ROIS.lacrimal_r.name, ROIS.hippocampus_l.name, ROIS.hippocampus_r.name, ROIS.pituitary.name]:
             OF.max_eud(ss, plan, other_oars[i].name, tolerances[i].equivalent(nr_fractions)*100-50, 1, weight)
           else:
             OF.max_dose(ss, plan, other_oars[i].name, (tolerances[i].equivalent(nr_fractions)*100)-50, weight)
