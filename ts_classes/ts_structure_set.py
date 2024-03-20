@@ -48,7 +48,7 @@ class TSStructureSet(object):
     #self.dsc = TEST.Parameter('Geometri', '', self.param)
     #self.breast = TEST.Parameter('Geometri', '', self.param)
     # Determine the slice thickness for the examination associated with this structure set:
-    self.slice_thickness = round(abs(self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[1] - self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[0]), 1)
+    self.slice_thickness = round(abs(self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[1] - self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[0]), 2)
 
 
   # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined.

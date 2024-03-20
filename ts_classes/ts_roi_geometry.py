@@ -87,10 +87,10 @@ class TSROIGeometry(object):
       # Iterate the recorded slices to see if there are any gaps (i.e. a difference bigger than the slice thickness):
       for i in range(len(unique_slices)):
         if i > 0:
-          gap = round(abs(unique_slices[i] - unique_slices[i-1]), 1)
+          gap = round(abs(unique_slices[i] - unique_slices[i-1]), 2)
           # If this gap is larger than slice thickness, then we have a missing slice:
           if gap > self.ts_structure_set.slice_thickness:
-            missing_slices.append(round(unique_slices[i], 1))
+            missing_slices.append(round(unique_slices[i], 2))
       if len(missing_slices) > 0:
         return t.fail(str(missing_slices))
       else:
