@@ -270,14 +270,21 @@ class TSBeam(object):
 
   # Tests if the jaw opening on a vmat plan is big enough to risk exposing the electronics of the QA detector.
   # The "limit" towards the electronics is 15 cm away from the gantry from the isocenter.
+  # FIXME: This test is flawed in that it only really works in the default case of collimator angle near zero,
+  # because it only reads the value of the Y1 jaw. Ideally this test (and perhaps many other of the field size related tests),
+  # could be replaced with a target volume bounding box based test related to the isocenter position.
   def wide_jaw_opening_which_can_hit_vmat_qa_detector_electronics_test(self):
     t = TEST.Test("Høy kollimator-åpning detektert. Avhengig av kollimatorvinkel og kollimatoråpning, kan man i slike situasjoner risikere å bestråle elektronikken på ArcCheck-detektoren, som bør unngås. Ved asymmetrisk isosenter, bør isosenter vurderes flyttet for å unngå dette.", '<15 cm', self.opening)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
       if self.has_segment():
-        jaws = self.beam.Segments[0].JawPositions
-        if jaws[2] < -15:
-          return t.fail(round(abs(jaws[2]),1))
+        # Extract the jaw[2] value from 3 segments, and use the minimum value for the test (the maximally negative number):
+        jaw_first = self.beam.Segments[0].JawPositions[2]
+        jaw_middle = self.beam.Segments[round(len(self.beam.Segments)/2)].JawPositions[2]
+        jaw_last = self.beam.Segments[len(self.beam.Segments)-1].JawPositions[2]
+        jaw_position = min(jaw_first, jaw_middle, jaw_last)
+        if jaw_position <= -15:
+          return t.fail(round(abs(jaw_position), 1))
         else:
           return t.succeed()
 
