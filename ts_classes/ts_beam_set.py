@@ -52,6 +52,8 @@ class TSBeamSet(object):
     self.mu = TEST.Parameter('MU', '', self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
     self.number = TEST.Parameter('Feltnummer','', self.param)
+    # Other attributes:
+    self._prescription_roi_name = None
 
 
   # Gives true/false if the beam set has beams of not.
@@ -86,6 +88,12 @@ class TSBeamSet(object):
   def fraction_dose(self):
     return (self.beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
+  # Gives the precription ROI name.
+  def prescription_roi_name(self):
+    if not self._prescription_roi_name:
+     self._prescription_roi_name = self.beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
+    return self._prescription_roi_name
+  
   # Gives the ts_structure_set which corresponds with this beam set:
   def ts_structure_set(self):
     for ts_struct in self.ts_plan.ts_case.ts_structure_sets:
@@ -100,18 +108,11 @@ class TSBeamSet(object):
     target0 = None
     target1 = None
     if self.is_vmat():
-      for roi in ss.RoiGeometries:
-        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
-          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-          if po and po.Objective:
-            for objective in po.Objective.ConstituentFunctions:
-              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
-                current_target = roi.GetBoundingBox()
-                if target0 == None or current_target[0].z < target0:
-                  target0 = current_target[0].z
-                if target1 == None or current_target[1].z > target1:
-                  target1 = current_target[1].z
+      roi = ss.RoiGeometries[self.prescription_roi_name()]
+      box = roi.GetBoundingBox()
+      target0 = box[0].z
+      target1 = box[1].z
+      # Iterate beams:
       for beam in self.beam_set.Beams:
         photon_iso = beam.Isocenter.Position
         if target0 and target1:
