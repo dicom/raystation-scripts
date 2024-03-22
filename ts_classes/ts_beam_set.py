@@ -556,14 +556,14 @@ class TSBeamSet(object):
           else:
             return t.succeed()
 
-  # Tests for SIB plans, if the lower doser volumes is normalised to the correct value, within 0.5%.
+  # Tests for SIB plans, if the lower dose volumes is normalised to the correct value (within 0.5 %).
   def target_volume_normalisation_for_sib_test(self):
     if self.ts_label.label.region in RC.prostate_codes + RC.breast_codes + RC.rectum_codes:
       ss = self.ts_structure_set().structure_set
       roi_dict = SSF.create_roi_dict(ss)
       potential_target_volumes = [ROIS.ctv_47.name, ROIS.ctv_56.name, ROIS.ctv_70_sib.name, ROIS.ctv_57.name]
+      # Create a dictionary of all CTVs defined as an objective:
       objective_target_volumes = {}
-      # Create a dictionary of all CTVs defined as an objective.
       po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
       if po and po.Objective:
         for objective in po.Objective.ConstituentFunctions:
@@ -577,8 +577,8 @@ class TSBeamSet(object):
           # Check if the target was used as objective
           if objective_target_volumes.get(target):
             # Use the two last characters in the target-string to find the wanted median dose of that target volume
-            if int(target[-2:]) > 30:
-              prescription_dose = int(target[-2:])
+            prescription_dose = int(target[-2:])
+            if prescription_dose > 30:
               low_dose = round(prescription_dose * 0.995, 2)
               high_dose = round(prescription_dose * 1.005, 2)
               real_dose_d50 = RSU.gy(self.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = target, RelativeVolumes = [0.50])[0]) * self.beam_set.FractionationPattern.NumberOfFractions
