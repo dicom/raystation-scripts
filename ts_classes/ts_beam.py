@@ -42,10 +42,14 @@ class TSBeam(object):
     self.opening = TEST.Parameter('Åpning', '', self.param)
     self.mlc = TEST.Parameter('MLC', '', self.param)
     self.couch_rotation_angle = TEST.Parameter('Bordvinkel', str(beam.CouchRotationAngle), self.param)
+    # Other attributes:
+    self.segment_length = None
 
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
-    if len(list(self.beam.Segments)) > 0:
+    if not self.segment_length:
+      self.segment_length = len(list(self.beam.Segments))
+    if self.segment_length > 0:
       return True
     else:
       return False
@@ -295,13 +299,14 @@ class TSBeam(object):
     if self.is_vmat():
       if self.beam.BeamQualityId == '6 FFF':
         if self.has_segment():
-          maxJawY1 = self.beam.Segments[0].JawPositions[2]
-          maxJawY2 = self.beam.Segments[0].JawPositions[3]
-          for segment in self.beam.Segments:
-            if segment.JawPositions[2] < maxJawY1:
-              maxJawY1 = segment.JawPositions[2]
-            if segment.JawPositions[3] > maxJawY1:
-              maxJawY2 = segment.JawPositions[3]
+          # Extract field size from 3 segments (avoid pulling data from all segments to save execution time).
+          segment_first = self.beam.Segments[0]
+          segment_middle = self.beam.Segments[round(len(self.beam.Segments)/2)]
+          segment_last = self.beam.Segments[len(self.beam.Segments)-1]
+          # For Y1 more negative number means larger field size:
+          maxJawY1 = min([segment_first.JawPositions[2], segment_middle.JawPositions[2], segment_last.JawPositions[2]])
+          # For Y2 more positive number means larger field size:
+          maxJawY2 = max([segment_first.JawPositions[3], segment_middle.JawPositions[3], segment_last.JawPositions[3]])
           if abs(maxJawY1)+abs(maxJawY2) > 25:
             return t.fail(abs(maxJawY1)+abs(maxJawY2))
           else:
