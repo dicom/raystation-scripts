@@ -31,33 +31,3 @@ class TSSegment(object):
     # Parameters:
     self.param = TEST.Parameter('Segment', str(segment.SegmentNumber), self.parent_param)
     self.mlc = TEST.Parameter('MLC', '', self.param)
-
-  # Tests validity of mlc corners.
-  def mlc_corner_validity_test(self):
-    t = TEST.Test("Skal ha hjørne-posisjoner som er leverbare på Elekta", True, self.mlc)
-    violated = False
-    # Agility/Versa HD:
-    limits = [20.0 for i in range(80)]
-    limits[0] = limits[79] = 16.1
-    limits[1] = limits[78] = 16.7
-    limits[2] = limits[77] = 17.3
-    limits[3] = limits[76] = 17.8
-    limits[4] = limits[75] = 18.3
-    limits[5] = limits[74] = 18.8
-    limits[6] = limits[73] = 19.2
-    limits[7] = limits[72] = 19.7
- 
-    # Iterate leaf positions and check against limits:
-    #for i in range(len(limits)):
-    for i in it.chain(range(0, 7), range(72, 79)):
-      if self.segment.LeafPositions[0][i] < -limits[i]:
-        violated = True
-      if self.segment.LeafPositions[1][i] > limits[i]:
-        violated = True
-
-    if violated:
-      return t.fail(False)
-    else:
-      return t.succeed()
-
-

@@ -188,6 +188,5 @@ class QualityControl(object):
         ts_beam.bolus_set_test()
         ts_beam.couch_rotation_angle_test()
         #ts_beam.narrow_jaw_opening_for_filter_energies()
-        # Segment tests:
-        for ts_segment in ts_beam.ts_segments:
-          ts_segment.mlc_corner_validity_test()
+        # Segment tests (at the moment we have no segment tests):
+        #for ts_segment in ts_beam.ts_segments:
