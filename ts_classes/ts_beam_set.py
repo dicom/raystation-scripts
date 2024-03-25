@@ -247,42 +247,21 @@ class TSBeamSet(object):
               return t.succeed()
 
   # Tests that the isocenter coordinate is reasonably centered in the normalisation volume (in the longitudinal direction).
-  # An exception is for prostate plans with pelvic lymph nodes, here you want to use this volume. Another exception is for non-VMAT breast plans, where the isocenter is often placed more cranially.
   def isocenter_centered_long_test(self):
-    t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning, avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm", '<1 cm', self.isocenter)
+    t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning (avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm)", '<1 cm', self.isocenter)
     if self.beam_set.Modality == 'Photons':
       diff = 0
       ss = self.ts_structure_set().structure_set
-      target0 = None
-      target1 = None
-      for roi in ss.RoiGeometries:
-        if roi.OfRoi.Type == 'Ptv' and roi.PrimaryShape:
-          # Determine if this target volume is relevant for this beam set (by checking if it is used as an objective):
-          po = RSU.plan_optimization(self.ts_plan.plan, self.beam_set)
-          if po and po.Objective:
-            for objective in po.Objective.ConstituentFunctions:
-              if objective.ForRegionOfInterest.Name == roi.OfRoi.Name:
-                current_target = roi.GetBoundingBox()
-                if target0 == None or current_target[0].z < target0:
-                  target0 = current_target[0].z
-                if target1 == None or current_target[1].z > target1:
-                  target1 = current_target[1].z
-      if self.is_vmat():
-        if target0 and target1:
-          target_center_z = target0 + 0.5*abs(target0 - target1)
-          for beam in self.beam_set.Beams:
-            photon_iso = beam.Isocenter.Position
-            diff = abs(photon_iso.z - target_center_z)
-      elif not self.is_vmat():
-        if not self.ts_label.label.region in RC.conventional_and_vmat_site_codes:
-          if self.beam_set.Modality == 'Photons':
-            for beam in self.beam_set.Beams:
-              photon_iso = beam.Isocenter.Position
-              for rg in self.ts_structure_set().structure_set.RoiGeometries:
-                if rg.OfRoi.Name == self.beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name:
-                  target = rg.GetBoundingBox()
-                  target_center_z = target[0].z + 0.5*abs(target[0].z - target[1].z)
-                  diff = abs(photon_iso.z - target_center_z)
+      # Get the target geometry:
+      roi = ss.RoiGeometries[self.prescription_roi_name()]
+      target = roi.GetBoundingBox()
+      target0 = target[0].z
+      target1 = target[1].z
+      if target0 and target1:
+        target_center_z = target0 + 0.5*abs(target0 - target1)
+        for beam in self.beam_set.Beams:
+          photon_iso = beam.Isocenter.Position
+          diff = abs(photon_iso.z - target_center_z)
       if diff:
         if diff > 1:
           return t.fail(round(diff, 2))
