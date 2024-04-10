@@ -29,11 +29,13 @@ def adapt_optimization_oar(ss, plan, oar_list, region_code):
       if oa.roi.name == ROIS.spinal_canal.name:
         v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi.name, RelativeVolumes = [0.02])
         oa.set_dose_high(v[0])
-        oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * v[0]
+        # Make sure to avoid setting a target dose lower than 1 cGy:
+        oa.objective.DoseFunctionParameters.DoseLevel = max(1, 0.5 * v[0])
       else:
         avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi.name, DoseType = 'Average')
         oa.set_dose_high(avg)
-        oa.objective.DoseFunctionParameters.DoseLevel = 0.5 * avg
+        # Make sure to avoid setting a target dose lower than 1 cGy:
+        oa.objective.DoseFunctionParameters.DoseLevel = max(1, 0.5 * avg)
     adaptive_optimization(plan, objective_adaptations)
 
 
@@ -288,8 +290,6 @@ def setup_objectives(ss, plan, rois, beam_set_index, region_code):
       objective = max_dvh(ss, plan, roi.name, dose, percent_volume, weight, beam_set_index=beam_set_index)
     elif roi.name != ROIS.spinal_canal.name:
       objective = max_eud(ss, plan, roi.name, dose, eud, weight, beam_set_index=beam_set_index)
-
     if objective:
       adaptations.append(OA.ObjectiveAdaptation(roi, objective))
   return adaptations
-
