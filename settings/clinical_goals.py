@@ -973,7 +973,7 @@ def lung_stereotactic_targets(ss):
   ]
   if nr_targets == 1:
     lung_targets += [
-      CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, pc99, priority1),
+      CG.ClinicalGoal(ROIS.ptv.name, at_least, dose_at_volume, pc100, 0.98, priority1),
       CG.ClinicalGoal(ROIS.ptv.name, at_most, dose_at_volume, pc140, 0.02, priority4),
       CG.ClinicalGoal(ROIS.ptv.name, at_least, conformity_index, pc88, pc100, priority5)
     ]

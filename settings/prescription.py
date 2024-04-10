@@ -48,7 +48,7 @@ class Prescription(object):
   # Gives True if the prescription is stereotactic and False if not.
   def is_stereotactic(self):
     result = False
-    if self.type == 'DoseAtVolume' and self.volume_percent > 98:
+    if self.type == 'DoseAtVolume' and self.volume_percent >= 98:
       result = True
     return result
 
@@ -123,9 +123,10 @@ lung = [
   Prescription(70, 35, 'MedianDose'),
   Prescription(60, 40, 'MedianDose'), # Bi-daily
   # Stereotactic:
-  Prescription(54, 3, 'DoseAtVolume', volume_percent=99),
-  Prescription(55, 5, 'DoseAtVolume', volume_percent=99),
-  Prescription(56, 8, 'DoseAtVolume', volume_percent=99)
+  Prescription(54, 3, 'DoseAtVolume', volume_percent=98),
+  Prescription(55, 5, 'DoseAtVolume', volume_percent=98),
+  Prescription(56, 8, 'DoseAtVolume', volume_percent=98),
+  Prescription(60, 8, 'DoseAtVolume', volume_percent=98)
 ]
 bladder = [
   Prescription(21, 3, 'MedianDose'),
@@ -195,7 +196,10 @@ def create_prescription(total_dose, nr_fractions, region_code, ss):
     if (nr_fractions == 1 and total_dose >= 16) or (nr_fractions == 3 and total_dose >= 24) or (nr_fractions == 5 and total_dose >= 30):
       stereotactic = True
   if stereotactic:
-    p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=99)
+    if region_code in RC.lung_and_mediastinum_codes:
+      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=98)
+    else:
+      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=99)
   else:
     p = Prescription(total_dose, nr_fractions, 'MedianDose')
   return p
