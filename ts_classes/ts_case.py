@@ -178,3 +178,17 @@ class TSCase(object):
           return t.fail(external_anterior_contraction)
         else:
           return t.succeed()
+
+  # Tests if there exists a virtual Bolus ROI in the case without a density override.
+  def virtual_bolus_without_density_override_test(self):
+    t = TEST.Test("Når en case har virtuell bolus (bolus definert i RayStation), skal denne være definert med et Material (density override).", True, self.param)
+    # Do we have a virtual bolus present?
+    bolus = None
+    for roi in self.case.PatientModel.RegionsOfInterest:
+      if roi.Name == 'Bolus' or roi.Type == 'Bolus':
+        bolus = roi
+    if bolus:
+      if bolus.RoiMaterial == None:
+        return t.fail(None)
+      else:
+        return t.succeed()
