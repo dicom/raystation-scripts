@@ -159,3 +159,22 @@ class TSCase(object):
           return t.fail()
         else:
           return t.succeed()
+
+  # Tests that the CTV is not contracted (e.q. 5 mm) beneath the external contour for breast cases with virtual bolus.
+  # (In these cases, the CTV should go all they way out to the external contour)
+  def ctv_not_contracted_from_external_for_breast_case_with_virtual_bolus_test(self):
+    t = TEST.Test("CTV skal ha 0 mm contraction i forhold til External for bryst caser som har virtuell bolus (bolus definert i RayStation)", 0, self.param)
+    # Is this a Breast case?
+    if self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
+      # Do we have a virtual bolus present?
+      match = False
+      for roi in self.case.PatientModel.RegionsOfInterest:
+        if roi.Name == 'Bolus' or roi.Type == 'Bolus':
+          match = True
+      if match:
+        ctv = self.case.PatientModel.RegionsOfInterest['CTV']
+        external_anterior_contraction = ctv.DerivedRoiExpression.Children[0].Children[1].AnteriorDistance
+        if external_anterior_contraction > 0:
+          return t.fail(external_anterior_contraction)
+        else:
+          return t.succeed()

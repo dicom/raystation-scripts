@@ -75,6 +75,7 @@ class QualityControl(object):
     ts_case.breath_measurement_point_for_lung_sbrt_test()
     ts_case.breath_measurement_point_not_in_gantry_shadow_for_lung_sbrt_test()
     ts_case.dibh_control_examinations_present_on_dibh_case_test()
+    ts_case.ctv_not_contracted_from_external_for_breast_case_with_virtual_bolus_test()
     
     # ROI tests:
     for ts_roi in ts_case.ts_rois:
