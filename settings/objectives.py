@@ -126,11 +126,8 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
     OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
-  if target == ROIS.ctv_sb.name:
-    # Note: Does this need to be set differently, or could it be equal, and left to dynamic determination?!
-    OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 3)
-  else:
-    OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
+  OF.max_dvh(ss, plan, ROIS.a_lad.name, total_dose*0.5*100, 2, 2)
+  OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
   # Side-dependent objectives:
   if region_code in RC.breast_l_codes:
     OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
@@ -184,6 +181,7 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
     OF.max_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
+  OF.max_dvh(ss, plan, ROIS.a_lad.name, total_dose*0.5*100, 2, 2)
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
   OF.max_eud(ss, plan, ROIS.thyroid.name, 8.7*100, 1, 1)
   OF.max_eud(ss, plan, ROIS.esophagus.name, 8.2*100, 1, 1)
