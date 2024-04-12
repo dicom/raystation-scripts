@@ -6,14 +6,18 @@
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 10B
-# Python 3.6
+# Made for RayStation version: 12A
+# Python 3.8
 
 # System configuration:
 from connect import *
+import datetime
 import sys
 from tkinter import *
 from tkinter import messagebox
+
+# Log start time:
+time_start = datetime.datetime.now()
 
 # Add necessary folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
@@ -42,18 +46,38 @@ try:
 except SystemError:
     raise IOError("No plan loaded.")
 
-
-# Set up and execute the quality control:
+# Set up and execute the quality control class:
 qc = QC.QualityControl(patient, case, plan)
 
-# Display the results of the quality control:
+# Create title and body strings:
 title = "Plan Quality Control"
 summary = qc.result.failure_summary()
 if qc.result.nr_failures() == 0:
   # Zero failures:
   text = "Ingen problemer ble funnet! :)\n\n"
 else:
-  # 1 or more failures:
+  # One or more failures:
   text = str(qc.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
-messagebox.showinfo(title,text)
 
+# Log finish time and format a time string:
+time_end = datetime.datetime.now()
+elapsed_time = time_end - time_start
+if elapsed_time.seconds > 3600:
+  hours = elapsed_time.seconds // 3600 % 3600
+  minutes = (elapsed_time.seconds - hours * 3600) // 60 % 60
+  seconds = elapsed_time.seconds - hours * 3600 - minutes * 60
+else:
+  hours = 0
+  minutes = elapsed_time.seconds // 60 % 60
+  seconds = elapsed_time.seconds - minutes * 60
+# Append time string to result:
+if hours > 0:
+  text += "\n\n" + "Tidsbruk: " +str(hours) + " time(r) " + str(minutes) + " min " + str(seconds) + " sek"
+else:
+  if minutes > 0:
+    text += "\n\n" + "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
+  else:
+    text += "\n\n" + "Tidsbruk: " + str(seconds) + " sek"
+
+# Display the messagebox GUI:
+messagebox.showinfo(title,text)
