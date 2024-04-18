@@ -34,6 +34,8 @@ class TSBeamSet(object):
     if ts_plan:
       ts_plan.ts_beam_sets.append(self)
       self.parent_param = ts_plan.param
+    # Cache attributes:
+    self._prescription_roi_name = None
     # Parameters:
     self.param = TEST.Parameter('Beam Set', self.beam_set.DicomPlanLabel, self.parent_param)
     self.technique = TEST.Parameter('Teknikk', self.beam_set.DeliveryTechnique, self.param)
@@ -52,8 +54,6 @@ class TSBeamSet(object):
     self.mu = TEST.Parameter('MU', '', self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
     self.number = TEST.Parameter('Feltnummer','', self.param)
-    # Other attributes:
-    self._prescription_roi_name = None
 
 
   # Gives true/false if the beam set has beams of not.
@@ -88,7 +88,7 @@ class TSBeamSet(object):
   def fraction_dose(self):
     return (self.beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
-  # Gives the precription ROI name.
+  # Gives the cached precription ROI name.
   def prescription_roi_name(self):
     if not self._prescription_roi_name:
      self._prescription_roi_name = self.beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
