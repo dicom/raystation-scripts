@@ -29,12 +29,37 @@ class TSROIGeometry(object):
       self.parent_param = ts_structure_set.param
     else:
       self.parent_param = None
+    # Cache attributes:
+    self._contours = None
+    self._primary_shape = None
+    self._roi = None
     # Parameters:
     self.param = TEST.Parameter('ROI', '', self.parent_param)
-    self.defined_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name, self.param)
-    self.updated_roi = TEST.Parameter('Geometri', self.roi_geometry.OfRoi.Name, self.param)
+    self.defined_roi = TEST.Parameter('Geometri', self.roi().Name, self.param)
+    self.updated_roi = TEST.Parameter('Geometri', self.roi().Name, self.param)
 
 
+  # Gives the cached primary shape of the ROI geometry.
+  def contours(self):
+    if not self._contours:
+      try:
+        self._contours = self.primary_shape().Contours
+      except Exception:
+        pass
+    return self._contours
+  
+  # Gives the cached primary shape of the ROI geometry.
+  def primary_shape(self):
+    if not self._primary_shape:
+     self._primary_shape = self.roi_geometry.PrimaryShape
+    return self._primary_shape
+  
+  # Gives the cached ROI of the ROI geometry.
+  def roi(self):
+    if not self._roi:
+     self._roi = self.roi_geometry.OfRoi
+    return self._roi
+  
   # Tests if all ROIs are defined.
   def defined_volume_test(self):
     t = TEST.Test("Regionen må ha definert volum", True, self.defined_roi)
@@ -47,13 +72,13 @@ class TSROIGeometry(object):
   def derived_roi_geometry_is_updated_test(self):
     t = TEST.Test("Regionen må være oppdatert når den er avledet", True, self.updated_roi)
     # Does the RoiGeometry have a shape?
-    if self.roi_geometry.PrimaryShape:
+    if self.primary_shape():
       # Is the referenced ROI derived?
-      if self.roi_geometry.OfRoi.DerivedRoiExpression:
+      if self.roi().DerivedRoiExpression:
         # Is this ROI Geometry updated or not?
-        if not self.roi_geometry.PrimaryShape.DerivedRoiStatus:
+        if not self.primary_shape().DerivedRoiStatus:
           return t.succeed()
-        elif self.roi_geometry.PrimaryShape.DerivedRoiStatus.IsShapeDirty:
+        elif self.primary_shape().DerivedRoiStatus.IsShapeDirty:
           return t.fail()
         else:
           return t.succeed()
@@ -61,25 +86,12 @@ class TSROIGeometry(object):
   # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
   def gaps_in_definition_test(self):
     t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
-    # We are only able to test this if there actually are contours:
-    try:
-      contours = self.roi_geometry.PrimaryShape.Contours
-    except Exception:
-      contours = None
-    # If the ROI geometry is derived, we will not perform this test on it:
-    if self.roi_geometry.PrimaryShape:
-      if self.roi_geometry.PrimaryShape.DerivedRoiStatus:
-        contours = None
-    # Also skip this test for ROIs where organ type is "Unknown" (to avoid testing e.g. dose derived volumes):
-    # (Also skip some known named ROIs which may give some unwanted false positives for this test)
-    if self.roi_geometry.OfRoi.OrganData.OrganType in ['Unknown'] or self.roi_geometry.OfRoi.Name in ['BreastString_L', 'BreastString_R', 'Clips_L', 'Clips_R']:
-      contours = None
-    # Perform the test if indicated:
-    if contours:
+    # Perform the test if indicated (ROI has contours and is not a derived ROI):
+    if self.contours() and not self.primary_shape().DerivedRoiStatus:
       missing_slices = []
       # Extract all slices (z coordinates) where the ROI is defined:
       slices = []
-      for slice in self.roi_geometry.PrimaryShape.Contours:
+      for slice in self.contours():
         slices.append(slice[0].z)
       # Determine unique slice positions and sort them:
       unique_slices = list(set(slices))
@@ -102,13 +114,13 @@ class TSROIGeometry(object):
     # This test is currently only run on the LN_Iliac ROI, with a max expected nr of islands of 2.
     t = TEST.Test("ROIGeometri skal maks inneholde dette antall separate konturer i ethvert aksial-snitt", "<="+str(limit), self.defined_roi)
     # Only run test if the ROI Name matches:
-    if self.roi_geometry.OfRoi.Name == "LN_Iliac":
+    if self.roi().Name == "LN_Iliac":
       # Does the RoiGeometry have a shape?
-      if self.roi_geometry.PrimaryShape:
+      if self.primary_shape():
         # Store contour information in a dict:
         slices = {}
         # Iterate contours:
-        for c in self.roi_geometry.PrimaryShape.Contours:
+        for c in self.contours():
           z = str(round(c[0].z, 2))
           if slices.get(z):
             slices[z] += 1
