@@ -86,27 +86,29 @@ class TSROIGeometry(object):
   # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
   def gaps_in_definition_test(self):
     t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
-    # Perform the test if indicated (ROI has contours and is not a derived ROI):
-    if self.contours() and not self.primary_shape().DerivedRoiStatus:
-      missing_slices = []
-      # Extract all slices (z coordinates) where the ROI is defined:
-      slices = []
-      for slice in self.contours():
-        slices.append(slice[0].z)
-      # Determine unique slice positions and sort them:
-      unique_slices = list(set(slices))
-      unique_slices.sort()
-      # Iterate the recorded slices to see if there are any gaps (i.e. a difference bigger than the slice thickness):
-      for i in range(len(unique_slices)):
-        if i > 0:
-          gap = round(abs(unique_slices[i] - unique_slices[i-1]), 2)
-          # If this gap is larger than slice thickness, then we have a missing slice:
-          if gap > self.ts_structure_set.slice_thickness:
-            missing_slices.append(round(unique_slices[i], 2))
-      if len(missing_slices) > 0:
-        return t.fail(str(missing_slices))
-      else:
-        return t.succeed()
+    # For performance reasons, we choose to skip this test for External and Couch ROIs:
+    if self.roi().Name not in ["External", "Couch"]:
+      # Perform the test if indicated (ROI has contours and is not a derived ROI):
+      if self.contours() and not self.primary_shape().DerivedRoiStatus:
+        missing_slices = []
+        # Extract all slices (z coordinates) where the ROI is defined:
+        slices = []
+        for slice in self.contours():
+          slices.append(slice[0].z)
+        # Determine unique slice positions and sort them:
+        unique_slices = list(set(slices))
+        unique_slices.sort()
+        # Iterate the recorded slices to see if there are any gaps (i.e. a difference bigger than the slice thickness):
+        for i in range(len(unique_slices)):
+          if i > 0:
+            gap = round(abs(unique_slices[i] - unique_slices[i-1]), 2)
+            # If this gap is larger than slice thickness, then we have a missing slice:
+            if gap > self.ts_structure_set.slice_thickness:
+              missing_slices.append(round(unique_slices[i], 2))
+        if len(missing_slices) > 0:
+          return t.fail(str(missing_slices))
+        else:
+          return t.succeed()
 
   # Tests if a ROI geometry contains more than an expected nr of "islands" in any given axial slice of its contour.
   def max_nr_of_islands_in_slice_test(self):
