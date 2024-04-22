@@ -4,6 +4,7 @@
 import colors as COLORS
 import def_oars as DEF
 import margins as MARGINS
+import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 
@@ -43,6 +44,12 @@ class DefPalliative(object):
         pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"
     except:
       pass
+    # Exclude some ROIs from export:
+    #exclude = ["L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"]
+    if bone:
+      exclude = bone.sourcesA + bone.sourcesB
+      for roi in exclude:
+        PMF.exclude_roi_from_export(pm, roi.name)
 
 
   # Adds a bone union ROI:

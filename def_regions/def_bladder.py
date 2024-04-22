@@ -4,6 +4,7 @@
 import colors as COLORS
 import def_oars as DEF
 import margins as MARGINS
+import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 
@@ -25,6 +26,10 @@ class DefBladder(object):
     # Change type to "Other":
     pm.RegionsOfInterest['Bone'].OrganData.OrganType = "Other"
     pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"
+    # Exclude some ROIs from export:
+    exclude = ["L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"]
+    for roi_name in exclude:
+      PMF.exclude_roi_from_export(pm, roi_name)
 
 
   # Adds rois that are common across all cases.
