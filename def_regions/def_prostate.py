@@ -116,6 +116,8 @@ class DefProstate(object):
     # DL OARs:
     examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
     examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag_Draft", "Rectum", "AnalCanal", "Testis_L", "Testis_R", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    # Exclude Rectum from BowelBag:
+    ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
     site.add_oars([ROIS.bowel_bag, ROIS.penile_bulb])
   
