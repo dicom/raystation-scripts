@@ -126,6 +126,8 @@ class DefProstate(object):
   def add_lymph_node_rois(self, pm, examination, site):
     # DL OARs:
     examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["LN_Iliac", "Kidney_L", "Kidney_R", "Liver", "IliopsoasMuscle_L", "IliopsoasMuscle_R", "L2", "L3", "L4", "A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"])
+    # Exclude Kidneys, Liver and LN_Iliac from BowelBag:
+    ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pelvic_nodes])
   
   
   # Adds rois that are relevant for intact prostate treatment.
