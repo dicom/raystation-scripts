@@ -112,29 +112,36 @@ class TSROIGeometry(object):
 
   # Tests if a ROI geometry contains more than an expected nr of "islands" in any given axial slice of its contour.
   def max_nr_of_islands_in_slice_test(self):
-    limit = 2
-    # This test is currently only run on the LN_Iliac ROI, with a max expected nr of islands of 2.
-    t = TEST.Test("ROIGeometri skal maks inneholde dette antall separate konturer i ethvert aksial-snitt", "<="+str(limit), self.defined_roi)
-    # Only run test if the ROI Name matches:
-    if self.roi().Name == "LN_Iliac":
-      # Does the RoiGeometry have a shape?
-      if self.primary_shape():
-        # Store contour information in a dict:
-        slices = {}
-        # Iterate contours:
-        for c in self.contours():
-          z = str(round(c[0].z, 2))
-          if slices.get(z):
-            slices[z] += 1
+    # ROIs which are to be tested, and their respective limit of nr of islands:
+    limits = {
+      "LN_Iliac": 2,
+      "SeminalVes": 2
+    }
+    t = TEST.Test("ROIGeometri skal maks inneholde dette antall separate konturer i ethvert aksial-snitt", None, self.defined_roi)
+    # Iterate the defines ROIs:
+    for key in limits:
+      # Only run test if the ROI Name matches:
+      if self.roi().Name == key:
+        # Set the expected value for this ROI:
+        t.expected = "<="+str(limits[key])
+        # Does the RoiGeometry actually have a shape?
+        if self.primary_shape():
+          # Store contour information in a dict:
+          slices = {}
+          # Iterate contours:
+          for c in self.contours():
+            z = str(round(c[0].z, 2))
+            if slices.get(z):
+              slices[z] += 1
+            else:
+              slices[z] = 1
+          # Find deviating slices:
+          deviations = {}
+          for pair in slices.items():
+            if pair[1] > limits[key]:
+              deviations[pair[0]] = pair[1]
+          # Determine result:
+          if len(deviations) > 0:
+            return t.fail(str(deviations))
           else:
-            slices[z] = 1
-        # Find deviating slices:
-        deviations = {}
-        for pair in slices.items():
-          if pair[1] > limit:
-            deviations[pair[0]] = pair[1]
-        # Determine result:
-        if len(deviations) > 0:
-          return t.fail(str(deviations))
-        else:
-          return t.succeed()
+            return t.succeed()
