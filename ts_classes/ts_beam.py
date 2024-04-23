@@ -73,9 +73,9 @@ class TSBeam(object):
         else:
           return t.succeed()
 
-  # Tests if the field is asymmetric, i.e. ifthe maximum jaw opening is more than 7.5 cm for Y1 and Y2 jaws for an VMAT arc, for filter free energies.
+  # Tests if the field is asymmetric, i.e. ifthe maximum jaw opening is more than 12.5 cm for Y1 and Y2 jaws for an VMAT arc, for filter free energies.
   def asymmetric_jaw_opening_for_filter_free_energies(self):
-    t = TEST.Test("Maksimal avstand fra isosenter til feltgrense ved bruk av filter fri energi bør være < 7.5 cm  ", '<7.5 cm', self.collimator)
+    t = TEST.Test("Maksimal avstand fra isosenter til feltgrense ved bruk av filter fri energi bør være < 12.5 cm  ", '<12.5 cm', self.collimator)
     # Perform the test only for VMAT beams:
     if self.is_vmat():
       if self.beam.BeamQualityId == '6 FFF':
@@ -87,9 +87,9 @@ class TSBeam(object):
               maxJawY1 = segment.JawPositions[2]
             if segment.JawPositions[3] > maxJawY1:
               maxJawY2 = segment.JawPositions[3]
-          if maxJawY1 < -7.5:
+          if maxJawY1 < -12.5:
             return t.fail(maxJawY1)
-          elif maxJawY2 > 7.5:
+          elif maxJawY2 > 12.5:
             return t.fail(maxJawY2)
           else:
             return t.succeed()
