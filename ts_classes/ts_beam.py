@@ -29,6 +29,8 @@ class TSBeam(object):
       self.parent_param = ts_beam_set.param
     else:
       self.parent_param = None
+    # Cache attributes:
+    self._leaf_min_max = None
     # Parameters:
     self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
     self.name = TEST.Parameter('Navn', '', self.param)
@@ -45,6 +47,24 @@ class TSBeam(object):
     # Other attributes:
     self.segment_length = None
 
+  # Gives the cached leaf min and leaf max positions of the segments of this beam.
+  def leaf_min_max(self):
+    if not self._leaf_min_max:
+      # Start values (will be overwritten when extracting real leaf positions):
+      minMLCX1 = 20
+      maxMLCX2 = -20
+      # Iterate all segments:
+      for s in self.beam.Segments:
+        # Get min and max leaf positions for this segment:
+        val = min(s.LeafPositions[0])
+        if val < minMLCX1:
+          minMLCX1 = val
+        val = max(s.LeafPositions[1])
+        if val > maxMLCX2:
+          maxMLCX2 = val
+      self._leaf_min_max = [minMLCX1, maxMLCX2]
+    return self._leaf_min_max
+  
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
     if not self.segment_length:
@@ -307,8 +327,11 @@ class TSBeam(object):
           maxJawY1 = min([segment_first.JawPositions[2], segment_middle.JawPositions[2], segment_last.JawPositions[2]])
           # For Y2 more positive number means larger field size:
           maxJawY2 = max([segment_first.JawPositions[3], segment_middle.JawPositions[3], segment_last.JawPositions[3]])
-          if abs(maxJawY1)+abs(maxJawY2) > 25:
-            return t.fail(abs(maxJawY1)+abs(maxJawY2))
+          leaf_min_max = self.leaf_min_max()
+          if leaf_min_max[1] - leaf_min_max[0] > 25:
+            return t.fail(leaf_min_max[1] - leaf_min_max[0])
+          elif maxJawY2 - maxJawY1 > 25:
+            return t.fail(maxJawY2 - maxJawY1)
           else:
             return t.succeed()
             
