@@ -128,13 +128,14 @@ class TSROIGeometry(object):
         if self.primary_shape():
           # Store contour information in a dict:
           slices = {}
-          # Iterate contours:
-          for c in self.contours():
-            z = str(round(c[0].z, 2))
-            if slices.get(z):
-              slices[z] += 1
-            else:
-              slices[z] = 1
+          if self.contours():
+            # Iterate contours:
+            for c in self.contours():
+              z = str(round(c[0].z, 2))
+              if slices.get(z):
+                slices[z] += 1
+              else:
+                slices[z] = 1
           # Find deviating slices:
           deviations = {}
           for pair in slices.items():
