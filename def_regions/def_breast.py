@@ -140,8 +140,10 @@ class DefBreast(object):
     # Targets:
     ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
     ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    # Image verification volume:
+    clips_control = ROI.ROIAlgebra('ClipsControl', ROIS.markers.type, ROIS.markers.color, sourcesA = [sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     # Targets for whole breast:
-    site.add_targets([ctv_sb, ptv_sbc])
+    site.add_targets([ctv_sb, ptv_sbc, clips_control])
   
   
   # Adds regional breast (left or right) ROIs to the site object.
