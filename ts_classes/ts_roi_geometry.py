@@ -30,6 +30,7 @@ class TSROIGeometry(object):
     else:
       self.parent_param = None
     # Cache attributes:
+    self._bounding_box = None
     self._contours = None
     self._primary_shape = None
     self._roi = None
@@ -39,6 +40,12 @@ class TSROIGeometry(object):
     self.updated_roi = TEST.Parameter('Geometri', self.roi().Name, self.param)
 
 
+  # Gives the cached bounding box of the ROI geometry.
+  def bounding_box(self):
+    if not self._bounding_box:
+     self._bounding_box = self.roi_geometry.GetBoundingBox()
+    return self._bounding_box
+  
   # Gives the cached primary shape of the ROI geometry.
   def contours(self):
     if not self._contours:

@@ -253,3 +253,29 @@ class TSStructureSet(object):
         return t.fail(round(distance, 2))
       else:
         return t.succeed()
+
+  # Tests if any ROI geometry seems to be outside the External contour.
+  # (Test is performed left-right and anterior-posterior, not in longitudinal direction)
+  def no_geometries_outside_external_test(self):
+    t = TEST.Test("Geometri forventes å ikke være definert utenfor 'External' for noen ROI", None, self.geometry)
+    external = None
+    geometries = []
+    failed_geometries = []
+    # Iterate ROI geometries:
+    for ts_rg in self.ts_roi_geometries:
+      if ts_rg.roi().Type == 'External':
+        external = ts_rg
+      elif ts_rg.roi().Type != 'Support' and ts_rg.primary_shape():
+        # The ROI geometry actually has a shape, and is not a couch ROI, so it is relevant for the test:
+        geometries.append(ts_rg)
+    if external and len(geometries) > 0:
+      ext_bb = external.bounding_box()
+      # Iterate the selected geometries and check their bounding boxes against external:
+      for ts_rg in geometries:
+        bb = ts_rg.bounding_box()
+        if bb[0].x < ext_bb[0].x or bb[1].x > ext_bb[1].x or bb[0].y < ext_bb[0].y or bb[1].y > ext_bb[1].y:
+          failed_geometries.append(ts_rg.roi().Name)
+    if len(failed_geometries) == 0:
+      return t.succeed()
+    else:
+      return t.fail(str(failed_geometries))
