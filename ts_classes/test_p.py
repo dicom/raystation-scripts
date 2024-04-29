@@ -62,11 +62,11 @@ class Test(object):
 # and contains tests and sub-parameters.
 class Parameter(object):
   def __init__(self, type, value, parent):
-    if type:
+    if type is not None:
       self.type = type
     else:
       self.type = ''
-    if value:
+    if value is not None:
       self.value = value
     else:
       self.value = ''
