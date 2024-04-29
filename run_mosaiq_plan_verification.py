@@ -13,9 +13,13 @@
 
 # System configuration:
 from connect import *
+import datetime
 import sys
 from tkinter import *
 from tkinter import messagebox
+
+# Log start time:
+time_start = datetime.datetime.now()
 
 # Add necessary folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
@@ -53,7 +57,7 @@ mq_patient = mosaiq.Patient.find_by_ida(patient.PatientID)
 # Set up and execute the quality control:
 mpv = MPV.MosaiqPlanVerification(patient, case, plan, mq_patient)
 
-# Display the results of the quality control:
+# Create title and body strings:
 title = "Mosaiq Plan Verification"
 summary = mpv.result.failure_summary()
 if mpv.result.nr_failures() == 0:
@@ -62,4 +66,26 @@ if mpv.result.nr_failures() == 0:
 else:
   # 1 or more failures:
   text = str(mpv.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
+
+# Log finish time and format a time string:
+time_end = datetime.datetime.now()
+elapsed_time = time_end - time_start
+if elapsed_time.seconds > 3600:
+  hours = elapsed_time.seconds // 3600 % 3600
+  minutes = (elapsed_time.seconds - hours * 3600) // 60 % 60
+  seconds = elapsed_time.seconds - hours * 3600 - minutes * 60
+else:
+  hours = 0
+  minutes = elapsed_time.seconds // 60 % 60
+  seconds = elapsed_time.seconds - minutes * 60
+# Append time string to result:
+if hours > 0:
+  text += "\n\n" + "Tidsbruk: " +str(hours) + " time(r) " + str(minutes) + " min " + str(seconds) + " sek"
+else:
+  if minutes > 0:
+    text += "\n\n" + "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
+  else:
+    text += "\n\n" + "Tidsbruk: " + str(seconds) + " sek"
+
+# Display the messagebox GUI:
 messagebox.showinfo(title,text)
