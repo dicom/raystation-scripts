@@ -33,7 +33,7 @@ class MQVBeam(object):
     self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
     self.nr = TEST.Parameter('Number', self.beam.Number, self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
-    self.mu = TEST.Parameter('MU', self.beam.BeamMU, self.param)
+    self.mu = TEST.Parameter('MU', round(self.beam.BeamMU, 1), self.param)
 
   # Checks that there is a beam in Mosaiq with a number corresponding to this RayStation beam's number.
   def test_matching_beam_number(self):
