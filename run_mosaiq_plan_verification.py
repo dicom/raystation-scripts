@@ -68,8 +68,9 @@ else:
   text = str(mpv.result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
 
 # Max text length of messagebox is 1024. Reduce failure summary if it is too long:
-if len(text) > 980:
-  text = text[0:980] + "\n\n... [Resten er klippet ut]"
+limit = 4000
+if len(text) > limit:
+  text = text[0:limit] + "\n\n... [Resten er klippet ut]"
 
 # Log finish time and format a time string:
 time_end = datetime.datetime.now()
