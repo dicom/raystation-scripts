@@ -8,7 +8,7 @@
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 10B
+# Made for RayStation version: 12A
 # Python 3.6
 
 # System configuration:

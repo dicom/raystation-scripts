@@ -2,10 +2,6 @@
 
 # Peforms a verification of the current treatment plan (including its beam sets) in Mosaiq,
 # testing whether the parameters of the plan has been successfully exported to the Mosaiq database.
-#
-# PROOF OF CONCEPT!
-# At this time only one parameter is checked (beam MU). The goal of this project
-# however is to be able to verify all plan/beam parameters!
 
 # System configuration:
 from connect import *
