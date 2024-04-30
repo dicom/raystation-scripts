@@ -126,8 +126,8 @@ class MQVSegment(object):
       mq_lp1 = [round(element / 100.0, 2) for element in mq_lp1_int]
       # Absolute difference between the two lists:
       diff1 = [abs(round(rs_lp1[i]-mq_lp1[i], 2)) for i in range(min(len(rs_lp1), len(mq_lp1)))]
-      # Store the expected value (FIXME: in cases of mismatch, this text may get too large for the GUI to handle and may require a rewrite):
-      t.expected = str(rs_lp1)
+      # Store the expected value (reformatted to values with two decimals):
+      t.expected = str([float('%.2f' % element) for element in rs_lp1])
       # Iterate results to see if there is a discrepancy:
       succeed = True
       for d in diff1:
@@ -155,8 +155,8 @@ class MQVSegment(object):
       mq_lp2 = [round(element / 100.0, 2) for element in mq_lp2_int]
       # Absolute difference between the two lists:
       diff2 = [abs(round(rs_lp2[i]-mq_lp2[i], 2)) for i in range(min(len(rs_lp2), len(mq_lp2)))]
-      # Store the expected value (FIXME: in cases of mismatch, this text may get too large for the GUI to handle and may require a rewrite):
-      t.expected = str(rs_lp2)
+      # Store the expected value (reformatted to values with two decimals):
+      t.expected = str([float('%.2f' % element) for element in rs_lp2])
       # Iterate results to see if there is a discrepancy:
       succeed = True
       for d in diff2:
