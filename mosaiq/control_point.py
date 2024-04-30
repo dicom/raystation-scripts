@@ -53,10 +53,10 @@ class ControlPoint:
     self.collimator_angle = row['Coll_Ang']
     self.field_size_x = row['Field_X']
     self.field_size_y = row['Field_Y']
-    self.collimator_x1 = row['Coll_X1']
-    self.collimator_x2 = row['Coll_X2']
-    self.collimator_y1 = row['Coll_Y1']
-    self.collimator_y2 = row['Coll_Y2']
+    self.collimator_x1 = float(row['Coll_X1'])
+    self.collimator_x2 = float(row['Coll_X2'])
+    self.collimator_y1 = float(row['Coll_Y1'])
+    self.collimator_y2 = float(row['Coll_Y2'])
     self.beam_intensity = row['Beam_Intensity']
     self.energy = row['Energy']
     self.energy_unit_id = row['Energy_Unit_Enum']
