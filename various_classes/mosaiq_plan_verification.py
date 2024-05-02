@@ -53,17 +53,20 @@ class MosaiqPlanVerification(object):
       # Collect beams:
       for b in mqv_beam_set.mq_beam_set.fields():
         beams[str(b.label)] = b
-      # Assign beams:
+      # Iterate beams:
       for mqv_beam in mqv_beam_set.mqv_beams:
-        mqv_beam.mq_beam = beams[str(mqv_beam.nr.value)]
-        # Segments:
-        segments = {}
-        # Collect segments:
-        for s in mqv_beam.mq_beam.control_points():
-          segments[s.number] = s
-        # Assign beams:
-        for mqv_segment in mqv_beam.mqv_segments:
-          mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
+        # Assign beam (if we have a matching beam number):
+        if str(mqv_beam.nr.value) in beams:
+          mqv_beam.mq_beam = beams[str(mqv_beam.nr.value)]
+          # Segments:
+          segments = {}
+          # Collect segments:
+          for s in mqv_beam.mq_beam.control_points():
+            segments[s.number] = s
+          # Iterate segments:
+          for mqv_segment in mqv_beam.mqv_segments:
+            # Assign segments:
+            mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
     
     # Store the plan test results:
     self.result = mqv_plan.param
