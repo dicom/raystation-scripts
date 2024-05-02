@@ -75,8 +75,8 @@ class MQVSegment(object):
     t = TEST.Test("Jaw positions", None, self.jaw_positions)
     # Proceed only on matching segment:
     if self.mq_segment:
-      jp = [round(self.segment.JawPositions[0], 1), round(self.segment.JawPositions[1], 1), round(self.segment.JawPositions[2], 1), round(self.segment.JawPositions[3], 1)]
-      mq_jp = [round(self.mq_segment.collimator_x1, 1), round(self.mq_segment.collimator_x2, 1), round(self.mq_segment.collimator_y1, 1), round(self.mq_segment.collimator_y2, 1)]
+      jp = [float('%.2f' % element) for element in [self.segment.JawPositions[0], self.segment.JawPositions[1], self.segment.JawPositions[2], self.segment.JawPositions[3]]]
+      mq_jp = [float('%.2f' % element) for element in [self.mq_segment.collimator_x1, self.mq_segment.collimator_x2, self.mq_segment.collimator_y1, self.mq_segment.collimator_y2]]
       t.expected = jp
       if jp == mq_jp:
         return t.succeed()
