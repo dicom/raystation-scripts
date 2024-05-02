@@ -29,12 +29,16 @@ class MQVSegment(object):
       self.parent_param = mqv_beam.param
     else:
       self.parent_param = None
+    # Process gantry angle:
+    gantry_angle = self.mqv_beam.beam.GantryAngle
+    if hasattr(segment, 'DeltaGantryAngle'):
+      gantry_angle += segment.DeltaGantryAngle
     # Parameters:
     self.param = TEST.Parameter('Segment', str(segment.SegmentNumber), self.parent_param)
     self.nr = TEST.Parameter('Number', int(segment.SegmentNumber), self.param)
     self.collimator_angle = TEST.Parameter('Collimator Angle', segment.CollimatorAngle, self.param)
     self.jaw_positions = TEST.Parameter('Jaw Positions', [segment.JawPositions[0], segment.JawPositions[1], segment.JawPositions[2], segment.JawPositions[3]], self.param)
-    self.gantry_angle = TEST.Parameter('Gantry Angle', self.format_angle(self.mqv_beam.beam.GantryAngle + segment.DeltaGantryAngle), self.param)
+    self.gantry_angle = TEST.Parameter('Gantry Angle', self.format_angle(gantry_angle), self.param)
     self.relative_weight = TEST.Parameter('Relative Weight', round(segment.RelativeWeight, 4), self.param)
     self.leaf_bank1 = TEST.Parameter('Leaf Bank 1', "", self.param)
     self.leaf_bank2 = TEST.Parameter('Leaf Bank 1', "", self.param)
