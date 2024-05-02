@@ -100,6 +100,11 @@ class MQVBeamSet(object):
           return t.succeed()
         else:
           return t.fail(self.mq_beam_set.modality)
+      elif self.beam_set.Modality == "Electrons":
+        if self.mq_beam_set.modality == "Elect":
+          return t.succeed()
+        else:
+          return t.fail(self.mq_beam_set.modality)
       else:
         return t.fail("Ukjent modalitet! (oppdater skript)")
 
