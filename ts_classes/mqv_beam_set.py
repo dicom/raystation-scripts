@@ -74,11 +74,16 @@ class MQVBeamSet(object):
   
   # Comparison of technique.
   def test_technique(self):
-    t = TEST.Test("DeliveryTechnique", self.beam_set.DicomPlanLabel, self.technique)
+    t = TEST.Test("DeliveryTechnique", self.technique.value, self.technique)
     # Proceed only on matching beam set:
     if self.mq_beam_set:
       if self.beam_set.DeliveryTechnique == "DynamicArc":
         if self.mq_beam_set.technique in ["VMAT", "Stereotaksi"]:
+          return t.succeed()
+        else:
+          return t.fail(self.mq_beam_set.technique)
+      elif self.beam_set.DeliveryTechnique == "SMLC":
+        if self.mq_beam_set.technique in ["IMRT", "IMRT SIB", "DPL m/MV", "DPL m/MV PS"]:
           return t.succeed()
         else:
           return t.fail(self.mq_beam_set.technique)
