@@ -37,7 +37,7 @@ class MQVSegment(object):
     self.param = TEST.Parameter('Segment', str(segment.SegmentNumber), self.parent_param)
     self.nr = TEST.Parameter('Number', int(segment.SegmentNumber), self.param)
     self.collimator_angle = TEST.Parameter('Collimator Angle', segment.CollimatorAngle, self.param)
-    self.jaw_positions = TEST.Parameter('Jaw Positions', [segment.JawPositions[0], segment.JawPositions[1], segment.JawPositions[2], segment.JawPositions[3]], self.param)
+    self.jaw_positions = TEST.Parameter('Jaw Positions', "", self.param)
     self.gantry_angle = TEST.Parameter('Gantry Angle', self.format_angle(gantry_angle), self.param)
     self.relative_weight = TEST.Parameter('Relative Weight', round(segment.RelativeWeight, 4), self.param)
     self.leaf_bank1 = TEST.Parameter('Leaf Bank 1', "", self.param)
@@ -75,7 +75,7 @@ class MQVSegment(object):
     t = TEST.Test("Jaw positions", None, self.jaw_positions)
     # Proceed only on matching segment:
     if self.mq_segment:
-      jp = [self.segment.JawPositions[0], self.segment.JawPositions[1], self.segment.JawPositions[2], self.segment.JawPositions[3]]
+      jp = [round(self.segment.JawPositions[0], 1), round(self.segment.JawPositions[1], 1), round(self.segment.JawPositions[2], 1), round(self.segment.JawPositions[3], 1)]
       mq_jp = [round(self.mq_segment.collimator_x1, 1), round(self.mq_segment.collimator_x2, 1), round(self.mq_segment.collimator_y1, 1), round(self.mq_segment.collimator_y2, 1)]
       t.expected = jp
       if jp == mq_jp:
