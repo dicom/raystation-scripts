@@ -39,42 +39,43 @@ class MosaiqPlanVerification(object):
         for segment in beam.Segments:
           mqv_segment = MQV_S.MQVSegment(segment, mqv_beam=mqv_beam)
     
-    # Collect & assign the equivalent Mosaiq objects to the RayStation objects (beam sets, beams & segments):    
-    # Beam sets:
-    beam_sets = {}
-    # Collect beam sets:
-    for bs in self.mq_patient.prescriptions():
-      beam_sets[bs.site_name] = bs
-    # Iterate beam sets:
-    for mqv_beam_set in mqv_plan.mqv_beam_sets:
-      # Assign beam set (if we have a matching label):
-      if mqv_beam_set.expected_mosaiq_label in beam_sets:
-        mqv_beam_set.mq_beam_set = beam_sets[mqv_beam_set.expected_mosaiq_label]
-        # Beams:
-        beams = {}
-        # Collect beams:
-        for b in mqv_beam_set.mq_beam_set.fields():
-          beams[str(b.label)] = b
-        # Iterate beams:
-        for mqv_beam in mqv_beam_set.mqv_beams:
-          # Assign beam (if we have a matching beam number):
-          if str(mqv_beam.nr.value) in beams:
-            mqv_beam.mq_beam = beams[str(mqv_beam.nr.value)]
-            # Segments:
-            segments = {}
-            # Collect segments:
-            for s in mqv_beam.mq_beam.control_points():
-              segments[s.number] = s
-            # Iterate segments:
-            for mqv_segment in mqv_beam.mqv_segments:
-              # Assign segments:
-              mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
+    if self.mq_patient:
+      # Collect & assign the equivalent Mosaiq objects to the RayStation objects (beam sets, beams & segments):    
+      # Beam sets:
+      beam_sets = {}
+      # Collect beam sets:
+      for bs in self.mq_patient.prescriptions():
+        beam_sets[bs.site_name] = bs
+      # Iterate beam sets:
+      for mqv_beam_set in mqv_plan.mqv_beam_sets:
+        # Assign beam set (if we have a matching label):
+        if mqv_beam_set.expected_mosaiq_label in beam_sets:
+          mqv_beam_set.mq_beam_set = beam_sets[mqv_beam_set.expected_mosaiq_label]
+          # Beams:
+          beams = {}
+          # Collect beams:
+          for b in mqv_beam_set.mq_beam_set.fields():
+            beams[str(b.label)] = b
+          # Iterate beams:
+          for mqv_beam in mqv_beam_set.mqv_beams:
+            # Assign beam (if we have a matching beam number):
+            if str(mqv_beam.nr.value) in beams:
+              mqv_beam.mq_beam = beams[str(mqv_beam.nr.value)]
+              # Segments:
+              segments = {}
+              # Collect segments:
+              for s in mqv_beam.mq_beam.control_points():
+                segments[s.number] = s
+              # Iterate segments:
+              for mqv_segment in mqv_beam.mqv_segments:
+                # Assign segments:
+                mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
     
     # Store the plan test results:
     self.result = mqv_plan.param
 
     # Run tests:
-    # (No tests at the plan level)
+    mqv_plan.test_matching_patient()
     # Beam set tests:
     for mqv_beam_set in mqv_plan.mqv_beam_sets:
       mqv_beam_set.test_matching_beam_set_name()

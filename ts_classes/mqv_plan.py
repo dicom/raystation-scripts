@@ -28,4 +28,13 @@ class MQVPlan(object):
     self.mqv_beam_sets = []
     # Parameters:
     self.param = TEST.Parameter('Plan', plan.Name, None)
+    self.patient = TEST.Parameter('Patient', self.patient.Name, self.param)
   
+  
+  # Checks that a matching patient has been found in Mosaiq.
+  def test_matching_patient(self):
+    t = TEST.Test("Skal finnes matchende pasient i Mosaiq.", self.patient.value, self.patient)
+    if self.mq_patient:
+      return t.succeed()
+    else:
+      return t.fail()
