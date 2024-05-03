@@ -124,5 +124,5 @@ class MQVBeamSet(object):
         else:
           return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
       else:
-        return t.fail("Ukjent modalitet! (oppdater skript)")
+        return t.fail("Ukjent orientering! (oppdater skript) (ID: " + str(self.mq_beam_set.site_setup().patient_orientation_id) + ")")
   
