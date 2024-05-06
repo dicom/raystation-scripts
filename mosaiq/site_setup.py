@@ -13,6 +13,9 @@
 #from tkinter import messagebox
 
 from .database import Database
+from .location import Location
+from .offset import Offset
+from .performed_site_setup import PerformedSiteSetup
 
 class SiteSetup:
   
@@ -76,6 +79,7 @@ class SiteSetup:
     self.instance_location = None
     self.instance_offsets = None
     self.instance_performed_site_setups = None
+    self.instance_prescribed_offset = None
     self.instance_prescription = None
 
   # The staff who approved the site_setup.
@@ -113,6 +117,12 @@ class SiteSetup:
     if not self.instance_performed_site_setups:
       self.instance_performed_site_setups = PerformedSiteSetup.for_site_setup(self)
     return self.instance_performed_site_setups
+  
+  # Gives the prescribed offset for this site setup.
+  def prescribed_offset(self):
+    if not self.instance_prescribed_offset:
+      self.instance_prescribed_offset = Offset.find(self.prescribed_offset_id)
+    return self.instance_prescribed_offset
   
   # Gives the prescription which this site_setup belongs to.
   def prescription(self):

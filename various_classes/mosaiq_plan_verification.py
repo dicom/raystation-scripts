@@ -82,6 +82,7 @@ class MosaiqPlanVerification(object):
       mqv_beam_set.test_technique()
       mqv_beam_set.test_modality()
       mqv_beam_set.test_patient_orientation()
+      mqv_beam_set.test_setup_offsets()
       # Beam tests:
       for mqv_beam in mqv_beam_set.mqv_beams:
         mqv_beam.test_matching_beam_number()

@@ -42,6 +42,7 @@ class MQVBeamSet(object):
     self.technique = TEST.Parameter('Teknikk', self.beam_set.DeliveryTechnique, self.param)
     self.modality = TEST.Parameter('Modalitet', self.beam_set.Modality, self.param)
     self.orientation = TEST.Parameter('Pasientleie', self.beam_set.PatientPosition, self.param)
+    self.setup_offsets = TEST.Parameter('Bord-forflytninger', '', self.param)
 
   # Translates a RayStation (code format) beam set label to the Mosaiq (readable) version.
   def translate(self, bs_label):
@@ -108,7 +109,7 @@ class MQVBeamSet(object):
       else:
         return t.fail("Ukjent modalitet! (oppdater skript)")
 
-# Comparison of patient orientation.
+  # Comparison of patient orientation.
   def test_patient_orientation(self):
     t = TEST.Test("Patient Orientation", self.beam_set.PatientPosition, self.orientation)
     # Proceed only on matching beam set:
@@ -126,3 +127,22 @@ class MQVBeamSet(object):
       else:
         return t.fail("Ukjent orientering! (oppdater skript) (ID: " + str(self.mq_beam_set.site_setup().patient_orientation_id) + ")")
   
+  # Comparison of setup offsets (table top displacement from localization point to isocenter).
+  def test_setup_offsets(self):
+    # Get RayStation displacement values:
+    displacement = self.beam_set.PatientSetup.TreatmentSetupPositions[0].TableTopDisplacement
+    rs_displacements = []
+    for disp in [displacement.LongitudinalDisplacement, displacement.LateralDisplacement, displacement.VerticalDisplacement]:
+      rs_displacements.append(-round(disp, 1))
+    t = TEST.Test("Setup offsets", rs_displacements, self.setup_offsets)
+    # Get Mosaiq displacement values:
+    mq_displacements = [
+      float(self.mq_beam_set.site_setup().prescribed_offset().superior),
+      float(self.mq_beam_set.site_setup().prescribed_offset().lateral),
+      float(self.mq_beam_set.site_setup().prescribed_offset().anterior)
+    ]
+    # Compare:
+    if rs_displacements == mq_displacements:
+      return t.succeed()
+    else:  
+      return t.fail(mq_displacements)
