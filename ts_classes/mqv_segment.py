@@ -49,6 +49,8 @@ class MQVSegment(object):
       return round(angle - 360, 1)
     elif angle < 0:
       return round(360 + angle, 1)
+    elif round(angle, 1) == 360:
+      return 0
     else:
       return round(angle, 1)
   
