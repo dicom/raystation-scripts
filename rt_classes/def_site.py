@@ -88,7 +88,7 @@ class DefSite(object):
     group = self.grouped_rois()
     for key in sorted(iter(group)):
       for roi in group[key]:
-        PMF.delete_matching_roi_except_manually_contoured(self.pm, self.ss, roi)
+        PMF.delete_derived_or_empty_contoured_roi(self.pm, roi)
     group = self.grouped_rois()
     # Create ROIs (in reverse sorted order):
     for key in reversed(sorted(iter(group))):

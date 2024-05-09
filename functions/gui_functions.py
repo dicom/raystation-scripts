@@ -180,11 +180,11 @@ def handle_error_on_clinical_goal_creation(cg, normalized_tolerance, normalized_
   messagebox.showinfo(title, text)
 
 
-# Checks if any ROIs exist, and if they have a contour in the current structure set.
+# Checks if any ROIs exist, and if they have a contour in any structure set.
 # If so, ask the user if ROIs are to be deleted.
 # Returns the Tk window object.
 def handle_existing_rois(pm, ss):  
-  if SSF.has_roi_with_contours(ss):
+  if PMF.has_roi_with_contours(pm):
     delete = RB.RadioButton('Eksisterende ROIs oppdaget', 'Velg:', DC.delete)
     my_window = Tk()
     choice_d=[]

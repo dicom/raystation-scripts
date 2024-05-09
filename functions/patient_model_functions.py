@@ -563,8 +563,9 @@ def delete_rois_except_manually_contoured(pm, ss):
     pm.RegionsOfInterest[roi_name].DeleteRoi()
 
 
-# Deletes the ROI from the RayStation Patient Model, unless it is manually contoured.
-def delete_matching_roi_except_manually_contoured(pm, ss, roi):
+# Deletes the ROI from the RayStation Patient Model (as long as it is derived or contoured and empty).
+def delete_derived_or_empty_contoured_roi(pm, roi):
+  # Iterate ROIs and find matching ROI:
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Name == roi.name:
       if pm_roi.DerivedRoiExpression:
@@ -574,8 +575,14 @@ def delete_matching_roi_except_manually_contoured(pm, ss, roi):
         except:
           GUIF.handle_delete_roi_error(roi.name)
       else:
-        # When it is manual, we only delete it if it is empty:
-        if is_empty(ss, roi):
+        # When it is non-derived, we will only delete it if it is empty:
+        # Assume a ROI can be deleted, until we find otherwise:
+        delete = True
+        for ss in pm.StructureSets:
+          if not is_empty(ss, roi):
+            delete = False
+            break
+        if delete:
           try:
             pm_roi.DeleteRoi()
           except:
@@ -634,6 +641,16 @@ def has_roi(pm, roi_name):
   for roi in pm.RegionsOfInterest:
     if roi.Name == roi_name:
       match = True
+  return match
+
+
+# Returns true if any ROI have a contour in any stucture set in this patient model.
+def has_roi_with_contours(pm):
+  match = False
+  for ss in pm.StructureSets:
+    if SSF.has_roi_with_contours(ss):
+      match = True
+      break
   return match
 
 
