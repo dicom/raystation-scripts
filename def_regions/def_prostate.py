@@ -134,8 +134,12 @@ class DefProstate(object):
   def add_prostate_rois(self, pm, examination, site, match):
     # DL OARs:
     examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Prostate_1", "SeminalVes"])
-    # Rename DL ROI(s):
-    pm.RegionsOfInterest['Prostate_1'].Name = 'Prostate'
+    # Rename DL ROI(s): (Note that if it already exists, this will crash, in that case we just keep the name)
+    try:
+      pm.RegionsOfInterest['Prostate_1'].Name = 'Prostate'
+    except:
+      # FIXME: Consider finding a way to copy the ROI geometry in this case to the existing Prostate ROI.
+      pm.RegionsOfInterest['Prostate_1'].OrganData.OrganType = "Other"
     if match == 'seeds':
       # Non-DL OARs:
       site.add_oars([ROIS.levator_ani, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra])
