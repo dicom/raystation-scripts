@@ -135,14 +135,15 @@ class MQVBeamSet(object):
     for disp in [displacement.LongitudinalDisplacement, displacement.LateralDisplacement, displacement.VerticalDisplacement]:
       rs_displacements.append(-round(disp, 1))
     t = TEST.Test("Setup offsets", rs_displacements, self.setup_offsets)
-    # Get Mosaiq displacement values:
-    mq_displacements = [
-      float(self.mq_beam_set.site_setup().prescribed_offset().superior),
-      float(self.mq_beam_set.site_setup().prescribed_offset().lateral),
-      float(self.mq_beam_set.site_setup().prescribed_offset().anterior)
-    ]
-    # Compare:
-    if rs_displacements == mq_displacements:
-      return t.succeed()
-    else:  
-      return t.fail(mq_displacements)
+    if self.mq_beam_set:
+      # Get Mosaiq displacement values:
+      mq_displacements = [
+        float(self.mq_beam_set.site_setup().prescribed_offset().superior),
+        float(self.mq_beam_set.site_setup().prescribed_offset().lateral),
+        float(self.mq_beam_set.site_setup().prescribed_offset().anterior)
+      ]
+      # Compare:
+      if rs_displacements == mq_displacements:
+        return t.succeed()
+      else:  
+        return t.fail(mq_displacements)
