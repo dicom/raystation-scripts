@@ -62,6 +62,9 @@ class MQVBeamSet(object):
     else:
       end_dose = str(round(bs_label.end_dose, nr_decimals))
     mq_label = region_text + " " + start_dose + "-" + end_dose
+    # Max allowed length for this label in Mosaiq is 20 characters. Trim it if it exceeds this length:
+    if len(mq_label) > 20:
+      mq_label = mq_label[0:20]
     return mq_label
 
 
