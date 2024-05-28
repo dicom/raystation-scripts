@@ -26,7 +26,7 @@ def setup_beams(ss, examination, beam_set, isocenter, region_code, fraction_dose
     # Brain:
     if region_code in RC.brain_whole_codes:
       # Whole brain:
-      BSF.create_single_arc(beam_set, isocenter)
+      BSF.create_single_arc(beam_set, isocenter, iso_index=iso_index, beam_index=beam_index)
     elif region_code in RC.brain_partial_codes:
       # Partial brain:
       if fraction_dose > 15:
