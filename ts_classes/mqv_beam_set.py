@@ -122,6 +122,11 @@ class MQVBeamSet(object):
           return t.succeed()
         else:
           return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
+      elif self.beam_set.PatientPosition == "HeadFirstProne":
+        if self.mq_beam_set.site_setup().patient_orientation_id == 2:
+          return t.succeed()
+        else:
+          return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
       elif self.beam_set.PatientPosition == "FeetFirstSupine":
         if self.mq_beam_set.site_setup().patient_orientation_id == 5:
           return t.succeed()
