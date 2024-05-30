@@ -73,6 +73,8 @@ class MQVSegment(object):
         return t.fail(self.mq_segment.collimator_angle)
   
   # Comparison of jaw positions.
+  # Note that for electron modalities we will use jaw positions derived from the applicator size
+  # (rather than the actual jaw positions extracted from RayStation).
   def test_jaw_positions(self):
     t = TEST.Test("Jaw positions", None, self.jaw_positions)
     # Proceed only on matching segment:
@@ -80,8 +82,18 @@ class MQVSegment(object):
       # Jaw positions must be rounded to one decimal for comparison (exist with 2 deimcals in RayStation, but only 1 decimal in Mosaiq):
       jp = [float('%.1f' % element) for element in [self.segment.JawPositions[0], self.segment.JawPositions[1], self.segment.JawPositions[2], self.segment.JawPositions[3]]]
       mq_jp = [float('%.1f' % element) for element in [self.mq_segment.collimator_x1, self.mq_segment.collimator_x2, self.mq_segment.collimator_y1, self.mq_segment.collimator_y2]]
-      t.expected = jp
-      if jp == mq_jp:
+      expected_jaw_positions = jp
+      # Our expected jaw positions will be set from the applicator size for electron modality:
+      if self.mqv_beam.mqv_beam_set.beam_set.Modality == "Electrons":
+        if self.mqv_beam.beam.Applicator.DicomApplicatorId == "A1010":
+          expected_jaw_positions = [-5.0, 5.0, -5.0, 5.0]
+        elif self.mqv_beam.beam.Applicator.DicomApplicatorId == "A1414":
+          expected_jaw_positions = [-7.0, 7.0, -7.0, 7.0]
+        elif self.mqv_beam.beam.Applicator.DicomApplicatorId == "A2020":
+          expected_jaw_positions = [-10.0, 10.0, -10.0, 10.0]
+      # Set expectated value and compare:
+      t.expected = expected_jaw_positions
+      if expected_jaw_positions == mq_jp:
         return t.succeed()
       else:
         return t.fail(mq_jp)
