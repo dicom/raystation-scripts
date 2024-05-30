@@ -88,6 +88,8 @@ class MosaiqPlanVerification(object):
         mqv_beam.test_matching_beam_number()
         mqv_beam.test_mu()
         mqv_beam.test_name()
+        mqv_beam.test_energy()
+        mqv_beam.test_fff()
         # Segment tests:
         for mqv_segment in mqv_beam.mqv_segments:
           mqv_segment.test_matching_segment_number()

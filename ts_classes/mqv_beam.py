@@ -34,6 +34,7 @@ class MQVBeam(object):
     self.nr = TEST.Parameter('Number', self.beam.Number, self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
     self.mu = TEST.Parameter('MU', round(self.beam.BeamMU, 1), self.param)
+    self.energy = TEST.Parameter('Energi', self.beam.BeamQualityId, self.param)
 
   # Checks that there is a beam in Mosaiq with a number corresponding to this RayStation beam's number.
   def test_matching_beam_number(self):
@@ -62,3 +63,29 @@ class MQVBeam(object):
         return t.succeed()
       else:
         return t.fail(self.mq_beam.name)
+  
+  # Comparison of energy (e.g. 6 or 10 MV).
+  def test_energy(self):
+    t = TEST.Test("Energy", self.beam.BeamQualityId, self.energy)
+    # Proceed only on matching beam:
+    if self.mq_beam:
+      energy = self.beam.BeamQualityId
+      energy = energy.replace(' FFF', '')
+      if int(energy) == self.mq_beam.control_points()[0].energy:
+        return t.succeed()
+      else:
+        return t.fail(self.mq_beam.control_points()[0].energy)
+  
+  # Comparison of FFF (flattening filter free).
+  def test_fff(self):
+    t = TEST.Test("FFF", self.beam.BeamQualityId, self.energy)
+    # Proceed only on matching beam:
+    if self.mq_beam:
+      fff = False
+      if 'FFF' in self.beam.BeamQualityId:
+        fff = True
+      if fff == self.mq_beam.is_fff:
+        return t.succeed()
+      else:
+        return t.fail(self.mq_beam.is_fff)
+
