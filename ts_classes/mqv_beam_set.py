@@ -158,6 +158,10 @@ class MQVBeamSet(object):
         # Lateral and AP directions must be inverted:
         mq_displacements[1] = -mq_displacements[1]
         mq_displacements[2] = -mq_displacements[2]
+      elif self.beam_set.PatientPosition == "FeetFirstSupine":
+        # SI and lateral directions must be inverted:
+        mq_displacements[0] = -mq_displacements[0]
+        mq_displacements[1] = -mq_displacements[1]
       # Compare:
       if rs_displacements == mq_displacements:
         return t.succeed()
