@@ -150,6 +150,14 @@ class MQVBeamSet(object):
         float(self.mq_beam_set.site_setup().prescribed_offset().lateral),
         float(self.mq_beam_set.site_setup().prescribed_offset().anterior)
       ]
+      # For some orientations, some of the mosaiq displacements must be inverted before comparison with the RayStation values:
+      if self.beam_set.PatientPosition == "HeadFirstSupine":
+        # No inversions needed for this orientation.
+        pass
+      elif self.beam_set.PatientPosition == "HeadFirstProne":
+        # Lateral and AP directions must be inverted:
+        mq_displacements[1] = -mq_displacements[1]
+        mq_displacements[2] = -mq_displacements[2]
       # Compare:
       if rs_displacements == mq_displacements:
         return t.succeed()
