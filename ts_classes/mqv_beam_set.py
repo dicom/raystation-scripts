@@ -141,8 +141,8 @@ class MQVBeamSet(object):
     displacement = self.beam_set.PatientSetup.TreatmentSetupPositions[0].TableTopDisplacement
     rs_displacements = []
     for disp in [displacement.LongitudinalDisplacement, displacement.LateralDisplacement, displacement.VerticalDisplacement]:
-      rs_displacements.append(-round(disp, 1))
-    t = TEST.Test("Setup offsets", rs_displacements, self.setup_offsets)
+      rs_displacements.append(-disp)
+    t = TEST.Test("Setup offsets", [round(element, 2) for element in rs_displacements], self.setup_offsets)
     if self.mq_beam_set:
       # Get Mosaiq displacement values:
       mq_displacements = [
@@ -163,7 +163,11 @@ class MQVBeamSet(object):
         mq_displacements[0] = -mq_displacements[0]
         mq_displacements[1] = -mq_displacements[1]
       # Compare:
-      if rs_displacements == mq_displacements:
+      # Subtract the raystation and mosaiq values:
+      difference = [abs(x-y) for x,y in zip(rs_displacements, mq_displacements)]
+      # Because of float related issues, values in RayStation may differ up to ~0.51 mm from the Mosaiq value.
+      # We will therefore use a threshold of 0.6 mm (0.006 cm) when testing for equality:
+      if max(difference) < 0.06:
         return t.succeed()
       else:  
         return t.fail(mq_displacements)
