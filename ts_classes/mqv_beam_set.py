@@ -132,6 +132,11 @@ class MQVBeamSet(object):
           return t.succeed()
         else:
           return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
+      elif self.beam_set.PatientPosition == "FeetFirstProne":
+        if self.mq_beam_set.site_setup().patient_orientation_id == 6:
+          return t.succeed()
+        else:
+          return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
       else:
         return t.fail("Ukjent orientering! (oppdater skript) (ID: " + str(self.mq_beam_set.site_setup().patient_orientation_id) + ")")
   
@@ -162,6 +167,10 @@ class MQVBeamSet(object):
         # SI and lateral directions must be inverted:
         mq_displacements[0] = -mq_displacements[0]
         mq_displacements[1] = -mq_displacements[1]
+      elif self.beam_set.PatientPosition == "FeetFirstProne":
+        # SI and AP directions must be inverted:
+        mq_displacements[0] = -mq_displacements[0]
+        mq_displacements[2] = -mq_displacements[2]
       # Compare:
       # Subtract the raystation and mosaiq values:
       difference = [abs(x-y) for x,y in zip(rs_displacements, mq_displacements)]
