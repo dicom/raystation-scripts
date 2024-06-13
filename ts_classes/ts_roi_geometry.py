@@ -93,8 +93,9 @@ class TSROIGeometry(object):
   # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
   def gaps_in_definition_test(self):
     t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
-    # For performance reasons, we choose to skip this test for External and Couch ROIs:
-    if self.roi().Name not in ["External", "Couch"]:
+    # For performance reasons, we choose to skip this test for External and Couch ROIs.
+    # We also skip it for ROIs which are known to not be continuous (e.q. Clips).
+    if self.roi().Name not in ["External", "Couch", "Clips_L", "Clips_R"]:
       # Perform the test if indicated (ROI has contours and is not a derived ROI):
       if self.contours() and not self.primary_shape().DerivedRoiStatus:
         missing_slices = []
