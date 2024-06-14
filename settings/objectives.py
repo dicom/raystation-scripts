@@ -329,7 +329,7 @@ def create_lung_objectives(ss, plan, target, total_dose):
     OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 80)
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 2)
     OF.max_eud(ss, plan, ROIS.heart.name, 0.53*total_dose*100, 1, 10) # (~35 Gy for 66 Gy total dose)
-    OF.max_eud(ss, plan, ROIS.spinal_canal.name, 0.6818*total_dose*100, 1, 10) # (~45 Gy for 66 Gy total dose)
+    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.757*total_dose*100, 10) # (~50 Gy for 66 Gy total dose)
     match = False
     if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
       l = ROIS.lungs_gtv.name
@@ -349,7 +349,7 @@ def create_lung_objectives(ss, plan, target, total_dose):
     OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 2)
     OF.max_eud(ss, plan, ROIS.heart.name, 0.29*total_dose*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.lungs.name, 0.23*total_dose*100, 1, 15)
-    OF.max_eud(ss, plan, ROIS.spinal_canal.name, 0.9*total_dose*100, 1, 5)
+    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.95*total_dose*100, 5)
 
 
 # Lung (SBRT)
