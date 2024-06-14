@@ -171,16 +171,16 @@ class TSPrescription(object):
           else:
             return t.succeed()
         elif self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume':
-          real_dose_d99 = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [0.99])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
-          if real_dose_d99 < low_dose or real_dose_d99 > high_dose:
-            return t.fail(round(real_dose_d99, 2))
+          real_dose_dX = RSU.gy(self.ts_beam_set.beam_set.FractionDose.GetDoseAtRelativeVolumes(RoiName = struct.Name, RelativeVolumes = [self.prescription.PrimaryPrescriptionDoseReference.DoseVolume * 0.01])[0]) * self.ts_beam_set.beam_set.FractionationPattern.NumberOfFractions
+          if real_dose_dX < low_dose or real_dose_dX > high_dose:
+            return t.fail(round(real_dose_dX, 2))
           else:
             return t.succeed()
 
   # Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.
   def stereotactic_prescription_technique_test(self):
     t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
-    if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryPrescriptionDoseReference.DoseVolume == 99 and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
+    if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryPrescriptionDoseReference.DoseVolume in [98, 99] and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
       if self.ts_beam_set.ts_label.label.technique:
         if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
           return t.succeed()
