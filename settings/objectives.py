@@ -185,6 +185,7 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
   OF.max_eud(ss, plan, ROIS.thyroid.name, 8.7*100, 1, 1)
   OF.max_eud(ss, plan, ROIS.esophagus.name, 8.2*100, 1, 1)
+  OF.max_dose(ss, plan, ROIS.spinal_canal.name, 20*100, 1)
   # Side-dependent objectives:
   if region_code in RC.breast_l_codes:
     OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
