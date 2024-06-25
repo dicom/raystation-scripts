@@ -151,9 +151,9 @@ class MQVBeamSet(object):
     if self.mq_beam_set:
       # Get Mosaiq displacement values:
       mq_displacements = [
-        float(self.mq_beam_set.site_setup().prescribed_offset().superior),
-        float(self.mq_beam_set.site_setup().prescribed_offset().lateral),
-        float(self.mq_beam_set.site_setup().prescribed_offset().anterior)
+        float(self.mq_beam_set.prescribed_offset().superior),
+        float(self.mq_beam_set.prescribed_offset().lateral),
+        float(self.mq_beam_set.prescribed_offset().anterior)
       ]
       # For some orientations, some of the mosaiq displacements must be inverted before comparison with the RayStation values:
       if self.beam_set.PatientPosition == "HeadFirstSupine":

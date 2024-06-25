@@ -29,16 +29,19 @@ class Offset:
   @classmethod
   def for_location(cls, location):
     offsets = list()
-    rows = Database.fetch_all("SELECT * FROM Offset WHERE Create_ID = '{}'".format(location.id))
+    rows = Database.fetch_all("SELECT * FROM Offset WHERE Create_ID = '{}' AND Version = '0'".format(location.id))
     for row in rows:
       offsets.append(cls(row))
     return offsets
   
-  # Gives the offset instances belonging to the given site setup.
+  # Gives the offset instances belonging to the given prescription.
   @classmethod
-  def for_site_setup(cls, site_setup):
+  def for_prescription(cls, prescription, type=None):
+    type_part = ""
+    if type != None:
+      type_part = " AND Offset_Type = '{}'".format(type)
     offsets = list()
-    rows = Database.fetch_all("SELECT * FROM Offset WHERE Sit_Set_ID = '{}'".format(site_setup.id))
+    rows = Database.fetch_all("SELECT * FROM Offset WHERE Sit_Set_ID = '{}' AND Version = '0'{}".format(prescription.id, type_part))
     for row in rows:
       offsets.append(cls(row))
     return offsets

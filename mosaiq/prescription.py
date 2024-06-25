@@ -15,6 +15,7 @@
 from .database import Database
 from .field import Field
 from .site_setup import SiteSetup
+from .offset import Offset
 
 class Prescription:
   
@@ -96,8 +97,10 @@ class Prescription:
     self.instance_parent_prescription = None
     self.instance_patient = None
     self.instance_performed_site_setups = None
+    self.instance_prescribed_offset = None
     self.instance_original_prescription = None
     self.instance_site_setup = None
+    self.instance_third_party_offsets = None
    
   # The staff who approved the prescription.
   def approved_by(self):
@@ -196,10 +199,22 @@ class Prescription:
   # reference, then it returns performed_site_setups for the original_prescription instead.
   def performed_site_setups(self):
     if not self.instance_performed_site_setups:
-      self.instance_performed_site_setups = PerformedSiteSetup.for_patient(self)
+      self.instance_performed_site_setups = PerformedSiteSetup.for_prescription(self)
       if len(self.instance_performed_site_setups) == 0 and self.original_prescription_id:
         self.instance_performed_site_setups = PerformedSiteSetup.for_prescription(self.original_prescription())
     return self.instance_performed_site_setups
+  
+  # Gives the prescribed offset for this prescription.
+  def prescribed_offset(self):
+    if not self.instance_prescribed_offset:
+      offsets = Offset.for_prescription(self, type=1)
+      if len(offsets) > 0:
+        self.instance_prescribed_offset = offsets[0]
+      if len(offsets) == 0 and self.original_prescription_id:
+        offsets = Offset.for_prescription(self.original_prescription(), type=1)
+        if len(offsets) > 0:
+          self.instance_prescribed_offset = offsets[0]
+    return self.instance_prescribed_offset
   
   # Gives the site setup (if any) which belongs to this prescription.
   # If this prescription doesn't have any site_setup references, and it has an original_prescription
@@ -224,3 +239,11 @@ class Prescription:
       7 : 'PENDING'
     }
     return values.get(self.status_id, 'Unknown status_id: {}'.format(self.status_id))
+
+  # Gives the third party offsets (e.g. CBCT offsets) for this prescription.
+  def third_party_offsets(self):
+    if not self.instance_third_party_offsets:
+      self.instance_third_party_offsets = Offset.for_prescription(self, type=4)
+      if len(self.instance_third_party_offsets) == 0 and self.original_prescription_id:
+        self.instance_third_party_offsets = Offset.for_prescription(self.original_prescription(), type=4)
+    return self.instance_third_party_offsets

@@ -14,7 +14,6 @@
 
 from .database import Database
 from .location import Location
-from .offset import Offset
 from .performed_site_setup import PerformedSiteSetup
 
 class SiteSetup:
@@ -106,23 +105,11 @@ class SiteSetup:
       self.instance_location = Location.find(self.location_id)
     return self.instance_location
   
-  # Gives the offsets (if any) associated with this site_setup.
-  def offsets(self):
-    if not self.instance_offsets:
-      self.instance_offsets = Offset.for_site_setup(self)
-    return self.instance_offsets
-  
   # Gives the performed_site_setups (if any) associated with this site_setup.
   def performed_site_setups(self):
     if not self.instance_performed_site_setups:
       self.instance_performed_site_setups = PerformedSiteSetup.for_site_setup(self)
     return self.instance_performed_site_setups
-  
-  # Gives the prescribed offset for this site setup.
-  def prescribed_offset(self):
-    if not self.instance_prescribed_offset:
-      self.instance_prescribed_offset = Offset.find(self.prescribed_offset_id)
-    return self.instance_prescribed_offset
   
   # Gives the prescription which this site_setup belongs to.
   def prescription(self):
