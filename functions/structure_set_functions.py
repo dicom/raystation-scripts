@@ -58,8 +58,8 @@ def bolus(ss):
 # Returns True if the structure set and region code indicates that a sequentual breast boost is to be given.
 # The determination is based on target volumes present as well as the region code.
 # Returns False if not.
-def breast_sequentual_boost_is_indicated(ss, region_code, prescription):
-  if has_roi_with_shape(ss, ROIS.ctv_sb.name) and has_roi_with_shape(ss, ROIS.ptv_c.name) and region_code in RC.breast_codes:
+def breast_sequentual_boost_is_indicated(ss, prescription):
+  if has_roi_with_shape(ss, ROIS.ctv_sb.name) and has_roi_with_shape(ss, ROIS.ptv_c.name) and prescription.region_code in RC.breast_codes:
     if prescription.total_dose == 48:
       # SIB boost:
       return False

@@ -40,18 +40,18 @@ def load_plan(case, plan):
 
 
 # Sets isodose lines.
-def determine_isodoses(case, ss, region_code, prescription):
+def determine_isodoses(case, ss, prescription):
   # Configure case isodose settings (relative and prescription dose):
   case.CaseSettings.DoseColorMap.PresentationType = 'Relative'
   case.CaseSettings.DoseColorMap.ReferenceValue = prescription.total_dose*100
   # Apply dose levels based on region and fractionation:
-  if region_code in RC.rectum_codes and prescription.fraction_dose == 2:
+  if prescription.region_code in RC.rectum_codes and prescription.fraction_dose == 2:
     ISODOSES.sib_47_50.apply_to(case)
-  elif region_code in RC.breast_codes and prescription.total_dose == 48:
+  elif prescription.region_code in RC.breast_codes and prescription.total_dose == 48:
     ISODOSES.breast_sib_15fx.apply_to(case)
-  elif region_code in RC.prostate_codes:
+  elif prescription.region_code in RC.prostate_codes:
     if prescription.fraction_dose in [2.0, 2.2]:
-      if region_code in RC.prostate_bed_codes:
+      if prescription.region_code in RC.prostate_bed_codes:
         if SSF.has_roi_with_shape(ss, ROIS.ctv_56.name):
           ISODOSES.prostate_bed_56_70.apply_to(case)
         else:

@@ -54,35 +54,35 @@ rectum_objectives = []
 
 
 # Common objectives
-def create_common_objectives(ss, plan, total_dose):
-  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
-  OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
-  OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+def create_common_objectives(ss, plan, prescription):
+  OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 30)
+  OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150)
+  OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 80)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
 
 
 # Breast boost (2 Gy x 8)
-def create_breast_boost_objectives(ss, plan, region_code, total_dose):
+def create_breast_boost_objectives(ss, plan, prescription):
   # External:
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = 1)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index = 1)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index = 1)
   # Targets:
   # CTVsb:
-  OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30, beam_set_index = 1)
-  OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150, beam_set_index = 1)
+  OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100, 30, beam_set_index = 1)
+  OF.min_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100*0.95, 150, beam_set_index = 1)
   # PTVsbc:
-  OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80, beam_set_index = 1)
+  OF.min_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*0.95, 75, beam_set_index = 1)
+  OF.max_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*1.05, 80, beam_set_index = 1)
   # OARs:
   # Side-neutral objectives:
   OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 3, beam_set_index = 1)
   # Side-dependent objectives:
-  if region_code in RC.breast_l_codes:
+  if prescription.region_code in RC.breast_l_codes:
     OF.max_eud(ss, plan, ROIS.lung_l.name, 6*100, 1, 2, beam_set_index = 1)
     OF.max_eud(ss, plan, ROIS.lung_r.name, 0.5*100, 1, 1, beam_set_index = 1)
     OF.max_eud(ss, plan, ROIS.breast_r.name, 1*100, 1, 1, beam_set_index = 1)
-  elif region_code in RC.breast_r_codes:
+  elif prescription.region_code in RC.breast_r_codes:
     OF.max_eud(ss, plan, ROIS.lung_r.name, 6*100, 1, 2, beam_set_index = 1)
     OF.max_eud(ss, plan, ROIS.lung_l.name, 0.5*100, 1, 1, beam_set_index = 1)
     OF.max_eud(ss, plan, ROIS.breast_l.name, 1*100, 1, 1, beam_set_index = 1)
@@ -90,25 +90,25 @@ def create_breast_boost_objectives(ss, plan, region_code, total_dose):
   
 
 # Whole breast objectives
-def create_breast_objectives(ss, plan, region_code, total_dose, target):
+def create_breast_objectives(ss, plan, prescription, target):
   # External dose fall off:
-  if region_code in RC.breast_partial_codes:
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
+  if prescription.region_code in RC.breast_partial_codes:
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
   else:
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 5.0, 30)
   # External max dose:
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
   # Targets:
-  if total_dose == 48:
+  if prescription.total_dose == 48:
     # SIB (48 & 40.05 Gy in 15 fx):
     whole_breast_dose = 40.05
     # Tumor bed:
     # CTVsb:
-    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)
-    OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150)
+    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100*0.95, 150)
     # PTVsbc:
-    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75)
-    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
+    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*0.95, 75)
+    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*1.05, 80)
     # Whole breast:
     # CTV:
     OF.uniform_dose(ss, plan, ROIS.ctv_ptv_sbc.name, whole_breast_dose*100, 30)
@@ -119,46 +119,46 @@ def create_breast_objectives(ss, plan, region_code, total_dose, target):
   else:
     # Ordinary WBRT:
     # CTV:
-    OF.uniform_dose(ss, plan, target, total_dose*100, 30)
-    OF.min_dose(ss, plan, target, total_dose*100*0.95, 150)
+    OF.uniform_dose(ss, plan, target, prescription.total_dose*100, 30)
+    OF.min_dose(ss, plan, target, prescription.total_dose*100*0.95, 150)
     # PTVc:
-    OF.min_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*0.95, 100)
-    OF.max_dose(ss, plan, target.replace("C", "P")+"c", total_dose*100*1.05, 80)
+    OF.min_dose(ss, plan, target.replace("C", "P")+"c", prescription.total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, target.replace("C", "P")+"c", prescription.total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
-  OF.max_dvh(ss, plan, ROIS.a_lad.name, total_dose*0.5*100, 2, 2)
+  OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2)
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
   # Side-dependent objectives:
-  if region_code in RC.breast_l_codes:
+  if prescription.region_code in RC.breast_l_codes:
     OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.lung_l.name, total_dose*0.4*100, 15, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_l.name, prescription.total_dose*0.4*100, 15, 2)
     OF.max_eud(ss, plan, ROIS.lung_r.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_r.name, 3*100, 1, 1)
-  elif region_code in RC.breast_r_codes:
+  elif prescription.region_code in RC.breast_r_codes:
     OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.lung_r.name, total_dose*0.4*100, 15, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_r.name, prescription.total_dose*0.4*100, 15, 2)
     OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
-    if not region_code in RC.breast_partial_codes:
+    if not prescription.region_code in RC.breast_partial_codes:
       OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
 
 
 # Breast with regional lymph nodes
-def create_breast_reg_objectives(ss, plan, region_code, total_dose):
+def create_breast_reg_objectives(ss, plan, prescription):
   # External:
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 5.0, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 5.0, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
   # Targets:
-  if total_dose == 48:
+  if prescription.total_dose == 48:
     # SIB (48 & 40.05 Gy in 15 fx):
     regional_dose = 40.05
     # Tumor bed:
     # CTVsb:
-    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100, 30)
-    OF.min_dose(ss, plan, ROIS.ctv_sb.name, total_dose*100*0.95, 150)
+    OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100*0.95, 150)
     # PTVsbc:
-    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*0.95, 75)
-    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, total_dose*100*1.05, 80)
+    OF.min_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*0.95, 75)
+    OF.max_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*1.05, 80)
     # Regional breast:
     # CTV:
     OF.uniform_dose(ss, plan, ROIS.ctv_ptv_sbc.name, regional_dose*100, 30)
@@ -171,65 +171,65 @@ def create_breast_reg_objectives(ss, plan, region_code, total_dose):
   else:
     # Ordinary regional RT:
     # CTV:
-    OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
-    OF.min_dose(ss, plan, ROIS.ctv.name, total_dose*100*0.95, 150)
+    OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 30)
+    OF.min_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100*0.95, 150)
     # PTVc:
-    OF.min_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*0.95, 100)
-    OF.max_dose(ss, plan, ROIS.ptv_c.name, total_dose*100*1.05, 80)
+    OF.min_dose(ss, plan, ROIS.ptv_c.name, prescription.total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_c.name, prescription.total_dose*100*1.05, 80)
     # PTVpc:
-    OF.min_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*0.95, 100)
-    OF.max_dose(ss, plan, ROIS.ptv_pc.name, total_dose*100*1.05, 80)
+    OF.min_dose(ss, plan, ROIS.ptv_pc.name, prescription.total_dose*100*0.95, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_pc.name, prescription.total_dose*100*1.05, 80)
   # OARs:
   # Side-neutral objectives:
-  OF.max_dvh(ss, plan, ROIS.a_lad.name, total_dose*0.5*100, 2, 2)
+  OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2)
   OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3)
   OF.max_eud(ss, plan, ROIS.thyroid.name, 8.7*100, 1, 1)
   OF.max_eud(ss, plan, ROIS.esophagus.name, 8.2*100, 1, 1)
   OF.max_dose(ss, plan, ROIS.spinal_canal.name, 20*100, 1)
   # Side-dependent objectives:
-  if region_code in RC.breast_l_codes:
+  if prescription.region_code in RC.breast_l_codes:
     OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.lung_l.name, total_dose*0.4*100, 35, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_l.name, prescription.total_dose*0.4*100, 35, 2)
     OF.max_eud(ss, plan, ROIS.lung_r.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_r.name, 3*100, 1, 1)
-  elif region_code in RC.breast_r_codes:
+  elif prescription.region_code in RC.breast_r_codes:
     OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.lung_r.name, total_dose*0.4*100, 35, 2)
+    OF.max_dvh(ss, plan, ROIS.lung_r.name, prescription.total_dose*0.4*100, 35, 2)
     OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
 
 
 # Palliative objectives
-def create_palliative_objectives(ss, plan, total_dose, target):
-  OF.uniform_dose(ss, plan, target, total_dose*100, 30)
-  OF.min_dose(ss, plan, target.replace("C", "P"), total_dose*100*0.95, 150)
-  OF.max_dose(ss, plan, target.replace("C", "P"), total_dose*100*1.05, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
-  OF.fall_off(ss, plan, ROIS.wall_ptv.name, total_dose*100, total_dose*0.75*100, 1.0, 2)
+def create_palliative_objectives(ss, plan, prescription, target):
+  OF.uniform_dose(ss, plan, target, prescription.total_dose*100, 30)
+  OF.min_dose(ss, plan, target.replace("C", "P"), prescription.total_dose*100*0.95, 150)
+  OF.max_dose(ss, plan, target.replace("C", "P"), prescription.total_dose*100*1.05, 80)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
+  OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2)
 
 
 # Palliative beam sets in cases of multiple (additional) beam sets
-def create_palliative_objectives_for_additional_beamsets(ss, plan, total_dose, beam_set_index):
-  OF.uniform_dose(ss, plan, ROIS.ctv.name+str(beam_set_index+1), total_dose*100, 30, beam_set_index = beam_set_index)
-  OF.min_dose(ss, plan, ROIS.ptv.name+str(beam_set_index+1), total_dose*100*0.95, 150, beam_set_index = beam_set_index)
-  OF.max_dose(ss, plan, ROIS.ptv.name+str(beam_set_index+1), total_dose*100*1.05, 80, beam_set_index = beam_set_index)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30, beam_set_index = beam_set_index)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30, beam_set_index = beam_set_index)
-  OF.fall_off(ss, plan, ROIS.wall_ptv.name+str(beam_set_index+1), total_dose*100, total_dose*0.75*100, 1.0, 2, beam_set_index = beam_set_index)
+def create_palliative_objectives_for_additional_beamsets(ss, plan, prescription, beam_set_index):
+  OF.uniform_dose(ss, plan, ROIS.ctv.name+str(beam_set_index+1), prescription.total_dose*100, 30, beam_set_index = beam_set_index)
+  OF.min_dose(ss, plan, ROIS.ptv.name+str(beam_set_index+1), prescription.total_dose*100*0.95, 150, beam_set_index = beam_set_index)
+  OF.max_dose(ss, plan, ROIS.ptv.name+str(beam_set_index+1), prescription.total_dose*100*1.05, 80, beam_set_index = beam_set_index)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index = beam_set_index)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index = beam_set_index)
+  OF.fall_off(ss, plan, ROIS.wall_ptv.name+str(beam_set_index+1), prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2, beam_set_index = beam_set_index)
 
 
 
 # Whole brain
-def create_whole_brain_objectives(ss, plan, total_dose):
+def create_whole_brain_objectives(ss, plan, prescription):
   # Note that objectives for eye_l/r, lens_l/r and nasal_cavity are not specified here,
   # they are instead setup with adaptive optimization.
-  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
-  OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.97, 150)
-  OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.03, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+  OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 30)
+  OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.97, 150)
+  OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.03, 80)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
 
 
 # Partial brain (conventional or stereotactic)
@@ -317,19 +317,19 @@ def create_brain_objectives(pm, examination, ss, plan, prescription):
 
 
 # Lung (conventional)
-def create_lung_objectives(ss, plan, target, total_dose):
-  if total_dose > 40:
+def create_lung_objectives(ss, plan, target, prescription):
+  if prescription.total_dose > 40:
     # Curative fractionation:
-    OF.uniform_dose(ss, plan, target, total_dose*100, 25)
-    OF.max_dose(ss, plan, target, total_dose*100*1.05, 5)
-    OF.min_dvh(ss, plan, target, total_dose*0.95*100, 98, 100)
-    OF.min_dvh(ss, plan, ROIS.ptv.name, total_dose*0.95*100, 95, 80)
-    OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 50)
-    OF.max_eud(ss, plan, ROIS.esophagus.name, 0.51*total_dose*100, 1, 1) # (~34 Gy for 66 Gy total dose)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 80)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 2)
-    OF.max_eud(ss, plan, ROIS.heart.name, 0.53*total_dose*100, 1, 10) # (~35 Gy for 66 Gy total dose)
-    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.757*total_dose*100, 10) # (~50 Gy for 66 Gy total dose)
+    OF.uniform_dose(ss, plan, target, prescription.total_dose*100, 25)
+    OF.max_dose(ss, plan, target, prescription.total_dose*100*1.05, 5)
+    OF.min_dvh(ss, plan, target, prescription.total_dose*0.95*100, 98, 100)
+    OF.min_dvh(ss, plan, ROIS.ptv.name, prescription.total_dose*0.95*100, 95, 80)
+    OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 50)
+    OF.max_eud(ss, plan, ROIS.esophagus.name, 0.51*prescription.total_dose*100, 1, 1) # (~34 Gy for 66 Gy total dose)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 80)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 3, 2)
+    OF.max_eud(ss, plan, ROIS.heart.name, 0.53*prescription.total_dose*100, 1, 10) # (~35 Gy for 66 Gy total dose)
+    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.757*prescription.total_dose*100, 10) # (~50 Gy for 66 Gy total dose)
     match = False
     if SSF.has_roi_with_shape(ss, ROIS.lungs_gtv.name):
       l = ROIS.lungs_gtv.name
@@ -337,99 +337,99 @@ def create_lung_objectives(ss, plan, target, total_dose):
       l = ROIS.lungs_igtv.name
     else:
       l = ROIS.lungs.name
-    OF.max_eud(ss, plan, l, 0.29*total_dose*100, 1, 15) # (~19 Gy for 66 Gy total dose)
-    OF.max_dvh(ss, plan, l, total_dose*0.07575*100, 55, 70) # (~5 Gy for 66 Gy total dose)
-    OF.max_dvh(ss, plan, l, total_dose*0.3030*100, 30, 80) # (~5 Gy for 66 Gy total dose)
-  elif total_dose < 40:
+    OF.max_eud(ss, plan, l, 0.29*prescription.total_dose*100, 1, 15) # (~19 Gy for 66 Gy total dose)
+    OF.max_dvh(ss, plan, l, prescription.total_dose*0.07575*100, 55, 70) # (~5 Gy for 66 Gy total dose)
+    OF.max_dvh(ss, plan, l, prescription.total_dose*0.3030*100, 30, 80) # (~5 Gy for 66 Gy total dose)
+  elif prescription.total_dose < 40:
     # Palliative fractionation:
-    OF.uniform_dose(ss, plan, target, total_dose*100, 35)
-    OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 120)
-    OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 80)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 2)
-    OF.max_eud(ss, plan, ROIS.heart.name, 0.29*total_dose*100, 1, 10)
-    OF.max_eud(ss, plan, ROIS.lungs.name, 0.23*total_dose*100, 1, 15)
-    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.95*total_dose*100, 5)
+    OF.uniform_dose(ss, plan, target, prescription.total_dose*100, 35)
+    OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 120)
+    OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 80)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 3, 2)
+    OF.max_eud(ss, plan, ROIS.heart.name, 0.29*prescription.total_dose*100, 1, 10)
+    OF.max_eud(ss, plan, ROIS.lungs.name, 0.23*prescription.total_dose*100, 1, 15)
+    OF.max_dose(ss, plan, ROIS.spinal_canal.name, 0.95*prescription.total_dose*100, 5)
 
 
 # Lung (SBRT)
-def create_lung_stereotactic_objectives(ss, plan, region_code, total_dose):
+def create_lung_stereotactic_objectives(ss, plan, prescription):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   for i in range(0, nr_targets):
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 3, 5, beam_set_index = i)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*130, 15, beam_set_index = i)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 3, 5, beam_set_index = i)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*130, 15, beam_set_index = i)
     OF.max_dose(ss, plan, ROIS.skin.name, 30*100, 10, beam_set_index = i)
     OF.max_dose(ss, plan, ROIS.spinal_canal.name, 13*100, 5, beam_set_index = i)
     OF.max_dvh(ss, plan, ROIS.chestwall.name, 30*100, 2, 100, beam_set_index = i)
     OF.max_eud(ss, plan, ROIS.lungs.name, 4.5*100, 1, 1, beam_set_index = i)
-    if region_code in RC.lung_r_codes:
+    if prescription.region_code in RC.lung_r_codes:
       OF.max_eud(ss, plan, ROIS.lung_r.name, 6.5*100, 1, 3, beam_set_index = i)
-      OF.max_dose(ss, plan, ROIS.ribs_r.name, total_dose*120, 10, beam_set_index = i)
+      OF.max_dose(ss, plan, ROIS.ribs_r.name, prescription.total_dose*120, 10, beam_set_index = i)
     else:
       OF.max_eud(ss, plan, ROIS.lung_l.name, 6.5*100, 1, 3, beam_set_index = i)
-      OF.max_dose(ss, plan, ROIS.ribs_l.name, total_dose*120, 10, beam_set_index = i)
+      OF.max_dose(ss, plan, ROIS.ribs_l.name, prescription.total_dose*120, 10, beam_set_index = i)
   if nr_targets == 1:
-    OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100, 250)
-    OF.fall_off(ss, plan, ROIS.wall_ptv.name, total_dose*100, 0.7*total_dose*100, 0.8, 5)
+    OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100, 250)
+    OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.8, 5)
   else:
     for i in range(0, nr_targets):
-      OF.min_dose(ss, plan, ROIS.ptv.name+str(i+1), total_dose*100, 250, beam_set_index = i)
-      OF.fall_off(ss, plan, "zPTV"+str(i+1)+"_Wall", total_dose*100, 0.7*total_dose*100, 0.8, 5, beam_set_index = i)
+      OF.min_dose(ss, plan, ROIS.ptv.name+str(i+1), prescription.total_dose*100, 250, beam_set_index = i)
+      OF.fall_off(ss, plan, "zPTV"+str(i+1)+"_Wall", prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.8, 5, beam_set_index = i)
 
 
 # Prostate
-def create_prostate_objectives(ss, plan, total_dose):
-  if total_dose == 60:
+def create_prostate_objectives(ss, plan, prescription):
+  if prescription.total_dose == 60:
     # Hypofractionated prosate only:
-    OF.uniform_dose(ss, plan, ROIS.ctv_60.name, total_dose*100, 40)
-    OF.uniform_dose(ss, plan, ROIS.ctv_57.name, total_dose*0.95*100, 40)
+    OF.uniform_dose(ss, plan, ROIS.ctv_60.name, prescription.total_dose*100, 40)
+    OF.uniform_dose(ss, plan, ROIS.ctv_57.name, prescription.total_dose*0.95*100, 40)
     OF.min_dose(ss, plan, ROIS.ptv_60.name, 57.1*100, 150)
-    OF.min_dose(ss, plan, ROIS.ptv_57.name, total_dose*100*0.91, 170)
-    OF.min_dose(ss, plan, ROIS.ctv_57.name, total_dose*100*0.93, 35)
-    OF.max_dose(ss, plan, ROIS.ptv_60.name, total_dose*100*1.02, 60)
-    OF.max_dvh(ss, plan, ROIS.ptv_57.name, total_dose*0.978*100, 1, 50)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.038, 25)
+    OF.min_dose(ss, plan, ROIS.ptv_57.name, prescription.total_dose*100*0.91, 170)
+    OF.min_dose(ss, plan, ROIS.ctv_57.name, prescription.total_dose*100*0.93, 35)
+    OF.max_dose(ss, plan, ROIS.ptv_60.name, prescription.total_dose*100*1.02, 60)
+    OF.max_dvh(ss, plan, ROIS.ptv_57.name, prescription.total_dose*0.978*100, 1, 50)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 20*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 20*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.rectum.name, 22.6*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.rectum.name, total_dose*0.975*100, 3, 4)
+    OF.max_dvh(ss, plan, ROIS.rectum.name, prescription.total_dose*0.975*100, 3, 4)
     OF.max_eud(ss, plan, ROIS.anal_canal.name, 24*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1)
     OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1)
-    OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, total_dose*100, 57*100, 0.3, 1)
-    OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, total_dose*100, 42*100, 0.8, 12)
-  elif total_dose == 55:
+    OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, prescription.total_dose*100, 57*100, 0.3, 1)
+    OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, prescription.total_dose*100, 42*100, 0.8, 12)
+  elif prescription.total_dose == 55:
     # Hypofractionated local control (STAMPEDE):
-    OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 40)
+    OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 40)
     OF.min_dose(ss, plan, ROIS.ptv.name, 52.3*100, 150)
-    OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.02, 60)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.038, 25)
+    OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.02, 60)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 20*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 20*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.rectum.name, 22.6*100, 1, 2)
-    OF.max_dvh(ss, plan, ROIS.rectum.name, total_dose*0.975*100, 3, 4)
+    OF.max_dvh(ss, plan, ROIS.rectum.name, prescription.total_dose*0.975*100, 3, 4)
     OF.max_eud(ss, plan, ROIS.anal_canal.name, 22*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1)
     OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1)
-    OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, total_dose*100, 42*100, 1, 1)
-  elif total_dose == 77 and SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
+    OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 42*100, 1, 1)
+  elif prescription.total_dose == 77 and SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
     # Normo-fractionated with elective nodes:
     OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 15)
     OF.uniform_dose(ss, plan, ROIS.ctv_70_sib.name, 70*100, 25)
     OF.uniform_dose(ss, plan, ROIS.ctv_77.name, 77*100, 20)
     OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 100)
     OF.max_dvh(ss, plan, ROIS.ptv_56.name, 58.5*100, 5, 5)
-    OF.min_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*100*0.88, 100)
-    OF.max_dvh(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.95*100, 5, 50)
-    OF.min_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*0.98, 100)
-    OF.max_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*1.02, 70)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.min_dose(ss, plan, ROIS.ptv_70_sib.name, prescription.total_dose*100*0.88, 100)
+    OF.max_dvh(ss, plan, ROIS.ptv_70_sib.name, prescription.total_dose*0.95*100, 5, 50)
+    OF.min_dose(ss, plan, ROIS.ptv_77.name, prescription.total_dose*100*0.98, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_77.name, prescription.total_dose*100*1.02, 70)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.fall_off(ss, plan, ROIS.external.name, 56*100, 28*100, 2, 15)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1)
@@ -438,19 +438,19 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 34*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 14.2*100, 1, 2)
     OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2)
-    OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 71*100, 0.3, 10)
-    OF.fall_off(ss, plan, ROIS.z_ptv_70_77_wall.name, total_dose*100, 56*100, 0.5, 5)
-  elif total_dose == 77:
+    OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, prescription.total_dose*100, 71*100, 0.3, 10)
+    OF.fall_off(ss, plan, ROIS.z_ptv_70_77_wall.name, prescription.total_dose*100, 56*100, 0.5, 5)
+  elif prescription.total_dose == 77:
     # Normo-fractionated prostate only:
-    OF.uniform_dose(ss, plan, ROIS.ctv_77.name, total_dose*100, 40)
+    OF.uniform_dose(ss, plan, ROIS.ctv_77.name, prescription.total_dose*100, 40)
     OF.uniform_dose(ss, plan, ROIS.ctv_70_sib.name, 70*100, 40)
-    OF.min_dose(ss, plan, ROIS.ctv_70_sib.name, total_dose*100*0.89, 25)
-    OF.min_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*0.98, 150)
-    OF.min_dvh(ss, plan, ROIS.ptv_70_sib.name, total_dose*100*0.89, 98, 150)
-    OF.max_dose(ss, plan, ROIS.ptv_77.name, total_dose*100*1.02, 70)
-    OF.max_dose(ss, plan, ROIS.ptv_70_sib.name, total_dose*0.95*100, 50)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.038, 25)
+    OF.min_dose(ss, plan, ROIS.ctv_70_sib.name, prescription.total_dose*100*0.89, 25)
+    OF.min_dose(ss, plan, ROIS.ptv_77.name, prescription.total_dose*100*0.98, 150)
+    OF.min_dvh(ss, plan, ROIS.ptv_70_sib.name, prescription.total_dose*100*0.89, 98, 150)
+    OF.max_dose(ss, plan, ROIS.ptv_77.name, prescription.total_dose*100*1.02, 70)
+    OF.max_dose(ss, plan, ROIS.ptv_70_sib.name, prescription.total_dose*0.95*100, 50)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.rectum.name, 40*100, 1, 2)
@@ -461,19 +461,19 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 30*100, 5, 1)
     OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 25*100, 1, 3)
-    OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, total_dose*100, 68*100, 0.3, 15)
-  elif total_dose == 67.5 and SSF.has_roi_with_shape(ss, ROIS.ptv__50.name):
+    OF.fall_off(ss, plan, ROIS.z_ptv_77_wall.name, prescription.total_dose*100, 68*100, 0.3, 15)
+  elif prescription.total_dose == 67.5 and SSF.has_roi_with_shape(ss, ROIS.ptv__50.name):
     # Hypo-fractionated prostate prostate with elective nodes:
     OF.uniform_dose(ss, plan, 'CTV!_50', 50*100, 15)
     OF.uniform_dose(ss, plan, 'CTV!_62.5', 62.5*100, 25)
     OF.uniform_dose(ss, plan, 'CTV_67.5', 67.5*100, 20)
     OF.min_dose(ss, plan, 'PTV!_50', 48*100, 100)
     OF.max_dvh(ss, plan, 'PTV!_50', 52*100, 5, 5)
-    OF.min_dose(ss, plan, 'PTV!_62.5', total_dose*100*0.88, 100)
-    OF.max_dvh(ss, plan, 'PTV!_62.5', total_dose*0.95*100, 5, 50)
-    OF.min_dose(ss, plan, 'PTV_67.5', total_dose*100*0.98, 100)
-    OF.max_dose(ss, plan, 'PTV_67.5', total_dose*100*1.02, 70)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.min_dose(ss, plan, 'PTV!_62.5', prescription.total_dose*100*0.88, 100)
+    OF.max_dvh(ss, plan, 'PTV!_62.5', prescription.total_dose*0.95*100, 5, 50)
+    OF.min_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*0.98, 100)
+    OF.max_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*1.02, 70)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.fall_off(ss, plan, ROIS.external.name, 50*100, 25*100, 2, 15)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 30*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 30*100, 2, 1)
@@ -483,17 +483,17 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 12*100, 1, 2)
     OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2)
-    OF.fall_off(ss, plan, 'zPTV_67.5_Wall', total_dose*100, 62*100, 0.3, 10)
-    OF.fall_off(ss, plan, 'zPTV_62.5+67.5_Wall', total_dose*100, 50*100, 0.5, 5)
-  elif total_dose == 67.5:
+    OF.fall_off(ss, plan, 'zPTV_67.5_Wall', prescription.total_dose*100, 62*100, 0.3, 10)
+    OF.fall_off(ss, plan, 'zPTV_62.5+67.5_Wall', prescription.total_dose*100, 50*100, 0.5, 5)
+  elif prescription.total_dose == 67.5:
     # Hypo-fractionated prostate prostate only:
     OF.uniform_dose(ss, plan, 'CTV!_62.5', 62.5*100, 25)
     OF.uniform_dose(ss, plan, 'CTV_67.5', 67.5*100, 20)
-    OF.min_dose(ss, plan, 'PTV!_62.5', total_dose*100*0.88, 100)
-    OF.max_dvh(ss, plan, 'PTV!_62.5', total_dose*0.95*100, 5, 50)
-    OF.min_dose(ss, plan, 'PTV_67.5', total_dose*100*0.98, 100)
-    OF.max_dose(ss, plan, 'PTV_67.5', total_dose*100*1.02, 70)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.min_dose(ss, plan, 'PTV!_62.5', prescription.total_dose*100*0.88, 100)
+    OF.max_dvh(ss, plan, 'PTV!_62.5', prescription.total_dose*0.95*100, 5, 50)
+    OF.min_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*0.98, 100)
+    OF.max_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*1.02, 70)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.fall_off(ss, plan, ROIS.external.name, 50*100, 25*100, 2, 15)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 30*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 30*100, 2, 1)
@@ -502,20 +502,20 @@ def create_prostate_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2)
     OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2)
-    OF.fall_off(ss, plan, 'zPTV_67.5_Wall', total_dose*100, 62*100, 0.3, 10)
+    OF.fall_off(ss, plan, 'zPTV_67.5_Wall', prescription.total_dose*100, 62*100, 0.3, 10)
 
 
 # Prostate bed
-def create_prostate_bed_objectives(ss, plan, total_dose):
+def create_prostate_bed_objectives(ss, plan, prescription):
   if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
     # Elective nodes:
-    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 20)
+    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, prescription.total_dose*100, 20)
     OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
     OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
     OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
-    OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.045, 70)
+    OF.max_dose(ss, plan, ROIS.ptv_70.name, prescription.total_dose*100*1.045, 70)
     OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10)
@@ -524,15 +524,15 @@ def create_prostate_bed_objectives(ss, plan, total_dose):
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2)
     OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2)
     OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2)
-    OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, total_dose*100, 56*100, 1, 1)
+    OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, prescription.total_dose*100, 56*100, 1, 1)
     OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1)
   else:
     # Prostate bed only:
-    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, total_dose*100, 25)
-    OF.min_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*0.96, 100)
-    OF.max_dose(ss, plan, ROIS.ptv_70.name, total_dose*100*1.03, 50)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2, 20)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 40)
+    OF.uniform_dose(ss, plan, ROIS.ctv_70.name, prescription.total_dose*100, 25)
+    OF.min_dose(ss, plan, ROIS.ptv_70.name, prescription.total_dose*100*0.96, 100)
+    OF.max_dose(ss, plan, ROIS.ptv_70.name, prescription.total_dose*100*1.03, 50)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2, 20)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 40)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.rectum.name, 40*100, 1, 2)
@@ -545,26 +545,26 @@ def create_prostate_bed_objectives(ss, plan, total_dose):
 
 
 # Bladder
-def create_bladder_objectives(plan, ss, total_dose):
-  OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 30)
-  OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
-  OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 80)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.5, 30)
-  OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 30)
+def create_bladder_objectives(plan, ss, prescription):
+  OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 30)
+  OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150)
+  OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 80)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30)
+  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
   OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 45*100, 2, 1)
   OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 45*100, 2, 1)
 
 
 # Rectum
-def create_rectum_objectives(ss, plan, total_dose):
-  if total_dose == 50:
-    OF.uniform_dose(ss, plan, ROIS.ctv_50.name, total_dose*100, 20)
+def create_rectum_objectives(ss, plan, prescription):
+  if prescription.total_dose == 50:
+    OF.uniform_dose(ss, plan, ROIS.ctv_50.name, prescription.total_dose*100, 20)
     OF.uniform_dose(ss, plan, ROIS.ctv_47.name, 47*100, 35)
     OF.min_dose(ss, plan, ROIS.ptv_47_50.name, 44.8*100, 200)
-    OF.min_dose(ss, plan, ROIS.ptv_50.name, total_dose*0.95*100, 150)
-    OF.max_dvh(ss, plan, ROIS.ptv_47.name, total_dose*0.95*100, 3, 20)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 2, 10)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.min_dose(ss, plan, ROIS.ptv_50.name, prescription.total_dose*0.95*100, 150)
+    OF.max_dvh(ss, plan, ROIS.ptv_47.name, prescription.total_dose*0.95*100, 3, 20)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2, 10)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 28*100, 1, 2)
@@ -574,11 +574,11 @@ def create_rectum_objectives(ss, plan, total_dose):
     OF.fall_off(ss, plan, ROIS.z_ptv_50_wall.name, 49*100, 45*100, 0.5, 5)
     OF.fall_off(ss, plan, ROIS.z_ptv_47_50_wall.name, 50*100, 35*100, 1.0, 1)
   else:
-    OF.uniform_dose(ss, plan, ROIS.ctv.name, total_dose*100, 35)
-    OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100*0.95, 150)
-    OF.max_dose(ss, plan, ROIS.ptv.name, total_dose*100*1.05, 50)
-    OF.fall_off(ss, plan, ROIS.external.name, total_dose*100, total_dose*100/2, 1.8, 15)
-    OF.max_dose(ss, plan, ROIS.external.name, total_dose*100*1.05, 20)
+    OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 35)
+    OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150)
+    OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 50)
+    OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.8, 15)
+    OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 18*100, 2, 1)
     OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 18*100, 2, 1)
     OF.max_eud(ss, plan, ROIS.z_bladder.name, 16.2*100, 1, 1)
@@ -588,7 +588,7 @@ def create_rectum_objectives(ss, plan, total_dose):
 
 
 # Bone/Spine SBRT
-def create_bone_stereotactic_objectives(ss, plan, total_dose):
-  OF.min_dose(ss, plan, ROIS.ptv.name, total_dose*100, 200)
-  OF.fall_off(ss, plan, ROIS.external.name, total_dose*106, 3*100, 3, 3)
-  OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, total_dose*100, 0.65*total_dose*100, 0.5, 10)
+def create_bone_stereotactic_objectives(ss, plan, prescription):
+  OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100, 200)
+  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*106, 3*100, 3, 3)
+  OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.65*prescription.total_dose*100, 0.5, 10)

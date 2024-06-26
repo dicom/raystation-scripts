@@ -18,14 +18,14 @@ class BreastOptimization(object):
   # -Plan
   # -Site
   # -Region code
-  def __init__(self, ss, plan, site, region_code):
+  def __init__(self, ss, plan, site, prescription):
     # Verify input:
     #assert isinstance(choices, list), "choices is not a list: %r" % choices
     # Assign parameters:
     self.ss = ss
     self.plan = plan
     self.site = site
-    self.region_code = region_code
+    self.region_code = prescription.region_code
   
 
   # Executes the optimization.

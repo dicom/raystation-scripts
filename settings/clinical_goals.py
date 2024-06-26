@@ -142,9 +142,9 @@ pc170 = 1.7
 # (Sorted cranio-caudally)
 
 # Brain (whole brain/partial brain/brain SRT):
-def brain_oars(prescription, region_code):
+def brain_oars(prescription):
   brain_oars = []
-  if region_code in RC.brain_whole_codes:
+  if prescription.region_code in RC.brain_whole_codes:
     # Whole brain:
     brain_oars += [
       CG.ClinicalGoal(ROIS.cochlea_l.name, at_most, average_dose, TOL.cochlea_mean_tinnitus, None, priority3),
@@ -155,7 +155,7 @@ def brain_oars(prescription, region_code):
       CG.ClinicalGoal(ROIS.lacrimal_r.name, at_most, average_dose, TOL.lacrimal_mean, None, priority3),
       CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_v003_adx, cc0_03, priority6)
 		]
-  elif region_code in RC.brain_partial_codes:
+  elif prescription.region_code in RC.brain_partial_codes:
     # Partial brain (SBRT & conventional):
     brain_oars += [
       CG.ClinicalGoal(ROIS.hippocampus_l.name, at_most, average_dose, TOL.hippocampus_v40, None, priority5),
@@ -235,7 +235,7 @@ def brain_oars(prescription, region_code):
 
 
 # Breast (Regional breast/Whole breast/Partial breast):
-def breast_oars(ss, region_code, prescription):
+def breast_oars(ss, prescription):
   # Common for all breast variants:
   breast_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinalcanal_breast, cc0_03, priority2),
@@ -246,13 +246,13 @@ def breast_oars(ss, region_code, prescription):
     CG.ClinicalGoal(ROIS.a_lad.name, at_most, average_dose, TOL.lad_mean, None, priority6),
     CG.ClinicalGoal(ROIS.heart.name, at_most, average_dose, TOL.heart_mean_breast_low_priority, None, priority6)
   ]
-  if region_code in RC.breast_l_codes:
+  if prescription.region_code in RC.breast_l_codes:
     breast_oars += [
       CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
       CG.ClinicalGoal(ROIS.breast_r.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7),
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.contralateral_lung_mean, None, priority7)
     ]
-  elif region_code in RC.breast_r_codes:
+  elif prescription.region_code in RC.breast_r_codes:
     breast_oars += [
       CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean, None, priority5),
       CG.ClinicalGoal(ROIS.breast_l.name, at_most, average_dose, TOL.contralat_breast_mean_young_patients, None, priority7),
@@ -264,7 +264,7 @@ def breast_oars(ss, region_code, prescription):
       CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.05, TOL.heart_v7_fastforward, priority6),
       CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.3, TOL.heart_v1_5_fastforward, priority6)
     ]
-    if region_code in RC.breast_l_codes:
+    if prescription.region_code in RC.breast_l_codes:
       breast_oars += [
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
       ]
@@ -272,7 +272,7 @@ def breast_oars(ss, region_code, prescription):
       breast_oars += [
         CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
       ]
-  if region_code in RC.breast_reg_codes:
+  if prescription.region_code in RC.breast_reg_codes:
     # Common for regional left & right:
     breast_oars += [
       CG.ClinicalGoal(ROIS.thyroid.name, at_most, average_dose, TOL.thyroid_mean, None, priority4),
@@ -286,7 +286,7 @@ def breast_oars(ss, region_code, prescription):
       volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
       if volume > 8.5:
         breast_oars.append(CG.ClinicalGoal(ROIS.thyroid.name, at_most, abs_volume_at_dose, volume-8.5, TOL.thyroid_v8_5cc_adx_brt, priority5))
-    if region_code in RC.breast_reg_l_codes:
+    if prescription.region_code in RC.breast_reg_l_codes:
       # Specific for regional left:
       breast_oars += [
         CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc35, TOL.lung_v35_adx_15, priority4),
@@ -300,17 +300,17 @@ def breast_oars(ss, region_code, prescription):
       ]
   else:
     # Non-regional breast:
-    if region_code in RC.breast_l_codes:
+    if prescription.region_code in RC.breast_l_codes:
       # Common for whole breast & partial breast, left:
       breast_oars += [CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)]
-    elif region_code in RC.breast_r_codes:
+    elif prescription.region_code in RC.breast_r_codes:
       # Common for whole breast & partial breast, right:
       breast_oars += [CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, pc15, TOL.lung_v15_adx, priority4)]
-    if region_code in RC.breast_partial_l_codes:
+    if prescription.region_code in RC.breast_partial_l_codes:
       # Specific for partial breast left:
       breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, abs_volume_at_dose, 426, TOL.ipsilateral_breast_426cc, priority5)]
       breast_oars += [CG.ClinicalGoal(ROIS.breast_l.name, at_most, abs_volume_at_dose, 177, TOL.ipsilateral_breast_177cc, priority6)]
-    elif region_code in RC.breast_partial_r_codes:
+    elif prescription.region_code in RC.breast_partial_r_codes:
       # Specific for partial breast right:
       breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 426, TOL.ipsilateral_breast_426cc, priority5)]
       breast_oars += [CG.ClinicalGoal(ROIS.breast_r.name, at_most, abs_volume_at_dose, 177, TOL.ipsilateral_breast_177cc, priority6)]
@@ -318,7 +318,7 @@ def breast_oars(ss, region_code, prescription):
   if prescription.total_dose == 48:
     breast_oars += [CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.10, TOL.heart_v13gy_import_high, priority3)]
     breast_oars += [CG.ClinicalGoal(ROIS.heart.name, at_most, volume_at_dose, 0.02, TOL.heart_v13gy_import_high, priority7)]
-    if region_code in RC.breast_l_codes:
+    if prescription.region_code in RC.breast_l_codes:
       # Ipisilateral:
       breast_oars += [CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_mean_import_high, None, priority7)]
       # Contralateral:
@@ -406,7 +406,7 @@ def lung_oars(ss, prescription):
 
 
 # Lung SBRT (3 fx):
-def lung_stereotactic_3fx_oars(region_code):
+def lung_stereotactic_3fx_oars(prescription):
   lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx, 0.035, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_3fx, 0.1, priority2),
@@ -425,13 +425,13 @@ def lung_stereotactic_3fx_oars(region_code):
     CG.ClinicalGoal(ROIS.lungs_igtv.name, at_most, volume_at_dose, pc10, TOL.lung_sbrt_v_10pc, priority6),
     CG.ClinicalGoal(ROIS.stomach.name, at_most, abs_volume_at_dose, cc0_1, TOL.stomach_sbrt_3fx_cc01, priority6)
   ]
-  if region_code in [248, 250]:
+  if prescription.region_code in [248, 250]:
     # Right:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_3fx, cc0, priority6)
     ]
-  elif region_code in [247, 249]:
+  elif prescription.region_code in [247, 249]:
     # Left:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
@@ -447,7 +447,7 @@ def lung_stereotactic_3fx_oars(region_code):
 
 
 # Lung SBRT (5 fx):
-def lung_stereotactic_5fx_oars(region_code):
+def lung_stereotactic_5fx_oars(prescription):
   lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_5fx, 0.035, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_5fx, 0.1, priority2),
@@ -466,13 +466,13 @@ def lung_stereotactic_5fx_oars(region_code):
     CG.ClinicalGoal(ROIS.lungs_igtv.name, at_most, volume_at_dose, pc10, TOL.lung_sbrt_v_10pc, priority6),
     CG.ClinicalGoal(ROIS.stomach.name, at_most, abs_volume_at_dose, cc0_1, TOL.stomach_sbrt_5fx_cc01, priority6)
   ]
-  if region_code in [248, 250]:
+  if prescription.region_code in [248, 250]:
     # Right:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_5fx, cc0, priority6)
     ]
-  elif region_code in [247, 249]:
+  elif prescription.region_code in [247, 249]:
     # Left:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
@@ -488,7 +488,7 @@ def lung_stereotactic_5fx_oars(region_code):
 
 
 # Lung SBRT (8 fx):
-def lung_stereotactic_8fx_oars(region_code):
+def lung_stereotactic_8fx_oars(prescription):
   lung_oars = [
     CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_8fx, 0.035, priority2),
     CG.ClinicalGoal(ROIS.trachea.name, at_most, dose_at_abs_volume, TOL.trachea_sbrt_8fx, 0.1, priority2),
@@ -507,13 +507,13 @@ def lung_stereotactic_8fx_oars(region_code):
     CG.ClinicalGoal(ROIS.lungs_igtv.name, at_most, volume_at_dose, pc10, TOL.lung_sbrt_v_10pc, priority6),
     CG.ClinicalGoal(ROIS.stomach.name, at_most, abs_volume_at_dose, cc0_1, TOL.stomach_sbrt_8fx_cc01, priority6)
   ]
-  if region_code in [248, 250]:
+  if prescription.region_code in [248, 250]:
     # Right:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_l.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
       CG.ClinicalGoal(ROIS.ribs_r.name, at_most, dose_at_abs_volume, TOL.ribs_sbrt_8fx, cc0, priority6)
     ]
-  elif region_code in [247, 249]:
+  elif prescription.region_code in [247, 249]:
     # Left:
     lung_oars += [
       CG.ClinicalGoal(ROIS.lung_r.name, at_most, average_dose, TOL.lung_sbrt_contralat_mean, None, priority6),
@@ -562,7 +562,7 @@ bladder_oars = [
 
 
 # Prostate (palliative fx, 20 fx, 25 fx & 35 fx):
-def prostate_oars(ss, region_code, prescription):
+def prostate_oars(ss, prescription):
   prostate_oars = [
     # Higher priority:
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.22, TOL.rectum_v22pc,  priority3),
@@ -595,7 +595,7 @@ def prostate_oars(ss, region_code, prescription):
     CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1000, TOL.bone_v1000cc, priority6)
   ]
   # Lymph node irradiation?
-  if region_code in RC.prostate_node_codes:
+  if prescription.region_code in RC.prostate_node_codes:
     # Cauda equina:
     prostate_oars += [
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_volume, TOL.spinalcanal_v2_adx, pc2, priority2)
@@ -604,13 +604,13 @@ def prostate_oars(ss, region_code, prescription):
 
 
 # Bone SBRT (1 fx, thoracic/pelvis, spine/non-spine):
-def bone_stereotactic_1fx_oars(region_code):
+def bone_stereotactic_1fx_oars(prescription):
   # Common for all bone SBRT:
   bone_oars = [
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_1fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_sbrt_1fx_v0, cc0, priority4)
   ]
-  if region_code in RC.stereotactic_spine_thorax_codes:
+  if prescription.region_code in RC.stereotactic_spine_thorax_codes:
     # Spine thorax:
     bone_oars += [
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0_35, cc0_35, priority2),
@@ -630,7 +630,7 @@ def bone_stereotactic_1fx_oars(region_code):
       CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_sbrt_1fx_v0, cc0, priority3),
       CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_1fx_v200, cc200, priority3)
     ]
-  elif region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
+  elif prescription.region_code in RC.stereotactic_spine_pelvis_codes or prescription.region_code in RC.stereotactic_pelvis_codes:
     # Common for pelvis spine/non-spine:
     bone_oars += [
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, cc0, priority2),
@@ -644,7 +644,7 @@ def bone_stereotactic_1fx_oars(region_code):
       CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_1fx_v003, cc0_03, priority3),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_1fx_v15, cc15, priority3)
     ]
-    if region_code in RC.stereotactic_spine_pelvis_codes:
+    if prescription.region_code in RC.stereotactic_spine_pelvis_codes:
       # Spine pelvis:
       bone_oars += [
         CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_1fx_v0_35, cc0_35, priority2),
@@ -661,13 +661,13 @@ def bone_stereotactic_1fx_oars(region_code):
 
 
 # Bone SBRT (3 fx, thoracic/pelvis, spine/non-spine):
-def bone_stereotactic_3fx_oars(region_code):
+def bone_stereotactic_3fx_oars(prescription):
   # Common for all bone SBRT:
   bone_oars = [
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v10, cc10, priority4),
     CG.ClinicalGoal(ROIS.skin.name, at_most, dose_at_abs_volume, TOL.skin_col_sbrt_3fx_v0, cc0, priority4),
   ]
-  if region_code in RC.stereotactic_spine_thorax_codes:
+  if prescription.region_code in RC.stereotactic_spine_thorax_codes:
     # Spine thorax:
     bone_oars += [
       CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
@@ -682,7 +682,7 @@ def bone_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.kidney_r.name, at_most, dose_at_volume, TOL.kidney_3fx_v10, pc10, priority3),
       CG.ClinicalGoal(ROIS.kidneys.name, at_most, dose_at_abs_volume, TOL.kidneys_col_3fx_v200, cc200, priority3)
     ]
-  elif region_code in RC.stereotactic_spine_pelvis_codes or region_code in RC.stereotactic_pelvis_codes:
+  elif prescription.region_code in RC.stereotactic_spine_pelvis_codes or prescription.region_code in RC.stereotactic_pelvis_codes:
     # Common for pelvis spine/non-spine:
     bone_oars += [
       CG.ClinicalGoal(ROIS.cauda_equina.name, at_most, dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v0, cc0, priority2),
@@ -696,7 +696,7 @@ def bone_stereotactic_3fx_oars(region_code):
       CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_3fx_v003, cc0_03, priority3),
       CG.ClinicalGoal(ROIS.bladder.name, at_most, dose_at_abs_volume, TOL.bladder_3fx_v15, cc15, priority3)
     ]
-    if region_code in RC.stereotactic_spine_pelvis_codes:
+    if prescription.region_code in RC.stereotactic_spine_pelvis_codes:
       # Spine pelvis:
       bone_oars += [
         CG.ClinicalGoal(ROIS.spinal_cord.name, at_most, dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx_v0_35, cc0_35, priority2),
@@ -860,7 +860,7 @@ def brain_targets(ss, prescription):
 
 
 # Breast (partial/whole/regional):
-def breast_targets(ss, region_code, target, prescription):
+def breast_targets(ss, target, prescription):
   breast_targets = []
   # Set a modifier to use with nominal target dose for SIB/no-SIB:
   mod = 1.0
@@ -871,9 +871,9 @@ def breast_targets(ss, region_code, target, prescription):
   else:
     homogeneity_target = target
     prescription_target = target
-  if region_code in RC.breast_reg_codes:
+  if prescription.region_code in RC.breast_reg_codes:
     # Regional breast:
-    if region_code in RC.breast_bilateral_codes:
+    if prescription.region_code in RC.breast_bilateral_codes:
       # Bilateral regional:
       breast_targets += [
         CG.ClinicalGoal(prescription_target, at_least, dose_at_volume, pc99_5*mod, pc50, priority1),
@@ -928,7 +928,7 @@ def breast_targets(ss, region_code, target, prescription):
         CG.ClinicalGoal(target, at_least, dose_at_volume, pc96*mod, pc98, priority5),
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95*mod, pc98, priority5)
       ]
-  if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and region_code not in RC.breast_partial_codes:
+  if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and prescription.region_code not in RC.breast_partial_codes:
     if prescription.total_dose == 48:
       # SIB boost (40.05 & 48 Gy in 15 fx):
       breast_targets += [

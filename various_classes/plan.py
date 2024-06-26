@@ -71,14 +71,14 @@ class Plan(object):
     # Create the prescription object:
     prescription = PRES.create_prescription(total_dose, nr_fractions, region_code, ss)
     # Validate the prescription:
-    valid = PRES.validate_prescription(prescription, region_code)
+    valid = PRES.validate_prescription(prescription)
     if not valid:
-      GUIF.handle_invalid_prescription(prescription, region_code, region_text)
+      GUIF.handle_invalid_prescription(prescription, region_text)
 
 
     # For SBRT or palliative, if there are multiple targets, display an extra form
     # where the user can specify the region code(s) of the other target(s).
-    target, palliative_choices, region_codes = GUIF.collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescription)
+    target, palliative_choices, region_codes = GUIF.collect_target_strategy_and_region_codes(ss, nr_targets, prescription)
 
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
@@ -89,7 +89,7 @@ class Plan(object):
 
 
     # Determine which technique and optimization choices which will appear in the form:
-    results = GUIF.determine_choices(region_code, prescription, my_window, [])
+    results = GUIF.determine_choices(prescription, my_window, [])
     # Chosen technique value ('VMAT' or 'Conformal'):
     technique = results[0]
     # Chosen technique name ('VMAT' or '3D-CRT'):
@@ -136,7 +136,7 @@ class Plan(object):
       energy_name = SSF.determine_energy(ss, target)
 
     # Create beamset name:
-    beam_set_name = BSF.label(region_code, prescription, technique)
+    beam_set_name = BSF.label(prescription, technique)
 
 
     # Create primary beam set:
@@ -151,7 +151,7 @@ class Plan(object):
     BSF.add_prescription(beam_set, prescription, prescription_target)
 
     # Set beam set dose grid:
-    BSF.set_dose_grid(beam_set, region_code, prescription)
+    BSF.set_dose_grid(beam_set, prescription)
 
     # Determine the point which will be our isocenter:
     if nr_targets > 1:
@@ -171,7 +171,7 @@ class Plan(object):
     if self.mq_patient:
       beam_nr = self.mq_patient.next_available_field_number()
     # Setup beams (or arcs):
-    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, technique_name, energy_name, beam_index=beam_nr)
+    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, beam_index=beam_nr)
     last_beam_index = beam_nr + nr_beams - 1
 
 
@@ -191,19 +191,19 @@ class Plan(object):
 
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
-    if SSF.breast_sequentual_boost_is_indicated(ss, region_code, prescription):
-      PF.create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, ROIS.ctv_sb.name, background_dose=int(round(prescription.total_dose)))
+    if SSF.breast_sequentual_boost_is_indicated(ss, prescription):
+      PF.create_breast_boost_beamset(ss, plan, examination, isocenter, ROIS.ctv_sb.name, prescription)
       # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
       infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
       plan.LoadBeamSet( beamSetInfo=infos[0])
 
 
     # Determines and sets up isodoses based on region code and fractionation:
-    CF.determine_isodoses(case, ss, region_code, prescription)
+    CF.determine_isodoses(case, ss, prescription)
 
 
     # Determine site:
-    site = SF.site(pm, examination, ss, plan, prescription, region_code, target, technique_name)
+    site = SF.site(pm, examination, ss, plan, prescription, target, technique_name)
 
 
     # Set up Clinical Goals:
@@ -238,7 +238,7 @@ class Plan(object):
         plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
         # Configure optimization parameters for VMAT only:
         if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
-          optimization_parameters = OPT.optimization_parameters(region_code, prescription)
+          optimization_parameters = OPT.optimization_parameters(prescription)
           optimization_parameters.apply_to(plan_optimization)
         # Run the optimization (may crash if GPU for computation is not available):
         # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)

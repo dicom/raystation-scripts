@@ -59,11 +59,11 @@ sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_l
 
 
 # Set up optimization parameters, based on region code (i.e. treatment site) and fraction dose (i.e. fractionated treatment or SBRT).
-def optimization_parameters(region_code, prescription):
+def optimization_parameters(prescription):
   # Set default optimization settings:
   opt = default
   # Assign optimization settings based on region code (and in some cases fraction dose):
-  if region_code in RC.brain_partial_codes:
+  if prescription.region_code in RC.brain_partial_codes:
     # Partial brain:
     if prescription.is_stereotactic():
       # Stereotactic brain
@@ -71,13 +71,13 @@ def optimization_parameters(region_code, prescription):
     else:
       # Partial brain (ordinary fractionation):
       opt = sliding_window
-  elif region_code in RC.brain_whole_codes:
+  elif prescription.region_code in RC.brain_whole_codes:
     # Whole brain:
     opt = sliding_window
-  elif region_code in RC.breast_codes:
+  elif prescription.region_code in RC.breast_codes:
     # Partial breast/Whole breast/Regional breast:
     opt = sliding_window
-  elif region_code in RC.lung_and_mediastinum_codes:
+  elif prescription.region_code in RC.lung_and_mediastinum_codes:
     # Lung:
     if prescription.is_stereotactic():
       # Stereotactic lung:
@@ -85,25 +85,25 @@ def optimization_parameters(region_code, prescription):
     else:
       # Conventional lung:
       opt = sliding_window
-  elif region_code in RC.prostate_codes:
+  elif prescription.region_code in RC.prostate_codes:
     # Prostate:
-    if region_code in RC.prostate_only_codes + RC.prostate_vesicles_codes:
+    if prescription.region_code in RC.prostate_only_codes + RC.prostate_vesicles_codes:
       # "Simple" prostate cases:
       opt = sliding_window_quick
     else:
       # "Complex" prostate/bed cases:
       opt = sliding_window
-  elif region_code in RC.rectum_codes:
+  elif prescription.region_code in RC.rectum_codes:
     # Rectum:
     opt = sliding_window
-  elif region_code in RC.palliative_codes:
+  elif prescription.region_code in RC.palliative_codes:
     # Palliative treatment:
     if prescription.is_stereotactic():
       # Stereotactic palliative:
       opt = sbrt
     else:
       # Conventional palliative:
-      if region_code in RC.whole_pelvis_codes:
+      if prescription.region_code in RC.whole_pelvis_codes:
         opt = sliding_window
   # Set max number of monitor units (for all non-sbrt optimizations):
   if opt != sbrt:

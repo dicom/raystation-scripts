@@ -209,41 +209,40 @@ def create_prescription(total_dose, nr_fractions, region_code, ss):
 
 # Validates the prescription which has been selected against the known prescriptions for each treatment region.
 # If the prescription is recognized, returns True, and if not returns False.
-def validate_prescription(prescription, region_code):
+def validate_prescription(prescription):
   # Verify input:
   assert type(prescription) is Prescription, "prescription is not a Prescription: %r" % prescription
-  assert -1 <= region_code <= 999, "region_code is not in a valid range (-1-999): %r" % region_code
   # The return parameter:
   valid = False
   # Test for each region code category and set valid True if there is a match:
-  if region_code in RC.brain_whole_codes:
+  if prescription.region_code in RC.brain_whole_codes:
     if prescription in brain_whole:
       valid = True
-  elif region_code in RC.brain_partial_codes:
+  elif prescription.region_code in RC.brain_partial_codes:
     if prescription in brain_partial:
       valid = True
-  elif region_code in RC.als_codes:
+  elif prescription.region_code in RC.als_codes:
     if prescription in als:
       valid = True
-  elif region_code in RC.breast_codes:
+  elif prescription.region_code in RC.breast_codes:
     if prescription in breast:
       valid = True
-  elif region_code in RC.lung_and_mediastinum_codes:
+  elif prescription.region_code in RC.lung_and_mediastinum_codes:
     if prescription in lung:
       valid = True
-  elif region_code in RC.bladder_codes:
+  elif prescription.region_code in RC.bladder_codes:
     if prescription in bladder:
       valid = True
-  elif region_code in RC.prostate_intact_codes:
+  elif prescription.region_code in RC.prostate_intact_codes:
     if prescription in prostate:
       valid = True
-  elif region_code in RC.prostate_bed_codes:
+  elif prescription.region_code in RC.prostate_bed_codes:
     if prescription in prostate_bed:
       valid = True
-  elif region_code in RC.rectum_codes:
+  elif prescription.region_code in RC.rectum_codes:
     if prescription in rectum:
       valid = True
-  elif region_code in RC.palliative_codes:
+  elif prescription.region_code in RC.palliative_codes:
     if prescription in palliative:
       valid = True
   return valid

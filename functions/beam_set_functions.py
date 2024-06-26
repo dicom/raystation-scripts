@@ -156,7 +156,7 @@ def create_two_beams(beam_set, isocenter, energy='6', name1='', name2='', gantry
 
 
 # Creates a label based on region code, presciption and technique (VMAT or 3D-CRT). The label is used as beam set name.
-def label(region_code, presciption, technique, background_dose=0):
+def label(presciption, technique, background_dose=0):
   if technique == 'Conformal': # 3D-CRT
     t = 'I:' + str(background_dose) + '-'
   else:
@@ -164,7 +164,7 @@ def label(region_code, presciption, technique, background_dose=0):
       t = 'S:' + str(background_dose) + '-' #Stereotactic
     else:
       t = 'V:' + str(background_dose) + '-' #VMAT
-  return str(region_code) + t + GF.dynamic_round(background_dose + presciption.total_dose) + ':' + str(presciption.nr_fractions)
+  return str(presciption.region_code) + t + GF.dynamic_round(background_dose + presciption.total_dose) + ':' + str(presciption.nr_fractions)
 
 
 # Creates the label based on region code, fraction dose, number of fractions and which technique (VMAT or 3D-CRT).
@@ -313,9 +313,9 @@ def close_leaves_behind_jaw_for_regional_breast(beam_set):
 
 
 # Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).
-def set_dose_grid(beam_set, region_code, presciption):
+def set_dose_grid(beam_set, presciption):
   # Default grid size:
   size = 0.3
-  if presciption.is_stereotactic() or region_code in RC.prostate_codes or region_code in RC.brain_codes:
+  if presciption.is_stereotactic() or presciption.region_code in RC.prostate_codes or presciption.region_code in RC.brain_codes:
     size = 0.2
   beam_set.SetDefaultDoseGrid(VoxelSize={'x':size, 'y':size, 'z':size})

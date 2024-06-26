@@ -40,7 +40,7 @@ def collect_choices(options, my_window, choices):
   my_window.mainloop()
   # Extract information from the users's selections in the GUI:
   if frame.ok:
-    (selection,value) = frame.get_results()
+    (selection, value) = frame.get_results()
   elif not frame.ok:
     print ("Script execution cancelled by user...")
     sys.exit(0)
@@ -51,7 +51,7 @@ def collect_choices(options, my_window, choices):
   if selection.children:  
     new_window = Toplevel()
     next_options = RB.RadioButton(selection.next_category.capitalize(), 'Velg ' + selection.next_category +':' , selection.children)
-    selection = collect_choices(next_options, new_window,choices)
+    selection = collect_choices(next_options, new_window, choices)
     choices.append(value)
   return choices
 
@@ -94,23 +94,23 @@ def collect_fractionation_choices(my_window):
   
 
 # Returns multiple region codes in cases where this needs to be collected.
-# This means, for SBRT brain or lung, if there are multiple targets, an extra form
+# This means, for SBRT or palliative, if there are multiple targets, an extra form
 # is displayed where the user can specify the region code(s) of the other target(s).
-def collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescription):
+def collect_target_strategy_and_region_codes(ss, nr_targets, prescription):
   region_codes = []
   target = None
   palliative_choices = None
   if nr_targets > 1:
-    if region_code in RC.brain_codes + RC.lung_codes:
+    if prescription.region_code in RC.brain_codes + RC.lung_codes:
       if prescription.is_stereotactic():
         region_codes = multiple_beamset_form(ss, Toplevel())
-        check_region_codes(region_code, region_codes)
-    elif region_code in RC.palliative_codes:
+        check_region_codes(prescription.region_code, region_codes)
+    elif prescription.region_code in RC.palliative_codes:
       # For palliative cases with multiple targets:
       palliative_choices = palliative_beamset_form(ss, Toplevel())
       if palliative_choices[0] in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
         region_codes = multiple_beamset_form(ss, Toplevel())
-        check_region_codes(region_code, region_codes)
+        check_region_codes(prescription.region_code, region_codes)
         if SSF.has_roi_with_shape(ss, ROIS.ctv1.name):
           target = ROIS.ctv1.name
         elif SSF.has_roi_with_shape(ss, ROIS.ctv2.name):
@@ -125,14 +125,14 @@ def collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescr
 
 
 # Determines what list of technique possibilities will be given for different region codes:
-def determine_choices(region_code, prescription, my_window, choices):
+def determine_choices(prescription, my_window, choices):
   # Default technique value, 'VMAT' 
   technique = 'VMAT'
   # Default technique name, 'VMAT' or '3D-CRT'
   technique_name = 'VMAT'
   # Default optimization value
   opt = ''
-  if region_code in RC.extremity_codes:
+  if prescription.region_code in RC.extremity_codes:
     # For extremities it may be practical to use 3D-CRT in some cases:
     # Determine which technique choices which will appear in the form
     techniques = RB.RadioButton('Planoppsett ', 'Velg planoppsett: ', PC.techniques)
@@ -147,19 +147,19 @@ def determine_choices(region_code, prescription, my_window, choices):
       technique_name = 'VMAT'
     # Optimization value
     opt = 'oar'
-  elif region_code in RC.palliative_codes and not prescription.is_stereotactic():
+  elif prescription.region_code in RC.palliative_codes and not prescription.is_stereotactic():
     # Palliative (non-SBRT):
     opt = 'oar'
-  elif region_code in RC.bladder_codes:
+  elif prescription.region_code in RC.bladder_codes:
     # Bladder:
     opt = 'oar'
-  elif region_code in RC.prostate_codes and prescription.total_dose < 40:
+  elif prescription.region_code in RC.prostate_codes and prescription.total_dose < 40:
     # Palliative prostate:
     opt = 'oar'
-  elif region_code in RC.brain_whole_codes:
+  elif prescription.region_code in RC.brain_whole_codes:
     # Whole brain:
     opt = 'oar'
-  elif region_code in RC.bone_codes and prescription.is_stereotactic():
+  elif prescription.region_code in RC.bone_codes and prescription.is_stereotactic():
     # Bone SBRT:
     opt = 'oar'
   results = [technique, technique_name, opt]
@@ -204,9 +204,9 @@ def handle_existing_rois(pm, ss):
 
 # Displays a warning for a prescription which is unknown for a given region code.
 # The user is then given the choice to continue script execution or to stop.
-def handle_invalid_prescription(prescription, region_code, region_text):
+def handle_invalid_prescription(prescription, region_text):
   title = "Advarsel!"
-  text = "Ukjent fraksjonering angitt!\n\nFraksjoneringen (" + prescription.description() + ") er ikke gjenkjent for følgende regionkode:\n" + str(region_code) + " (" + region_text + ")\n\nVennligst undersøk om du kan ha skrevet feil i fraksjonering eller regionkode, eller om dette eventuelt er en uvanlig fraksjonering som ikke står i prosedyren.\n\nØnsker du å fortsette?"
+  text = "Ukjent fraksjonering angitt!\n\nFraksjoneringen (" + prescription.description() + ") er ikke gjenkjent for følgende regionkode:\n" + str(prescription.region_code) + " (" + region_text + ")\n\nVennligst undersøk om du kan ha skrevet feil i fraksjonering eller regionkode, eller om dette eventuelt er en uvanlig fraksjonering som ikke står i prosedyren.\n\nØnsker du å fortsette?"
   result = messagebox.askquestion(title, text)
   # Stop script execution if the user clicks 'no' (on the question to continue):
   if result != 'yes':

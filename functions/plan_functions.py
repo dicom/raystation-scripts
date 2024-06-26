@@ -41,7 +41,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
           GUIF.handle_missing_ptv()
       # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
-        Name=BSF.label(region_code, prescription, 'VMAT'),
+        Name=BSF.label(prescription, 'VMAT'),
         ExaminationName=examination.Name,
         MachineName= "ALVersa",
         Modality='Photons',
@@ -103,28 +103,30 @@ def create_beam_set(plan, name, examination, treatment_technique, nr_fractions, 
 
 # Creates an additional beam set for breast patients with a 2 Gy x 8 boost.
 # (Prescription is set, three conventional beams are set up and common objectives are set)
-def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, roi_name, background_dose=0):
-  # Create prescription:
-  prescription = PRES.create_prescription(16, 8, region_code, ss)
+def create_breast_boost_beamset(ss, plan, examination, isocenter, region_code, roi_name, original_prescription): 
+  # Background dose:
+  bd = int(round(original_prescription.total_dose))
+  # Create boost prescription:
+  boost_prescription = PRES.create_prescription(16, 8, original_prescription.region_code, ss)
   # Determine first available beam number:
   next_beam_number = first_available_beam_number(plan)
-  # Set up beam set and prescription:
+  # Set up beam set and prescription for boost:
   beam_set = plan.AddNewBeamSet(
-    Name=BSF.label(region_code, prescription, 'VMAT', background_dose=background_dose),
+    Name=BSF.label(boost_prescription, 'VMAT', background_dose=bd),
     ExaminationName=examination.Name,
     MachineName= "ALVersa",
     Modality='Photons',
     TreatmentTechnique='VMAT',
     PatientPosition='HeadFirstSupine',
-    NumberOfFractions=prescription.nr_fractions
+    NumberOfFractions=boost_prescription.nr_fractions
   )
-  BSF.add_prescription(beam_set, prescription, roi_name)
+  BSF.add_prescription(beam_set, boost_prescription, roi_name)
   # Create arcs:
-  if region_code in RC.breast_l_codes:
+  if original_prescription.region_code in RC.breast_l_codes:
     BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '300', gantry_start_angle = '179', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
-  elif region_code in RC.breast_r_codes:
+  elif original_prescription.region_code in RC.breast_r_codes:
     BSF.create_single_arc(beam_set, isocenter, energy = '6', gantry_stop_angle = '60', gantry_start_angle = '181', collimator_angle = '5', iso_index=2, beam_index=next_beam_number)
-  OBJ.create_breast_boost_objectives(ss, plan, region_code, prescription.total_dose)
+  OBJ.create_breast_boost_objectives(ss, plan, original_prescription.region_code, boost_prescription.total_dose)
 
 
 # Determines the first available beam number for this plan (which is the highest existing beam number + 1).
