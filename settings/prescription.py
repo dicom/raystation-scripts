@@ -8,11 +8,12 @@ import structure_set_functions as SSF
 # Prescription class - holds information on total dose, nr of fractions and fraction dose.
 class Prescription(object):
 
-  def __init__(self, total_dose, nr_fractions, type, volume_percent=None, roi_name=None):
+  def __init__(self, total_dose, nr_fractions, type, volume_percent=None, roi_name=None, region_code=-1):
     # Verify input:
     assert 1 <= total_dose <= 100, "total_dose is not in a valid range (1-100): %r" % total_dose
     assert 1 <= nr_fractions <= 40, "nr_fractions is not in a valid range (1-40): %r" % nr_fractions
     assert isinstance(type, str), "type is not a string: %r" % type
+    assert isinstance(region_code, int), "region_code is not an int: %r" % region_code
     assert type in ['MedianDose', 'DoseAtVolume'] # (more than than these two exists, but lets stick to these two for now)
     if roi_name is not None:
       assert isinstance(roi_name, str), "roi_name is not a string (or None): %r" % roi_name
@@ -22,6 +23,7 @@ class Prescription(object):
     self.fraction_dose = self.total_dose / self.nr_fractions
     self.roi_name = roi_name
     self.type = type
+    self.region_code = region_code
     # If DVH prescription type is used, we need to set the volume percent:
     if type == 'DoseAtVolume':
       # Verify that we have a valid DVH value (range 0-100):
@@ -197,11 +199,11 @@ def create_prescription(total_dose, nr_fractions, region_code, ss):
       stereotactic = True
   if stereotactic:
     if region_code in RC.lung_and_mediastinum_codes:
-      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=98)
+      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=98, region_code=region_code)
     else:
-      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=99)
+      p = Prescription(total_dose, nr_fractions, 'DoseAtVolume', volume_percent=99, region_code=region_code)
   else:
-    p = Prescription(total_dose, nr_fractions, 'MedianDose')
+    p = Prescription(total_dose, nr_fractions, 'MedianDose', region_code=region_code)
   return p
 
 
