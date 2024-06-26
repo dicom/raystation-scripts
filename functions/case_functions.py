@@ -11,7 +11,7 @@ import rois as ROIS
 
 
 # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name.
-def create_plan(case, examination, region_text):
+def create_plan(case, examination, region_text, initials):
   name = region_text
   name_conflict = False
   for p in case.TreatmentPlans:
@@ -28,7 +28,7 @@ def create_plan(case, examination, region_text):
           name_conflict = True
       if name_conflict == False:
         break
-  plan = case.AddNewPlan(PlanName = name, ExaminationName = examination.Name)
+  plan = case.AddNewPlan(PlanName = name, ExaminationName = examination.Name, PlannedBy = initials)
   return plan
 
 

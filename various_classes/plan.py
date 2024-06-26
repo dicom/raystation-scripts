@@ -76,19 +76,17 @@ class Plan(object):
       GUIF.handle_invalid_prescription(prescription, region_code, region_text)
 
 
-    # For SBRT brain or lung, if there are multiple targets, display an extra form
+    # For SBRT or palliative, if there are multiple targets, display an extra form
     # where the user can specify the region code(s) of the other target(s).
     target, palliative_choices, region_codes = GUIF.collect_target_strategy_and_region_codes(ss, nr_targets, region_code, prescription)
 
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
-    plan = CF.create_plan(case, examination, region_text)
+    plan = CF.create_plan(case, examination, region_text, initials)
 
-
-    # Set planners initials:
-    plan.PlannedBy = initials
 
     my_window = Toplevel()
+
 
     # Determine which technique and optimization choices which will appear in the form:
     results = GUIF.determine_choices(region_code, prescription, my_window, [])
@@ -184,11 +182,12 @@ class Plan(object):
           PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
-        if palliative_choices[0] in ['sep_beamset_iso', 'sep_beamset_sep_iso']:
-          if palliative_choices[0] == 'sep_beamset_iso':
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
-          else:
-            PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+        if palliative_choices[0] == 'sep_beamset_iso':
+          # Separate beam sets, but with the same isocenter:
+          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+        elif palliative_choices[0] == 'sep_beamset_sep_iso':
+          # Separate beams sets and separate isocenter:
+          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
 
 
     # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
