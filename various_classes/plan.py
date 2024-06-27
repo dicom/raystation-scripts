@@ -190,14 +190,6 @@ class Plan(object):
           PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
 
 
-    # Creates a 2 Gy x 8 boost beam set for breast patients, if indicated:
-    if SSF.breast_sequentual_boost_is_indicated(ss, prescription):
-      PF.create_breast_boost_beamset(ss, plan, examination, isocenter, ROIS.ctv_sb.name, prescription)
-      # Make sure that the original beam set (not this boost beam set) is loaded in the GUI:
-      infos = plan.QueryBeamSetInfo(Filter={'Name':'^'+beam_set_name+'$'})
-      plan.LoadBeamSet( beamSetInfo=infos[0])
-
-
     # Determines and sets up isodoses based on region code and fractionation:
     CF.determine_isodoses(case, ss, prescription)
 
@@ -222,9 +214,6 @@ class Plan(object):
         BSF.set_up_beams_and_optimization_for_regional_breast(plan, beam_set, ROIS.ptv_c.name, region_code)
       else:
         BSF.set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan.PlanOptimizations[0], target.replace("C", "P")+"c")
-        # Configures the 2 Gy x 8 boost for breast patients, if indicated:
-        if SSF.breast_boost_is_indicated(ss, region_code):
-          BSF.set_up_beams_and_optimization_for_tangential_breast(plan, plan.BeamSets[1], plan.PlanOptimizations[1], ROIS.ptv_sbc.name)
 
 
     # Use the site optimizer for sites where it has been implemented:

@@ -55,20 +55,6 @@ def bolus(ss):
   return bolus_rg
 
 
-# Returns True if the structure set and region code indicates that a sequentual breast boost is to be given.
-# The determination is based on target volumes present as well as the region code.
-# Returns False if not.
-def breast_sequentual_boost_is_indicated(ss, prescription):
-  if has_roi_with_shape(ss, ROIS.ctv_sb.name) and has_roi_with_shape(ss, ROIS.ptv_c.name) and prescription.region_code in RC.breast_codes:
-    if prescription.total_dose == 48:
-      # SIB boost:
-      return False
-    else:
-      return True
-  else:
-    return False
-
-
 # Creates a derived ROI using ROI Algebra, where the derived ROI is expanded from the source roi with a margin
 # such that the resulting ROI gets a volume approximately equal to the given threshold_volume. The ROI is also
 # limited by the given intersect_roi (typically an external ROI) by an intersect operation.
