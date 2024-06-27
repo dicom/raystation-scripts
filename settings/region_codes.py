@@ -79,6 +79,3 @@ stereotactic_spine_pelvis_codes = [523, 524, 525]
 
 # Whole pelvis:
 whole_pelvis_codes = [512]
-
-# Regions where conventional planning and vmat is both done:
-conventional_and_vmat_site_codes = breast_reg_codes
