@@ -152,34 +152,11 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
         iso = True
   # If no ISO POI was found, we need to determine the isocenter coordinates:
   if iso == False:
-    # The logic used to determine the isocenter depends on what kind of treatment and technique is used:
-    if region_code in RC.breast_whole_codes:
-      # Whole breast, conventional treatment technique:
-      isocenter = find_isocenter_conv_breast(ss, target)
-    elif region_code in RC.breast_reg_codes:
-      # Locoregional breast:
-      if technique_name == 'VMAT':
-        # VMAT technique:
-        if is_breast_hypo(ss):
-          isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv.name)
-        else:
-          if has_roi_with_shape(ss, ROIS.ctv_47_50.name):
-            isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv_47_50.name)
-          else:
-            # If the 47 dose level is not defined, use target as "backup":
-            isocenter = find_isocenter_vmat_breast(ss, target)
-      else:
-        # 3D-CRT technique (or hybrid-IMRT):
-        if region_code in RC.breast_reg_l_codes:
-          level = ROIS.level4_l.name
-        else:
-          level = ROIS.level4_r.name
-        if is_breast_hypo(ss):
-          isocenter = find_isocenter_conv_reg_breast(ss, region_code, ROIS.ctv.name, level)
-        else:
-          isocenter = find_isocenter_conv_reg_breast(ss, region_code, ROIS.ctv_47_50.name, level)
+    if region_code in RC.breast_codes:
+      # Breast treatment:
+      isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv.name)
     else:
-      # In all other cases:
+      # All other cases:
       isocenter = find_isocenter(examination, ss, target, external, multiple_targets=multiple_targets)
   return isocenter
 
@@ -372,51 +349,6 @@ def find_isocenter(examination, ss, target, external, multiple_targets=False):
   return center
 
 
-# Determines the isocenter based on a given target and External contour provided for the given structure set.
-# Used for tangential 3D-CRT breast plans
-def find_isocenter_conv_breast(ss, target):
-  if has_named_roi_with_contours(ss, target):
-    box = ss.RoiGeometries[target].GetBoundingBox()
-    ctv_long_senter = abs(box[0].z - box[1].z)/2
-    ctv_long_point = box[0].z + ctv_long_senter
-    ctv_lat_senter = abs(box[0].x - box[1].x)/2
-    ctv_lat_point = box[0].x + ctv_lat_senter
-    ctv_ant_senter = abs(box[0].y - box[1].y)/2
-    ctv_ant_point = box[0].y + ctv_ant_senter
-    isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
-    if ctv_lat_point < 0:
-      isocenter.x = ctv_lat_point + 1.5
-    else:
-      isocenter.x = ctv_lat_point - 1.5
-    isocenter.y = ctv_ant_point + 2
-    isocenter.z = ctv_long_point
-    return isocenter
-
-
-# Determines the isocenter based on a given target, the structure LN_Ax_L4 and External contour provided for the given structure set.
-# Used for 3D-CRT breast with regional lymph nodes
-def find_isocenter_conv_reg_breast(ss, region_code, target, node_target):
-  if has_named_roi_with_contours(ss, target):
-    isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
-    ctv = ss.RoiGeometries[target].GetBoundingBox()
-    ctv_lat_senter = abs(ctv[0].x - ctv[1].x)/2
-    ctv_lat_point = ctv[0].x + ctv_lat_senter #+ 2
-    ctv_ant_senter = abs(ctv[0].y - ctv[1].y)/2
-    ctv_ant_point = ctv[0].y + ctv_ant_senter #- 2
-    if region_code in RC.breast_reg_r_codes:
-      isocenter.x = ctv_lat_point + 2.5
-    else:
-      isocenter.x = ctv_lat_point - 2.5
-    isocenter.y = ctv_ant_point + 2.5
-    if has_named_roi_with_contours(ss, node_target):
-      ctv_n = ss.RoiGeometries[node_target].GetBoundingBox()
-      ctv_long_point = ctv_n[0].z
-    else:
-      ctv_long_point = ctv[0].z
-    isocenter.z = ctv_long_point -1.5
-    return isocenter
-
-
 # Determines the isocenter for VMAT breast with regional lymph nodes.
 def find_isocenter_vmat_breast(ss, target):
   # Find the center of the target ROI:
@@ -511,14 +443,6 @@ def has_roi_with_shape(ss, name):
       match = True
       break
   return match
-
-
-# Returns True if the structure set contains a ROI named PTV primary cropped ('PTVpc').
-def is_breast_hypo(ss):
-  if has_roi_with_shape(ss, ROIS.ptv_pc.name):
-    return True
-  else:
-    return False
 
 
 # Returns True if the given target and oar ROIs overlap.
