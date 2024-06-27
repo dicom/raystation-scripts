@@ -62,33 +62,6 @@ def create_common_objectives(ss, plan, prescription):
   OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30)
 
 
-# Breast boost (2 Gy x 8)
-def create_breast_boost_objectives(ss, plan, prescription):
-  # External:
-  OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index = 1)
-  # Targets:
-  # CTVsb:
-  OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100, 30, beam_set_index = 1)
-  OF.min_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100*0.95, 150, beam_set_index = 1)
-  # PTVsbc:
-  OF.min_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*0.95, 75, beam_set_index = 1)
-  OF.max_dose(ss, plan, ROIS.ptv_sbc.name, prescription.total_dose*100*1.05, 80, beam_set_index = 1)
-  # OARs:
-  # Side-neutral objectives:
-  OF.max_eud(ss, plan, ROIS.heart.name, 0.5*100, 1, 3, beam_set_index = 1)
-  # Side-dependent objectives:
-  if prescription.region_code in RC.breast_l_codes:
-    OF.max_eud(ss, plan, ROIS.lung_l.name, 6*100, 1, 2, beam_set_index = 1)
-    OF.max_eud(ss, plan, ROIS.lung_r.name, 0.5*100, 1, 1, beam_set_index = 1)
-    OF.max_eud(ss, plan, ROIS.breast_r.name, 1*100, 1, 1, beam_set_index = 1)
-  elif prescription.region_code in RC.breast_r_codes:
-    OF.max_eud(ss, plan, ROIS.lung_r.name, 6*100, 1, 2, beam_set_index = 1)
-    OF.max_eud(ss, plan, ROIS.lung_l.name, 0.5*100, 1, 1, beam_set_index = 1)
-    OF.max_eud(ss, plan, ROIS.breast_l.name, 1*100, 1, 1, beam_set_index = 1)
-    OF.max_eud(ss, plan, ROIS.liver.name, 0.5*100, 1, 1, beam_set_index = 1)
-  
-
 # Whole breast objectives
 def create_breast_objectives(ss, plan, prescription, target):
   # External dose fall off:
