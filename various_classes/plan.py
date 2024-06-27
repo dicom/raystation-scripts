@@ -170,7 +170,7 @@ class Plan(object):
     beam_nr = 1
     if self.mq_patient:
       beam_nr = self.mq_patient.next_available_field_number()
-    # Setup beams (or arcs):
+    # Setup beams:
     nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, beam_index=beam_nr)
     last_beam_index = beam_nr + nr_beams - 1
 
@@ -205,15 +205,9 @@ class Plan(object):
     CF.load_plan(case, plan)
 
 
-    # Set up beams and optimization for breast patients:
-    if technique_name == 'VMAT' and region_code in RC.breast_codes:
-      # Use robust optimization for VMAT breast:
+    # Use robust optimization for breast:
+    if region_code in RC.breast_codes:
       OBJF.set_robustness_breast(plan, region_code)
-    elif technique_name == '3D-CRT' and region_code in RC.breast_codes:
-      if region_code in RC.breast_reg_codes:
-        BSF.set_up_beams_and_optimization_for_regional_breast(plan, beam_set, ROIS.ptv_c.name, region_code)
-      else:
-        BSF.set_up_beams_and_optimization_for_tangential_breast(plan, beam_set, plan.PlanOptimizations[0], target.replace("C", "P")+"c")
 
 
     # Use the site optimizer for sites where it has been implemented:
@@ -223,7 +217,6 @@ class Plan(object):
       # For legacy sites, use the old optimization procedure:
       # Run first optimization on each beam set:
       for plan_optimization in plan.PlanOptimizations:
-        # Optimization parameters to be used on all cases (3D-CRT and VMAT):
         plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
         # Configure optimization parameters for VMAT only:
         if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
@@ -252,22 +245,6 @@ class Plan(object):
           OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
         except Exception as e:
           GUIF.handle_optimization_error(plan_optimization, e)
-        if region_code in RC.breast_codes and technique_name != 'VMAT':
-          # Modify leaves for the open fields in non-VMAT breast:
-          if region_code in RC.breast_reg_codes:
-            # Close leaves behind jaw for breast regional patients:
-            BSF.close_leaves_behind_jaw_for_regional_breast(beam_set)
-          # Create 2.5 cm margin to air for breast patient planned with a 3D-CRT technique (for robustness purpuses):
-          BSF.create_margin_air_for_3dcrt_breast(ss, beam_set, region_code)
-          # Compute dose:
-          try:
-            beam_set.ComputeDose(DoseAlgorithm = 'CCDose')
-          except Exception as e:
-            GUIF.handle_optimization_error(plan_optimization, e)
-        # Auto scale to prescription:
-        # In 12A it seems we cannot set the auto scale to prescription parameter:
-        #for plan_optimization in plan.PlanOptimizations:
-          #plan_optimization.AutoScaleToPrescription = True
     # Load plan:
     CF.load_plan(case, plan)
 
