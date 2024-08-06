@@ -275,8 +275,9 @@ class TSStructureSet(object):
       # Iterate the selected geometries and check their bounding boxes against external:
       for ts_rg in geometries:
         bb = ts_rg.bounding_box()
-        if bb[0].x < ext_bb[0].x or bb[1].x > ext_bb[1].x or bb[0].y < ext_bb[0].y or bb[1].y > ext_bb[1].y:
-          failed_geometries.append(ts_rg.roi().Name)
+        if bb:
+          if bb[0].x < ext_bb[0].x or bb[1].x > ext_bb[1].x or bb[0].y < ext_bb[0].y or bb[1].y > ext_bb[1].y:
+            failed_geometries.append(ts_rg.roi().Name)
     if len(failed_geometries) == 0:
       return t.succeed()
     else:

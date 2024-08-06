@@ -43,7 +43,10 @@ class TSROIGeometry(object):
   # Gives the cached bounding box of the ROI geometry.
   def bounding_box(self):
     if not self._bounding_box:
-     self._bounding_box = self.roi_geometry.GetBoundingBox()
+     try:
+       self._bounding_box = self.roi_geometry.GetBoundingBox()
+     except Exception:
+        pass
     return self._bounding_box
   
   # Gives the cached primary shape of the ROI geometry.
