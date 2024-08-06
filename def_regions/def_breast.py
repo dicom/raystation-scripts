@@ -84,12 +84,11 @@ class DefBreast(object):
     # Exclude some ROIs from export:
     for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMusc_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
       PMF.exclude_roi_from_export(pm, roi_name)
-      # Exclude surgical bed for boost cases:
-      if PMF.has_roi(pm, 'CTVsb'):
-        if side == 'right':
-          PMF.exclude_roi_from_export(pm, 'SurgicalBed_R')
-        else:
-          PMF.exclude_roi_from_export(pm, 'SurgicalBed_L')
+      # Exclude SurgicalBed_L/R (where relevant we have the CTVsb ROI available anyway):
+      if side == 'right':
+        PMF.exclude_roi_from_export(pm, 'SurgicalBed_R')
+      else:
+        PMF.exclude_roi_from_export(pm, 'SurgicalBed_L')
     # Only some patients actually have breast string. Delete the ROI if its volume is less than 0.5 cm^3:
     for rg in ss.RoiGeometries:
       if rg.OfRoi.Name in ['BreastString_L', 'BreastString_R']:
