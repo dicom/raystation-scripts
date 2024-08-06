@@ -103,10 +103,9 @@ prostate_normal = P.Property('Prostata', 'prostate', parent = prostate, next_cat
 prostate_bed = P.Property('Prostataseng', 'bed', parent = prostate, next_category ='')
 
 # Prostate: Fractionation:
-prostate_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_normal, next_category ='')
-prostate_bergen = P.Property('Hypofraksjonering (67.5 Gy / 25 fx)', 'hypo_bergen', parent = prostate_normal, next_category ='')
-prostate_hypo = P.Property('Hypofraksjonering (60 Gy - intermediær)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
-prostate_hypo_high = P.Property('Hypofraksjonering (60 Gy - høy)', 'hypo_60_highrisk', parent = prostate_normal, next_category ='')
+prostate_bergen = P.Property('Høy risiko (67.5 Gy / 25 fx)', 'hypo_bergen', parent = prostate_normal, next_category ='')
+prostate_hypo_high = P.Property('Høy risiko u/LK (60 Gy / 20 fx)', 'hypo_60_highrisk', parent = prostate_normal, next_category ='')
+prostate_hypo = P.Property('Intermediær risiko (60 Gy / 20 fx)', 'hypo_60', parent = prostate_normal, next_category ='', default = True)
 prostate_lc = P.Property('Lokal kontroll (STAMPEDE: 55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
 prostate_palliative = P.Property('Palliativ behandling', 'palliative', parent = prostate_normal, next_category ='')
 
@@ -119,7 +118,7 @@ prostate_bed_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent =
 prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_bed, next_category ='')
 
 # Prosate/bed: Lymph nodes:
-for p in [prostate_normo, prostate_bergen, prostate_bed_normo]:
+for p in [prostate_bergen, prostate_bed_normo]:
   prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = p, next_category ='', default = True)
   prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = p, next_category ='')
   prostate_with_ln_boost =  P.Property('Med lymfeknuter og boost til positiv lymfeknute', 'with_node', parent = p, next_category ='')

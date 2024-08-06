@@ -8,7 +8,7 @@ import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 
-# Definitions script for prostate treatments (prostate/prostate bed, with or without lymph nodes, normo/hypofractionated).
+# Definitions script for prostate treatments (prostate/prostate bed, with or without lymph nodes, fractionation).
 class DefProstate(object):
 
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
@@ -145,37 +145,25 @@ class DefProstate(object):
       site.add_oars([ROIS.levator_ani, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra])
   
   
-  # Adds target ROIs for high risk (35 or 25 fx) prostate treatment to the site object.
+  # Adds target ROIs for high risk (20 or 25 fx) prostate treatment to the site object.
   def add_prostate_high_risk_targets(self, pm, examination, site, choices):
-    # Choice 2: Fractionation - normo or hypo_bergen?
+    # Choice 2: Fractionation:
     fractionation = choices[2]
     # Choice 3: Nodes - none, elective only or elective + positive node?
     nodes = choices[3]
     # Seminal vesicles (which for high risk is 20 mm):
     semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
     # Setup dose named ROIs:
-    if fractionation == 'normo':
-      ctv3s = ROIS.ctv_77
-      ptv3s = ROIS.ptv_77
-      ptv3w = ROIS.z_ptv_77_wall
-      ctv2s = ROIS.ctv_70_sib
-      ptv2s = ROIS.ptv_70_sib
-      ptv_2_3s = ROIS.ptv_70_77
-      ptv_2_3w = ROIS.z_ptv_70_77_wall
-      ctv1s = ROIS.ctv_56
-      ptv1s = ROIS.ptv_56
-      ptv_1_2_3s = ROIS.ptv_56_70_77
-    else:
-      ctv3s = ROIS.ctv_67_5
-      ptv3s = ROIS.ptv_67_5
-      ptv3w = ROIS.z_ptv_67_5_wall
-      ctv2s = ROIS.ctv_62_5_sib
-      ptv2s = ROIS.ptv_62_5_sib
-      ptv_2_3s = ROIS.ptv_62_5_67_5
-      ptv_2_3w = ROIS.z_ptv_62_5_67_5_wall
-      ctv1s = ROIS.ctv__50
-      ptv1s = ROIS.ptv__50
-      ptv_1_2_3s = ROIS.ptv_50_62_5_67_5
+    ctv3s = ROIS.ctv_67_5
+    ptv3s = ROIS.ptv_67_5
+    ptv3w = ROIS.z_ptv_67_5_wall
+    ctv2s = ROIS.ctv_62_5_sib
+    ptv2s = ROIS.ptv_62_5_sib
+    ptv_2_3s = ROIS.ptv_62_5_67_5
+    ptv_2_3w = ROIS.z_ptv_62_5_67_5_wall
+    ctv1s = ROIS.ctv__50
+    ptv1s = ROIS.ptv__50
+    ptv_1_2_3s = ROIS.ptv_50_62_5_67_5
     # Prostate targets:
     ctv3 = ROI.ROIAlgebra(ctv3s.name, ctv3s.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
     ptv3 = ROI.ROIExpanded(ptv3s.name, ptv3s.type, COLORS.ptv_high, source = ctv3, margins = MARGINS.prostate_seed_expansion)
@@ -311,8 +299,7 @@ class DefProstate(object):
     # Choice 2: Fractionation (e.g. conventional, hypo, palliative)
     fractionation = choices[2]
     # Fractionation:
-    if fractionation in ['normo', 'hypo_bergen']:
-      # Conventional fractionation (35 fx): prostate (77 Gy) with vesicles (70 Gy) and nodes (56 Gy), or
+    if fractionation in ['hypo_bergen']:
       # Hypofractionated 25 fx: prostate (67.5 Gy) with vesicles (62.5 Gy) and nodes (50 Gy):
       self.add_prostate_rois(pm, examination, site, 'seeds')
       # Lymph nodes?

@@ -1014,35 +1014,7 @@ bone_stereotactic_targets = [
 # Prostate (hypofractionated/conventional fractionation, with or without lymph nodes):
 def prostate_targets(ss, prescription):
   prostate_targets = [CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4)]
-  if prescription.total_dose == 77:
-    # Normo-fractionation:
-    prostate_targets += [
-      CG.ClinicalGoal(ROIS.ctv_77.name, at_least, dose_at_volume, pc99_5, pc50, priority1),
-      CG.ClinicalGoal(ROIS.ctv_77.name, at_most, dose_at_volume, pc100_5, pc50, priority1),
-      CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_least, dose_at_volume, pc90_45, pc50, priority1),
-      CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_most, dose_at_volume, pc91_36, pc50, priority1),
-      CG.ClinicalGoal(ROIS.ctv_77.name, at_least, dose_at_volume, pc98, pc98, priority2),
-      CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_least, dose_at_volume, pc89_1, pc98, priority2),
-      CG.ClinicalGoal(ROIS.ptv_77.name, at_least, dose_at_volume, pc95, pc98,  priority4),
-      CG.ClinicalGoal(ROIS.ptv_70_sib.name, at_least, dose_at_volume, pc86_36, pc98, priority4),
-      CG.ClinicalGoal(ROIS.ctv_77.name, at_least, homogeneity_index, pc95, pc98, priority5),
-      CG.ClinicalGoal(ROIS.ctv_70_sib.name, at_least, homogeneity_index, pc95, pc98, priority5),
-      CG.ClinicalGoal(ROIS.ptv_77.name, at_least, conformity_index, pc90, pc95, priority5),
-      CG.ClinicalGoal(ROIS.ptv_70_sib.name, at_most, dose_at_volume, pc95, pc10, priority5),
-      CG.ClinicalGoal(ROIS.ptv_70_77.name, at_least, conformity_index, pc75, pc86_36, priority5)
-    ]
-    if SSF.has_roi_with_shape(ss, ROIS.ptv_56.name):
-      # With lymph nodes:
-      prostate_targets += [
-        CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc72_36, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_56.name, at_most, dose_at_volume, pc73_09, pc50, priority1),
-        CG.ClinicalGoal(ROIS.ctv_56.name, at_least, dose_at_volume, pc71_3, pc98, priority2),
-        CG.ClinicalGoal(ROIS.ptv_56.name, at_least, dose_at_volume, pc69_1, pc98, priority4),
-        CG.ClinicalGoal(ROIS.ptv_56_70_77.name, at_least, conformity_index, pc78, pc69_1, priority5),
-        CG.ClinicalGoal(ROIS.ptv_56.name, at_most, dose_at_volume, pc76_36, pc10, priority5),
-        CG.ClinicalGoal(ROIS.ctv_56.name, at_least, homogeneity_index, pc95, pc95, priority5)
-      ]
-  elif prescription.total_dose == 67.5:
+  if prescription.total_dose == 67.5:
     # Hypofractionated high risk prostate:
     prostate_targets += [
       CG.ClinicalGoal('CTV_67.5', at_least, dose_at_volume, pc99_5, pc50, priority1),
