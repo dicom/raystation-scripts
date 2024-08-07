@@ -266,11 +266,11 @@ def breast_oars(ss, prescription):
     ]
     if prescription.region_code in RC.breast_l_codes:
       breast_oars += [
-        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
+        CG.ClinicalGoal(ROIS.lung_l.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority5),
       ]
     else:
       breast_oars += [
-        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority6),
+        CG.ClinicalGoal(ROIS.lung_r.name, at_most, volume_at_dose, 0.15, TOL.lung_v8_fastforward, priority5),
       ]
   if prescription.region_code in RC.breast_reg_codes:
     # Common for regional left & right:
