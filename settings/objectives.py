@@ -442,6 +442,7 @@ def create_prostate_bed_objectives(ss, plan, prescription):
     OF.uniform_dose(ss, plan, ROIS.ctv_56.name, 56*100, 20)
     OF.min_dose(ss, plan, ROIS.ptv_70.name, 67*100, 150)
     OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150)
+    OF.max_dvh(ss, plan, ROIS.ptv_56.name, 58.24*100, 5, 5)
     OF.max_dose(ss, plan, ROIS.ptv_70.name, prescription.total_dose*100*1.045, 70)
     OF.fall_off(ss, plan, ROIS.external.name, 70*100, 35*100, 3, 15)
     OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20)
