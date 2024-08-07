@@ -54,7 +54,7 @@ class Optimization(object):
 # Categories of optimization settings:
 default = Optimization()
 sliding_window = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=120, use_sliding_window_sequencing=True)
-sliding_window_quick = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=80, use_sliding_window_sequencing=True)
+sliding_window_quick = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=70, use_sliding_window_sequencing=True)
 sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_leaf_travel_distance_per_degree=0.3, use_max_leaf_travel_distance_per_degree=True, use_sliding_window_sequencing=True)
 
 
@@ -70,13 +70,17 @@ def optimization_parameters(prescription):
       opt = sbrt
     else:
       # Partial brain (ordinary fractionation):
-      opt = sliding_window
+      opt = sliding_window_quick
   elif prescription.region_code in RC.brain_whole_codes:
     # Whole brain:
-    opt = sliding_window
+    opt = sliding_window_quick
   elif prescription.region_code in RC.breast_codes:
-    # Partial breast/Whole breast/Regional breast:
-    opt = sliding_window
+    if prescription.region_code in RC.breast_reg_codes:
+      # Regional breast:
+      opt = sliding_window
+    else:
+      # Non-regional breast:
+      opt = sliding_window_quick
   elif prescription.region_code in RC.lung_and_mediastinum_codes:
     # Lung:
     if prescription.is_stereotactic():
@@ -84,10 +88,10 @@ def optimization_parameters(prescription):
       opt = sbrt
     else:
       # Conventional lung:
-      opt = sliding_window
+      opt = sliding_window_quick
   elif prescription.region_code in RC.prostate_codes:
     # Prostate:
-    if prescription.region_code in RC.prostate_only_codes + RC.prostate_vesicles_codes:
+    if prescription.region_code not in RC.prostate_node_codes:
       # "Simple" prostate cases:
       opt = sliding_window_quick
     else:
@@ -104,7 +108,7 @@ def optimization_parameters(prescription):
     else:
       # Conventional palliative:
       if prescription.region_code in RC.whole_pelvis_codes:
-        opt = sliding_window
+        opt = sliding_window_quick
   # Set max number of monitor units (for all non-sbrt optimizations):
   if opt != sbrt:
     opt.set_max_arc_mu(prescription.fraction_dose * 250)
