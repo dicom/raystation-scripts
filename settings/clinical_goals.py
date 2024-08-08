@@ -879,11 +879,23 @@ def breast_targets(ss, target, prescription):
         CG.ClinicalGoal(prescription_target, at_least, dose_at_volume, pc99_5*mod, pc50, priority1),
         CG.ClinicalGoal(prescription_target, at_most, dose_at_volume, pc100_5*mod, pc50, priority1),
         CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc95*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ctv.name + '_L', at_least, dose_at_volume, pc95*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ctv.name + '_R', at_least, dose_at_volume, pc95*mod, pc98, priority2),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_L', at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_R', at_least, dose_at_volume, pc90*mod, pc98, priority2),
         CG.ClinicalGoal(ROIS.ptv_pc.name, at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', at_least, dose_at_volume, pc90*mod, pc98, priority2),
         CG.ClinicalGoal(ROIS.ctv.name, at_least, dose_at_volume, pc96*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ctv.name + '_L', at_least, dose_at_volume, pc96*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ctv.name + '_R', at_least, dose_at_volume, pc96*mod, pc98, priority4),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, dose_at_volume, pc95*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_L', at_least, dose_at_volume, pc95*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_R', at_least, dose_at_volume, pc95*mod, pc98, priority4),
         CG.ClinicalGoal(ROIS.ptv_pc.name, at_least, dose_at_volume, pc95*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', at_least, dose_at_volume, pc95*mod, pc98, priority4),
+        CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', at_least, dose_at_volume, pc95*mod, pc98, priority4),
         CG.ClinicalGoal(ROIS.external.name, at_most, dose_at_abs_volume, pc105, cc2, priority4),
         CG.ClinicalGoal(homogeneity_target, at_least, homogeneity_index, pc95, pc95, priority5),
         CG.ClinicalGoal(ROIS.ptv_c.name, at_least, conformity_index, pc75, pc95*mod, priority5)
@@ -927,6 +939,18 @@ def breast_targets(ss, target, prescription):
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc90*mod, pc98, priority2),
         CG.ClinicalGoal(target, at_least, dose_at_volume, pc96*mod, pc98, priority5),
         CG.ClinicalGoal(target.replace("C", "P")+"c", at_least, dose_at_volume, pc95*mod, pc98, priority5)
+      ]
+    if prescription.region_code in RC.breast_bilateral_codes:
+      # Bilateral whole breast:
+      breast_targets += [
+        CG.ClinicalGoal(ROIS.ctv.name + '_L', at_least, dose_at_volume, pc95*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ctv.name + '_R', at_least, dose_at_volume, pc95*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_L', at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_R', at_least, dose_at_volume, pc90*mod, pc98, priority2),
+        CG.ClinicalGoal(ROIS.ctv.name + '_L', at_least, dose_at_volume, pc96*mod, pc98, priority5),
+        CG.ClinicalGoal(ROIS.ctv.name + '_R', at_least, dose_at_volume, pc96*mod, pc98, priority5),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_L', at_least, dose_at_volume, pc95*mod, pc98, priority5),
+        CG.ClinicalGoal(ROIS.ptv_c.name + '_R', at_least, dose_at_volume, pc95*mod, pc98, priority5)
       ]
   if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and prescription.region_code not in RC.breast_partial_codes:
     # SIB boost (40.05 & 48 Gy in 15 fx):

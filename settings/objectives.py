@@ -114,6 +114,9 @@ def create_breast_objectives(ss, plan, prescription, target):
     OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
     if not prescription.region_code in RC.breast_partial_codes:
       OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
+  elif prescription.region_code in RC.breast_bilateral_codes:
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
 
 
 # Breast with regional lymph nodes
@@ -171,6 +174,9 @@ def create_breast_reg_objectives(ss, plan, prescription):
     OF.max_eud(ss, plan, ROIS.lung_l.name, 1*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.breast_l.name, 3*100, 1, 1)
     OF.max_eud(ss, plan, ROIS.liver.name, 2*100, 1, 1)
+  elif prescription.region_code in RC.breast_bilateral_codes:
+    OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2)
+    OF.max_eud(ss, plan, ROIS.lung_r.name, 16*100, 1, 2)
 
 
 # Palliative objectives
