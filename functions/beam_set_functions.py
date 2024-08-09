@@ -27,39 +27,40 @@ def add_prescription(beam_set, presciption, target):
 
 
 # Creates two arcs (VMAT).
-def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angle1='181', gantry_stop_angle2='179', gantry_start_angle1='179', gantry_start_angle2='181', collimator_angle1='5', collimator_angle2='355', couch_angle1='0', couch_angle2='0', iso_index=1, beam_index=1, bolus=None):
+def create_dual_arcs(beam_set, isocenter, energy='6', gantry_stop_angles=['181', '179'], gantry_start_angles=['179', '181'], collimator_angles=['5', '355'], couch_angles=['0', '0'], iso_index=1, beam_index=1, bolus=None):
   beam_set.ClearBeams(RemoveBeams = 'True')
   b1 = beam_set.CreateArcBeam(
-    ArcStopGantryAngle = gantry_stop_angle1,
-    ArcRotationDirection = BF.rotation_direction(gantry_start_angle1, gantry_stop_angle1),
+    ArcStopGantryAngle = gantry_stop_angles[0],
+    ArcRotationDirection = BF.rotation_direction(gantry_start_angles[0], gantry_stop_angles[0]),
     BeamQualityId = energy,
     IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
     Name= 'Arc '+str(beam_index),
     Description = '',
-    GantryAngle = gantry_start_angle1 ,
-    CollimatorAngle = collimator_angle1,
+    GantryAngle = gantry_start_angles[0],
+    CollimatorAngle = collimator_angles[0],
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle1
+    CouchRotationAngle = couch_angles[0]
   )
   b1.Number = beam_index
   b2 = beam_set.CreateArcBeam(
-    ArcStopGantryAngle = gantry_stop_angle2,
-    ArcRotationDirection = BF.rotation_direction(gantry_start_angle2, gantry_stop_angle2),
+    ArcStopGantryAngle = gantry_stop_angles[1],
+    ArcRotationDirection = BF.rotation_direction(gantry_start_angles[1], gantry_stop_angles[1]),
     BeamQualityId = energy,
     IsocenterData={ 'Position': { 'x': isocenter.x, 'y': isocenter.y, 'z': isocenter.z }, 'NameOfIsocenterToRef': "Iso"+str(iso_index), 'Name': "Iso"+str(iso_index), 'Color': COLORS.iso },
     Name= 'Arc '+str(beam_index+1),
     Description = '',
-    GantryAngle = gantry_start_angle2,
-    CollimatorAngle = collimator_angle2,
+    GantryAngle = gantry_start_angles[1],
+    CollimatorAngle = collimator_angles[1],
     CouchPitchAngle = '0',
     CouchRollAngle = '0',
-    CouchRotationAngle = couch_angle2
+    CouchRotationAngle = couch_angles[1]
   )
   b2.Number = beam_index + 1
   if bolus:
     for b in [b1, b2]:
       b.SetBolus(BolusName = bolus.OfRoi.Name)
+  return [b1, b2]
 
 
 # Creates a single arc (VMAT).
@@ -81,6 +82,7 @@ def create_single_arc(beam_set, isocenter, energy='6', gantry_stop_angle='179', 
   b.Number = beam_index
   if bolus:
     b.SetBolus(BolusName = bolus.OfRoi.Name)
+  return b
 
 
 # Creates two beams (3D-CRT).
@@ -138,12 +140,6 @@ def label_s(region_code, fraction_dose, nr_fractions):
 def set_MU(beam_set, names, mu):
   for i in range(len(names)):
     beam_set.Beams[names[i]].BeamMU = mu[i]
-
-
-def set_up_treat_and_protect_for_stereotactic_lung(beam_set, treat_and_protect_roi, margin):
-  beam_set.SelectToUseROIasTreatOrProtectForAllBeams(RoiName = treat_and_protect_roi)
-  for beam in beam_set.Beams:
-    beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = treat_and_protect_roi)
 
 
 # Set the beam set dose grid (0.2x0.2x0.2 cm3 for stereotactic treatments/prostate/partial brain - 0.3x03x0.3 cm3 otherwise).

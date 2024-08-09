@@ -234,7 +234,8 @@ class Plan(object):
           except Exception as e:
             if "is shorter than the minimum feasible time" in e.args[0]:
               # We need to increase the beam delivery time (and try the optimization again). Increase by 10 seconds:
-              plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
+              for beam in plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
+                beam.ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
             else:
               # Although it did crash, it wasnt because of the time error:
               possible_beam_delivery_time_error = False

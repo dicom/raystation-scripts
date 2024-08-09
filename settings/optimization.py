@@ -39,9 +39,10 @@ class Optimization(object):
     plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = self.compute_final_dose
     plan_optimization.OptimizationParameters.DoseCalculation.ComputeIntermediateDose = self.compute_intermediate_dose
     plan_optimization.OptimizationParameters.DoseCalculation.IterationsInPreparationsPhase = self.iterations_in_preparations_phase
-    plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.FinalArcGantrySpacing = self.final_arc_gantry_spacing
-    plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcDeliveryTime = self.max_arc_delivery_time
-    plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings[0].ArcConversionPropertiesPerBeam.MaxArcMU = self.max_arc_mu
+    for beam in plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
+      beam.ArcConversionPropertiesPerBeam.FinalArcGantrySpacing = self.final_arc_gantry_spacing
+      beam.ArcConversionPropertiesPerBeam.MaxArcDeliveryTime = self.max_arc_delivery_time
+      beam.ArcConversionPropertiesPerBeam.MaxArcMU = self.max_arc_mu
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree = self.max_leaf_travel_distance_per_degree
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree = self.use_max_leaf_travel_distance_per_degree
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseSlidingWindowSequencing = self.use_sliding_window_sequencing

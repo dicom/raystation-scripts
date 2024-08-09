@@ -89,6 +89,9 @@ def create_breast_objectives(ss, plan, prescription, target):
     # PTVc:
     OF.min_dose(ss, plan, target.replace("C", "P")+"c", whole_breast_dose*100*0.95, 100)
     OF.max_dose(ss, plan, ROIS.ptv_c_ptv_sbc.name, whole_breast_dose*100*1.05, 80)
+    if prescription.region_code in RC.breast_bilateral_codes:
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', whole_breast_dose*100*0.95, 100)
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', whole_breast_dose*100*0.95, 100)
   else:
     # Ordinary WBRT:
     # CTV:
@@ -97,6 +100,9 @@ def create_breast_objectives(ss, plan, prescription, target):
     # PTVc:
     OF.min_dose(ss, plan, target.replace("C", "P")+"c", prescription.total_dose*100*0.95, 100)
     OF.max_dose(ss, plan, target.replace("C", "P")+"c", prescription.total_dose*100*1.05, 80)
+    if prescription.region_code in RC.breast_bilateral_codes:
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100)
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100)
   # OARs:
   # Side-neutral objectives:
   OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2)
@@ -144,6 +150,9 @@ def create_breast_reg_objectives(ss, plan, prescription):
     # PTVpc:
     OF.min_dose(ss, plan, ROIS.ptv_pc.name, regional_dose*100*0.95, 100)
     OF.max_dose(ss, plan, ROIS.ptv_pc_ptv_sbc.name, regional_dose*100*1.05, 80)
+    if prescription.region_code in RC.breast_bilateral_codes:
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', regional_dose*100*0.95, 100)
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', regional_dose*100*0.95, 100)
   else:
     # Ordinary regional RT:
     # CTV:
@@ -155,6 +164,9 @@ def create_breast_reg_objectives(ss, plan, prescription):
     # PTVpc:
     OF.min_dose(ss, plan, ROIS.ptv_pc.name, prescription.total_dose*100*0.95, 100)
     OF.max_dose(ss, plan, ROIS.ptv_pc.name, prescription.total_dose*100*1.05, 80)
+    if prescription.region_code in RC.breast_bilateral_codes:
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100)
+      OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100)
   # OARs:
   # Side-neutral objectives:
   OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2)

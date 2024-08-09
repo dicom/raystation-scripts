@@ -17,3 +17,12 @@ def rotation_direction(start, stop):
     if float(stop) < float(start) < 180:
       rotation = 'CounterClockwise'
   return rotation
+
+
+ # Sets up treat or protect for a given beam.
+ # Required parameters are the RayStation beam instance, ROI name and the margin to be used (cm).
+def set_up_treat_or_protect(beam, roi_name, margin):
+  assert isinstance(roi_name, str), "roi_name is not a string: %r" % roi_name
+  assert isinstance(margin, (float, int)), "margin is not a float or integer: %r" % margin
+  beam.SetTreatOrProtectRoi(RoiName = roi_name)
+  beam.SetTreatAndProtectMarginsForBeam(TopMargin = margin, BottomMargin = margin, LeftMargin = margin, RightMargin = margin, Roi = roi_name)

@@ -1,6 +1,7 @@
 # encoding: utf8
 
 # Import local files:
+import beam_functions as BF
 import def_oars as OAR
 import region_codes as RC
 import clinical_goals as CGS
@@ -42,9 +43,17 @@ def lung(ss, plan, prescription, target):
 def breast(ss, plan, prescription, target):
   if prescription.region_code in RC.breast_reg_codes:
     site = SITE.Site(RC.breast_reg_codes, OBJ.breast_reg_oar_objectives, OBJ.create_breast_reg_objectives(ss, plan, prescription), CGS.breast_oars(ss, prescription), CGS.breast_targets(ss, target, prescription))
+    # Set up treat ROIs for bilateral cases:
+    if prescription.region_code in RC.breast_bilateral_codes:
+      BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
+      BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
     site.optimizer = OPT.BreastOptimization(ss, plan, site, prescription)
   else:
     site = SITE.Site(RC.breast_whole_codes, OBJ.breast_tang_oar_objectives, OBJ.create_breast_objectives(ss, plan, prescription, target), CGS.breast_oars(ss, prescription), CGS.breast_targets(ss, target, prescription))
+    # Set up treat ROIs for bilateral cases:
+    if prescription.region_code in RC.breast_bilateral_codes:
+      BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
+      BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
     site.optimizer = OPT.BreastOptimization(ss, plan, site, prescription)
   return site
 

@@ -49,7 +49,7 @@ def setup_beams(ss, examination, beam_set, isocenter, prescription, technique_na
     elif prescription.region_code in RC.breast_r_codes:
       BSF.create_single_arc(beam_set, isocenter, energy = energy_name, gantry_stop_angle = '75', gantry_start_angle = '181', collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     elif prescription.region_code in RC.breast_bilateral_codes:
-      BSF.create_single_arc(beam_set, isocenter, energy = energy_name, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+      beams = BSF.create_dual_arcs(beam_set, isocenter, energy = energy_name, gantry_stop_angles = ['75', '285'], gantry_start_angles = ['181', '179'], collimator_angles = ['5', '355'], iso_index=iso_index, beam_index=beam_index, bolus=bolus)
     # Lung:
     elif prescription.region_code in RC.lung_and_mediastinum_codes:
       if prescription.region_code in RC.lung_r_codes:
