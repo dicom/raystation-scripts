@@ -19,5 +19,6 @@ Sub-folders contain libraries & resources used by the root folder scripts.
 ## Authors
 
 * Christoffer Lervåg (christoffer.lervag [@nospam.com] @helse-mr.no)
-* Marit Funderud (marit.funderud [@nospam.com] @helse-mr.no)
+* Marit Funderud
+* Robert Hoggard
 * Helse Møre og Romsdal HF - Norway
