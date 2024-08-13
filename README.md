@@ -1,14 +1,15 @@
 # RAYSTATION-SCRIPTS
 
-This contains a collection of scripts which are used in our clinic to improve
-workflow with the radiotherapy treatment planning system RayStation.
+This project contains a collection of scripts which are used in our clinic to improve
+workflow within the radiotherapy treatment planning system RayStation.
 
 The scripts are written in Python and can be executed inside RayStation by
 using the built-in scripting workspace.
 
-The scripts are currently compatible with RayStation 12A and are used with Python 3.6.
+The scripts are currently used with RayStation 12A and Python 3.6 in our clinic.
 
-Graphical user interfaces (GUI) use the Tkinter package.
+Graphical user interfaces (GUI) use the Tkinter package, and communication with
+the Mosaiq database is handled with the pymssql interface.
 
 ## Contents
 
