@@ -68,6 +68,7 @@ class DefProstate(object):
   # Adds target ROIs for prostate bed only to the site object.
   def add_bed_only_targets(self, pm, examination, site, fractionation):
     if fractionation == 'normo':
+      site.add_targets([ROIS.ctv_sb])
       ctv = ROI.ROIExpanded(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_high, source = ROIS.ctv_sb)
       ptv = ROI.ROIExpanded(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, source = ctv, margins = MARGINS.prostate_bone_match_expansion)
     else:      
