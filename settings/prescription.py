@@ -27,26 +27,26 @@ class Prescription(object):
     # If DVH prescription type is used, we need to set the volume percent:
     if type == 'DoseAtVolume':
       # Verify that we have a valid DVH value (range 0-100):
-      assert 0 <= volume_percent <= 100, "volume_percent is not in a valid range (0-100) (which it must be when DoseAtVolume type prescription is used) %r" % volume_percent 
+      assert 0 <= volume_percent <= 100, "volume_percent is not in a valid range (0-100) (which it must be when DoseAtVolume type prescription is used) %r" % volume_percent
       self.volume_percent = volume_percent
     else:
       # MedianDose:
       self.volume_percent = 50
-        
+
   # Override the default implementation of equality.
   def __eq__(self, other):
     if isinstance(other, Prescription):
       return [self.total_dose, self.nr_fractions, self.type, self.volume_percent, self.roi_name] == [other.total_dose, other.nr_fractions, other.type, other.volume_percent, other.roi_name]
     return NotImplemented
-  
+
   # Overrides the default implementation of hash.
   def __hash__(self):
     return hash(tuple(sorted(self.__dict__.items())))
-  
+
   # Gives a description (string) of this Prescription object.
   def description(self):
     return str(self.total_dose) + " Gy / " + str(self.nr_fractions) + " fx @ D" + str(self.volume_percent)
-  
+
   # Gives True if the prescription is stereotactic and False if not.
   def is_stereotactic(self):
     result = False
@@ -131,16 +131,22 @@ lung = [
   Prescription(60, 8, 'DoseAtVolume', volume_percent=98)
 ]
 bladder = [
+  Prescription(8, 1, 'MedianDose'),
   Prescription(21, 3, 'MedianDose'),
   Prescription(20, 5, 'MedianDose'),
   Prescription(28, 7, 'MedianDose'),
   Prescription(30, 10, 'MedianDose'),
   Prescription(35, 10, 'MedianDose'),
   Prescription(39, 13, 'MedianDose'),
+  Prescription(55, 20, 'MedianDose'),
   Prescription(64, 32, 'MedianDose')
 ]
 prostate = [
+  Prescription(8, 1, 'MedianDose'),
+  Prescription(20, 5, 'MedianDose'),
+  Prescription(28, 7, 'MedianDose'),
   Prescription(36, 6, 'MedianDose'),
+  Prescription(30, 10, 'MedianDose'),
   Prescription(39, 13, 'MedianDose'),
   Prescription(55, 20, 'MedianDose'),
   Prescription(60, 20, 'MedianDose'),
