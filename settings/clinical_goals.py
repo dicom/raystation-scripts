@@ -581,6 +581,7 @@ def prostate_oars(ss, prescription):
     CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
     CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, average_dose, TOL.femoral_head_mean, None, priority4),
     # Lower priority:
+    CG.ClinicalGoal(ROIS.bowel_space.name, at_most, dose_at_abs_volume, TOL.bowel_bag_dmax, 0.03, priority6),
     CG.ClinicalGoal(ROIS.penile_bulb.name, at_most, average_dose, TOL.penile_bulb_mean, None, priority6),
     CG.ClinicalGoal(ROIS.penile_bulb.name, at_most, dose_at_volume, TOL.penile_bulb_d02pc, 0.02, priority6),
     CG.ClinicalGoal(ROIS.rectum.name, at_most, volume_at_dose, 0.01, TOL.rectum_v01pc,  priority6),
@@ -592,7 +593,10 @@ def prostate_oars(ss, prescription):
     CG.ClinicalGoal(ROIS.bladder.name, at_most, volume_at_dose, 0.41, TOL.bladder_v41pc_freq,  priority6),
     CG.ClinicalGoal(ROIS.femur_head_neck_l.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
     CG.ClinicalGoal(ROIS.femur_head_neck_r.name, at_most, dose_at_volume, TOL.femoral_d02pc, 0.02, priority6),
-    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1000, TOL.bone_v1000cc, priority6)
+    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1000, TOL.bone_v1000cc, priority6),
+    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1520, TOL.bone_v1520cc, priority6),
+    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 1250, TOL.bone_v1250cc, priority6),
+    CG.ClinicalGoal(ROIS.bone.name, at_most, abs_volume_at_dose, 850, TOL.bone_v850cc, priority6)
   ]
   # Lymph node irradiation?
   if prescription.region_code in RC.prostate_node_codes:

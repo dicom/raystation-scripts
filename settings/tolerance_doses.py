@@ -51,7 +51,7 @@ ab_breast = 4
 ab_lad = 2
 ab_cornea = 3
 ab_penile_bulb = 3
-ab_blood = 3
+ab_blood = 10
 
 
 # Reference number of fractions:
@@ -214,6 +214,7 @@ ipsilateral_breast_426cc = EQD.Tolerance('Breast_L/R','10 % risk of induration',
 # Prostate
 # Bowel bag:
 bowel_bag_v195cc = EQD.Tolerance('BowelBag', 'Acute GI toxicity (QUANTEC, Roeske)', ab_bowel, 21.5, 43, 'Volume receiving tolerance dose being less than 195 cm^3', 'Conventional RT')
+bowel_bag_dmax = EQD.Tolerance('BowelBag', '(Syndikus - PivotalBoost)', ab_bowel, 29.12, 58.24, 'Max dose (to 0.03 cm^3) being less than tolerance dose', 'Conventional RT')
 # Rectum (high risk):
 rectum_v22pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 36, 72, 'Volume receiving tolerance dose being less than 22 %', 'Conventional RT')
 rectum_v38pc = EQD.Tolerance('Rectum', 'High risk of rectal toxicity (Olsson)', ab_rectum, 30, 60, 'Volume receiving tolerance dose being less than 38 %', 'Conventional RT')
@@ -244,6 +245,9 @@ penile_bulb_mean = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)
 penile_bulb_d02pc = EQD.Tolerance('PenileBulb', 'Erectile dysfunction (Rasmusson)', ab_penile_bulb, 25, 50, 'Near maximum dose (2 % volume) being less than the tolerance', 'Conventional RT')
 # Bone:
 bone_v1000cc = EQD.Tolerance('Bone', 'Reduced hemoglobin levels', ab_blood, 7.5, 15, 'Volume receiving tolerance dose being less than 1000 cm^3', 'Conventional RT')
+bone_v1520cc = EQD.Tolerance('Bone', 'Lymphopenia grade >= 2 after 2 years', ab_blood, 4.305, 8.61, 'Volume receiving tolerance dose being less than 1520 cm^3', 'Conventional RT')
+bone_v1250cc = EQD.Tolerance('Bone', 'Lymphopenia grade >= 2 after 2 years', ab_blood, 8.89, 17.78, 'Volume receiving tolerance dose being less than 1250 cm^3', 'Conventional RT')
+bone_v850cc  = EQD.Tolerance('Bone', 'Lymphopenia grade >= 2 after 2 years', ab_blood, 13.75, 27.5, 'Volume receiving tolerance dose being less than 850 cm^3', 'Conventional RT')
 
 
 # General / Palliative:
