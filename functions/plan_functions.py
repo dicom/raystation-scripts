@@ -13,7 +13,6 @@ import beams as BEAMS
 import beam_set_functions as BSF
 import case_functions as CF
 import gui_functions as GUIF
-import objectives as OBJ
 import prescription as PRES
 import region_codes as RC
 import roi_functions as ROIF
@@ -53,7 +52,6 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams = nr_existing_beams + nr_beams
-      OBJ.create_palliative_objectives_for_additional_beamsets(ss, plan, prescription.fraction_dose*prescription.nr_fractions, i)
       i += 1
       if not common_isocenter:
         isocenter=False

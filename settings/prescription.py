@@ -8,45 +8,45 @@ import structure_set_functions as SSF
 # Prescription class - holds information on total dose, nr of fractions and fraction dose.
 class Prescription(object):
 
-  def __init__(self, total_dose, nr_fractions, type, volume_percent=None, roi_name=None, region_code=-1):
+  def __init__(self, total_dose, nr_fractions, type, volume_percent=None, target=None, region_code=-1):
     # Verify input:
     assert 1 <= total_dose <= 100, "total_dose is not in a valid range (1-100): %r" % total_dose
     assert 1 <= nr_fractions <= 40, "nr_fractions is not in a valid range (1-40): %r" % nr_fractions
     assert isinstance(type, str), "type is not a string: %r" % type
     assert isinstance(region_code, int), "region_code is not an int: %r" % region_code
     assert type in ['MedianDose', 'DoseAtVolume'] # (more than than these two exists, but lets stick to these two for now)
-    if roi_name is not None:
-      assert isinstance(roi_name, str), "roi_name is not a string (or None): %r" % roi_name
+    if target is not None:
+      assert isinstance(target, str), "target is not a string (or None): %r" % target
     # Assign parameters:
     self.total_dose = round(float(total_dose), 2)
     self.nr_fractions = int(nr_fractions)
     self.fraction_dose = self.total_dose / self.nr_fractions
-    self.roi_name = roi_name
+    self.target = target
     self.type = type
     self.region_code = region_code
     # If DVH prescription type is used, we need to set the volume percent:
     if type == 'DoseAtVolume':
       # Verify that we have a valid DVH value (range 0-100):
-      assert 0 <= volume_percent <= 100, "volume_percent is not in a valid range (0-100) (which it must be when DoseAtVolume type prescription is used) %r" % volume_percent
+      assert 0 <= volume_percent <= 100, "volume_percent is not in a valid range (0-100) (which it must be when DoseAtVolume type prescription is used) %r" % volume_percent 
       self.volume_percent = volume_percent
     else:
       # MedianDose:
       self.volume_percent = 50
-
+        
   # Override the default implementation of equality.
   def __eq__(self, other):
     if isinstance(other, Prescription):
-      return [self.total_dose, self.nr_fractions, self.type, self.volume_percent, self.roi_name] == [other.total_dose, other.nr_fractions, other.type, other.volume_percent, other.roi_name]
+      return [self.total_dose, self.nr_fractions, self.type, self.volume_percent, self.target] == [other.total_dose, other.nr_fractions, other.type, other.volume_percent, other.target]
     return NotImplemented
-
+  
   # Overrides the default implementation of hash.
   def __hash__(self):
     return hash(tuple(sorted(self.__dict__.items())))
-
+  
   # Gives a description (string) of this Prescription object.
   def description(self):
     return str(self.total_dose) + " Gy / " + str(self.nr_fractions) + " fx @ D" + str(self.volume_percent)
-
+  
   # Gives True if the prescription is stereotactic and False if not.
   def is_stereotactic(self):
     result = False

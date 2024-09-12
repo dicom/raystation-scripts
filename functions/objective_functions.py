@@ -21,18 +21,20 @@ import region_codes as RC
 # occurs cases where this is wrong!
 #
 def adapt_optimization_oar(ss, plan, oar_list, region_code):
+  # oar_list used to be a list of ROI objects, now it is RayStation objectives
   for i, beam_set in enumerate(plan.BeamSets):
     objective_adaptations = []
-    objective_adaptations = setup_objectives(ss, plan, oar_list, i, region_code)
+    for obj in oar_list:
+      objective_adaptations.append(OA.ObjectiveAdaptation(obj.ForRegionOfInterest, obj))
     # Get OAR average doses of first optimization, and set the initial OAR target average dose as half of that value:
     for oa in objective_adaptations:
-      if oa.roi.name == ROIS.spinal_canal.name:
-        v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi.name, RelativeVolumes = [0.02])
+      if oa.roi.Name == ROIS.spinal_canal.name:
+        v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi.Name, RelativeVolumes = [0.02])
         oa.set_dose_high(v[0])
         # Make sure to avoid setting a target dose lower than 1 cGy:
         oa.objective.DoseFunctionParameters.DoseLevel = max(1, 0.5 * v[0])
       else:
-        avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi.name, DoseType = 'Average')
+        avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi.Name, DoseType = 'Average')
         oa.set_dose_high(avg)
         # Make sure to avoid setting a target dose lower than 1 cGy:
         oa.objective.DoseFunctionParameters.DoseLevel = max(1, 0.5 * avg)
@@ -286,10 +288,6 @@ def setup_objectives(ss, plan, rois, beam_set_index, region_code):
   adaptations = []
   objective = None
   for roi in rois:
-    if roi.name == ROIS.spinal_canal.name and region_code not in RC.palliative_columna_codes:
-      objective = max_dvh(ss, plan, roi.name, dose, percent_volume, weight, beam_set_index=beam_set_index)
-    elif roi.name != ROIS.spinal_canal.name:
-      objective = max_eud(ss, plan, roi.name, dose, eud, weight, beam_set_index=beam_set_index)
     if objective:
       adaptations.append(OA.ObjectiveAdaptation(roi, objective))
   return adaptations

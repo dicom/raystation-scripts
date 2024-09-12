@@ -145,10 +145,10 @@ class Plan(object):
     # Add prescription:
     # For breast SIB, set the surgical bed as prescription target (for others leave it as is):
     if prescription.nr_fractions == 15 and prescription.total_dose == 48 and region_code in RC.breast_codes:
-      prescription_target = ROIS.ctv_sb.name
+      prescription.target = ROIS.ctv_sb.name
     else:
-      prescription_target = target
-    BSF.add_prescription(beam_set, prescription, prescription_target)
+      prescription.target = target
+    BSF.add_prescription(beam_set, prescription)
 
     # Set beam set dose grid:
     BSF.set_dose_grid(beam_set, prescription)
