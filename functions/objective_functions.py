@@ -28,12 +28,14 @@ def adapt_optimization_oar(ss, plan, oar_list, region_code):
       objective_adaptations.append(OA.ObjectiveAdaptation(obj.ForRegionOfInterest, obj))
     # Get OAR average doses of first optimization, and set the initial OAR target average dose as half of that value:
     for oa in objective_adaptations:
-      if oa.roi.Name == ROIS.spinal_canal.name:
+      if oa.objective.DoseFunctionParameters.FunctionType == 'MaxDose' or oa.objective.DoseFunctionParameters.FunctionType == 'MaxDvh':
+        # Assumed max dose type objective:
         v = oa.objective.OfDoseDistributions[0].GetDoseAtRelativeVolumes(RoiName = oa.roi.Name, RelativeVolumes = [0.02])
         oa.set_dose_high(v[0])
         # Make sure to avoid setting a target dose lower than 1 cGy:
         oa.objective.DoseFunctionParameters.DoseLevel = max(1, 0.5 * v[0])
       else:
+        # Assumed average dose type objective:
         avg = oa.objective.OfDoseDistributions[0].GetDoseStatistic(RoiName = oa.roi.Name, DoseType = 'Average')
         oa.set_dose_high(avg)
         # Make sure to avoid setting a target dose lower than 1 cGy:
