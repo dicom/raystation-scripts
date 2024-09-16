@@ -8,6 +8,10 @@
 # Import system libraries:
 from tkinter import *
 from tkinter import messagebox
+import os
+
+# Import local files:
+import user_list as USERS
 
 # The FractionationFrame contains 4 text fields: Region code, fraction dose, number of fractions, and initials.
 class FractionationFrame(Frame):
@@ -24,6 +28,11 @@ class FractionationFrame(Frame):
     the_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
     the_window.title("Fraksjonering")
     the_window.configure(bg = 'white')
+
+
+  # Quits if the cancel button is clicked.
+  def cancel_clicked(self, event=None):
+    self.quit()
 
 
   # Set up the GUI elements.
@@ -49,6 +58,8 @@ class FractionationFrame(Frame):
     self.initials = StringVar()
     self.initials_label = Label(self, text = "Doseplanleggers initialer:", font = ("TkDefaultFont",10), width = w, wraplength = wl, anchor = W, justify = LEFT, bg = 'white')
     self.initials_entry = Entry(self, textvariable = self.initials, width = w, bg = 'white', font = ("TkDefaultFont",10))
+    # Fill out initials from windows user name:
+    self.initials_entry.insert(0, self.user_initials()) 
     # Create OK and Cancel buttons:
     self.okButton = Button(self, text = "OK", command = self.ok_clicked, font = ("TkDefaultFont",10), bg = 'white')
     self.quitButton = Button(self, text = "Cancel", command = self.cancel_clicked, font = ("TkDefaultFont",10), bg = 'white')
@@ -99,13 +110,16 @@ class FractionationFrame(Frame):
     return (region_code,fraction_dose,number_of_fractions,initials)
 
 
-  # Quits if the cancel button is clicked.
-  def cancel_clicked(self, event=None):
-    self.quit()
-
-
   # Handles the shut down of the UI when the OK button is clicked.
   def ok_clicked(self, event=None):
     self.ok = True
     self.quit()
     return self.ok
+
+
+  # Returns initials derived from the windows user name.
+  def user_initials(self):
+    user_name = os.getlogin()
+    users = USERS.UserList("C:\\temp\\raystation-scripts\\settings\\users.tsv")
+    initials = users.get_initials(user_name)
+    return initials
