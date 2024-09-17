@@ -128,7 +128,6 @@ class QualityControl(object):
       ts_beam_set.vmat_arc_sequence_test()
       ts_beam_set.reasonable_collimator_angles_test()
       ts_beam_set.defined_prescription_test()
-      #ts_beam_set.specific_energy_for_region_test()
       ts_beam_set.nr_fractions_test()
       ts_beam_set.label_vmat_test()
       ts_beam_set.label_target_volume_test()
@@ -143,6 +142,7 @@ class QualityControl(object):
       ts_beam_set.vmat_mu_test()
       ts_beam_set.beam_number_test()
       ts_beam_set.target_volume_normalisation_for_sib_test()
+      ts_beam_set.existing_plan_in_mosaiq_with_this_beam_set_label_test()
       
       
       # Label tests:

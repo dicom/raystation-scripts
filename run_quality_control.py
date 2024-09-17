@@ -27,7 +27,7 @@ sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\various_classes")
-
+sys.path.append(r'C:\temp\raystation-scripts')
 
 # Local script imports:
 import quality_control as QC

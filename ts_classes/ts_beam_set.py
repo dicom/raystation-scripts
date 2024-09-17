@@ -14,6 +14,8 @@ import math
 #from tkinter import messagebox
 
 # Local script imports:
+import mosaiq
+import mqv_beam_set as MQV_BS
 import test_p as TEST
 import raystation_utilities as RSU
 import rois as ROIS
@@ -567,3 +569,25 @@ class TSBeamSet(object):
                 t.fail(round(real_dose_d50, 2))
               else:
                 t.succeed()
+
+  # Tests if there already is a RadRx in Mosaiq which has the same name (properly translated)
+  # as this beam set's label. If such a match exists, a beam set label may be warranted.
+  def existing_plan_in_mosaiq_with_this_beam_set_label_test(self):
+    t = TEST.Test("Normalt bør det ikke eksistere en navne-konflikt med plan i Mosaiq som har samme navn som en ny doseplan i RayStation.", None, self.label)
+    # Only care to check if there is a valid beam set label format:
+    if self.has_prescription():
+      if self.ts_label.label.valid:
+        # Load the patient from the Mosaiq DB:
+        mq_patient = mosaiq.Patient.find_by_ida(self.ts_plan.ts_case.ts_patient.patient.PatientID)
+        if mq_patient:
+          # Load the beam sets (Rad Rx/Prescription) from the Mosaiq DB:
+          mq_beam_sets = {}
+          # Collect beam sets:
+          for bs in mq_patient.prescriptions():
+            mq_beam_sets[bs.site_name] = bs
+          # Test for matching title:
+          mqv_beam_set = MQV_BS.MQVBeamSet(self.beam_set)
+          if mqv_beam_set.expected_mosaiq_label in mq_beam_sets:
+            return t.fail(self.beam_set.DicomPlanLabel)
+          else:
+            return t.succeed()

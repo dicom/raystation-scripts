@@ -30,6 +30,8 @@ class MQVBeamSet(object):
     if mqv_plan:
       mqv_plan.mqv_beam_sets.append(self)
       self.parent_param = mqv_plan.param
+    else:
+      self.parent_param = None
     # Load list of region codes and corresponding region names:
     self.regions = REGIONS.RegionList("C:\\temp\\raystation-scripts\\settings\\regions.tsv")
     # Beam set label:
