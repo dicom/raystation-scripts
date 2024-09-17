@@ -8,9 +8,11 @@
 #
 # Python 3.6
 
+import margins as MARGINS
 import objective_functions as OF
 import patient_model_functions as PMF
 import region_codes as RC
+import roi as ROI
 import roi_functions as ROIF
 import rois as ROIS
 import tolerance_doses as TOL
