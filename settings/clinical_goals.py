@@ -395,12 +395,16 @@ def lung_oars(ss, prescription):
     CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.30, TOL.lung_lymphopenia_v30, priority6),
     CG.ClinicalGoal(lungs, at_most, volume_at_dose, 0.45, TOL.lung_lymphopenia_v45, priority6),
     CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, prescription_dose, 0.03, priority6),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_grade3plus_max, 2.0, priority6),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_grade3plus_mean, None, priority6),
     CG.ClinicalGoal(ROIS.spleen.name, at_most, average_dose, TOL.spleen_lymphopenia_mean, None, priority6),
     CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.17, TOL.spleen_lymphopenia_v17, priority6),
     CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.16, TOL.spleen_lymphopenia_v16, priority6),
     CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.09, TOL.spleen_lymphopenia_v09, priority6),
     CG.ClinicalGoal(ROIS.spleen.name, at_most, volume_at_dose, 0.05, TOL.spleen_lymphopenia_v05, priority6),
-    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal_chemo, 0.03, priority6)
+    CG.ClinicalGoal(ROIS.spinal_canal.name, at_most, dose_at_abs_volume, tol_spinalcanal_chemo, 0.03, priority6),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, dose_at_abs_volume, TOL.esophagus_grade2plus_max, 2.0, priority7),
+    CG.ClinicalGoal(ROIS.esophagus.name, at_most, average_dose, TOL.esophagus_grade2plus_mean, None, priority7)
   ]
   return lung_oars
 

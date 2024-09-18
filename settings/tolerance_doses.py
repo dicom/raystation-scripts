@@ -126,7 +126,11 @@ parotid_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_pa
 
 # Thorax
 esophagus_mean = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, fractions_esophagus, 34, 'Mean', 'Conventional RT')
-esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
+esophagus_v17_adx = EQD.Tolerance('Esophagus', 'Esophagitis grade 3', ab_esophagus, fractions_esophagus, 60, 'Volume receiving tolerance dose being less than 17 %', 'Conventional RT')
+esophagus_grade3plus_max = EQD.Tolerance('Esophagus', 'Esophagitis grade 3+', ab_esophagus, 30.705, 61.41, 'Near max dose (2 cm^3 volume) receiving less than tolerance dose', 'Conventional RT')
+esophagus_grade3plus_mean = EQD.Tolerance('Esophagus', 'Esophagitis grade 3+', ab_esophagus, 11.5, 23, 'Mean', 'Conventional RT')
+esophagus_grade2plus_max = EQD.Tolerance('Esophagus', 'Esophagitis grade 2+', ab_esophagus, 23.35, 46.7, 'Near max dose (2 cm^3 volume) receiving less than tolerance dose', 'Conventional RT')
+esophagus_grade2plus_mean = EQD.Tolerance('Esophagus', 'Esophagitis grade 2+', ab_esophagus, 8.215, 16.43, 'Mean', 'Conventional RT')
 heart_mean = EQD.Tolerance('Heart', 'Heart toxicity < 15 %', ab_heart, fractions_heart, 20, 'Mean', 'Conventional RT')
 heart_v25_adx = EQD.Tolerance('Heart', 'Heart toxicity < 15 %', ab_heart, fractions_heart, 50, 'Volume receiving tolerance dose being less than 25 %', 'Conventional RT')
 heart_v30_adx = EQD.Tolerance('Heart', 'Heart toxicity', ab_heart, fractions_heart, 60, 'Volume receiving tolerance dose being less than 30 %', 'Conventional RT')
