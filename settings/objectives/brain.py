@@ -8,6 +8,7 @@
 #
 # Python 3.6
 
+import gui_functions as GUIF
 import margins as MARGINS
 import objective_functions as OF
 import patient_model_functions as PMF
