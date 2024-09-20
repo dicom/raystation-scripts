@@ -154,7 +154,7 @@ def determine_isocenter(examination, ss, region_code, technique_name, target, ex
   if iso == False:
     if region_code in RC.breast_codes:
       # Breast treatment:
-      isocenter = find_isocenter_vmat_breast(ss, ROIS.ctv.name)
+      isocenter = find_isocenter_vmat_breast(ss, target)
     else:
       # All other cases:
       isocenter = find_isocenter(examination, ss, target, external, multiple_targets=multiple_targets)
