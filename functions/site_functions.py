@@ -1,11 +1,11 @@
 # encoding: utf8
 
 # Import local files:
+import clinical_goals
 import objectives
 import beam_functions as BF
 import def_oars as OAR
 import region_codes as RC
-import clinical_goals as CGS
 import rt_site as SITE
 import rois as ROIS
 import patient_model_functions as PMF
@@ -20,39 +20,42 @@ import breast_optimization as OPT
 # Brain:
 def brain(pm, examination, ss, plan, prescription):
   obj = objectives.Brain(ss, plan, prescription, pm, examination)
+  cg = clinical_goals.Brain(ss, plan, prescription)
   if prescription.region_code in RC.brain_whole_codes:
-    site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, CGS.brain_oars(prescription), CGS.brain_targets(ss, prescription))
+    site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   else:
-    site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, CGS.brain_oars(prescription), CGS.brain_targets(ss, prescription))
+    site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   return site
 
 
 # Lung:
 def lung(ss, plan, prescription, target):
   obj = objectives.Lung(ss, plan, prescription)
+  cg = clinical_goals.Lung(ss, plan, prescription)
   if prescription.is_stereotactic() and prescription.nr_fractions == 3:
-    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, CGS.lung_stereotactic_3fx_oars(prescription), CGS.lung_stereotactic_targets(ss))
+    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.is_stereotactic() and prescription.nr_fractions == 5:
-    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, CGS.lung_stereotactic_5fx_oars(prescription), CGS.lung_stereotactic_targets(ss))
+    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.is_stereotactic() and prescription.nr_fractions == 8:
-    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, CGS.lung_stereotactic_8fx_oars(prescription), CGS.lung_stereotactic_targets(ss))
+    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   else:
-    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, CGS.lung_oars(ss, prescription), CGS.lung_targets(ss))
+    site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   return site
 
 
 # Breast:
 def breast(ss, plan, prescription, target):
   obj = objectives.Breast(ss, plan, prescription)
+  cg = clinical_goals.Breast(ss, plan, prescription)
   if prescription.region_code in RC.breast_reg_codes:
-    site = SITE.Site(RC.breast_reg_codes, obj.oars, obj.targets, CGS.breast_oars(ss, prescription), CGS.breast_targets(ss, target, prescription))
+    site = SITE.Site(RC.breast_reg_codes, obj.oars, obj.targets, cg.oars, cg.targets)
     # Set up treat ROIs for bilateral cases:
     if prescription.region_code in RC.breast_bilateral_codes:
       BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
       BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
     site.optimizer = OPT.BreastOptimization(ss, plan, site, prescription)
   else:
-    site = SITE.Site(RC.breast_whole_codes, obj.oars, obj.targets, CGS.breast_oars(ss, prescription), CGS.breast_targets(ss, target, prescription))
+    site = SITE.Site(RC.breast_whole_codes, obj.oars, obj.targets, cg.oars, cg.targets)
     # Set up treat ROIs for bilateral cases:
     if prescription.region_code in RC.breast_bilateral_codes:
       BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
@@ -64,58 +67,63 @@ def breast(ss, plan, prescription, target):
 # Prostate:
 def prostate(ss, plan, prescription, target):
   obj = objectives.Prostate(ss, plan, prescription)
+  cg = clinical_goals.Prostate(ss, plan, prescription)
   if prescription.total_dose < 40:
-    site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, CGS.prostate_oars(ss, prescription), CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.prostate_bed_codes:
-    site = SITE.Site(RC.prostate_bed_codes, obj.oars, obj.targets, CGS.prostate_oars(ss, prescription), CGS.prostate_bed_targets(ss))
+    site = SITE.Site(RC.prostate_bed_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   else:
-    site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, CGS.prostate_oars(ss, prescription), CGS.prostate_targets(ss, prescription))
+    site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   return site
 
 
 # Rectum:
 def rectum(ss, plan, prescription):
   obj = objectives.Rectum(ss, plan, prescription)
-  return SITE.Site(RC.rectum_codes, obj.oars, obj.targets, CGS.rectum_oars, CGS.rectum_targets(prescription))
+  cg = clinical_goals.Rectum(ss, plan, prescription)
+  return SITE.Site(RC.rectum_codes, obj.oars, obj.targets, cg.oars, cg.targets)
 
 
 # Palliative:
 # Gives a treatment site (e.g. Pelvis) based on a specific region code (e.g. 314).
 def palliative(ss, plan, prescription, target):
   obj = objectives.Other(ss, plan, prescription)
+  cg = clinical_goals.Other(ss, plan, prescription)
   if prescription.region_code in RC.palliative_head_codes:
-    site = SITE.Site(RC.palliative_head_codes, obj.oars, obj.targets, CGS.head, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_head_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_neck_codes:
-    site = SITE.Site(RC.palliative_neck_codes, obj.oars, obj.targets, CGS.neck, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_neck_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_thorax_codes:
-    site = SITE.Site(RC.palliative_thorax_codes, obj.oars, obj.targets, CGS.thorax, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_thorax_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_thorax_and_abdomen_codes:
-    site = SITE.Site(RC.palliative_thorax_and_abdomen_codes, obj.oars, obj.targets, CGS.thorax_and_abdomen, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_thorax_and_abdomen_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_abdomen_codes:
-    site = SITE.Site(RC.palliative_abdomen_codes, obj.oars, obj.targets, CGS.abdomen, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_abdomen_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_abdomen_and_pelvis_codes:
-    site = SITE.Site(RC.palliative_abdomen_and_pelvis_codes, obj.oars, obj.targets, CGS.abdomen_and_pelvis, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_abdomen_and_pelvis_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_pelvis_codes:
-    site = SITE.Site(RC.palliative_pelvis_codes, obj.oars, obj.targets, CGS.pelvis, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_pelvis_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   elif prescription.region_code in RC.palliative_other_codes:
-    site = SITE.Site(RC.palliative_other_codes, obj.oars, obj.targets, CGS.other, CGS.palliative_targets(ss, plan, target))
+    site = SITE.Site(RC.palliative_other_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   return site
 
 
 # Stereotactic bone/spine:
 def bone_stereotactic(ss, plan, prescription):
   obj = objectives.OtherSBRT(ss, plan, prescription)
+  cg = clinical_goals.OtherSBRT(ss, plan, prescription)
   if prescription.nr_fractions == 1:
-    site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, CGS.bone_stereotactic_1fx_oars(prescription), CGS.bone_stereotactic_targets)
+    site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   else:
-    site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, CGS.bone_stereotactic_3fx_oars(prescription), CGS.bone_stereotactic_targets)
+    site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   return site
 
 
 # Bladder:
 def bladder(ss, plan, prescription):
   obj = objectives.Bladder(ss, plan, prescription)
-  return SITE.Site(RC.bladder_codes, obj.oars, obj.targets, CGS.bladder_oars, CGS.targets)
+  cg = clinical_goals.Bladder(ss, plan, prescription)
+  return SITE.Site(RC.bladder_codes, obj.oars, obj.targets, cg.oars, cg.targets)
 
 
 # Determines the site from the region code.

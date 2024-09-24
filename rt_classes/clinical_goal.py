@@ -44,6 +44,10 @@ class ClinicalGoal(object):
   def text(self):
    return f"Name: {self.name}\nCriteria: {self.criteria}\nType: {self.type}\nTolerance: {self.tolerance}\nValue: {self.value}\nPriority: {self.priority}"
 
+# Limits:
+at_most = 'AtMost'
+at_least = 'AtLeast'
+
 # Types:
 volume_at_dose = 'VolumeAtDose'
 abs_volume_at_dose = 'AbsoluteVolumeAtDose'
