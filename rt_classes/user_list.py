@@ -51,4 +51,4 @@ class UserList(object):
     try:
       return self.initials[self.users.index(str(user))]
     except ValueError:
-      return None
+      return ""
