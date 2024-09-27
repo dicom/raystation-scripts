@@ -6,9 +6,10 @@
 # Import system libraries:
 from connect import *
 import clr, sys
-
 from System.Windows import *
+
 # Import local files:
+import objectives
 import beams as BEAMS
 import beam_set_functions as BSF
 import case_functions as CF
@@ -31,6 +32,9 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
   if nr_targets > 1:
     for r in region_codes:
       region_code = int(r)
+      # Create a prescription for this region code (using the same dose/fractions as in the original prescription):
+      p = PRES.create_prescription(prescription.total_dose, prescription.nr_fractions, region_code, ss)
+      p.target = 'CTV' + str(i+1)
       # Determine the point which will be our isocenter:
       if not isocenter:
         if SSF.has_named_roi_with_contours(ss, 'PTV' + str(i+1)):
@@ -40,21 +44,23 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
           GUIF.handle_missing_ptv()
       # Set up beam set and prescription:
       beam_set = plan.AddNewBeamSet(
-        Name=BSF.label(prescription, 'VMAT'),
+        Name=BSF.label(p, 'VMAT'),
         ExaminationName=examination.Name,
         MachineName= "ALVersa",
         Modality='Photons',
         TreatmentTechnique='VMAT',
         PatientPosition=CF.determine_patient_position(examination),
-        NumberOfFractions=prescription.nr_fractions
+        NumberOfFractions=p.nr_fractions
       )
-      BSF.add_prescription(beam_set, prescription, 'CTV' + str(i+1))
+      BSF.add_prescription(beam_set, p)
       # Setup beams or arcs
-      nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
+      nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams = nr_existing_beams + nr_beams
       i += 1
       if not common_isocenter:
         isocenter=False
+      # Add objectives for the new beam set:
+      obj = objectives.Other(ss, plan, p, beam_set_index=beam_set.Number-1)
 
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
@@ -80,7 +86,7 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
         # Determine the point which will be our isocenter:
         isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
         # Setup beams or arcs
-        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, region_code, prescription.fraction_dose, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
+        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
         nr_existing_beams += nr_beams
         i += 1
 
