@@ -64,14 +64,14 @@ class Brain:
           # Setup of objectives for less prioritized OARs:
           other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.retina_l, ROIS.retina_r, ROIS.cornea_r, ROIS.cornea_l, ROIS.pituitary]
           tolerances = [TOL.cochlea_mean_tinnitus, TOL.cochlea_mean_tinnitus, TOL.hippocampus_v40, TOL.hippocampus_v40, TOL.lens_v003_adx, TOL.lens_v003_adx, TOL.lacrimal_mean, TOL.lacrimal_mean, TOL.retina_v003_adx, TOL.retina_v003_adx, TOL.cornea_v003_adx, TOL.cornea_v003_adx, TOL.pituitary_mean]
-          for i in range(len(other_oars)):
-            if SSF.has_named_roi_with_contours(ss, other_oars[i].name):
+          for index in range(len(other_oars)):
+            if SSF.has_named_roi_with_contours(ss, other_oars[index].name):
               weight = None
               # Conflict with dose?
-              if tolerances[i].equivalent(prescription.nr_fractions) < prescription.total_dose*0.95:
+              if tolerances[index].equivalent(prescription.nr_fractions) < prescription.total_dose*0.95:
                 # Conflict with dose:
-                if not SSF.roi_overlap(pm, examination, ss, ROIS.ptv, other_oars[i], 2):
-                  if ROIF.roi_vicinity_approximate(SSF.rg(ss, ROIS.ptv.name), SSF.rg(ss, other_oars[i].name), 2):
+                if not SSF.roi_overlap(pm, examination, ss, ROIS.ptv, other_oars[index], 2):
+                  if ROIF.roi_vicinity_approximate(SSF.rg(ss, ROIS.ptv.name), SSF.rg(ss, other_oars[index].name), 2):
                     # OAR is close, but not overlapping:
                     weight = 2
                   else:
@@ -81,12 +81,12 @@ class Brain:
                 weight = 20
               # Create objective if indicated:
               if weight:
-                if other_oars[i].name in  [ROIS.cochlea_r.name, ROIS.cochlea_l.name, ROIS.lacrimal_l.name, ROIS.lacrimal_r.name, ROIS.hippocampus_l.name, ROIS.hippocampus_r.name, ROIS.pituitary.name]:
-                  oars.append(OF.max_eud(ss, plan, other_oars[i].name, tolerances[i].equivalent(prescription.nr_fractions)*100-50, 1, weight, beam_set_index=i))
+                if other_oars[index].name in  [ROIS.cochlea_r.name, ROIS.cochlea_l.name, ROIS.lacrimal_l.name, ROIS.lacrimal_r.name, ROIS.hippocampus_l.name, ROIS.hippocampus_r.name, ROIS.pituitary.name]:
+                  oars.append(OF.max_eud(ss, plan, other_oars[index].name, tolerances[index].equivalent(prescription.nr_fractions)*100-50, 1, weight, beam_set_index=i))
                 else:
-                  oars.append(OF.max_dose(ss, plan, other_oars[i].name, (tolerances[i].equivalent(prescription.nr_fractions)*100)-50, weight, beam_set_index=i))
+                  oars.append(OF.max_dose(ss, plan, other_oars[index].name, (tolerances[index].equivalent(prescription.nr_fractions)*100)-50, weight, beam_set_index=i))
             else:
-              GUIF.handle_missing_roi_for_objective(other_oars[i].name)
+              GUIF.handle_missing_roi_for_objective(other_oars[index].name)
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
@@ -139,9 +139,9 @@ class Brain:
         prioritized_oars = [ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r]
         tolerances = [TOL.brainstem_core_v003_adx, TOL.brainstem_surface_v003_adx, TOL.optic_chiasm_v003_adx, TOL.optic_nrv_v003_adx, TOL.optic_nrv_v003_adx]
         conflict_oars = []
-        for i in range(len(prioritized_oars)):
-          if tolerances[i].equivalent(prescription.nr_fractions) < prescription.total_dose*0.95:
-            conflict_oars.append(prioritized_oars[i])
+        for index in range(len(prioritized_oars)):
+          if tolerances[index].equivalent(prescription.nr_fractions) < prescription.total_dose*0.95:
+            conflict_oars.append(prioritized_oars[index])
         # Setup of min and uniform doses depends on presence of critical overlaps or not:
         if len(conflict_oars) > 0:
           # Create subtraction and intersect ROIs for planning of conflicting sites:
@@ -150,9 +150,9 @@ class Brain:
           ptv_and_oars = ROI.ROIAlgebra(ROIS.ptv_and_oars.name, ROIS.ptv_and_oars.type, ROIS.other_ptv.color, sourcesA = [ROIS.ptv], sourcesB = conflict_oars, operator='Intersection')
           rois = [ctv_oars, ptv_oars, ptv_and_oars]
           PMF.delete_matching_rois(pm, rois)
-          for i in range(len(rois)):
-            PMF.create_algebra_roi(pm, examination, ss, rois[i])
-            PMF.exclude_roi_from_export(pm, rois[i].name)
+          for index in range(len(rois)):
+            PMF.create_algebra_roi(pm, examination, ss, rois[index])
+            PMF.exclude_roi_from_export(pm, rois[index].name)
           # Create objectives for the subtraction/intersect ROIs:
           targets.append(OF.uniform_dose(ss, plan, ROIS.ptv_and_oars.name, (tolerances[0].equivalent(prescription.nr_fractions)*100-50), 5, beam_set_index=i)) # (Note that this assumes our OARs have the same tolerance dose...)
           targets.append(OF.uniform_dose(ss, plan, ROIS.ctv_oars.name, prescription.total_dose*100, 30, beam_set_index=i))
