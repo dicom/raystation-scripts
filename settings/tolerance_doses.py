@@ -104,6 +104,10 @@ fractions_skin = 12.5
 # Partial brain
 lens_v003_adx = EQD.Tolerance('Lens_L','Some failure', ab_lens, fractions_lens, 10, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 brain_v003 = EQD.Tolerance('Brain','Some failure', ab_brain, fractions_brain, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+brain_lymphopenia_40pc = EQD.Tolerance('Brain','Acute lymphopenia', ab_blood, 11.3, 22.6, 'Volume receiving tolerance dose being less than 40 %', 'Conventional RT')
+brain_lymphopenia_56pc = EQD.Tolerance('Brain','Acute lymphopenia', ab_blood, 11.3, 22.6, 'Volume receiving tolerance dose being less than 40 %', 'Conventional RT')
+brain_lymphopenia_mean = EQD.Tolerance('Brain','Acute lymphopenia', ab_blood, 15.75, 31.5, 'Mean', 'Conventional RT')
+brain_lymphopenia_d98 = EQD.Tolerance('Brain','Acute lymphopenia', ab_blood, 0.84, 1.68, 'Near miniminum dose', 'Conventional RT')
 brainstem_surface_v003_adx = EQD.Tolerance('BrainstemSurface', 'Some failure', ab_brainstem, fractions_brainstem_surface, 60, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 brainstem_core_v003_adx = EQD.Tolerance('BrainstemCore', 'Some failure', ab_brainstem, fractions_brainstem_core, 54, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 optic_nrv_v003_adx = EQD.Tolerance('OpticNrv','Some failure', ab_optic_nerve, fractions_optic_nerve, 55,  'Maximum dose at less than 0.03cc volume', 'Conventional RT')

@@ -107,6 +107,10 @@ class Brain:
         oars.append(CG.ClinicalGoal(ROIS.cornea_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.cornea_v003_adx, 0.03, 4))
         oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.dose_at_abs_volume, TOL.brain_v003, 3.0, 5))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_v003_adx, 0.03, 6))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.volume_at_dose, 0.4, TOL.brain_lymphopenia_40pc, 6))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.volume_at_dose, 0.56, TOL.brain_lymphopenia_56pc, 6))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.average_dose, TOL.brain_lymphopenia_mean, None, 6))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.dose_at_volume, TOL.brain_lymphopenia_d98, 0.98, 6))
     return oars
 
 
