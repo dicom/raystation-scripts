@@ -9,10 +9,12 @@ import clr, sys
 from System.Windows import *
 
 # Import local files:
+import clinical_goals
 import objectives
 import beams as BEAMS
 import beam_set_functions as BSF
 import case_functions as CF
+import clinical_goal as CG
 import gui_functions as GUIF
 import prescription as PRES
 import region_codes as RC
@@ -61,6 +63,10 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
         isocenter=False
       # Add objectives for the new beam set:
       obj = objectives.Other(ss, plan, p, beam_set_index=beam_set.Number-1)
+      # Add OAR clinical goals to the existing plan for the new beam set:
+      cg = clinical_goals.Other(ss, plan, p)
+      es = plan.TreatmentCourse.EvaluationSetup
+      CG.setup_oar_clinical_goals(cg.oars, es, p)
 
 
 # Creates additional stereotactic beamsets (if multiple targets exists).

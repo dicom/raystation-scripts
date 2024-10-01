@@ -89,3 +89,14 @@ def setup_clinical_goals(ss, es, site, prescription, target):
     else:
       # Missing ROI:
       GUIF.handle_missing_roi_for_clinical_goal(cg.name)
+
+
+# Sets up organ at risk clinical goals.
+# This function is used e.g. for cases of multiple targets, where OAR clinical goals
+# for the additional target need to be added to an existing plan.
+def setup_oar_clinical_goals(clinical_goals, es, prescription):
+  for cg in clinical_goals:
+    if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
+      cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0))
+    else:
+      cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0))
