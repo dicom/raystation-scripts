@@ -95,7 +95,7 @@ def bladder(ss, plan, prescription):
 
 
 # Determines the site from the region code.
-def site(pm, examination, ss, plan, prescription, target, technique_name):
+def site(pm, examination, ss, plan, prescription, target):
   if prescription.region_code in RC.brain_codes:
     # Brain:
     if prescription.region_code not in RC.brain_whole_codes:

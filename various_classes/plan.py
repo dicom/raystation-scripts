@@ -155,13 +155,13 @@ class Plan(object):
     if nr_targets > 1:
       if palliative_choices and palliative_choices[0] in ['sep_beamset_iso', 'beamset']:
         # Consider all targets when determining isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets = True)
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, target, external, multiple_targets = True)
       else:
         # Set isocenter for PTV1:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external)
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, target, external)
     else:
       # Consider all targets when determining isocenter:
-      isocenter = SSF.determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets = True)
+      isocenter = SSF.determine_isocenter(examination, ss, region_code, target, external, multiple_targets = True)
     
     
     # Determine if this patient has any previous beams in Mosaiq (which impacts which beam number is to be used with this plan):
@@ -193,7 +193,7 @@ class Plan(object):
 
 
     # Determine site:
-    site = SF.site(pm, examination, ss, plan, prescription, target, technique_name)
+    site = SF.site(pm, examination, ss, plan, prescription, target)
 
 
     # Set up Clinical Goals:

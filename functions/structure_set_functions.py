@@ -139,7 +139,7 @@ def determine_breast_primary_target(ss):
 # If not, a generic method will be used to determine a proper isocenter,
 # or for breast treatments, some special functions will be applied
 # based on treatment type (e.q. whole breast or locoregional) and technique (e.g. 3D-CRT or VMAT).
-def determine_isocenter(examination, ss, region_code, technique_name, target, external, multiple_targets=False):
+def determine_isocenter(examination, ss, region_code, target, external, multiple_targets=False):
   # Check if there is a POI which is meant to define the isocenter position:
   iso = False
   for p in ss.PoiGeometries:
