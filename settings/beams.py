@@ -13,15 +13,10 @@ def setup_beams(ss, examination, beam_set, isocenter, prescription, technique_na
   bolus = SSF.bolus(ss)
   if technique_name == '3D-CRT':
     # 3D-CRT:
-    if prescription.region_code in RC.extremity_codes:
-      # Extremities:
-      BSF.create_two_beams(beam_set, isocenter, energy = '6', name1 = 'Forfra', name2 = 'Bakfra', gantry_angle1 = '0', gantry_angle2 = '180', collimator_angle1 = '0', collimator_angle2 = '0', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['Forfra','Bakfra'], [130, 130] )
-    elif prescription.region_code in RC.brain_whole_codes:
-      # Whole brain:
-      BSF.create_two_beams(beam_set, isocenter, energy = '6', name1 = 'Høyre', name2 = 'Venstre', gantry_angle1 = '270', gantry_angle2 = '90', collimator_angle1 = '295', collimator_angle2 = '63', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      BSF.set_MU(beam_set,['Høyre','Venstre'], [130, 130] )
-  elif technique_name == 'VMAT':
+    # Assume extremities (and an AP opposed beams setup):
+    BSF.create_two_beams(beam_set, isocenter, energy = '6', name1 = 'Forfra', name2 = 'Bakfra', gantry_angle1 = '0', gantry_angle2 = '180', collimator_angle1 = '0', collimator_angle2 = '0', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
+    BSF.set_MU(beam_set,['Forfra','Bakfra'], [130, 130] )
+  else:
     # VMAT:
     # Brain:
     if prescription.region_code in RC.brain_whole_codes:
