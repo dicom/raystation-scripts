@@ -130,8 +130,6 @@ def determine_choices(prescription, my_window, choices):
   technique = 'VMAT'
   # Default technique name, 'VMAT' or '3D-CRT'
   technique_name = 'VMAT'
-  # Default optimization value
-  opt = ''
   if prescription.region_code in RC.extremity_codes:
     # For extremities it may be practical to use 3D-CRT in some cases:
     # Determine which technique choices which will appear in the form
@@ -146,23 +144,7 @@ def determine_choices(prescription, my_window, choices):
     else:
       technique_name = 'VMAT'
     # Optimization value
-    opt = 'oar'
-  elif prescription.region_code in RC.palliative_codes and not prescription.is_stereotactic():
-    # Palliative (non-SBRT):
-    opt = 'oar'
-  elif prescription.region_code in RC.bladder_codes:
-    # Bladder:
-    opt = 'oar'
-  elif prescription.region_code in RC.prostate_codes and prescription.total_dose < 40:
-    # Palliative prostate:
-    opt = 'oar'
-  elif prescription.region_code in RC.brain_whole_codes:
-    # Whole brain:
-    opt = 'oar'
-  elif prescription.region_code in RC.bone_codes and prescription.is_stereotactic():
-    # Bone SBRT:
-    opt = 'oar'
-  results = [technique, technique_name, opt]
+  results = [technique, technique_name]
   return results
 
 

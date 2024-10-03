@@ -9,11 +9,11 @@ import region_codes as RC
 import datetime
 
 
-# Optimization class for Breast optimization.
-class BreastOptimization(object):
+# Optimizer class for Breast cases.
+class Breast(object):
 
-  # Creates a BreastOptimization object.
-  # Sets up objects associated with the Optimization:
+  # Creates a Breast optimizer object.
+  # Sets up objects associated with the optimizer:
   # -Structure set
   # -Plan
   # -Site
@@ -25,7 +25,7 @@ class BreastOptimization(object):
     self.ss = ss
     self.plan = plan
     self.site = site
-    self.region_code = prescription.region_code
+    self.prescription = prescription
   
 
   # Executes the optimization.
@@ -76,22 +76,22 @@ class BreastOptimization(object):
       # (since apparently the PlanOptimization script objects cannot be compared directly, we compare their related beam set numbers instead to establish equality)
       if po.OptimizedBeamSets[0].Number == self.plan.PlanOptimizations[0].OptimizedBeamSets[0].Number:
         # Set robustness settings:
-        if self.region_code in RC.breast_r_codes:
+        if self.prescription.region_code in RC.breast_r_codes:
           # Right:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=1, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
-        elif self.region_code in RC.breast_l_codes:
+        elif self.prescription.region_code in RC.breast_l_codes:
           # Left:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=1, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
-        elif self.region_code in RC.breast_bilateral_codes:
+        elif self.prescription.region_code in RC.breast_bilateral_codes:
           # Bilateral:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
         # Set robustness for PTV min & max dose:
         # (But not for PTVsbc in SIB cases)
         for obj in target_objectives:
-          if self.region_code in RC.breast_whole_codes:
+          if self.prescription.region_code in RC.breast_whole_codes:
             if obj.ForRegionOfInterest.Type == 'Ptv' and obj.ForRegionOfInterest.Name != 'PTVsbc':
               obj.UseRobustness = True
-          elif self.region_code in RC.breast_reg_codes and obj.ForRegionOfInterest.Name != 'PTVsbc':
+          elif self.prescription.region_code in RC.breast_reg_codes and obj.ForRegionOfInterest.Name != 'PTVsbc':
             if obj.ForRegionOfInterest.Name == 'PTVpc' or obj.ForRegionOfInterest.Name == 'PTVpc-PTVsbc':
               obj.UseRobustness = True
       # Proceed to third opimization phase: Increase weights for targets to fullfil target clincal goals.
@@ -239,14 +239,14 @@ class BreastOptimization(object):
     if po.OptimizedBeamSets[0].Prescription.PrimaryPrescriptionDoseReference == 2600:
       lung_dose_level = 800 / 5
     # For whole breast or regional breast we use an extra lung DVH objective:
-    if self.region_code in RC.breast_whole_codes or self.region_code in RC.breast_reg_codes:
+    if self.prescription.region_code in RC.breast_whole_codes or self.prescription.region_code in RC.breast_reg_codes:
       ipsilateral_lung = 'Lung_L'
-      if self.region_code in RC.breast_r_codes:
+      if self.prescription.region_code in RC.breast_r_codes:
         ipsilateral_lung = 'Lung_R'
       # Threshold depends on if we have a whole breast or regional breast case:
-      if self.region_code in RC.breast_whole_codes:
+      if self.prescription.region_code in RC.breast_whole_codes:
         lung_threshold = 0.146
-      elif self.region_code in RC.breast_reg_codes:
+      elif self.prescription.region_code in RC.breast_reg_codes:
         lung_threshold = 0.34
       ipsilateral_lung_relative_volume = po.OptimizedBeamSets[0].FractionDose.GetRelativeVolumeAtDoseValues(RoiName = ipsilateral_lung, DoseValues = [lung_dose_level])[0]
       # Do we need extra weight on the lung objective?

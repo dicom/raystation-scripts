@@ -3,6 +3,7 @@
 # Import local files:
 import clinical_goals
 import objectives
+import optimizers
 import beam_functions as BF
 import def_oars as OAR
 import region_codes as RC
@@ -11,7 +12,6 @@ import rois as ROIS
 import patient_model_functions as PMF
 import structure_set_functions as SSF
 
-import breast_optimization as OPT
 
 # Example:
 # SITE.Site(codes, oar_objectives, opt_objectives, oar_clinical_goals, target_clinical_goals)
@@ -22,6 +22,10 @@ def brain(pm, examination, ss, plan, prescription):
   obj = objectives.Brain(ss, plan, prescription, pm, examination)
   cg = clinical_goals.Brain(ss, plan, prescription)
   site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  if prescription.region_code in RC.brain_whole_codes:
+    site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
+  else:
+    site.optimizer = optimizers.General(ss, plan, site, prescription)
   return site
 
 
@@ -30,6 +34,7 @@ def lung(ss, plan, prescription, target):
   obj = objectives.Lung(ss, plan, prescription)
   cg = clinical_goals.Lung(ss, plan, prescription)
   site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.General(ss, plan, site, prescription)
   return site
 
 
@@ -42,7 +47,7 @@ def breast(ss, plan, prescription, target):
   if prescription.region_code in RC.breast_bilateral_codes:
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
-  site.optimizer = OPT.BreastOptimization(ss, plan, site, prescription)
+  site.optimizer = optimizers.Breast(ss, plan, site, prescription)
   return site
 
 
@@ -51,6 +56,7 @@ def prostate(ss, plan, prescription, target):
   obj = objectives.Prostate(ss, plan, prescription)
   cg = clinical_goals.Prostate(ss, plan, prescription)
   site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.General(ss, plan, site, prescription)
   return site
 
 
@@ -67,6 +73,7 @@ def palliative(ss, plan, prescription, target):
   obj = objectives.Other(ss, plan, prescription)
   cg = clinical_goals.Other(ss, plan, prescription)
   site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
   return site
 
 
@@ -75,6 +82,7 @@ def bone_stereotactic(ss, plan, prescription):
   obj = objectives.OtherSBRT(ss, plan, prescription)
   cg = clinical_goals.OtherSBRT(ss, plan, prescription)
   site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
   return site
 
 
@@ -82,6 +90,7 @@ def bone_stereotactic(ss, plan, prescription):
 def bladder(ss, plan, prescription):
   obj = objectives.Bladder(ss, plan, prescription)
   cg = clinical_goals.Bladder(ss, plan, prescription)
+  site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
   return SITE.Site(RC.bladder_codes, obj.oars, obj.targets, cg.oars, cg.targets)
 
 

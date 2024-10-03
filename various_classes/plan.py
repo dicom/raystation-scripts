@@ -94,8 +94,6 @@ class Plan(object):
     technique = results[0]
     # Chosen technique name ('VMAT' or '3D-CRT'):
     technique_name = results[1]
-    # Chosen optimization value:
-    opt = results[2]
     
 
     # Determine the prescription target volume:
@@ -210,42 +208,11 @@ class Plan(object):
       OBJF.set_robustness_breast(plan, region_code)
 
 
-    # Use the site optimizer for sites where it has been implemented:
+    # Perform optimization:
     if site.optimizer:
       site.optimizer.optimize()
-    else:
-      # For legacy sites, use the old optimization procedure:
-      # Run first optimization on each beam set:
-      for plan_optimization in plan.PlanOptimizations:
-        plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True
-        # Configure optimization parameters for VMAT only:
-        if "Arc" in plan_optimization.OptimizedBeamSets[0].DeliveryTechnique:
-          optimization_parameters = OPT.optimization_parameters(prescription)
-          optimization_parameters.apply_to(plan_optimization)
-        # Run the optimization (may crash if GPU for computation is not available):
-        # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)
-        # Assume we may have a beam delivery time error:
-        possible_beam_delivery_time_error = True
-        while possible_beam_delivery_time_error:
-          try:
-            plan_optimization.RunOptimization()
-            # Optimization succeeded, thus there is no time error:
-            possible_beam_delivery_time_error = False
-          except Exception as e:
-            if "is shorter than the minimum feasible time" in e.args[0]:
-              # We need to increase the beam delivery time (and try the optimization again). Increase by 10 seconds:
-              for beam in plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
-                beam.ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
-            else:
-              # Although it did crash, it wasnt because of the time error:
-              possible_beam_delivery_time_error = False
-              GUIF.handle_optimization_error(plan_optimization, e)
-      # Start adaptive optimization if indicated:
-      if opt == 'oar':
-        try:
-          OBJF.adapt_optimization_oar(ss, plan, site.oar_objectives, region_code)
-        except Exception as e:
-          GUIF.handle_optimization_error(plan_optimization, e)
+
+
     # Load plan:
     CF.load_plan(case, plan)
 
