@@ -88,12 +88,9 @@ class Plan(object):
     my_window = Toplevel()
 
 
-    # Determine which technique and optimization choices which will appear in the form:
-    results = GUIF.determine_choices(prescription, my_window, [])
-    # Chosen technique value ('VMAT' or 'Conformal'):
-    technique = results[0]
-    # Chosen technique name ('VMAT' or '3D-CRT'):
-    technique_name = results[1]
+    # For extremeties there a choice will be given between VMAT or 3D-CRT (for all other sites, VMAT is default):
+    # Parameter values: technique ('VMAT' or 'Conformal'), technique name ('VMAT' or '3D-CRT') 
+    technique, technique_name = GUIF.determine_choices(prescription, my_window)
     
 
     # Determine the prescription target volume:

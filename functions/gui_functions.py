@@ -125,7 +125,7 @@ def collect_target_strategy_and_region_codes(ss, nr_targets, prescription):
 
 
 # Determines what list of technique possibilities will be given for different region codes:
-def determine_choices(prescription, my_window, choices):
+def determine_choices(prescription, my_window):
   # Default technique value, 'VMAT' 
   technique = 'VMAT'
   # Default technique name, 'VMAT' or '3D-CRT'
@@ -143,9 +143,7 @@ def determine_choices(prescription, my_window, choices):
       technique_name = '3D-CRT'
     else:
       technique_name = 'VMAT'
-    # Optimization value
-  results = [technique, technique_name]
-  return results
+  return technique, technique_name
 
 
 # Handles the situation when the attempt to delete a ROI results in a crash.
