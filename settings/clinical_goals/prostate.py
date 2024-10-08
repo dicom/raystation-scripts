@@ -127,7 +127,6 @@ class Prostate:
       targets.append(CG.ClinicalGoal(ROIS.ctv_70.name, CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
       targets.append(CG.ClinicalGoal(ROIS.ctv_70.name, CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
       targets.append(CG.ClinicalGoal(ROIS.ptv_70.name, CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
-      targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
       targets.append(CG.ClinicalGoal(ROIS.ctv_70.name, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
       targets.append(CG.ClinicalGoal(ROIS.ptv_70.name, CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
       if prescription.region_code in RC.prostate_node_codes:
