@@ -34,47 +34,54 @@ class Prostate:
       # Prostate bed:
       if prescription.region_code in RC.prostate_node_codes:
         # With elective nodes:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.rectum.name, 72.5*100, 5, 10, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 15*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 25*100, 1, 4, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 40*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 60*100, 1, 2, beam_set_index=i))
         oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 45*100, 2, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 13*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 13*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bone.name, 25*100, 1, 1, beam_set_index=i))
       else:
         # Prostate bed only:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 35*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 35*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 40*100, 1, 2, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 40*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 25*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 20*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 60*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 10*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 10*100, 1, 1, beam_set_index=i))
     else:
       # Prostate:
       if prescription.total_dose == 67.5 and prescription.region_code in RC.prostate_node_codes:
         # High risk prostate with elective nodes:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 30*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 30*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.rectum.name, 65*100, 5, 10, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 32*100, 1, 2, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 15*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 25*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 15*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 16*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 20*100, 2, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 8*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 8*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bone.name, 25*100, 1, 1, beam_set_index=i))
       elif prescription.total_dose == 67.5:
         # High risk prostate only:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 30*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 30*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.rectum.name, 65*100, 5, 10, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 32*100, 1, 2, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 40*100, 2, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 25*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 7*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 16*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 8*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 8*100, 1, 1, beam_set_index=i))
       elif prescription.total_dose == 60:
         # Intermediate (or high risk) prostate only:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 20*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 20*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 22.6*100, 1, 2, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.rectum.name, prescription.total_dose*0.975*100, 3, 4, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 24*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 23*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 6*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 14*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 7*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 7*100, 1, 1, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 20*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 20*100, 2, 1, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 22.6*100, 1, 2, beam_set_index=i))
-        oars.append(OF.max_dvh(ss, plan, ROIS.rectum.name, prescription.total_dose*0.975*100, 3, 4, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 22*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 23*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 6*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 14*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_l.name, 7*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femur_head_neck_r.name, 7*100, 1, 1, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
@@ -82,54 +89,56 @@ class Prostate:
   # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
     others = []
-    others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2, 20, beam_set_index=i))
+    others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2, 20, adapt=True, beam_set_index=i))
     if prescription.region_code in RC.prostate_bed_codes:
       # Prostate bed:
       others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 25, beam_set_index=i))   
       if prescription.region_code in RC.prostate_node_codes:
         # With elective nodes:
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 35*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 44*100, 1, 2, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 28*100, 1, 2, beam_set_index=i))
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, prescription.total_dose*100, 56*100, 1, 1, beam_set_index=i))
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_56_wall.name, 56*100, 42*100, 1, 1, beam_set_index=i))
       else:
         # Prostate bed only:
-        others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 60*100, 3, 10, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 29.5*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 30*100, 5, 1, beam_set_index=i))
-        others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 25*100, 1, 3, beam_set_index=i))
+        #others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 60*100, 3, 10, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 29.5*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 30*100, 5, 1, beam_set_index=i))
+        #others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 25*100, 1, 3, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, prescription.total_dose*100, 56*100, 1, 1, beam_set_index=i))
     else:
       # Prostate:
       others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25, beam_set_index=i))
       if prescription.total_dose == 67.5 and prescription.region_code in RC.prostate_node_codes:
         # High risk prostate with elective nodes:
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 12*100, 1, 2, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, 'zPTV_67.5_Wall', prescription.total_dose*100, 62*100, 0.3, 10, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, 'zPTV_62.5+67.5_Wall', prescription.total_dose*100, 50*100, 0.5, 5, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_spc_bowel.name, 12*100, 1, 2, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_67_5_wall.name, prescription.total_dose*100, 62*100, 0.3, 1, adapt=True, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_62_5_67_5_wall.name, prescription.total_dose*100, 47*100, 0.8, 12, adapt=True, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_50_62_5_67_5_wall.name, 50*100, 40*100, 1.0, 10, adapt=True, beam_set_index=i))
       elif prescription.total_dose == 67.5:
         # High risk prostate only:
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, 'zPTV_67.5_Wall', prescription.total_dose*100, 62*100, 0.3, 10, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 30*100, 1, 2, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_67_5_wall.name, prescription.total_dose*100, 62*100, 0.3, 10, adapt=True, beam_set_index=i))
       elif prescription.total_dose == 60:
         # Intermediate (or high risk) prostate only:
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1, beam_set_index=i))
-        others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, prescription.total_dose*100, 57*100, 0.3, 1, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, prescription.total_dose*100, 42*100, 0.8, 12, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1, beam_set_index=i))
+        #others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, prescription.total_dose*100, 57*100, 0.3, 1, adapt=True, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, prescription.total_dose*100, 42*100, 0.8, 12, adapt=True, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1, beam_set_index=i))
-        others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
-        others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1, beam_set_index=i))
-        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 42*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 18*100, 1, 1, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_rectum.name, 28*100, 3, 1, beam_set_index=i))
+        #others.append(OF.max_dvh(ss, plan, ROIS.z_rectum.name, 51*100, 1, 10, beam_set_index=i))
+        #others.append(OF.max_eud(ss, plan, ROIS.z_bladder.name, 12.4*100, 1, 1, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 42*100, 1, 1, adapt=True, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
   

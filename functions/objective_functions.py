@@ -129,10 +129,11 @@ def adaptive_optimization_with_calculation(plan, beam_set, objective_adaptations
 
 
 # Create optimization objects, minimum dvh, with robustness
-def fall_off(ss, plan, roi_name, high_dose_level, low_dose_level, distance, weigth, beam_set_index=0):
+def fall_off(ss, plan, roi_name, high_dose_level, low_dose_level, distance, weigth, adapt=False, beam_set_index=0):
   if SSF.has_named_roi_with_contours(ss, roi_name):
     po = plan.PlanOptimizations[beam_set_index]
     o = po.AddOptimizationFunction(FunctionType="DoseFallOff", RoiName = roi_name)
+    o.DoseFunctionParameters.AdaptToTargetDoseLevels = adapt
     o.DoseFunctionParameters.HighDoseLevel = high_dose_level
     o.DoseFunctionParameters.LowDoseLevel = low_dose_level
     o.DoseFunctionParameters.LowDoseDistance = distance

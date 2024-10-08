@@ -5,3 +5,4 @@
 
 from .breast import Breast
 from .general import General
+from .prostate import Prostate

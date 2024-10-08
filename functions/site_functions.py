@@ -56,7 +56,7 @@ def prostate(ss, plan, prescription, target):
   obj = objectives.Prostate(ss, plan, prescription)
   cg = clinical_goals.Prostate(ss, plan, prescription)
   site = SITE.Site(RC.prostate_codes, obj.oars, obj.targets, cg.oars, cg.targets)
-  site.optimizer = optimizers.General(ss, plan, site, prescription)
+  site.optimizer = optimizers.Prostate(ss, plan, site, prescription)
   return site
 
 

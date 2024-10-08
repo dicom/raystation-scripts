@@ -77,10 +77,8 @@ class DefProstate(object):
     # Targets:
     site.add_targets([ctv, ptv])
     # Other derived ROIs:
-    bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
     wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 1, 0)
-    site.add_oars([bladder_ptv, rectum_ptv, wall_ptv])
+    site.add_oars([wall_ptv])
   
   
   # Adds target ROIs for prostate bed with elective nodes to the site object.
@@ -103,13 +101,10 @@ class DefProstate(object):
     ptv_56_70 = ROI.ROIAlgebra(ROIS.ptv_56_70.name, ROIS.ptv_56_70.type, COLORS.ptv_low, sourcesA = [ptv_56], sourcesB = [ptv_70], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     site.add_targets([ROIS.ctv_sb, ctv_70, ptv_70, ctv_56, ptv_56, ptv_56_70])
     # Other derived ROIs:
-    bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
-    bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_bag], sourcesB = [ptv_70, ptv_56], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
     wall_ptv_70 = ROI.ROIWall(ROIS.z_ptv_70_wall.name, ROIS.z_ptv_70_wall.type, COLORS.wall, ptv_70, 1, 0)
     wall_ptv_56_temp = ROI.ROIWall(ROIS.z_ptv_56_temp.name, ROIS.z_ptv_56_temp.type, COLORS.wall, ptv_56, 1, 0)
     wall_ptv_56 = ROI.ROIAlgebra(ROIS.z_ptv_56_wall.name, ROIS.z_ptv_56_wall.type, COLORS.wall, sourcesA = [wall_ptv_56_temp], sourcesB = [ptv_70, wall_ptv_70], operator='Subtraction', marginsB = MARGINS.zero)
-    site.add_oars([bladder_ptv, bowel_ptv, rectum_ptv, wall_ptv_70, wall_ptv_56_temp, wall_ptv_56])
+    site.add_oars([wall_ptv_70, wall_ptv_56_temp, wall_ptv_56])
   
   
   # Adds rois that are common across all cases.
@@ -162,6 +157,7 @@ class DefProstate(object):
     ptv2s = ROIS.ptv_62_5_sib
     ptv_2_3s = ROIS.ptv_62_5_67_5
     ptv_2_3w = ROIS.z_ptv_62_5_67_5_wall
+    ptv_1_2_3w = ROIS.z_ptv_50_62_5_67_5_wall
     ctv1s = ROIS.ctv__50
     ptv1s = ROIS.ptv__50
     ptv_1_2_3s = ROIS.ptv_50_62_5_67_5
@@ -169,8 +165,6 @@ class DefProstate(object):
     ctv3 = ROI.ROIAlgebra(ctv3s.name, ctv3s.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
     ptv3 = ROI.ROIExpanded(ptv3s.name, ptv3s.type, COLORS.ptv_high, source = ctv3, margins = MARGINS.prostate_seed_expansion)
     # Other derived ROIs:
-    bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv3], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv3], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
     wall_ptv3 = ROI.ROIWall(ptv3w.name, ptv3w.type, COLORS.wall, ptv3, 0.5, 0)
     if nodes == 'no':
       # Prostate only:
@@ -180,9 +174,7 @@ class DefProstate(object):
       ptv_2_3 = ROI.ROIAlgebra(ptv_2_3s.name, ptv_2_3s.type, COLORS.ptv_low, sourcesA = [ctv3], sourcesB = [semves20], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_6mm_expansion)
       site.add_targets([ptv_2_3])
       # Other derived ROIs:
-      bladder_ptv.sourcesB.extend([ptv2])
-      rectum_ptv.sourcesB.extend([ptv2])
-      site.add_oars([bladder_ptv, rectum_ptv, wall_ptv3])
+      site.add_oars([wall_ptv3])
     elif nodes == 'with_node':
       # Elective nodes (with positive node):
       # Targets:
@@ -197,12 +189,10 @@ class DefProstate(object):
       ptv_1_2_3 = ROI.ROIAlgebra(ptv_1_2_3s.name, ptv_1_2_3s.type, COLORS.ptv_low, sourcesA = [ptv1, ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       site.add_targets([ROIS.gtv_n, ctv_n, ctv1, ptv_n, ptv_semves, ptv1, ptv_2_3, ptv_1_2_3])
       # OARs:
-      bladder_ptv.sourcesB.extend([ptv2, ptv1])
-      rectum_ptv.sourcesB.extend([ptv2, ptv1])
-      bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv3, ptv2, ptv1], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       wall_ptv_2_3 = ROI.ROIWall(ptv_2_3w.name, ptv_2_3w.type, COLORS.wall, ptv_2_3, 1, 0)
+      wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
       # Non-DL OARs:
-      site.add_oars([bladder_ptv, rectum_ptv, wall_ptv3, bowel_ptv, wall_ptv_2_3])
+      site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
     elif nodes == 'with':
       # Elective nodes:
       # Targets:
@@ -214,12 +204,10 @@ class DefProstate(object):
       ptv_1_2_3 = ROI.ROIAlgebra(ptv_1_2_3s.name, ptv_1_2_3s.type, COLORS.ptv_low, sourcesA = [ptv1, ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       site.add_targets([ctv1, ptv1, ptv_2_3, ptv_1_2_3])
       # OARs:
-      bladder_ptv.sourcesB.extend([ptv2, ptv1])
-      rectum_ptv.sourcesB.extend([ptv2, ptv1])
-      bowel_ptv = ROI.ROIAlgebra(ROIS.z_spc_bowel.name, ROIS.z_spc_bowel.type, COLORS.bowel_space, sourcesA = [ROIS.bowel_space], sourcesB = [ptv3, ptv2, ptv1], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
       wall_ptv_2_3 = ROI.ROIWall(ptv_2_3w.name, ptv_2_3w.type, COLORS.wall, ptv_2_3, 1, 0)
+      wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
       # Non-DL OARs:
-      site.add_oars([bladder_ptv, rectum_ptv, wall_ptv3, bowel_ptv, wall_ptv_2_3])
+      site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
     # Common ROIs for all conventional fractionation:
     site.add_targets([semves20, ctv3, ctv2, ptv3, ptv2])
   
@@ -241,11 +229,9 @@ class DefProstate(object):
     ptv_57 = ROI.ROIAlgebra(ROIS.ptv_57.name, ROIS.ptv_57.type, COLORS.ptv_med, sourcesA = [ptv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     site.add_targets([semves, ctv_60, ctv_57, ctv_57_60, ptv_57_60, ptv_60, ptv_57])
     # Other derived ROIs:
-    bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv_60, ptv_57], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv_60, ptv_57], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
     wall_ptv_60 = ROI.ROIWall(ROIS.z_ptv_60_wall.name, ROIS.z_ptv_60_wall.type, COLORS.wall, ptv_60, 0.5, 0)
     wall_ptv_57_60 = ROI.ROIWall(ROIS.z_ptv_57_60_wall.name, ROIS.z_ptv_57_60_wall.type, COLORS.wall, ptv_57_60, 1, 0)
-    site.add_oars([bladder_ptv, rectum_ptv, wall_ptv_60, wall_ptv_57_60])
+    site.add_oars([wall_ptv_60, wall_ptv_57_60])
   
   
   # Adds target ROIs for palliative prostate treatment to the site object.
@@ -268,10 +254,8 @@ class DefProstate(object):
       ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv, margins = MARGINS.prostate_bone_match_expansion)
     site.add_targets([ctv, ptv])
     # Other derived ROIs:
-    bladder_ptv = ROI.ROIAlgebra(ROIS.z_bladder.name, ROIS.z_bladder.type, COLORS.bladder, sourcesA = [ROIS.bladder], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    rectum_ptv = ROI.ROIAlgebra(ROIS.z_rectum.name, ROIS.z_rectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_2mm_expansion)
     wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 1, 0)
-    site.add_oars([bladder_ptv, rectum_ptv, wall_ptv])
+    site.add_oars([wall_ptv])
   
   
   # Setup ROIs used for prostate bed treatment.
