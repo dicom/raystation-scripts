@@ -40,7 +40,7 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       # Determine the point which will be our isocenter:
       if not isocenter:
         if SSF.has_named_roi_with_contours(ss, 'PTV' + str(i+1)):
-          isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
+          isocenter = SSF.determine_isocenter(examination, ss, region_code, 'PTV' + str(i+1), external)
           energy_name = SSF.determine_energy_single_target(ss, 'PTV'+str(i+1))
         else:
           GUIF.handle_missing_ptv()
@@ -90,7 +90,7 @@ def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examin
         )
         BSF.add_prescription(beam_set, prescription, 'PTV' + str(i+1))
         # Determine the point which will be our isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'VMAT', 'PTV' + str(i+1), external)
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'PTV' + str(i+1), external)
         # Setup beams or arcs
         nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
         nr_existing_beams += nr_beams
