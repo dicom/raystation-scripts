@@ -121,9 +121,14 @@ class Breast:
       mod = 0.834375
       homogeneity_target = ROIS.ctv_ptv_sbc.name
       prescription_target = ROIS.ctv_ptv_sbc.name
+      if prescription.region_code in RC.breast_reg_codes:
+        conformity_target = ROIS.ptv.name
+      else:
+        conformity_target = ROIS.ptv_c.name
     else:
       homogeneity_target = prescription.target
       prescription_target = prescription.target
+      conformity_target = prescription.target
     if prescription.region_code in RC.breast_reg_codes:
       # Regional breast:
       if prescription.region_code in RC.breast_bilateral_codes:
@@ -171,7 +176,7 @@ class Breast:
       targets.append(CG.ClinicalGoal(prescription_target, CG.at_most, CG.dose_at_volume, 1.005*mod, 0.50, 1))
       targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
       targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
-      targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P")+"c", CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
+      targets.append(CG.ClinicalGoal(conformity_target, CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
       if prescription.target == ROIS.ctv_sb.name:
         # Partial breast:
         targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P")+"c", CG.at_least, CG.dose_at_volume, 0.95, 0.98, 2))
