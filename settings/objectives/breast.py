@@ -79,6 +79,10 @@ class Breast:
     if prescription.total_dose == 48:
       # SIB treatment (40.05 & 48 Gy):
       lower_dose = 40.05
+      if prescription.region_code in RC.breast_reg_codes:
+        ptv_min_dose_target = ROIS.ptv.name
+      else:
+        ptv_min_dose_target = ROIS.ptv_c.name
       # Tumor bed:
       # CTVsb:
       targets.append(OF.uniform_dose(ss, plan, ROIS.ctv_sb.name, prescription.total_dose*100, 30, beam_set_index=i))
@@ -90,8 +94,8 @@ class Breast:
       # CTV:
       targets.append(OF.uniform_dose(ss, plan, ROIS.ctv_ptv_sbc.name, lower_dose*100, 30, beam_set_index=i))
       targets.append(OF.min_dose(ss, plan, prescription.target, lower_dose*100*0.95, 150, beam_set_index=i))
-      # PTVc:
-      targets.append(OF.min_dose(ss, plan, prescription.target.replace("C", "P")+"c", lower_dose*100*0.95, 100, beam_set_index=i))
+      # PTV/PTVc:
+      targets.append(OF.min_dose(ss, plan, ptv_min_dose_target, lower_dose*100*0.95, 100, beam_set_index=i))
       targets.append(OF.max_dose(ss, plan, ROIS.ptv_c_ptv_sbc.name, lower_dose*100*1.05, 80, beam_set_index=i))
       # Added objectives for regional or bilateral cases:
       if prescription.region_code in RC.breast_reg_codes:

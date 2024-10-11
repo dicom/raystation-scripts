@@ -72,7 +72,7 @@ class Breast(object):
       if self.has_objective_with_positive_dose_and_further_dose_reduction_potential(organ_objectives):
         nr_reduction_iterations = self.reduce_organ_doses(po, organ_objectives, target_objectives, counter=1)
       # Preparation for third phase:
-      # Set robustness (except for boost plans):
+      # Set robustness:
       # (since apparently the PlanOptimization script objects cannot be compared directly, we compare their related beam set numbers instead to establish equality)
       if po.OptimizedBeamSets[0].Number == self.plan.PlanOptimizations[0].OptimizedBeamSets[0].Number:
         # Set robustness settings:
@@ -86,13 +86,15 @@ class Breast(object):
           # Bilateral:
           po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
         # Set robustness for PTV min & max dose:
-        # (But not for PTVsbc in SIB cases)
+        # (But not max dose for PTVc/PTVpc in SIB cases, as this will conflict with min dose of PTVsbc)
         for obj in target_objectives:
           if self.prescription.region_code in RC.breast_whole_codes:
-            if obj.ForRegionOfInterest.Type == 'Ptv' and obj.ForRegionOfInterest.Name != 'PTVsbc':
+            if obj.ForRegionOfInterest.Name == 'PTVc':
+              # For SIB, the max dose objective is set to 'PTVc-PTVsbc', thus max dose robustness will not be applied here.
               obj.UseRobustness = True
-          elif self.prescription.region_code in RC.breast_reg_codes and obj.ForRegionOfInterest.Name != 'PTVsbc':
-            if obj.ForRegionOfInterest.Name == 'PTVpc' or obj.ForRegionOfInterest.Name == 'PTVpc-PTVsbc':
+          elif self.prescription.region_code in RC.breast_reg_codes:
+            if obj.ForRegionOfInterest.Name == 'PTVpc':
+              # For SIB, the max dose objective is set to 'PTVpc-PTVsbc', thus max dose robustness will not be applied here.
               obj.UseRobustness = True
       # Proceed to third opimization phase: Increase weights for targets to fullfil target clincal goals.
       if self.has_target_with_unfulfilled_coverage(po.OptimizedBeamSets[0], target_objectives):
