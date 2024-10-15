@@ -74,7 +74,7 @@ class Breast:
         # Left side:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
         oars.append(CG.ClinicalGoal(ROIS.humeral_l.name, CG.at_most, CG.volume_at_dose, 0.33, TOL.humeral_v33_adx, 6))
-      else:
+      elif prescription.region_code in RC.breast_reg_r_codes:
         # Right side:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
         oars.append(CG.ClinicalGoal(ROIS.humeral_r.name, CG.at_most, CG.volume_at_dose, 0.33, TOL.humeral_v33_adx, 6))
@@ -108,6 +108,20 @@ class Breast:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_mean_import_high, None, 7))
         # Contralateral:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v2_5gy_import_high, 5))
+    # Bilateral: Add relevant goals for each "ipsilateral" lung:
+    if prescription.region_code in RC.breast_bilateral_codes:
+      # Left:
+      if SSF.has_roi_with_shape(ss, 'PTVnc_L'):
+        # Regional:
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
+      else:
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v15_adx, 4))
+      # Right:
+      if SSF.has_roi_with_shape(ss, 'PTVnc_R'):
+        # Regional:
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
+      else:
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v15_adx, 4))
     return oars
 
 
