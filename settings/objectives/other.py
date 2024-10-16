@@ -69,6 +69,7 @@ class Other:
       oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 33.2*100, 2, 2, beam_set_index=i))
       oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 33.2*100, 2, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 33.6*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 30*100, 1, 2, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
