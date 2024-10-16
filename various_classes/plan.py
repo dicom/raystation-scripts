@@ -50,8 +50,8 @@ class Plan(object):
 
 
     # Check if the last CT has been set as primary, and display a warning if not:
-    success = TS_C.TSCase(case).last_examination_used_test()
-    if not success:
+    most_recent_CT_examination_used = TS_C.TSCase(case).last_examination_used_test()
+    if not most_recent_CT_examination_used:
       GUIF.handle_primary_is_not_most_recent_ct()
 
 

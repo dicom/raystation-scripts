@@ -129,6 +129,10 @@ class TSCase(object):
   # having the same frame of reference UID as the primary image series are filtered out.
   def last_examination_used_test(self):
     t = TEST.Test("Den siste CT-serien som er tatt skal i utgangspunktet brukes til planlegging ", True, self.examination)
+    # Pass this test for some known patients used for script development (typicall patients having multiple CT examinations):
+    white_list_case_ids = [
+      '124aec31-5633-4968-8e0a-a8c31ef801f2' # "Test, script"
+    ]
     more_recent = None
     primary = get_current("Examination")
     primary_date = primary.GetExaminationDateTime()
@@ -141,7 +145,7 @@ class TSCase(object):
           modality = examination.EquipmentInfo.Modality
           if modality == 'CT' and 'CBCT' not in description and frame_uid != primary.EquipmentInfo.FrameOfReference:
             more_recent = examination.Name
-    if more_recent:
+    if more_recent and not self.case.PerPatientUniqueId in white_list_case_ids:
       return t.fail(more_recent)
     else:
       return t.succeed()
