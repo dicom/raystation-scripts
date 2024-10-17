@@ -92,8 +92,9 @@ def bone_stereotactic(ss, plan, prescription):
 def bladder(ss, plan, prescription):
   obj = objectives.Bladder(ss, plan, prescription)
   cg = clinical_goals.Bladder(ss, plan, prescription)
-  site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
-  return SITE.Site(RC.bladder_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site = SITE.Site(RC.bladder_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.Bladder(ss, plan, site, prescription)
+  return site
 
 
 # Determines the site from the region code.

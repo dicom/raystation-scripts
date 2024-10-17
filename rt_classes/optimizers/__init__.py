@@ -3,6 +3,7 @@
 # Loads clinical goal classes.
 #
 
+from .bladder import Bladder
 from .breast import Breast
 from .general import General
 from .prostate import Prostate
