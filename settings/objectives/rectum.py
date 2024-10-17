@@ -31,17 +31,17 @@ class Rectum:
   def create_oar_objectives(self, ss, plan, prescription, i):
     oars = []
     if prescription.total_dose == 50:
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 15*100, 2, 1, beam_set_index=i))
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 15*100, 2, 1, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 10*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 4*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 5*100, 2, 2, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 15*100, 2, 1, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 15*100, 2, 1, beam_set_index=i))
     else:
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 7.5*100, 2, 1, beam_set_index=i))
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 7.5*100, 2, 1, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 5*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 2*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dvh(ss, plan, ROIS.cauda_equina.name, 2.5*100, 2, 2, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 7.5*100, 2, 1, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 7.5*100, 2, 1, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 

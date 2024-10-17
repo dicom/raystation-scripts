@@ -64,7 +64,9 @@ def prostate(ss, plan, prescription, target):
 def rectum(ss, plan, prescription):
   obj = objectives.Rectum(ss, plan, prescription)
   cg = clinical_goals.Rectum(ss, plan, prescription)
-  return SITE.Site(RC.rectum_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site = SITE.Site(RC.rectum_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  site.optimizer = optimizers.Rectum(ss, plan, site, prescription)
+  return site
 
 
 # Palliative:
