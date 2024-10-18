@@ -22,10 +22,7 @@ def brain(pm, examination, ss, plan, prescription):
   obj = objectives.Brain(ss, plan, prescription, pm, examination)
   cg = clinical_goals.Brain(ss, plan, prescription)
   site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
-  if prescription.region_code in RC.brain_whole_codes:
-    site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
-  else:
-    site.optimizer = optimizers.General(ss, plan, site, prescription)
+  site.optimizer = optimizers.Brain(ss, plan, site, prescription)
   return site
 
 
