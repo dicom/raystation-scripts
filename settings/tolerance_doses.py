@@ -382,8 +382,7 @@ rectum_sbrt_1fx_v20 = EQD.Tolerance('Rectum', 'Some failure', ab_rectum, fractio
 colon_sbrt_1fx_v0 = EQD.Tolerance('Colon', 'Some failure', ab_colon, fractions_sbrt_1, 18.4, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 colon_sbrt_1fx_v20 = EQD.Tolerance('Rectum', 'Some failure', ab_colon, fractions_sbrt_1, 14.3, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
 kidney_hilum_1fx_v66 = EQD.Tolerance('Kidney_Hilum', 'Some failure', ab_kidney_hilum, fractions_sbrt_1, 10.6, 'Volume receiving tolerance dose being less than 2/3 volume', 'SBRT')
-kidney_sbrt_1fx_v0 = EQD.Tolerance('Kidney', 'Some failure', ab_kidney, fractions_sbrt_1, 18.6, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
-kidneys_col_1fx_v200 = EQD.Tolerance('Kidneys', 'Some failure', ab_kidneys, fractions_sbrt_1, 8.4, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
+kidneys_col_1fx_v200 = EQD.Tolerance('Kidneys', 'Basal kidney function', ab_kidneys, fractions_sbrt_1, 8.4, 'Volume receiving tolerance dose being less than 200cm3', 'SBRT')
 bladder_1fx_v003 = EQD.Tolerance('Bladder', 'Fistula', ab_bladder, fractions_sbrt_1, 18.4, 'Volume receiving tolerance dose being less than 0.03 cm3', 'SBRT')
 bladder_1fx_v15 = EQD.Tolerance('Bladder', 'Fistula', ab_bladder, fractions_sbrt_1, 11.4, 'Volume receiving tolerance dose being less than 15 cm3', 'SBRT')
 
