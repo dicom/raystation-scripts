@@ -49,6 +49,9 @@ class Breast(object):
           target_objectives.append(objective)   
       # Configure optimization settings:
       optimization_parameters = OPT.sliding_window
+      # Set MU limit based on fraction dose:
+      optimization_parameters.set_max_arc_mu(self.prescription.fraction_dose*300-10)
+      # Apply selected settings:
       optimization_parameters.apply_to(po)
       # Perform first optimization phase (initial optimization):
       # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)
