@@ -103,7 +103,7 @@ class Breast:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_mean_import_high, None, 7))
         # Contralateral:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v2_5gy_import_high, 5))
-      else:
+      elif prescription.region_code in RC.breast_r_codes:
         # Ipisilateral:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_mean_import_high, None, 7))
         # Contralateral:
