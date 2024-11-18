@@ -142,7 +142,12 @@ class Breast:
     else:
       homogeneity_target = prescription.target
       prescription_target = prescription.target
-      conformity_target = prescription.target
+      if prescription.region_code in RC.breast_partial_codes:
+        conformity_target = ROIS.ptv_sbc.name
+      elif prescription.region_code in RC.breast_whole_codes:
+        conformity_target = ROIS.ptv_c.name
+      elif prescription.region_code in RC.breast_reg_codes:
+        conformity_target = ROIS.ptv.name
     if prescription.region_code in RC.breast_reg_codes:
       # Regional breast:
       if prescription.region_code in RC.breast_bilateral_codes:
