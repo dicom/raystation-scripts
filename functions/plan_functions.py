@@ -71,28 +71,31 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
 # (Used for brain or lung)
-def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams=1):
+def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, additional_region_codes, prescription, external, energy_name, nr_existing_beams=1):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   i = 1
   if nr_targets > 1:
-    if int(region_codes[0]) in RC.brain_codes + RC.lung_codes:
-      for r in region_codes:
-        # Set up beam set and prescription:
+    if int(additional_region_codes[0]) in RC.brain_codes + RC.lung_codes:
+      for r in additional_region_codes:
         region_code = int(r)
+        # Create the prescription object:
+        p = PRES.create_prescription(prescription.total_dose, prescription.nr_fractions, region_code, ss)
+        p.target = 'PTV' + str(i+1)
+        # Create beam set:
         beam_set = plan.AddNewBeamSet(
-          Name=BSF.label_s(region_code, prescription.fraction_dose, prescription.nr_fractions),
+          Name=BSF.label_s(region_code, p.fraction_dose, p.nr_fractions),
           ExaminationName=examination.Name,
           MachineName= "ALVersa",
           Modality='Photons',
           TreatmentTechnique='VMAT',
           PatientPosition='HeadFirstSupine',
-          NumberOfFractions=prescription.nr_fractions
+          NumberOfFractions=p.nr_fractions
         )
-        BSF.add_prescription(beam_set, prescription, 'PTV' + str(i+1))
+        BSF.add_prescription(beam_set, p)
         # Determine the point which will be our isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, 'PTV' + str(i+1), external)
+        isocenter = SSF.determine_isocenter(examination, ss, region_code, p.target, external)
         # Setup beams or arcs
-        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
+        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
         nr_existing_beams += nr_beams
         i += 1
 
