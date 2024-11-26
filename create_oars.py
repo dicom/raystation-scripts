@@ -167,7 +167,7 @@ for roi in reversed(list(selected_oar_list)):
   if not PMF.has_roi(pm, roi.name):
     if roi.__class__.__name__ == 'ROI':
       if roi.dlsm:
-        examination.RunOarSegmentation(ModelName=roi.dlsm, ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=[roi.name])
+        examination.RunDeepLearningSegmentationComposite(ModelNamesAndRoisToInclude={ roi.dlsm: [roi.name] })
       elif roi.model:
         PMF.create_model_roi(pm, examination, roi)
       else:

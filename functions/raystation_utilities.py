@@ -126,15 +126,17 @@ def accumulated_label_dose(plan, beam_set, label):
     # Get the "plan optimization" corresponding to this beam set (in order to see if background dose has been used):
     beam_set_opt = plan_optimization(plan, beam_set)
     dose = label.dose
-    if beam_set_opt.BackgroundDose:
-      dose += accumulated_label_dose(plan, beam_set_opt.BackgroundDose.ForBeamSet, label)
+    bgd = beam_set_opt.GetBackgroundDose()
+    if bgd:
+      dose += accumulated_label_dose(plan, bgd.ForBeamSet, label)
   return dose
 
 # Returns the beam set (if any) which the given beam set depends on (with background dose).
 def background_beam_set(plan, beam_set):
   beam_set_opt = plan_optimization(plan, beam_set)
-  if beam_set_opt.BackgroundDose:
-    return beam_set_opt.BackgroundDose.ForBeamSet
+  bgd = beam_set_opt.GetBackgroundDose()
+  if bgd:
+    return bgd.ForBeamSet
   else:
     return None
 

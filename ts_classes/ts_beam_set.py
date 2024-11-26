@@ -175,9 +175,9 @@ class TSBeamSet(object):
 
   # Tests that the dose status is 'clinical'.
   def dose_is_clinical_test(self):
-    t = TEST.Test("Beregning skal være markert som 'klinisk'", True, self.dose)
+    t = TEST.Test("Doseberegning skal være markert som 'Accurate'", True, self.dose)
     if self.has_dose():
-      if self.beam_set.FractionDose.DoseValues.IsClinical:
+      if self.beam_set.FractionDose.DoseValues.IsAccurate:
         return t.succeed()
       else:
         return t.fail()

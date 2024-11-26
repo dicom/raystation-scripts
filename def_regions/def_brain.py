@@ -45,7 +45,30 @@ class DefBrain(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL ROIs:
-    examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Brain": "Brain",
+        "Brainstem": "Brainstem",
+        "Cochlea_L": "Cochlea_L",
+        "Cochlea_R": "Cochlea_R",
+        "Eye_L": "Eye_L",
+        "Eye_R": "Eye_R",
+        "LacrimalGland_L": "LacrimalGland_L",
+        "LacrimalGland_R": "LacrimalGland_R",
+        "Lens_L": "Lens_L",
+        "Lens_R": "Lens_R",
+        "OpticChiasm": "OpticChiasm",
+        "OpticNerve_L": "OpticNerve_L",
+        "OpticNerve_R": "OpticNerve_R",
+        "OralCavity": "OralCavity",
+        "Parotid_L": "ParotidGland_L",
+        "Parotid_R": "ParotidGland_R",
+        "Pituitary": "Pituitary",
+        "SpinalCanal": "SpinalCanal",
+        "SubmandGland_L": "SubmandibularGland_L",
+        "SubmandGland_R": "SubmandibularGland_R"
+      }
+    })
 
 
   # Adds partial brain ROIs to the site object.

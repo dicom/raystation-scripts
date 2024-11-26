@@ -145,7 +145,7 @@ class TSCase(object):
           modality = examination.EquipmentInfo.Modality
           if modality == 'CT' and 'CBCT' not in description and frame_uid != primary.EquipmentInfo.FrameOfReference:
             more_recent = examination.Name
-    if more_recent and not self.case.PerPatientUniqueId in white_list_case_ids:
+    if more_recent and not self.case.GetCaseUuid() in white_list_case_ids:
       return t.fail(more_recent)
     else:
       return t.succeed()

@@ -110,8 +110,24 @@ class DefProstate(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag_Draft", "Rectum", "AnalCanal", "Testis_L", "Testis_R", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Bladder": "Bladder"
+      },
+      'Alesund Male Pelvic CT': {
+        "CaudaEquina": "CaudaEquina",
+        "BowelBag_Draft": "BowelBag",
+        "Rectum": "Rectum",
+        "AnalCanal": "AnalCanal",
+        "L5": "L5",
+        "Sacrum": "Sacrum",
+        "Coccyx": "Coccyx",
+        "PelvicGirdle_L": "PelvicGirdle_L",
+        "PelvicGirdle_R": "PelvicGirdle_R",
+        "FemurHeadNeck_L": "FemurHeadNeck_L",
+        "FemurHeadNeck_R": "FemurHeadNeck_R"
+      }
+    })
     # Exclude Rectum from BowelBag:
     ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
@@ -121,7 +137,33 @@ class DefProstate(object):
   # Adds rois that are relevant for lymph node treatment.
   def add_lymph_node_rois(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["LN_Iliac", "Kidney_L", "Kidney_R", "Liver", "IliopsoasMuscle_L", "IliopsoasMuscle_R", "L2", "L3", "L4", "A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'Alesund Male Pelvic CT': {
+        "LN_Iliac": "LN_Iliac",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "IliopsoasMuscle_L": "IliopsoasMuscle_L",
+        "IliopsoasMuscle_R": "IliopsoasMuscle_R",
+        "L2": "L2",
+        "L3": "L3",
+        "L4": "L4",
+        "A_DescendingAorta": "A_DescendingAorta",
+        "A_CommonIliac_L": "A_CommonIliac_L",
+        "A_CommonIliac_R": "A_CommonIliac_R",
+        "A_ExternalIliac_L": "A_ExternalIliac_L",
+        "A_ExternalIliac_R": "A_ExternalIliac_R",
+        "A_InternalIliac_L": "A_InternalIliac_L",
+        "A_InternalIliac_R": "A_InternalIliac_R",
+        "V_InferiorVenaCava": "V_InferiorVenaCava",
+        "V_CommonIliac_L": "V_CommonIliac_L",
+        "V_CommonIliac_R": "V_CommonIliac_R",
+        "V_ExternalIliac_L": "V_ExternalIliac_L",
+        "V_ExternalIliac_R": "V_ExternalIliac_R",
+        "V_InternalIliac_L": "V_InternalIliac_L",
+        "V_InternalIliac_R": "V_InternalIliac_R"
+      }
+    })
     # Exclude Kidneys, Liver and LN_Iliac from BowelBag:
     ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pelvic_nodes])
   
@@ -129,13 +171,12 @@ class DefProstate(object):
   # Adds rois that are relevant for intact prostate treatment.
   def add_prostate_rois(self, pm, examination, site, match):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Prostate_1", "SeminalVes"])
-    # Rename DL ROI(s): (Note that if it already exists, this will crash, in that case we just keep the name)
-    try:
-      pm.RegionsOfInterest['Prostate_1'].Name = 'Prostate'
-    except:
-      # FIXME: Consider finding a way to copy the ROI geometry in this case to the existing Prostate ROI.
-      pm.RegionsOfInterest['Prostate_1'].OrganData.OrganType = "Other"
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Prostate": "Prostate_minus_VenousPlexus",
+        "SeminalVes": "SeminalVesicles"
+      }
+    })
     if match == 'seeds':
       # Non-DL OARs:
       site.add_oars([ROIS.levator_ani, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra])

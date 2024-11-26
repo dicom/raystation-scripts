@@ -117,7 +117,8 @@ class TSOptimization(object):
     external_fails = 0
     oar_fails = []
     target_fails = []
-    if self.optimization.BackgroundDose:
+    bgd = self.optimization.GetBackgroundDose()
+    if bgd:
       if self.optimization.Objective:
         for obj in self.optimization.Objective.ConstituentFunctions:
           # An objective is based on background dose if there is no OfDoseDistributions[0].ForBeamSet defined!

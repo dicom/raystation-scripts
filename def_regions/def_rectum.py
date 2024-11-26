@@ -39,8 +39,22 @@ class DefRectum(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL ROIs:
-    examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag_Draft", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Bladder": "Bladder"
+      },
+      'Alesund Male Pelvic CT': {
+        "CaudaEquina": "CaudaEquina",
+        "BowelBag_Draft": "BowelBag",
+        "L5": "L5",
+        "Sacrum": "Sacrum",
+        "Coccyx": "Coccyx",
+        "PelvicGirdle_L": "PelvicGirdle_L",
+        "PelvicGirdle_R": "PelvicGirdle_R",
+        "FemurHeadNeck_L": "FemurHeadNeck_L",
+        "FemurHeadNeck_R": "FemurHeadNeck_R"
+      }
+    })
     # Create "Bone" ROI Algebra:
     bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]

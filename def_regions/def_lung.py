@@ -55,9 +55,29 @@ class DefLung(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "ThyroidGland", "Trachea"])
-    # Use our own breast model for the lungs (because these seems to be sub optimal in the RSL Thorax model):
-    examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "A_LAD": "A_LAD",
+        "Bronchus_Main_L": "Bronchus_Main_L",
+        "Bronchus_Main_R": "Bronchus_Main_R",
+        "Bronchus_Intermedius": "Bronchus_InterM",
+        "Carina": "Carina",
+        "Esophagus": "Esophagus",
+        "Heart": "Heart_pa_separate",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "Lung_L": "Lung_L",
+        "Lung_R": "Lung_R",
+        "Pancreas": "Pancreas",
+        "SpinalCanal": "SpinalCanal",
+        "Spleen": "Spleen",
+        "Sternum": "Sternum",
+        "Stomach": "Stomach",
+        "ThyroidGland": "ThyroidGland",
+        "Trachea": "Trachea_1cm_sup_carina"
+      }
+    })
     # Non-DL OARs:
     site.add_oars([ROIS.lungs])
   

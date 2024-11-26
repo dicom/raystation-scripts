@@ -22,7 +22,7 @@ class ClinicalGoal(object):
   # Applies the clinical goal object to a given EvaluationSetup.
   # Parameters:
   # es - A RayStation EvaluationSetup instance, in which the clinical goal is to be created
-  # normalized_tolerance - an alternative to the original tolerance (AcceptanceLevel), e.q. recalculated as a percentage value of the prescription dose.
+  # normalized_tolerance - an alternative to the original tolerance (PrimaryAcceptanceLevel), e.q. recalculated as a percentage value of the prescription dose.
   # normalized_value - an alternative to the original dose value (ParameterValue), e.q. recalculated as a percentage value of the prescription dose.
   def apply_to(self, es, normalized_tolerance = None, normalized_value = None):
     # Use preset values if normalized arguments are not given:
@@ -33,10 +33,10 @@ class ClinicalGoal(object):
     try:
       if self.type == 'AverageDose':
         # When clinical goal is of type AverageDose, we do not use the ParameterValue when invoking the RayStation AddClinicalGoal function:
-        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, AcceptanceLevel = normalized_tolerance, Priority = self.priority)
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, Priority = self.priority)
       else:
         # Call AddClinicalGoal function with ParameterValue:
-        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, AcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority)
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority)
     except Exception as e:
       GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
   

@@ -124,26 +124,94 @@ class DefPalliative(object):
   # Adds abdomen OARs to the site object.
   def add_oars_abdomen(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Stomach"])
-    examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Heart": "Heart_pa_separate",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "Lung_L": "Lung_L",
+        "Lung_R": "Lung_R",
+        "Pancreas": "Pancreas",
+        "SpinalCanal": "SpinalCanal",
+        "Spleen": "Spleen",
+        "Stomach": "Stomach"
+      },
+      'Alesund Male Pelvic CT': {
+        "BowelBag_Draft": "BowelBag",
+      }
+    })
+    # Exclude abdominal organs from BowelBag (and remove Bladder reference as it is not relevant here):
+    ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pancreas, ROIS.spleen, ROIS.stomach])
+    ROIS.bowel_bag.sourcesB.remove(ROIS.bladder)
     # Non-DL OARs:
-    site.add_oars([ROIS.bowel_space, ROIS.kidneys, ROIS.lungs])
+    site.add_oars([ROIS.bowel_bag, ROIS.kidneys, ROIS.lungs])
   
   
   # Adds abdomen/pelvis OARs to the site object.
   def add_oars_abdomen_pelvis(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Kidney_L", "Kidney_R", "Liver", "SpinalCanal"])
-    examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "BowelBag_Draft", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Bladder": "Bladder",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "Pancreas": "Pancreas",
+        "SpinalCanal": "SpinalCanal",
+        "Spleen": "Spleen",
+        "Stomach": "Stomach"
+      },
+      'Alesund Male Pelvic CT': {
+        "AnalCanal": "AnalCanal",
+        "BowelBag_Draft": "BowelBag",
+        "CaudaEquina": "CaudaEquina",
+        "Coccyx": "Coccyx",
+        "FemurHeadNeck_L": "FemurHeadNeck_L",
+        "FemurHeadNeck_R": "FemurHeadNeck_R",
+        "L2": "L2",
+        "L3": "L3",
+        "L4": "L4",
+        "L5": "L5",
+        "PelvicGirdle_L": "PelvicGirdle_L",
+        "PelvicGirdle_R": "PelvicGirdle_R",
+        "Rectum": "Rectum",
+        "Sacrum": "Sacrum"
+      }
+    })
+    # Exclude abdominal organs from BowelBag:
+    ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pancreas, ROIS.spleen, ROIS.stomach])
     # Non-DL OARs:
-    site.add_oars([ROIS.kidneys, ROIS.bowel_bag])
+    site.add_oars([ROIS.bowel_bag, ROIS.kidneys])
   
   
   # Adds head OARs to the site object.
   def add_oars_head(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Cochlea_L", "Cochlea_R", "Eye_L", "Eye_R", "LacrimalGland_L", "LacrimalGland_R", "Lens_L", "Lens_R", "OpticChiasm", "OpticNerve_L", "OpticNerve_R", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Brain": "Brain",
+        "Brainstem": "Brainstem",
+        "Cochlea_L": "Cochlea_L",
+        "Cochlea_R": "Cochlea_R",
+        "Eye_L": "Eye_L",
+        "Eye_R": "Eye_R",
+        "LacrimalGland_L": "LacrimalGland_L",
+        "LacrimalGland_R": "LacrimalGland_R",
+        "Lens_L": "Lens_L",
+        "Lens_R": "Lens_R",
+        "OpticChiasm": "OpticChiasm",
+        "OpticNerve_L": "OpticNerve_L",
+        "OpticNerve_R": "OpticNerve_R",
+        "OralCavity": "OralCavity",
+        "Parotid_L": "ParotidGland_L",
+        "Parotid_R": "ParotidGland_R",
+        "Pituitary": "Pituitary",
+        "SpinalCanal": "SpinalCanal",
+        "SubmandGland_L": "SubmandibularGland_L",
+        "SubmandGland_R": "SubmandibularGland_R"
+      }
+    })
     # Non-DL OARs:
     site.add_oars([ROIS.parotids, ROIS.submands])
   
@@ -151,7 +219,25 @@ class DefPalliative(object):
   # Adds neck OARs to the site object.
   def add_oars_neck(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Head and Neck CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Brain", "Brainstem", "Esophagus", "OralCavity", "Parotid_L", "Parotid_R", "Pituitary", "SpinalCanal", "SubmandGland_L", "SubmandGland_R", "ThyroidGland", "Trachea"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Brain": "Brain",
+        "Brainstem": "Brainstem",
+        "Esophagus": "Esophagus",
+        "OpticChiasm": "OpticChiasm",
+        "OpticNerve_L": "OpticNerve_L",
+        "OpticNerve_R": "OpticNerve_R",
+        "OralCavity": "OralCavity",
+        "Parotid_L": "ParotidGland_L",
+        "Parotid_R": "ParotidGland_R",
+        "Pituitary": "Pituitary",
+        "SpinalCanal": "SpinalCanal",
+        "SubmandGland_L": "SubmandibularGland_L",
+        "SubmandGland_R": "SubmandibularGland_R",
+        "ThyroidGland": "ThyroidGland",
+        "Trachea": "Trachea_1cm_sup_carina"
+      }
+    })
     # Non-DL OARs:
     site.add_oars([ROIS.parotids, ROIS.submands])
   
@@ -159,8 +245,30 @@ class DefPalliative(object):
   # Adds pelvis OARs to the site object.
   def add_oars_pelvis(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL DLS Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Bladder"])
-    examination.RunOarSegmentation(ModelName="Alesund Male Pelvic CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["CaudaEquina", "Kidney_L", "Kidney_R", "Liver", "BowelBag_Draft", "Rectum", "AnalCanal", "L2", "L3", "L4", "L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "Bladder": "Bladder",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver"
+      },
+      'Alesund Male Pelvic CT': {
+        "AnalCanal": "AnalCanal",
+        "BowelBag_Draft": "BowelBag",
+        "CaudaEquina": "CaudaEquina",
+        "Coccyx": "Coccyx",
+        "FemurHeadNeck_L": "FemurHeadNeck_L",
+        "FemurHeadNeck_R": "FemurHeadNeck_R",
+        "L2": "L2",
+        "L3": "L3",
+        "L4": "L4",
+        "L5": "L5",
+        "PelvicGirdle_L": "PelvicGirdle_L",
+        "PelvicGirdle_R": "PelvicGirdle_R",
+        "Rectum": "Rectum",
+        "Sacrum": "Sacrum"
+      }
+    })
     # Non-DL OARs:
     site.add_oars([ROIS.kidneys, ROIS.bowel_bag])
   
@@ -168,8 +276,28 @@ class DefPalliative(object):
   # Adds thorax OARs to the site object.
   def add_oars_thorax(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
-    examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "A_LAD": "A_LAD",
+        "Bronchus_Main_L": "Bronchus_Main_L",
+        "Bronchus_Main_R": "Bronchus_Main_R",
+        "Bronchus_Intermedius": "Bronchus_InterM",
+        "Carina": "Carina",
+        "Esophagus": "Esophagus",
+        "Heart": "Heart_pa_separate",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "Lung_L": "Lung_L",
+        "Lung_R": "Lung_R",
+        "Pancreas": "Pancreas",
+        "SpinalCanal": "SpinalCanal",
+        "Spleen": "Spleen",
+        "Stomach": "Stomach",
+        "ThyroidGland": "ThyroidGland",
+        "Trachea": "Trachea_1cm_sup_carina"
+      }
+    })
     # Non-DL OARs:
     site.add_oars([ROIS.kidneys, ROIS.lungs])
   
@@ -177,10 +305,31 @@ class DefPalliative(object):
   # Adds thorax/abdomen OARs to the site object.
   def add_oars_thorax_abdomen(self, pm, examination, site):
     # DL OARs:
-    examination.RunOarSegmentation(ModelName="RSL Thorax-Abdomen CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["A_LAD", "Esophagus", "Heart", "Kidney_L", "Kidney_R", "Liver", "Pancreas", "SpinalCanal", "Spleen", "Sternum", "Stomach", "Trachea"])
-    examination.RunOarSegmentation(ModelName="St. Olavs-Alesund Breast CT", ExaminationsAndRegistrations={ examination.Name: None }, RoisToInclude=["Lung_L", "Lung_R"])
+    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+      'RSL DLS CT': {
+        "A_LAD": "A_LAD",
+        "Esophagus": "Esophagus",
+        "Heart": "Heart_pa_separate",
+        "Kidney_L": "Kidney_L",
+        "Kidney_R": "Kidney_R",
+        "Liver": "Liver",
+        "Lung_L": "Lung_L",
+        "Lung_R": "Lung_R",
+        "Pancreas": "Pancreas",
+        "SpinalCanal": "SpinalCanal",
+        "Spleen": "Spleen",
+        "Stomach": "Stomach",
+        "Trachea": "Trachea_1cm_sup_carina"
+      },
+      'Alesund Male Pelvic CT': {
+        "BowelBag_Draft": "BowelBag",
+      }
+    })
+    # Exclude abdominal organs from BowelBag (and remove Bladder reference as it is not relevant here):
+    ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pancreas, ROIS.spleen, ROIS.stomach])
+    ROIS.bowel_bag.sourcesB.remove(ROIS.bladder)
     # Non-DL OARs:
-    site.add_oars([ROIS.bowel_space, ROIS.kidneys, ROIS.lungs])
+    site.add_oars([ROIS.bowel_bag, ROIS.kidneys, ROIS.lungs])
   
   
   # Adds target ROIs to the site object.
