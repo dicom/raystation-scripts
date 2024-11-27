@@ -58,9 +58,9 @@ class DefLung(object):
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
         "A_LAD": "A_LAD",
-        "Bronchus_Main_L": "Bronchus_Main_L",
-        "Bronchus_Main_R": "Bronchus_Main_R",
-        "Bronchus_Intermedius": "Bronchus_InterM",
+        "BronchusMain_L": "Bronchus_Main_L",
+        "BronchusMain_R": "Bronchus_Main_R",
+        "BronchusIntermedius": "Bronchus_InterM",
         "Carina": "Carina",
         "Esophagus": "Esophagus",
         "Heart": "Heart_pa_separate",

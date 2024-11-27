@@ -75,14 +75,14 @@ class DefBreast(object):
       except:
         pass
     # Change organ type to 'Other' for selected ROIs:
-    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMusc_Ant_L','A_Carotid_L','A_Subclavian_L+A_Axillary_L','V_Brachioceph_L','V_Jugular_L','V_Subclavian_L+V_Axillary_L']:
+    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMuscle_Ant_L','A_Carotid_L','A_Subclavian_L+A_Axillary_L','V_Brachioceph_L','V_Jugular_L','V_Subclavian_L+V_Axillary_L']:
       # Some of these ROIs may not always be defined, and give an error:
       try:
         pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
       except:
         pass
     # Exclude some ROIs from export:
-    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMusc_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
+    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMuscle_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
       PMF.exclude_roi_from_export(pm, roi_name)
       # Exclude SurgicalBed_L/R (where relevant we have the CTVsb ROI available anyway):
       if side == 'right':
@@ -196,15 +196,15 @@ class DefBreast(object):
           "A_Brachioceph": "A_Brachiocephalic",
           "A_Carotid_R": "A_Carotid_R",
           "A_Subclavian_R": "A_Subclavian_R",
-          "Bronchus_Main_R": "Bronchus_Main_R",
-          "Bronchus_Intermedius": "Bronchus_InterM",
+          "BronchusMain_R": "Bronchus_Main_R",
+          "BronchusIntermedius": "Bronchus_InterM",
           "LN_Ax_L1_R": "LN_Ax_L1_R",
           "LN_Ax_L2_R": "LN_Ax_L2_R",
           "LN_Ax_L3_R": "LN_Ax_L3_R",
           "LN_Ax_L4_R": "LN_Ax_L4_R",
           "LN_Ax_Pectoral_R": "LN_Ax_Pectoral_R",
           "LN_IMN_R": "LN_IMN_R",
-          "ScaleneMusc_Ant_R": "M_Scalene_Ant_R",
+          "ScaleneMuscle_Ant_R": "M_Scalene_Ant_R",
           "V_Bracioceph_R": "V_Brachiocephalic_R",
           "V_Jugular_Int_R": "V_Jugular_Int_R",
           "V_Subclavian_R": "V_Subclavian_R"
@@ -221,14 +221,14 @@ class DefBreast(object):
         'RSL DLS CT': {
           "A_Carotid_L": "A_Carotid_L",
           "A_Subclavian_L": "A_Subclavian_L",
-          "Bronchus_Main_L": "Bronchus_Main_L",
+          "BronchusMain_L": "Bronchus_Main_L",
           "LN_Ax_L1_L": "LN_Ax_L1_L",
           "LN_Ax_L2_L": "LN_Ax_L2_L",
           "LN_Ax_L3_L": "LN_Ax_L3_L",
           "LN_Ax_L4_L": "LN_Ax_L4_L",
           "LN_Ax_Pectoral_L": "LN_Ax_Pectoral_L",
           "LN_IMN_L": "LN_IMN_L",
-          "ScaleneMusc_Ant_L": "M_Scalene_Ant_L",
+          "ScaleneMuscle_Ant_L": "M_Scalene_Ant_L",
           "V_Bracioceph_L": "V_Brachiocephalic_L",
           "V_Jugular_Int_L": "V_Jugular_Int_L",
           "V_Subclavian_L": "V_Subclavian_L"
