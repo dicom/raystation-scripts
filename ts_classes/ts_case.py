@@ -131,7 +131,7 @@ class TSCase(object):
     t = TEST.Test("Den siste CT-serien som er tatt skal i utgangspunktet brukes til planlegging ", True, self.examination)
     # Pass this test for some known patients used for script development (typicall patients having multiple CT examinations):
     white_list_case_ids = [
-      '124aec31-5633-4968-8e0a-a8c31ef801f2' # "Test, script"
+      '84ca15f1-b5bd-44bd-9afa-6768a4ecf6de' # "Test, script"
     ]
     more_recent = None
     primary = get_current("Examination")
