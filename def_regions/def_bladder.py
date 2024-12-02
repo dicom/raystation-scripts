@@ -39,7 +39,7 @@ class DefBladder(object):
       'RSL DLS CT': {
         "Bladder": "Bladder"
       },
-      'Alesund Male Pelvic CT1': {
+      'Alesund Male Pelvic CT': {
         "AnalCanal": "AnalCanal",
         "BowelBag_Draft": "BowelBag",
         "CaudaEquina": "CaudaEquina",
