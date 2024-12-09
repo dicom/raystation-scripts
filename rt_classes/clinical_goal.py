@@ -33,10 +33,10 @@ class ClinicalGoal(object):
     try:
       if self.type == 'AverageDose':
         # When clinical goal is of type AverageDose, we do not use the ParameterValue when invoking the RayStation AddClinicalGoal function:
-        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, Priority = self.priority)
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, Priority = self.priority, AssociateToPlan = True)
       else:
         # Call AddClinicalGoal function with ParameterValue:
-        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority)
+        es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority, AssociateToPlan = True)
     except Exception as e:
       GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
   
