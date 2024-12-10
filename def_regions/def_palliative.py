@@ -278,6 +278,9 @@ class DefPalliative(object):
     # DL OARs:
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
+        "A_AorticArch": "A_Aorta_arcus",
+        "A_AscendingAorta": "A_Aorta_Ascen",
+        "A_DescendingAorta": "A_Aorta_Desc",
         "A_LAD": "A_LAD",
         "BronchusMain_L": "Bronchus_Main_L",
         "BronchusMain_R": "Bronchus_Main_R",
@@ -295,7 +298,9 @@ class DefPalliative(object):
         "Spleen": "Spleen",
         "Stomach": "Stomach",
         "ThyroidGland": "ThyroidGland",
-        "Trachea": "Trachea_1cm_sup_carina"
+        "Trachea": "Trachea_1cm_sup_carina",
+        "V_InferiorVenaCava": "V_Cava_inferior",
+        "V_SuperiorVenaCava": "V_Cava_superior"
       }
     })
     # Non-DL OARs:
@@ -308,6 +313,9 @@ class DefPalliative(object):
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
         "A_LAD": "A_LAD",
+        "A_AorticArch": "A_Aorta_arcus",
+        "A_AscendingAorta": "A_Aorta_Ascen",
+        "A_DescendingAorta": "A_Aorta_Desc",
         "Esophagus": "Esophagus",
         "Heart": "Heart_pa_separate",
         "Kidney_L": "Kidney_L",
@@ -319,7 +327,9 @@ class DefPalliative(object):
         "SpinalCanal": "SpinalCanal",
         "Spleen": "Spleen",
         "Stomach": "Stomach",
-        "Trachea": "Trachea_1cm_sup_carina"
+        "Trachea": "Trachea_1cm_sup_carina",
+        "V_InferiorVenaCava": "V_Cava_inferior",
+        "V_SuperiorVenaCava": "V_Cava_superior"
       },
       'Alesund Male Pelvic CT': {
         "BowelBag_Draft": "BowelBag",
