@@ -138,7 +138,9 @@ class DefPalliative(object):
         "Stomach": "Stomach"
       },
       'Alesund Male Pelvic CT': {
+        "A_DescendingAorta": "A_DescendingAorta",
         "BowelBag_Draft": "BowelBag",
+        "V_InferiorVenaCava": "V_InferiorVenaCava"
       }
     })
     # Exclude abdominal organs from BowelBag (and remove Bladder reference as it is not relevant here):
@@ -163,6 +165,7 @@ class DefPalliative(object):
         "Stomach": "Stomach"
       },
       'Alesund Male Pelvic CT': {
+        "A_DescendingAorta": "A_DescendingAorta",
         "AnalCanal": "AnalCanal",
         "BowelBag_Draft": "BowelBag",
         "CaudaEquina": "CaudaEquina",
@@ -176,7 +179,8 @@ class DefPalliative(object):
         "PelvicGirdle_L": "PelvicGirdle_L",
         "PelvicGirdle_R": "PelvicGirdle_R",
         "Rectum": "Rectum",
-        "Sacrum": "Sacrum"
+        "Sacrum": "Sacrum",
+        "V_InferiorVenaCava": "V_InferiorVenaCava"
       }
     })
     # Exclude abdominal organs from BowelBag:
