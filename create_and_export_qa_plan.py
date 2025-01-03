@@ -105,7 +105,7 @@ last_plan = len(list(plan.VerificationPlans))-1
 
 # DICOM export:
 plan.VerificationPlans[last_plan].ScriptableQADicomExport(
-	ExportFolderPath = "I:\\HSM - Kreftavdelingen - gammelt fellesområde\\Stråleterapi_avd\\Stråleterapi\\Mosaiq\\dokument-import\\VMAT_QA",
+	ExportFolderPath = "I:\\HMR - Begrenset\\Klinikk for kreftbehandling og rehabilitering - Stråleterapi-kontor - Doseplanlegging\\VMAT-QA",
 	QaPlanIdentity = 'Patient',
 	ExportExamination = False,
 	ExportExaminationStructureSet = False,
