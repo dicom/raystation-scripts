@@ -169,22 +169,7 @@ class Plan(object):
     nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, beam_index=beam_nr)
     last_beam_index = beam_nr + nr_beams - 1
 
-
-    # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
-    if nr_targets > 1:
-      if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
-        if prescription.is_stereotactic():
-          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
-      elif region_code in RC.palliative_codes:
-        # Palliative cases with multiple targets:
-        if palliative_choices[0] == 'sep_beamset_iso':
-          # Separate beam sets, but with the same isocenter:
-          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
-        elif palliative_choices[0] == 'sep_beamset_sep_iso':
-          # Separate beams sets and separate isocenter:
-          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
-
-
+    
     # Determines and sets up isodoses based on region code and fractionation:
     CF.determine_isodoses(case, ss, prescription)
 
@@ -198,6 +183,21 @@ class Plan(object):
     CG.setup_clinical_goals(ss, es, site, prescription, target)
     # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
     CF.load_plan(case, plan)
+    
+    
+    # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
+    if nr_targets > 1:
+      if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
+        if prescription.is_stereotactic():
+          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+      elif region_code in RC.palliative_codes:
+        # Palliative cases with multiple targets:
+        if palliative_choices[0] == 'sep_beamset_iso':
+          # Separate beam sets, but with the same isocenter:
+          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+        elif palliative_choices[0] == 'sep_beamset_sep_iso':
+          # Separate beams sets and separate isocenter:
+          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
 
 
     # Use robust optimization for breast:

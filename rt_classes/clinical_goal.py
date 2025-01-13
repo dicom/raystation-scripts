@@ -24,7 +24,7 @@ class ClinicalGoal(object):
   # es - A RayStation EvaluationSetup instance, in which the clinical goal is to be created
   # normalized_tolerance - an alternative to the original tolerance (PrimaryAcceptanceLevel), e.q. recalculated as a percentage value of the prescription dose.
   # normalized_value - an alternative to the original dose value (ParameterValue), e.q. recalculated as a percentage value of the prescription dose.
-  def apply_to(self, es, normalized_tolerance = None, normalized_value = None):
+  def apply_to(self, es, normalized_tolerance = None, normalized_value = None, ignore_identical = False):
     # Use preset values if normalized arguments are not given:
     if normalized_tolerance is None:
       normalized_tolerance = self.tolerance
@@ -38,7 +38,10 @@ class ClinicalGoal(object):
         # Call AddClinicalGoal function with ParameterValue:
         es.AddClinicalGoal(RoiName = self.name, GoalCriteria = self.criteria, GoalType = self.type, PrimaryAcceptanceLevel = normalized_tolerance, ParameterValue = normalized_value, Priority = self.priority, AssociateToPlan = True)
     except Exception as e:
-      GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
+      # If ignore_identical keyword is set, and exception is "An identical clinical goal already exists", do not display error.
+      # Otherwise error will be shown.
+      if not ignore_identical or 'identical' not in str(e.args[0]):
+        GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
   
   # Gives a text representation of the clinical goal object.
   def text(self):
@@ -95,8 +98,11 @@ def setup_clinical_goals(ss, es, site, prescription, target):
 # This function is used e.g. for cases of multiple targets, where OAR clinical goals
 # for the additional target need to be added to an existing plan.
 def setup_oar_clinical_goals(clinical_goals, es, prescription):
+  # When creating clinical goals for OARs for multiple targets, we may be attempting to create identical
+  # clinical goals in situations where targets are positioned closely. We therefore activate the
+  # keyword 'ignore_identical' in the functions below.
   for cg in clinical_goals:
     if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
-      cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0))
+      cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
     else:
-      cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0))
+      cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
