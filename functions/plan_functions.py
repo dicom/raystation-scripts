@@ -58,15 +58,16 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams = nr_existing_beams + nr_beams
-      i += 1
       if not common_isocenter:
         isocenter=False
       # Add objectives for the new beam set:
       obj = objectives.Other(ss, plan, p, beam_set_index=beam_set.Number-1)
       # Add OAR clinical goals to the existing plan for the new beam set:
-      cg = clinical_goals.Other(ss, plan, p)
+      cg = clinical_goals.Other(ss, plan, p, target_nr = i+1)
       es = plan.TreatmentCourse.EvaluationSetup
+      CG.setup_target_clinical_goals(cg.targets, ss, es, p)
       CG.setup_oar_clinical_goals(cg.oars, es, p)
+      i += 1
 
 
 # Creates additional stereotactic beamsets (if multiple targets exists).

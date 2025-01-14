@@ -18,12 +18,13 @@ import structure_set_functions as SSF
 class Other:
 
   # Creates a Other clinical goals instance.
-  def __init__(self, ss, plan, prescription):
+  def __init__(self, ss, plan, prescription, target_nr = None):
     # Database attributes:
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
-    self.targets = self.create_target_clinical_goals(ss, plan, prescription)
+    self.target_nr = target_nr
+    self.targets = self.create_target_clinical_goals(ss, plan, prescription, target_nr)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
 
@@ -92,24 +93,32 @@ class Other:
 
 
   # Create target (and External) clinical goals.
-  def create_target_clinical_goals(self, ss, plan, prescription):
+  def create_target_clinical_goals(self, ss, plan, prescription, target_nr):
     targets = []
-    targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-    if nr_targets > 1 and len(list(plan.BeamSets)) > 1:
-      for i in range(0, nr_targets):        
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
-        targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
+    if target_nr:
+      targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(target_nr), CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
+      targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(target_nr), CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
+      targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(target_nr), CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
+      targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(target_nr), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
+      targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(target_nr), CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
+      targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(target_nr), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     else:
-      targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
-      targets.append(CG.ClinicalGoal(prescription.target, CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
-      targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
-      targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
-      targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
-      targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
+      targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
+      if nr_targets > 1 and len(list(plan.BeamSets)) > 1:
+        for i in range(0, nr_targets):
+          targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
+          targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
+          targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
+          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
+          targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
+          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
+      else:
+        targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
+        targets.append(CG.ClinicalGoal(prescription.target, CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
+        targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
+        targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
+        targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
+        targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     return targets
   

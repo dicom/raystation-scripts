@@ -66,22 +66,7 @@ conformity_index = 'ConformityIndex'
 # using the given prescription to determine target clinical goals as well as doing EQD2 conversion on OAR clinical goals.
 def setup_clinical_goals(ss, es, site, prescription, target):
   for cg in site.target_clinical_goals:
-    # Make sure corresponding ROI exists before trying to create clinical goal:
-    if SSF.has_roi(ss, cg.name):
-      if cg.name in [ROIS.external.name, ROIS.igtv.name, ROIS.gtv.name] and cg.criteria == 'AtMost' and cg.tolerance != 5000:
-        cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
-      elif cg.name in [ROIS.ctv_sb.name, ROIS.ptv_sbc.name] and target != ROIS.ctv_sb.name or cg.tolerance == 5000 or cg.type == homogeneity_index:
-        cg.apply_to(es)
-      elif cg.type == conformity_index:
-        cg.apply_to(es, normalized_value = round(cg.value*prescription.total_dose*100,0))
-      # Attempt fix of VolumeAtDose for targets (had to implement for Breast SIB CTVp-CTVsb):
-      elif cg.type == volume_at_dose:
-        cg.apply_to(es)
-      else:
-        cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
-    else:
-      # Missing ROI:
-      GUIF.handle_missing_roi_for_clinical_goal(cg.name)
+    setup_target(ss, es, prescription, cg)
   for cg in site.oar_clinical_goals:
     # Make sure corresponding ROI exists before trying to create clinical goal:
     if SSF.has_roi(ss, cg.name):      
@@ -106,3 +91,31 @@ def setup_oar_clinical_goals(clinical_goals, es, prescription):
       cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
     else:
       cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
+
+
+# Sets up target clinical goals.
+# This function is used e.g. for cases of multiple targets, where clinical goals
+# for the additional target need to be added to an existing plan.
+def setup_target_clinical_goals(clinical_goals, ss, es, prescription):
+  for cg in clinical_goals:
+    setup_target(ss, es, prescription, cg)
+
+
+# Sets up a target clinical goal before it is handed to an EvaluationSetup instance.
+def setup_target(ss, es, prescription, cg):
+  # Make sure corresponding ROI exists before trying to create clinical goal:
+  if SSF.has_roi(ss, cg.name):
+    if cg.name in [ROIS.external.name, ROIS.igtv.name, ROIS.gtv.name] and cg.criteria == 'AtMost' and cg.tolerance != 5000:
+      cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
+    elif cg.name in [ROIS.ctv_sb.name, ROIS.ptv_sbc.name] and target != ROIS.ctv_sb.name or cg.tolerance == 5000 or cg.type == homogeneity_index:
+      cg.apply_to(es)
+    elif cg.type == conformity_index:
+      cg.apply_to(es, normalized_value = round(cg.value*prescription.total_dose*100,0))
+    # Attempt fix of VolumeAtDose for targets (had to implement for Breast SIB CTVp-CTVsb):
+    elif cg.type == volume_at_dose:
+      cg.apply_to(es)
+    else:
+      cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
+  else:
+    # Missing ROI:
+    GUIF.handle_missing_roi_for_clinical_goal(cg.name)
