@@ -196,6 +196,7 @@ class DefBreast(object):
           "A_Brachioceph": "A_Brachiocephalic",
           "A_Carotid_R": "A_Carotid_R",
           "A_Subclavian_R": "A_Subclavian_R",
+          "BrachialPlexus_R": "Brachial_Plexus_R",
           "BronchusMain_R": "Bronchus_Main_R",
           "BronchusIntermedius": "Bronchus_InterM",
           "LN_Ax_L1_R": "LN_Ax_L1_R",
@@ -221,6 +222,7 @@ class DefBreast(object):
         'RSL DLS CT': {
           "A_Carotid_L": "A_Carotid_L",
           "A_Subclavian_L": "A_Subclavian_L",
+          "BrachialPlexus_L": "Brachial_Plexus_L",
           "BronchusMain_L": "Bronchus_Main_L",
           "LN_Ax_L1_L": "LN_Ax_L1_L",
           "LN_Ax_L2_L": "LN_Ax_L2_L",

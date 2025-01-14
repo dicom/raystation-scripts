@@ -225,6 +225,8 @@ class DefPalliative(object):
     # DL OARs:
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
+        "BrachialPlexus_L": "Brachial_Plexus_L",
+        "BrachialPlexus_R": "Brachial_Plexus_R",
         "Brain": "Brain",
         "Brainstem": "Brainstem",
         "Esophagus": "Esophagus",

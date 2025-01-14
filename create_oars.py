@@ -66,7 +66,7 @@ oar_list = [
   ROIS.main_bronchus_l, ROIS.main_bronchus_r, ROIS.cauda_equina,
   ROIS.kidneys,
   ROIS.stomach, ROIS.liver,  ROIS.small_bowel,
-  ROIS.colon, ROIS.brachial, ROIS.bowel_space, ROIS.rectum, ROIS.z_rectum_p, ROIS.anal_canal, ROIS.bladder,
+  ROIS.colon, ROIS.brachial_plexus_l, ROIS.brachial_plexus_r, ROIS.bowel_space, ROIS.rectum, ROIS.z_rectum_p, ROIS.anal_canal, ROIS.bladder,
   ROIS.femoral_l, ROIS.femoral_r,
   ROIS.external, ROIS.body,
   ROIS.markers, ROIS.prosthesis_l, ROIS.prosthesis_r, ROIS.couch,

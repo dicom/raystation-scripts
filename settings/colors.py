@@ -44,7 +44,7 @@ hippocampus = 'Sienna'
 spinal_cord = 'Blue'
 spinal_canal = 'Blue'
 cauda = 'Blue'
-brachial = 'Orange'
+brachial_plexus = 'RoyalBlue'
 # Eye/Optic nerves:
 eye = 'DeepSkyBlue'
 lens = 'DarkTurquoise'

@@ -61,6 +61,8 @@ class DefLung(object):
         "A_AscendingAorta": "A_Aorta_Ascen",
         "A_DescendingAorta": "A_Aorta_Desc",
         "A_LAD": "A_LAD",
+        "BrachialPlexus_L": "Brachial_Plexus_L",
+        "BrachialPlexus_R": "Brachial_Plexus_R",
         "BronchusMain_L": "Bronchus_Main_L",
         "BronchusMain_R": "Bronchus_Main_R",
         "BronchusIntermedius": "Bronchus_InterM",
