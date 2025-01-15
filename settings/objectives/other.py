@@ -51,25 +51,32 @@ class Other:
       oars.append(OF.max_eud(ss, plan, ROIS.liver.name, 23.9*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.lungs.name, 19.2*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.spleen.name, 10*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.stomach.name, 10*100, 1, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_abdomen_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 33.8*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.kidneys.name, 12.1*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.liver.name, 23.9*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.spleen.name, 10*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.stomach.name, 10*100, 1, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_abdomen_and_pelvis_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 41.6*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 33.8*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_dose(ss, plan, ROIS.cauda_equina.name, 35.8*100, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.kidneys.name, 12.1*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 33.6*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.spleen.name, 10*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.stomach.name, 10*100, 1, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_pelvis_codes:
+      oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 30*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 41.6*100, 1, 2, beam_set_index=i))
-      oars.append(OF.max_dose(ss, plan, ROIS.cauda_equina.name, 35.8*100, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 33.8*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_dose(ss, plan, ROIS.cauda_equina.name, 35.8*100, 2, beam_set_index=i))
       oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 33.2*100, 2, 2, beam_set_index=i))
       oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 33.2*100, 2, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 33.6*100, 1, 2, beam_set_index=i))
-      oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 30*100, 1, 2, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
