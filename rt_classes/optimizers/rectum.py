@@ -30,11 +30,8 @@ class Rectum(object):
 
   # Configures the optimization setings.
   def configure_optimization(self, po):
-    # Select template of optimization settings:
-    optimization_parameters = OPT.sliding_window
-    # Set MU limit based on fraction dose:
-    optimization_parameters.set_max_arc_mu(self.prescription.fraction_dose*300-10)
-    # Apply selected settings:
+    # Optimization parameters:
+    optimization_parameters = OPT.optimization_parameters(self.prescription)
     optimization_parameters.apply_to(po)
   
   # Performs plan optimization.

@@ -112,6 +112,6 @@ def optimization_parameters(prescription):
         opt = sliding_window_quick
   # Set max number of monitor units (for all non-sbrt optimizations):
   if opt != sbrt:
-    opt.set_max_arc_mu(prescription.fraction_dose * 250)
+    opt.set_max_arc_mu(prescription.fraction_dose * 300)
   # Return the assigned optimization settings:
   return opt
