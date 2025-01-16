@@ -70,19 +70,19 @@ class DefBreast(object):
     # Modify ROI type/organ type:
     for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R']:
       try:
-        pm.RegionsOfInterest[roi_name].Type = "Control"
-        pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+        pm.RegionsOfInterest[roi_name].Type = 'Control'
+        pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
       except:
         pass
     # Change organ type to 'Other' for selected ROIs:
-    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMuscle_Ant_L','A_Carotid_L','A_Subclavian_L+A_Axillary_L','V_Brachioceph_L','V_Jugular_L','V_Subclavian_L+V_Axillary_L']:
+    for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMuscle_Ant_L','A_Carotid_L','A_Subclavian_L','V_Brachiocephalic_L','V_Jugular_Int_L','V_Subclavian_L','ScaleneMuscle_Ant_R','A_Brachiocephalic','A_Carotid_R','A_Subclavian_R','V_Brachiocephalic_R','V_Jugular_Int_R','V_Subclavian_R']:
       # Some of these ROIs may not always be defined, and give an error:
       try:
-        pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+        pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
       except:
         pass
     # Exclude some ROIs from export:
-    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, "LN_Ax_L1_L", "LN_Ax_L2_L", "LN_Ax_L3_L", "LN_Ax_L4_L", "LN_Ax_Pectoral_L", "LN_IMN_L", "LN_Ax_L1_R", "LN_Ax_L2_R", "LN_Ax_L3_R", "LN_Ax_L4_R", "LN_Ax_Pectoral_R", "LN_IMN_R", "ScaleneMuscle_Ant_L", "A_Carotid_L", "A_Subclavian_L+A_Axillary_L", "V_Brachioceph_L", "V_Jugular_L", "V_Subclavian_L+V_Axillary_L"]:
+    for roi_name in [ROIS.breast_l_draft.name, ROIS.breast_r_draft.name, 'LN_Ax_L1_L','LN_Ax_L2_L','LN_Ax_L3_L','LN_Ax_L4_L','LN_Ax_Pectoral_L','LN_IMN_L','LN_Ax_L1_R','LN_Ax_L2_R','LN_Ax_L3_R','LN_Ax_L4_R','LN_Ax_Pectoral_R','LN_IMN_R','ScaleneMuscle_Ant_L','A_Carotid_L','A_Subclavian_L','V_Brachiocephalic_L','V_Jugular_Int_L','V_Subclavian_L','ScaleneMuscle_Ant_R','A_Brachiocephalic','A_Carotid_R','A_Subclavian_R','V_Brachiocephalic_R','V_Jugular_Int_R','V_Subclavian_R']:
       PMF.exclude_roi_from_export(pm, roi_name)
       # Exclude SurgicalBed_L/R (where relevant we have the CTVsb ROI available anyway):
       if side == 'right':
@@ -193,7 +193,7 @@ class DefBreast(object):
       # DL model for right sided regional nodes:
       examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
         'RSL DLS CT': {
-          "A_Brachioceph": "A_Brachiocephalic",
+          "A_Brachiocephalic": "A_Brachiocephalic",
           "A_Carotid_R": "A_Carotid_R",
           "A_Subclavian_R": "A_Subclavian_R",
           "BrachialPlexus_R": "Brachial_Plexus_R",
@@ -206,7 +206,7 @@ class DefBreast(object):
           "LN_Ax_Pectoral_R": "LN_Ax_Pectoral_R",
           "LN_IMN_R": "LN_IMN_R",
           "ScaleneMuscle_Ant_R": "M_Scalene_Ant_R",
-          "V_Bracioceph_R": "V_Brachiocephalic_R",
+          "V_Brachiocephalic_R": "V_Brachiocephalic_R",
           "V_Jugular_Int_R": "V_Jugular_Int_R",
           "V_Subclavian_R": "V_Subclavian_R"
         }
@@ -231,7 +231,7 @@ class DefBreast(object):
           "LN_Ax_Pectoral_L": "LN_Ax_Pectoral_L",
           "LN_IMN_L": "LN_IMN_L",
           "ScaleneMuscle_Ant_L": "M_Scalene_Ant_L",
-          "V_Bracioceph_L": "V_Brachiocephalic_L",
+          "V_Brachiocephalic_L": "V_Brachiocephalic_L",
           "V_Jugular_Int_L": "V_Jugular_Int_L",
           "V_Subclavian_L": "V_Subclavian_L"
         }
@@ -314,7 +314,7 @@ class DefBreast(object):
   # Sets the density of any breast string ROIs as air.
   def set_breaststring_density(self, pm):
     breaststring_rois = []
-    for roi_name in ["BreastString_L", "BreastString_R"]:
+    for roi_name in ['BreastString_L', 'BreastString_R']:
       try:
         if pm.RegionsOfInterest[roi_name]:
           breaststring_rois.append(roi_name)
