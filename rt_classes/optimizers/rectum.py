@@ -83,7 +83,7 @@ class Rectum(object):
         # Optimization succeeded, thus there is no time error:
         possible_beam_delivery_time_error = False
       except Exception as e:
-        if "is shorter than the minimum feasible time" in e.args[0]:
+        if "is shorter than the minimum feasible time" in e.args[0] or "is insufficient to perform" in e.args[0]:
           # We need to increase the beam delivery time (and try the optimization again). Increase by 10 seconds:
           for beam in po.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings:
             beam.ArcConversionPropertiesPerBeam.MaxArcDeliveryTime += 10
