@@ -172,6 +172,9 @@ class Plan(object):
     
     # Determines and sets up isodoses based on region code and fractionation:
     CF.determine_isodoses(case, ss, prescription)
+    
+    # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
+    CF.load_plan(case, plan)
 
 
     # Determine site:
@@ -181,8 +184,6 @@ class Plan(object):
     # Set up Clinical Goals:
     es = plan.TreatmentCourse.EvaluationSetup
     CG.setup_clinical_goals(ss, es, site, prescription, target)
-    # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
-    CF.load_plan(case, plan)
     
     
     # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
