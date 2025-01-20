@@ -55,26 +55,6 @@ def bolus(ss):
   return bolus_rg
 
 
-# Creates a derived ROI using ROI Algebra, where the derived ROI is expanded from the source roi with a margin
-# such that the resulting ROI gets a volume approximately equal to the given threshold_volume. The ROI is also
-# limited by the given intersect_roi (typically an external ROI) by an intersect operation.
-def create_expanded_and_intersected_volume(pm, examination, ss, source_roi, intersect_roi, expanded_roi_name, threshold_volume):
-  # Volume of source roi
-  volume1 = ss.RoiGeometries[source_roi.name].GetRoiVolume()
-  # Estimated radius of source roi calculated from volume (assuming perfect sphere)
-  radius1 = math.pow((volume1 * 3)/ (4*math.pi), 1.0/3.0)
-  # Estimated radius of expanded roi calculated from thresgold volume (assuming perfect sphere)
-  radius2 = math.pow((threshold_volume * 3)/ (4*math.pi), 1.0/3.0)
-  # Expansion radius
-  r = round(radius2 - radius1, 1)
-  # Expanded roi object
-  expanded_roi = ROI.ROIAlgebra(expanded_roi_name, 'Undefined', 'Black', sourcesA = [source_roi], sourcesB = [intersect_roi], operator = 'Intersection', marginsA = MARGIN.Expansion(r, r, r, r, r, r), marginsB = MARGINS.zero)
-  # Deletes roi if it already exists in RayStation
-  PMF.delete_roi(pm, expanded_roi.name)
-  # Create ROI in RayStation
-  PMF.create_algebra_roi(pm, examination, ss, expanded_roi)
-
-
 # Creates a dictionary with the names of all defined ROIs in the current structure set.
 def create_roi_dict(ss):
   roi_dict = {}

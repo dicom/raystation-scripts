@@ -24,6 +24,8 @@ uniform_8mm_expansion = MARGIN.Expansion(0.8, 0.8, 0.8, 0.8, 0.8, 0.8)
 uniform_10mm_expansion = MARGIN.Expansion(1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 uniform_15mm_expansion = MARGIN.Expansion(1.5, 1.5, 1.5, 1.5, 1.5, 1.5)
 uniform_20mm_expansion = MARGIN.Expansion(2, 2, 2, 2, 2, 2) # (Brain tumor CTV)
+brain_sbrt_mask_expansion = MARGIN.Expansion(5.5, 5.5, 5.5, 5.5, 5.5, 5.5)
+brain_conv_mask_expansion = MARGIN.Expansion(4, 4, 4, 4, 4, 4)
 # Custom expansion margins:
 abdomen_near_lung_soft_tissue_expansion = MARGIN.Expansion(1.0, 1.0, 0.7, 0.7, 0.7, 0.7)
 bladder_expansion = MARGIN.Expansion(2, 1.5, 1.5, 1.5, 1.5, 1.5)

@@ -172,37 +172,6 @@ def create_localization_point(pm, examination):
     pm.CreatePoi(Examination = examination, Name = 'Ref', Color = COLORS.ref , Type = 'LocalizationPoint')
 
 
-# Creates mask ptv volumes for one or more brain targets.
-def create_mask_ptv_brain(patient, pm, examination, ss, nr_targets):
-  if nr_targets > 1:
-    targets = [ROIS.ptv1, ROIS.ptv2, ROIS.ptv3, ROIS.ptv4]
-    mask_names = [ROIS.mask_ptv.name+'1', ROIS.mask_ptv.name+'2', ROIS.mask_ptv.name+'3', ROIS.mask_ptv.name+'4']
-  else:
-    targets = [ROIS.ptv]
-    mask_names = [ROIS.mask_ptv.name]
-  for i in range(nr_targets):
-    # Trying to modify an approved ROI may crash RayStation, so we should check for this:
-    if not SSF.is_approved_roi_structure(ss, mask_names[i]):
-      SSF.create_expanded_and_intersected_volume(pm, examination, ss, targets[i], ROIS.body, mask_names[i], 1600)
-      patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
-      pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
-
-
-# Creates mask ptv volumes for one or more lung targets.
-def create_mask_ptv_lung(patient, pm, examination, ss, nr_targets):
-  if nr_targets > 1:
-    targets = [ROIS.ptv1, ROIS.ptv2, ROIS.ptv3]
-    mask_names = [ROIS.mask_ptv.name+'1', ROIS.mask_ptv.name+'2', ROIS.mask_ptv.name+'3']
-  else:
-    targets = [ROIS.ptv]
-    mask_names = [ROIS.mask_ptv.name]
-  for i in range(nr_targets):
-    created = SSF.create_roi_subtraction(pm, examination, ss, targets[i], ROIS.chestwall, mask_names[i], 0)
-    if created:
-      patient.SetRoiVisibility(RoiName = mask_names[i], IsVisible = False)
-      pm.RegionsOfInterest[mask_names[i]].OrganData.OrganType = 'Other'
-
-
 # Creates model based ROIs.
 def create_model_roi(pm, examination, roi):
   # Model based segmentation sometimes crashes. We need to catch these situations to allow scripts to go on:

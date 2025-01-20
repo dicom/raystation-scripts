@@ -82,8 +82,9 @@ class DefBrain(object):
     # Derived OARs:
     brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
     brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+    mask = ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_conv_mask_expansion)
     # Non-DL OARs:
-    site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem])
+    site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, mask])
   
   
   # Adds stereotactic brain ROIs to the site object.
@@ -91,6 +92,7 @@ class DefBrain(object):
     gtvs = []
     ptvs = []
     walls = []
+    masks = []
     # How many targets?
     if nr_targets == 1:
       # Single target:
@@ -99,6 +101,7 @@ class DefBrain(object):
       gtvs.append(gtv)
       ptvs.append(ptv)
       walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+      masks.append(ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_sbrt_mask_expansion))
     else:
       # Multiple targets (2, 3 or 4):
       for i in range(0, nr_targets):
@@ -107,6 +110,7 @@ class DefBrain(object):
         ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, gtvs[-1], margins = MARGINS.uniform_2mm_expansion))
         # OARs:
         walls.append(ROI.ROIWall("zPTV"+str(i+1)+"_Wall", ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+        masks.append(ROI.ROIAlgebra(ROIS.mask_ptv.name+str(i+1), ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptvs[-1]], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_sbrt_mask_expansion))
       # Union target volumes:
       gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[gtvs[0]], sourcesB=gtvs[1:])
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptvs[0]], sourcesB=ptvs[1:])
@@ -119,7 +123,7 @@ class DefBrain(object):
     # Add to site:
     site.add_targets(gtvs + ptvs)
     # Non-DL OARs:
-    site.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls)
+    site.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls + masks)
   
   
   # Adds whole brain ROIs to the site object.
