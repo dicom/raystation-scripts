@@ -50,6 +50,14 @@ class DefLung(object):
       self.add_stereotactic_lung(pm, examination, site, side, nr_targets)
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Change type to 'Other' for selected ROIs:
+    for roi_name in [ROIS.mask_ptv, ROIS.mask_ptv1, ROIS.mask_ptv2, ROIS.mask_ptv3]:
+      try:
+        if pm.RegionsOfInterest[roi_name]:
+          if pm.RegionsOfInterest[roi_name].OrganData.OrganType != "Other":
+            pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
+      except:
+        pass
 
 
   # Adds rois that are common across all cases.
@@ -183,19 +191,22 @@ class DefLung(object):
     # Targets:
     if nr_targets == 1:
       # Single target:
-      site.add_targets([ROIS.igtv, ROIS.iptv_gtv, ROIS.wall_ptv])
+      mask_ptv = ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ROIS.iptv_gtv], sourcesB = [ROIS.chestwall], operator='Subtraction')
+      site.add_targets([ROIS.igtv, ROIS.iptv_gtv, ROIS.wall_ptv, mask_ptv])
       site.add_oars([ROIS.lungs_igtv])
     else:
       # Multiple targets:
       igtvs = []
       ptvs = []
       walls = []
+      masks = []
       for i in range(0, nr_targets):
         # Targets:
         igtvs.append(ROI.ROI('IGTV'+str(i+1), 'Gtv', ROIS.igtv.color))
         ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, igtvs[-1], margins = MARGINS.uniform_5mm_expansion))
         # Other derived ROIs:
         walls.append(ROI.ROIWall("zPTV"+str(i+1)+"_Wall", ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
+        masks.append(ROI.ROIAlgebra(ROIS.mask_ptv.name+str(i+1), ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptvs[-1]], sourcesB = [ROIS.chestwall], operator='Subtraction'))
       # Union target volumes:
       igtv = ROI.ROIAlgebra(ROIS.igtv.name, ROIS.igtv.type, ROIS.igtv.color, sourcesA=[igtvs[0]], sourcesB=igtvs[1:])
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptvs[0]], sourcesB=ptvs[1:])
@@ -205,5 +216,5 @@ class DefLung(object):
       site.add_targets(igtvs + ptvs)
       # Other derived ROIs:
       lungs_igtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, 'Organ', COLORS.lungs, sourcesA=[ROIS.lungs], sourcesB=[igtv], operator = 'Subtraction')
-      site.add_oars([lungs_igtv] + walls)
+      site.add_oars([lungs_igtv] + walls + masks)
     

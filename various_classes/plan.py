@@ -104,11 +104,6 @@ class Plan(object):
       PMF.create_mask_ptv_brain(patient, pm, examination, ss, nr_targets)
 
 
-    # Create 'Mask_PTV' for stereotactic lung:
-    if region_code in RC.lung_codes and prescription.is_stereotactic():
-      PMF.create_mask_ptv_lung(patient, pm, examination, ss, nr_targets)
-
-
     # Determine name of the body contour ('External' or 'Body'):
     external = SSF.body_roi_name(ss)
     if not external:
