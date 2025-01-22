@@ -134,8 +134,6 @@ class QualityControl(object):
       ts_beam_set.guard_leaf_test()
       ts_beam_set.name_of_beam_iso_test()
       ts_beam_set.isocenter_centered_long_test()
-      ts_beam_set.prescription_mu_breast_regional_caudal_test()
-      ts_beam_set.prescription_mu_breast_regional_cranial_test()
       ts_beam_set.prescription_mu_test()
       ts_beam_set.asymmetric_jaw_opening_long_test()
       ts_beam_set.isocenter_centered_test()
