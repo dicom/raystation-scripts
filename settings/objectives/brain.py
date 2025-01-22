@@ -105,7 +105,7 @@ class Brain:
       else:
         # Multiple targets:
         for index in range(0, nr_targets):
-          others.append(OF.fall_off(ss, plan, "zPTV"+str(i+1)+"_Wall", prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.6, 25, beam_set_index=index))
+          others.append(OF.fall_off(ss, plan, "zPTV"+str(index+1)+"_Wall", prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.6, 25, beam_set_index=index))
     else:
       # Conventional brain:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=i))
@@ -126,7 +126,7 @@ class Brain:
       else:
         # Multiple targets:
         for index in range(0, nr_targets):
-          targets.append(OF.min_dose(ss, plan, ROIS.ptv.name+str(i+1), prescription.total_dose*100, 200, beam_set_index=index))
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv.name+str(index+1), prescription.total_dose*100, 200, beam_set_index=index))
     else:
       # Conventional brain:
       targets.append(OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.03, 80, beam_set_index=i))

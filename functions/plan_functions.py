@@ -14,11 +14,8 @@ import objectives
 import beams as BEAMS
 import beam_set_functions as BSF
 import case_functions as CF
-import clinical_goal as CG
 import gui_functions as GUIF
 import prescription as PRES
-import region_codes as RC
-import roi_functions as ROIF
 import structure_set_functions as SSF
 
 # Contains a collection of plan functions.
@@ -31,6 +28,8 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
   if isocenter:
     common_isocenter = True
   i = 1
+  beam_sets = []
+  prescriptions = []
   if nr_targets > 1:
     for r in region_codes:
       region_code = int(r)
@@ -54,51 +53,50 @@ def create_additional_palliative_beamsets_prescriptions_and_beams(plan, examinat
         PatientPosition=CF.determine_patient_position(examination),
         NumberOfFractions=p.nr_fractions
       )
+      beam_sets.append(beam_set)
+      prescriptions.append(p)
       BSF.add_prescription(beam_set, p)
       # Setup beams or arcs
       nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
       nr_existing_beams = nr_existing_beams + nr_beams
       if not common_isocenter:
         isocenter=False
-      # Add objectives for the new beam set:
-      obj = objectives.Other(ss, plan, p, beam_set_index=beam_set.Number-1)
-      # Add OAR clinical goals to the existing plan for the new beam set:
-      cg = clinical_goals.Other(ss, plan, p, target_nr = i+1)
-      es = plan.TreatmentCourse.EvaluationSetup
-      CG.setup_target_clinical_goals(cg.targets, ss, es, p)
-      CG.setup_oar_clinical_goals(cg.oars, es, p)
       i += 1
+  return beam_sets, prescriptions
 
 
 # Creates additional stereotactic beamsets (if multiple targets exists).
-# (Used for brain or lung)
 def create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, additional_region_codes, prescription, external, energy_name, nr_existing_beams=1):
   nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
   i = 1
+  beam_sets = []
+  prescriptions = []
   if nr_targets > 1:
-    if int(additional_region_codes[0]) in RC.brain_codes + RC.lung_codes:
-      for r in additional_region_codes:
-        region_code = int(r)
-        # Create the prescription object:
-        p = PRES.create_prescription(prescription.total_dose, prescription.nr_fractions, region_code, ss)
-        p.target = 'PTV' + str(i+1)
-        # Create beam set:
-        beam_set = plan.AddNewBeamSet(
-          Name=BSF.label_s(region_code, p.fraction_dose, p.nr_fractions),
-          ExaminationName=examination.Name,
-          MachineName= "ALVersa",
-          Modality='Photons',
-          TreatmentTechnique='VMAT',
-          PatientPosition='HeadFirstSupine',
-          NumberOfFractions=p.nr_fractions
-        )
-        BSF.add_prescription(beam_set, p)
-        # Determine the point which will be our isocenter:
-        isocenter = SSF.determine_isocenter(examination, ss, region_code, p.target, external)
-        # Setup beams or arcs
-        nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
-        nr_existing_beams += nr_beams
-        i += 1
+    for r in additional_region_codes:
+      region_code = int(r)
+      # Create the prescription object:
+      p = PRES.create_prescription(prescription.total_dose, prescription.nr_fractions, region_code, ss)
+      p.target = 'PTV' + str(i+1)
+      # Create beam set:
+      beam_set = plan.AddNewBeamSet(
+        Name=BSF.label_s(region_code, p.fraction_dose, p.nr_fractions),
+        ExaminationName=examination.Name,
+        MachineName= "ALVersa",
+        Modality='Photons',
+        TreatmentTechnique='VMAT',
+        PatientPosition='HeadFirstSupine',
+        NumberOfFractions=p.nr_fractions
+      )
+      beam_sets.append(beam_set)
+      prescriptions.append(p)
+      BSF.add_prescription(beam_set, p)
+      # Determine the point which will be our isocenter:
+      isocenter = SSF.determine_isocenter(examination, ss, region_code, p.target, external)
+      # Setup beams or arcs
+      nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, p, 'VMAT', energy_name, iso_index=str(i+1), beam_index=nr_existing_beams+1)
+      nr_existing_beams += nr_beams
+      i += 1
+  return beam_sets, prescriptions
 
 
 # Creates a beam set (the first beam set, if multiple beam sets are to me made).
@@ -123,4 +121,3 @@ def first_available_beam_number(plan):
       if b.Number > highest_number:
         highest_number = b.Number
   return highest_number + 1
-

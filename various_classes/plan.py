@@ -69,7 +69,9 @@ class Plan(object):
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     
     # Create the prescription object:
+    prescriptions = []
     prescription = PRES.create_prescription(total_dose, nr_fractions, region_code, ss)
+    prescriptions.append(prescription)
     # Validate the prescription:
     valid = PRES.validate_prescription(prescription)
     if not valid:
@@ -124,8 +126,12 @@ class Plan(object):
     beam_set_name = BSF.label(prescription, technique)
 
 
+    # Beam sets:
+    beam_sets = []
     # Create primary beam set:
     beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, prescription.nr_fractions)
+    beam_sets.append(beam_set)
+
     
     # Add prescription:
     # For breast SIB, set the surgical bed as prescription target (for others leave it as is):
@@ -165,30 +171,26 @@ class Plan(object):
     
     # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
     CF.load_plan(case, plan)
-
-
-    # Determine site:
-    site = SF.site(pm, examination, ss, plan, prescription, target)
-
-
-    # Set up Clinical Goals:
-    es = plan.TreatmentCourse.EvaluationSetup
-    CG.setup_clinical_goals(ss, es, site, prescription, target)
     
     
-    # For SBRT brain or lung, if there are multiple targets, create beam sets for all targets:
+    # Create secondary beam sets (if applicable):
     if nr_targets > 1:
-      if region_code in RC.brain_codes + RC.lung_codes and region_code not in RC.brain_whole_codes:
-        if prescription.is_stereotactic():
-          PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+      if region_code in RC.brain_codes + RC.lung_codes and prescription.is_stereotactic():
+        additional_beam_sets, additional_prescriptions = PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
         if palliative_choices[0] == 'sep_beamset_iso':
           # Separate beam sets, but with the same isocenter:
-          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
         elif palliative_choices[0] == 'sep_beamset_sep_iso':
           # Separate beams sets and separate isocenter:
-          PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+      beam_sets.extend(additional_beam_sets)
+      prescriptions.extend(additional_prescriptions)
+
+
+    # Determine site:
+    site = SF.site(pm, examination, ss, plan, prescriptions, target)
 
 
     # Use robust optimization for breast:

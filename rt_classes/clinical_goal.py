@@ -64,41 +64,19 @@ conformity_index = 'ConformityIndex'
 # Sets up clinical goals.
 # Creates clinical goals in RayStation from clinical goal objects from the given Site,
 # using the given prescription to determine target clinical goals as well as doing EQD2 conversion on OAR clinical goals.
-def setup_clinical_goals(ss, es, site, prescription, target):
+def setup_clinical_goals(ss, es, site, prescription, target, ignore_identical = False):
   for cg in site.target_clinical_goals:
     setup_target(ss, es, prescription, cg)
   for cg in site.oar_clinical_goals:
     # Make sure corresponding ROI exists before trying to create clinical goal:
     if SSF.has_roi(ss, cg.name):      
       if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
-        cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0))
+        cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ignore_identical=ignore_identical)
       else:
-        cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0))
+        cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0), ignore_identical=ignore_identical)
     else:
       # Missing ROI:
       GUIF.handle_missing_roi_for_clinical_goal(cg.name)
-
-
-# Sets up organ at risk clinical goals.
-# This function is used e.g. for cases of multiple targets, where OAR clinical goals
-# for the additional target need to be added to an existing plan.
-def setup_oar_clinical_goals(clinical_goals, es, prescription):
-  # When creating clinical goals for OARs for multiple targets, we may be attempting to create identical
-  # clinical goals in situations where targets are positioned closely. We therefore activate the
-  # keyword 'ignore_identical' in the functions below.
-  for cg in clinical_goals:
-    if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
-      cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
-    else:
-      cg.apply_to(es, normalized_value = round(cg.value.equivalent(prescription.nr_fractions)*100,0), ignore_identical = True)
-
-
-# Sets up target clinical goals.
-# This function is used e.g. for cases of multiple targets, where clinical goals
-# for the additional target need to be added to an existing plan.
-def setup_target_clinical_goals(clinical_goals, ss, es, prescription):
-  for cg in clinical_goals:
-    setup_target(ss, es, prescription, cg)
 
 
 # Sets up a target clinical goal before it is handed to an EvaluationSetup instance.

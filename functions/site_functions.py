@@ -5,12 +5,11 @@ import clinical_goals
 import objectives
 import optimizers
 import beam_functions as BF
-import def_oars as OAR
+import clinical_goal as CG
 import region_codes as RC
 import rt_site as SITE
 import rois as ROIS
 import patient_model_functions as PMF
-import structure_set_functions as SSF
 
 
 # Example:
@@ -68,9 +67,16 @@ def rectum(ss, plan, prescription):
 
 # Palliative:
 # Gives a treatment site (e.g. Pelvis) based on a specific region code (e.g. 314).
-def palliative(ss, plan, prescription, target):
+def palliative(ss, plan, prescriptions, target):
+  prescription = prescriptions[0]
   obj = objectives.Other(ss, plan, prescription)
   cg = clinical_goals.Other(ss, plan, prescription)
+  if len(prescriptions) > 1:
+    for i in range(1, len(prescriptions)):
+      # Add oar objectives for the additional beam set:
+      obj.create_oar_objectives(ss, plan, prescriptions[i], i)
+      es = plan.TreatmentCourse.EvaluationSetup
+      cg.oars.extend(cg.create_oar_clinical_goals(ss, plan, prescriptions[i]))
   site = SITE.Site(RC.bone_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   site.optimizer = optimizers.General(ss, plan, site, prescription, adaptive_optimization=True)
   return site
@@ -95,7 +101,9 @@ def bladder(ss, plan, prescription):
 
 
 # Determines the site from the region code.
-def site(pm, examination, ss, plan, prescription, target):
+def site(pm, examination, ss, plan, prescriptions, target):
+  ignore_identical = False
+  prescription = prescriptions[0]
   if prescription.region_code in RC.brain_codes:
     # Brain:
     if prescription.region_code not in RC.brain_whole_codes:
@@ -123,5 +131,10 @@ def site(pm, examination, ss, plan, prescription, target):
     if prescription.is_stereotactic():
       site = bone_stereotactic(ss, plan, prescription)
     else:
-      site = palliative(ss, plan, prescription, target)
+      site = palliative(ss, plan, prescriptions, target)
+      if len(prescriptions) > 1:
+        ignore_identical = True
+  # Set up Clinical Goals:
+  es = plan.TreatmentCourse.EvaluationSetup
+  CG.setup_clinical_goals(ss, es, site, prescription, target, ignore_identical=ignore_identical)
   return site

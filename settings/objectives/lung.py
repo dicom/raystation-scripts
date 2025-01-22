@@ -82,7 +82,7 @@ class Lung:
         others.append(OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.8, 5, beam_set_index=i))
       else:
         for index in range(0, nr_targets):
-          others.append(OF.fall_off(ss, plan, "zPTV"+str(i+1)+"_Wall", prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.8, 5, beam_set_index=index))
+          others.append(OF.fall_off(ss, plan, "zPTV"+str(index+1)+"_Wall", prescription.total_dose*100, 0.7*prescription.total_dose*100, 0.8, 5, beam_set_index=index))
     else:
       others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=i))
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 3, 2, beam_set_index=i))
@@ -99,7 +99,7 @@ class Lung:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100, 250, beam_set_index=i))
       else:
         for index in range(0, nr_targets):
-          targets.append(OF.min_dose(ss, plan, ROIS.ptv.name+str(i+1), prescription.total_dose*100, 250, beam_set_index=index))
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv.name+str(index+1), prescription.total_dose*100, 250, beam_set_index=index))
     else:
       targets.append(OF.uniform_dose(ss, plan, prescription.target, prescription.total_dose*100, 25, beam_set_index=i))
       targets.append(OF.min_dvh(ss, plan, prescription.target, prescription.total_dose*0.95*100, 98, 100, beam_set_index=i))
