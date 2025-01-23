@@ -276,7 +276,11 @@ class TSStructureSet(object):
       for ts_rg in geometries:
         bb = ts_rg.bounding_box()
         if bb:
-          if bb[0].x < ext_bb[0].x or bb[1].x > ext_bb[1].x or bb[0].y < ext_bb[0].y or bb[1].y > ext_bb[1].y:
+          diff_x0 = bb[0].x-ext_bb[0].x
+          diff_x1 = bb[1].x-ext_bb[1].x
+          diff_y0 = bb[0].y-ext_bb[0].y
+          diff_y1 = bb[1].y-ext_bb[1].y
+          if round(diff_x0, 1) < 0 or round(diff_x1, 1) > 0 or round(diff_y0, 1) < 0 or round(diff_y1, 1) > 0:
             failed_geometries.append(ts_rg.roi().Name)
     if len(failed_geometries) == 0:
       return t.succeed()
