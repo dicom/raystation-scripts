@@ -10,6 +10,7 @@ from tkinter import messagebox
 import beam_set_functions as BSF
 import def_choices as DC
 import fractionation_frame as FRAC_FRAME
+import prescription_interpreter as PI
 import patient_model_functions as PMF
 import plan_choices as PC
 import radio_button as RB
@@ -75,9 +76,11 @@ def collect_delete_choice(options, my_window, choices):
   return choices
 
 
-def collect_fractionation_choices(my_window):
+def collect_fractionation_choices(my_window, ss):
+  # Try to determine prescription settings:
+  suggestion = PI.PrescriptionInterpreter(ss)
   # Set up GUI windows
-  frame = FRAC_FRAME.FractionationFrame(my_window)
+  frame = FRAC_FRAME.FractionationFrame(my_window, rc=suggestion.region_code, fd=suggestion.fraction_dose, nr=suggestion.nr_fractions)
   frame.grid(row = 0, column = 0)
   my_window.mainloop()
   # Extract information from the users's selections in the GUI:

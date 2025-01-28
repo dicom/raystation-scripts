@@ -17,8 +17,11 @@ import user_list as USERS
 class FractionationFrame(Frame):
 
   # Creates the instance.
-  def __init__(self, the_window):
+  def __init__(self, the_window, rc='', fd='', nr=''):
     Frame.__init__(self, the_window,bg = 'white')
+    self.rc = rc
+    self.fd = fd
+    self.nr = nr
     self.ok = False
     self.create_widgets()
     h = 270
@@ -58,8 +61,11 @@ class FractionationFrame(Frame):
     self.initials = StringVar()
     self.initials_label = Label(self, text = "Doseplanleggers initialer:", font = ("TkDefaultFont",10), width = w, wraplength = wl, anchor = W, justify = LEFT, bg = 'white')
     self.initials_entry = Entry(self, textvariable = self.initials, width = w, bg = 'white', font = ("TkDefaultFont",10))
-    # Fill out initials from windows user name:
-    self.initials_entry.insert(0, self.user_initials()) 
+    # Fill out predetermined values (if any):
+    self.region_code_entry.insert(0, self.rc)
+    self.fraction_dose_entry.insert(0, self.fd)
+    self.number_of_fractions_entry.insert(0, self.nr)
+    self.initials_entry.insert(0, self.user_initials())
     # Create OK and Cancel buttons:
     self.okButton = Button(self, text = "OK", command = self.ok_clicked, font = ("TkDefaultFont",10), bg = 'white')
     self.quitButton = Button(self, text = "Cancel", command = self.cancel_clicked, font = ("TkDefaultFont",10), bg = 'white')

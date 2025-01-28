@@ -57,7 +57,7 @@ class Plan(object):
 
     # Setup and run GUI:
     my_window = Tk()
-    (region_code, fraction_dose, nr_fractions, initials, total_dose) = GUIF.collect_fractionation_choices(my_window)
+    (region_code, fraction_dose, nr_fractions, initials, total_dose) = GUIF.collect_fractionation_choices(my_window, ss)
 
 
     # Load list of region codes and corresponding region names, and get the region name for our particular region code (raise error if a name is not retrieved):
