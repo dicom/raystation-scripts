@@ -459,7 +459,7 @@ class TSBeamSet(object):
         if self.is_vmat():
           for beam in self.beam_set.Beams:
             mu_total += beam.BeamMU
-          if mu_total > RSU.fraction_dose(self.beam_set) * 250 + 5:
+          if mu_total > RSU.fraction_dose(self.beam_set) * 300 + 10:
             return t.fail(round(mu_total, 1))
           else:
             return t.succeed()
