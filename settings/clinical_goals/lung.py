@@ -202,16 +202,20 @@ class Lung:
     targets = []
     if prescription.is_stereotactic():
       # SBRT:
-      targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.4, 2.0, 4))
+      if prescription.nr_fractions == 8:
+        max_factor = 1.3
+      else:
+        max_factor = 1.4
+      targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, max_factor, 2.0, 4))
       nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
       if nr_targets == 1:
         targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.dose_at_volume, 1.0, 0.98, 1))
-        targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_most, CG.dose_at_volume, 1.4, 0.02, 4))
+        targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_most, CG.dose_at_volume, max_factor, 0.02, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.conformity_index, 0.88, 1.0, 5))
       else:
         for i in range(0, nr_targets):
           targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.dose_at_volume, 1.0, 0.99, 1))
-          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_most, CG.dose_at_volume, 1.4, 0.02, 4))
+          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_most, CG.dose_at_volume, max_factor, 0.02, 4))
           targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.conformity_index, 0.88, 1.0, 5))
     else:
       # Conventional:
