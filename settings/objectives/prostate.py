@@ -117,7 +117,7 @@ class Prostate:
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, prescription.total_dose*100, 42*100, 0.8, 12, adapt=True, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
-        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 42*100, 1, 1, adapt=True, beam_set_index=i))
+        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.8*prescription.total_dose*100, 1, 1, adapt=True, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
   
