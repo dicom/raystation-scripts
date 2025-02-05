@@ -388,14 +388,19 @@ bladder_1fx_v15 = EQD.Tolerance('Bladder', 'Fistula', ab_bladder, fractions_sbrt
 
 
 # Bone/Spine SBRT 3 fractions
+esophagus_sbrt_3fx_v5 = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_sbrt_3, 17.7, 'Volume receiving tolerance dose being less than 5 cm3', 'SBRT')
+esophagus_sbrt_3fx_v0_035 = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_sbrt_3, 25.2, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
 spinal_canal_sbrt_3fx_v0 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_3, 21.9, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
 spinal_canal_sbrt_3fx_v0_35 = EQD.Tolerance('SpinalCanal', 'Some failure', ab_spinalcord, fractions_sbrt_3, 18, 'Volume receiving tolerance dose being less than 0.35 cm3', 'SBRT')
 cauda_equina_sbrt_3fx_v0 = EQD.Tolerance('CaudaEquina', 'Some failure', ab_cauda, fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 cauda_equina_sbrt_3fx_v5 = EQD.Tolerance('BrachialPlexus', 'Some failure', ab_cauda, fractions_sbrt_3, 21.9, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
+heart_sbrt_3fx_v0_035 = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, fractions_sbrt_3, 30, 'Volume receiving tolerance dose being less than 0.035 cm^3', 'SBRT')
+heart_sbrt_3fx_v15 = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 15 cm^3', 'SBRT')
 small_bowel_sbrt_3fx_v0 = EQD.Tolerance('SmallBowel', 'Some failure', ab_bowel, fractions_sbrt_3, 25.2, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 small_bowel_sbrt_3fx_v5 = EQD.Tolerance('SmallBowel', 'Some failure', ab_bowel, fractions_sbrt_3, 17.7, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
 skin_col_sbrt_3fx_v10 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_3, 30, 'Volume receiving tolerance dose being less than 10cm3', 'SBRT')
 skin_col_sbrt_3fx_v0 = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_sbrt_3, 33, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
+lungs_sbrt_3fx_v1000 = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_sbrt_3, 12.4, 'Volume receiving tolerance dose being less than 1000 cm^3', 'SBRT')
 rectum_sbrt_3fx_v0 = EQD.Tolerance('Rectum', 'Some failure', ab_rectum, fractions_sbrt_3, 28.8, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
 rectum_sbrt_3fx_v20 = EQD.Tolerance('Rectum', 'Some failure', ab_rectum, fractions_sbrt_3, 24, 'Volume receiving tolerance dose being less than 5cm3', 'SBRT')
 colon_sbrt_3fx_v0 = EQD.Tolerance('Colon', 'Some failure', ab_colon,  fractions_sbrt_3, 28.8, 'Volume receiving tolerance dose being less than 0cm3', 'SBRT')
