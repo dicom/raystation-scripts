@@ -197,7 +197,6 @@ heart_v1_5_fastforward = EQD.Tolerance('Heart', 'Some failure', ab_heart, 5, 1.5
 heart_v13gy_import_high = EQD.Tolerance('Heart', 'Import HIGH protocol', ab_heart, 15, 13, 'Volume receiving tolerance dose being less than 10%', 'Conventional RT')
 lad_max = EQD.Tolerance('A_LAD', 'Any cardiac event/Major cardiac event (AH Zureick et al, 2022)', ab_lad, 3.35, 6.7, 'Max', 'Conventional RT')
 lad_mean = EQD.Tolerance('A_LAD', 'Any cardiac event/Major cardiac event (AH Zureick et al, 2022)', ab_lad, 1.4, 2.8, 'Mean', 'Conventional RT')
-humeral_v33_adx = EQD.Tolerance('Humeral', 'Some failure', ab_humeral, fractions_breast, 25, 'Volume receiving tolerance dose being less than 5 cm3', 'Conventional RT')
 contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 4, 'Mean', 'Conventional RT')
 contralat_breast_mean_young_patients = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 1, 'Mean', 'Conventional RT')
 lung_v35_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')

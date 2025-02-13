@@ -73,11 +73,9 @@ class Breast:
       if prescription.region_code in RC.breast_reg_l_codes:
         # Left side:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
-        oars.append(CG.ClinicalGoal(ROIS.humeral_l.name, CG.at_most, CG.volume_at_dose, 0.33, TOL.humeral_v33_adx, 6))
       elif prescription.region_code in RC.breast_reg_r_codes:
         # Right side:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
-        oars.append(CG.ClinicalGoal(ROIS.humeral_r.name, CG.at_most, CG.volume_at_dose, 0.33, TOL.humeral_v33_adx, 6))
     else:
       # Non-regional breast:
       if prescription.region_code in RC.breast_l_codes:
