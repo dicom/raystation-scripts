@@ -87,8 +87,12 @@ class Other:
     others = []
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     for index in range(0, nr_targets):
-      # Only create multiple objectives if we a separate beam set situation (that is a target ending with an index):
-      if index > 0 and prescription.target[-1] in ['1', '2', '3', '4']:
+      # Only create multiple objectives for additional targets if we have a separate beam set situation (that is a target ending with an index):
+      if index == 0:
+        create_objectives = True
+      elif index > 0 and not prescription.target[-1] in ['1', '2', '3', '4']:
+        create_objectives = False
+      if create_objectives:
         others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=index))
         others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=index))
         others.append(OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2, beam_set_index=index))
