@@ -87,9 +87,11 @@ class Other:
     others = []
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     for index in range(0, nr_targets):
-      others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=index))
-      others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=index))
-      others.append(OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2, beam_set_index=index))
+      # Only create multiple objectives if we a separate beam set situation (that is a target ending with an index):
+      if index > 0 and prescription.target[-1] in ['1', '2', '3', '4']:
+        others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=index))
+        others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=index))
+        others.append(OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2, beam_set_index=index))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
   
@@ -104,11 +106,22 @@ class Other:
       targets.append(OF.min_dose(ss, plan, prescription.target.replace("C", "P"), prescription.total_dose*100*0.95, 150, beam_set_index=i))
       targets.append(OF.max_dose(ss, plan, prescription.target.replace("C", "P"), prescription.total_dose*100*1.05, 80, beam_set_index=i))
     else:
+      if prescription.target[-1] in ['1', '2', '3', '4']:
+        target = prescription.target[:-1]
+        static_index = False
+      else:
+        target = prescription.target
+        # For this case we treat multiple targets in the same beam set. Do not use incrementing beam set index.
+        static_index = True
       # Multiple targets:
       for index in range(0, nr_targets):
-        targets.append(OF.uniform_dose(ss, plan, prescription.target[:-1]+str(index+1), prescription.total_dose*100, 30, beam_set_index=index))
-        targets.append(OF.min_dose(ss, plan, prescription.target.replace("C", "P")[:-1]+str(index+1), prescription.total_dose*100*0.95, 150, beam_set_index=index))
-        targets.append(OF.max_dose(ss, plan, prescription.target.replace("C", "P")[:-1]+str(index+1), prescription.total_dose*100*1.05, 80, beam_set_index=index))
+        if static_index:
+          bs_index = 0
+        else:
+          bs_index=index
+        targets.append(OF.uniform_dose(ss, plan, target+str(index+1), prescription.total_dose*100, 30, beam_set_index=bs_index))
+        targets.append(OF.min_dose(ss, plan, target.replace("C", "P")+str(index+1), prescription.total_dose*100*0.95, 150, beam_set_index=bs_index))
+        targets.append(OF.max_dose(ss, plan, target.replace("C", "P")+str(index+1), prescription.total_dose*100*1.05, 80, beam_set_index=bs_index))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
   
