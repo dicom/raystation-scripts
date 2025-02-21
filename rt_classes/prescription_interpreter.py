@@ -138,7 +138,7 @@ class PrescriptionInterpreter(object):
   def has_roi_in_expression_a(self, parent_name, child_name):
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
-    if parent_rg:
+    if parent_rg and parent_rg.PrimaryShape.DerivedRoiStatus:
       expression_a = parent_rg.OfRoi.DerivedRoiExpression.Children[0].Children[0]
       if expression_a:
         match = self.has_roi_in_expression(expression_a, child_name)
@@ -149,7 +149,7 @@ class PrescriptionInterpreter(object):
   def has_roi_in_expression_b(self, parent_name, child_name):
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
-    if parent_rg:
+    if parent_rg and parent_rg.PrimaryShape.DerivedRoiStatus:
       expression_b = parent_rg.OfRoi.DerivedRoiExpression.Children[0].Children[1]
       if expression_b:
         match = self.has_roi_in_expression(expression_b, child_name)
