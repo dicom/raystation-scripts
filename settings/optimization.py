@@ -87,6 +87,7 @@ def optimization_parameters(prescription):
     if prescription.is_stereotactic():
       # Stereotactic lung:
       opt = sbrt
+      opt.max_arc_delivery_time = max(prescription.fraction_dose * 12, 100)
     else:
       # Conventional lung:
       opt = sliding_window_quick
