@@ -94,7 +94,7 @@ class DefLung(object):
       }
     })
     # Non-DL OARs:
-    site.add_oars([ROIS.lungs])
+    site.add_oars([ROIS.lungs, ROIS.a_pulmonary, ROIS.v_pulmonary])
   
   
   # Adds curative 4DCT/DIBH ROIs to the site object.
