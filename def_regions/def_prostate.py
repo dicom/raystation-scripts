@@ -83,21 +83,34 @@ class DefProstate(object):
   
   # Adds target ROIs for prostate bed with elective nodes to the site object.
   def add_bed_with_nodes_targets(self, pm, examination, site, nodes):
+    higher_dose_targets = []
     if nodes == 'with':
       # Elective nodes only:
       ctv_70 = ROI.ROIExpanded(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_high, source = ROIS.ctv_sb)
       ptv_70 = ROI.ROIExpanded(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, source = ctv_70, margins = MARGINS.prostate_bed)
+      higher_dose_targets.extend([ptv_70])
     else:
       # Positive node (in addition to elective nodes):
       ctv_n = ROI.ROIExpanded(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.pelvic_nodes, source = ROIS.gtv_n, margins = MARGINS.uniform_5mm_expansion)
       ptv_n = ROI.ROIExpanded(ROIS.ptv_n.name, ROIS.ptv_n.type, ROIS.ptv_n.color, source = ctv_n, margins = MARGINS.uniform_5mm_expansion)
       ptv_sb = ROI.ROIExpanded(ROIS.ptv_sb.name, ROIS.ptv_sb.type, ROIS.ptv_sb.color, source = ROIS.ctv_sb, margins = MARGINS.prostate_bed)
-      ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.ctv_sb], sourcesB = [ctv_n], operator = 'Union')
-      ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, sourcesA = [ptv_sb], sourcesB = [ptv_n], operator = 'Union', marginsA = MARGINS.zero , marginsB = MARGINS.zero)
-      site.add_targets([ROIS.gtv_n, ctv_n, ptv_n, ptv_sb])
+      if nodes == 'with_node_70':
+        # Positive node will have 70 Gy:        
+        ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.ctv_sb], sourcesB = [ctv_n], operator = 'Union')
+        ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, sourcesA = [ptv_sb], sourcesB = [ptv_n], operator = 'Union', marginsA = MARGINS.zero , marginsB = MARGINS.zero)
+        site.add_targets([ROIS.gtv_n, ctv_n, ptv_n, ptv_sb])
+        higher_dose_targets.extend([ptv_70])
+      else:
+        # Positive node will have 66 Gy:
+        ctv_70 = ROI.ROIExpanded(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_high, source = ROIS.ctv_sb)
+        ptv_70 = ROI.ROIExpanded(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, source = ctv_70, margins = MARGINS.prostate_bed)
+        ctv_66 = ROI.ROIAlgebra(ROIS.ctv_66.name, ROIS.ctv_66.type, COLORS.ctv_med, sourcesA = [ctv_n], sourcesB = [ptv_70], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_66 = ROI.ROIAlgebra(ROIS.ptv_66.name, ROIS.ptv_66.type, COLORS.ptv_med, sourcesA = [ctv_n], sourcesB = [ptv_70], operator = 'Subtraction', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+        site.add_targets([ROIS.gtv_n, ctv_n, ptv_n, ptv_sb, ctv_66, ptv_66])
+        higher_dose_targets.extend([ptv_70, ptv_66])
     # Common for elective nodes (with or without positive node):
-    ctv_56 = ROI.ROIAlgebra(ROIS.ctv_56.name, ROIS.ctv_56.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_70], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    ptv_56 = ROI.ROIAlgebra(ROIS.ptv_56.name, ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv_70], operator = 'Subtraction', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+    ctv_56 = ROI.ROIAlgebra(ROIS.ctv_56.name, ROIS.ctv_56.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = higher_dose_targets, operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    ptv_56 = ROI.ROIAlgebra(ROIS.ptv_56.name, ROIS.ptv_56.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = higher_dose_targets, operator = 'Subtraction', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
     ptv_56_70 = ROI.ROIAlgebra(ROIS.ptv_56_70.name, ROIS.ptv_56_70.type, COLORS.ptv_low, sourcesA = [ptv_56], sourcesB = [ptv_70], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     site.add_targets([ROIS.ctv_sb, ctv_70, ptv_70, ctv_56, ptv_56, ptv_56_70])
     # Other derived ROIs:

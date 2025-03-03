@@ -117,11 +117,16 @@ prostate_lc_bone = P.Property('Bein-match', 'bone', parent = prostate_lc, next_c
 prostate_bed_normo = P.Property('Konvensjonell fraksjonering', 'normo', parent = prostate_bed, next_category ='', default = True)
 prostate_bed_palliative = P.Property('Palliativ fraksjonering', 'palliative', parent = prostate_bed, next_category ='')
 
-# Prosate/bed: Lymph nodes:
-for p in [prostate_bergen, prostate_bed_normo]:
-  prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = p, next_category ='', default = True)
-  prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = p, next_category ='')
-  prostate_with_ln_boost =  P.Property('Med lymfeknuter og boost til positiv lymfeknute', 'with_node', parent = p, next_category ='')
+# Prostate: Lymph nodes:
+prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = prostate_bergen, next_category ='', default = True)
+prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = prostate_bergen, next_category ='')
+prostate_with_ln_boost =  P.Property('Med lymfeknuter og boost til positiv lymfeknute', 'with_node', parent = prostate_bergen, next_category ='')
+
+# Prostate bed: Lymph nodes:
+prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = prostate_bed_normo, next_category ='', default = True)
+prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = prostate_bed_normo, next_category ='')
+prostate_with_ln_boost_70 =  P.Property('Med lymfeknuter og 70 Gy boost til positiv lymfeknute', 'with_node_70', parent = prostate_bed_normo, next_category ='')
+prostate_with_ln_boost_66 =  P.Property('Med lymfeknuter og 66 Gy boost til positiv lymfeknute', 'with_node_66', parent = prostate_bed_normo, next_category ='')
 
 
 # Rectum:
