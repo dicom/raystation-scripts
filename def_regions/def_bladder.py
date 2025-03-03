@@ -73,6 +73,5 @@ class DefBladder(object):
   # Adds palliative ROIs to the site object.
   def add_palliative(self, pm, examination, site):
     # Targets:
-    ctv =  ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.bladder], marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
-    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.bladder_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    site.add_targets([ROIS.gtv_p, ctv, ptv])
+    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ctv_underived], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.bladder_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    site.add_targets([ROIS.ctv_underived, ptv])
