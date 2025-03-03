@@ -272,6 +272,7 @@ stomach_min = EQD.Tolerance('Stomach', 'Ulceration', ab_stomach, 25, 45, 'Volume
 
 
 # Lung SBRT 3 fractions
+brachial_sbrt_3fx = EQD.Tolerance('BrachialPlexus_L/R', 'Grade 3+ neuropathy', ab_brachial, fractions_sbrt_5, 24, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 spinal_canal_sbrt_3fx = EQD.Tolerance('SpinalCanal', 'Myelitis 1-5 %', ab_spinalcord, fractions_sbrt_3, 20.3, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
 esophagus_sbrt_3fx = EQD.Tolerance('Esophagus', 'Stenosis/Fistula', ab_esophagus, fractions_sbrt_3, 25.2, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 greatves_sbrt_3fx = EQD.Tolerance('GreatVes', 'Aneurism', ab_greatves, fractions_sbrt_3, 45, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
@@ -288,6 +289,8 @@ stomach_sbrt_3fx_cc01 = EQD.Tolerance('Stomach', 'Grade 3 ulceration/fistula', a
 
 
 # Lung SBRT 5 fractions
+brachial_sbrt_5fx = EQD.Tolerance('BrachialPlexus_L/R', 'Grade 3+ neuropathy', ab_brachial, fractions_sbrt_5, 32, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+brachial_sbrt_5fx_secondary = EQD.Tolerance('BrachialPlexus_L/R', 'Grade 3+ neuropathy', ab_brachial, fractions_sbrt_5, 30.5, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 spinal_canal_sbrt_5fx = EQD.Tolerance('SpinalCanal', 'Myelitis 1-5 %', ab_spinalcord, fractions_sbrt_5, 25.3, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
 esophagus_sbrt_5fx = EQD.Tolerance('Esophagus', 'Stenosis/Fistula', ab_esophagus, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 greatves_sbrt_5fx = EQD.Tolerance('GreatVes', 'Aneurism', ab_greatves, fractions_sbrt_5, 53, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
@@ -299,15 +302,19 @@ lung_sbrt_contralat_mean = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractio
 lung_sbrt_v_10pc = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_sbrt_5, 20, 'Volume receiving tolerance dose being less than 10 %', 'SBRT')
 lung_sbrt_v_15pc = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_sbrt_5, 20, 'Volume receiving tolerance dose being less than 15 %', 'SBRT')
 trachea_sbrt_5fx = EQD.Tolerance('Trachea', 'Stenosis/Fistula', ab_trachea, fractions_sbrt_5, 38, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+trachea_sbrt_5fx_secondary = EQD.Tolerance('Trachea', 'Stenosis/Fistula', ab_trachea, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 chestwall_sbrt_5fx_v01 = EQD.Tolerance('Chestwall', 'Grade 3 pain/fracture', ab_chestwall, fractions_sbrt_5, 43, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 chestwall_sbrt_5fx_v30 = EQD.Tolerance('Chestwall', 'Grade 3 pain/fracture', ab_chestwall, fractions_sbrt_5, 32, 'Volume receiving tolerance dose being less than 30 cm3', 'SBRT')
 ribs_sbrt_5fx = EQD.Tolerance('Ribs', 'Fracture risk 5 %', ab_ribs, fractions_sbrt_5, 67.9, 'Maximum dose being less than the tolerance dose', 'SBRT')
 skin_sbrt_5fx_cc01 = EQD.Tolerance('Skin', 'Grade 3 ulceration', ab_skin, fractions_sbrt_5, 39.5, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 skin_sbrt_5fx_cc10 = EQD.Tolerance('Skin', 'Grade 3 ulceration', ab_skin, fractions_sbrt_5, 36.5, 'Volume receiving tolerance dose being less than 10 cm3', 'SBRT')
 stomach_sbrt_5fx_cc01 = EQD.Tolerance('Stomach', 'Grade 3 ulceration/fistula', ab_stomach, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+stomach_sbrt_5fx_cc01_secondary = EQD.Tolerance('Stomach', 'Grade 3 ulceration/fistula', ab_stomach, fractions_sbrt_5, 33, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 
 
 # Lung SBRT 8 fractions
+brachial_sbrt_8fx = EQD.Tolerance('BrachialPlexus_L/R', 'Grade 3+ neuropathy', ab_brachial, fractions_sbrt_8, 39, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+brachial_sbrt_8fx_secondary = EQD.Tolerance('BrachialPlexus_L/R', 'Grade 3+ neuropathy', ab_brachial, fractions_sbrt_8, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 spinal_canal_sbrt_8fx = EQD.Tolerance('SpinalCanal', 'Myelitis 1-5 %', ab_spinalcord, fractions_sbrt_8, 32.0, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
 esophagus_sbrt_8fx = EQD.Tolerance('Esophagus', 'Stenosis/Fistula', ab_esophagus, fractions_sbrt_8, 40, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 greatves_sbrt_8fx = EQD.Tolerance('GreatVes', 'Aneurism', ab_greatves, fractions_sbrt_8, 65, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')

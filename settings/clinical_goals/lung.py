@@ -41,25 +41,31 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_3fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_3fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_3fx, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_3fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_mean, None, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_sbrt_v_15pc, 3))
+        oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_3fx_cc01, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_3fx_secondary, 0.1, 6))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_3fx_secondary, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.dose_at_abs_volume, TOL.chestwall_sbrt_3fx_v01, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.abs_volume_at_dose, 30, TOL.chestwall_sbrt_3fx_v30, 6))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_3fx_cc01, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_3fx_cc10, 10, 6))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.1, TOL.lung_sbrt_v_10pc, 6))
-        oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_3fx_cc01, 6))
         if prescription.region_code in [248, 250]:
           # Right:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_3fx, 0.1, 3))
           oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_3fx, 0, 6))
         elif prescription.region_code in [247, 249]:
           # Left:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_3fx, 0.1, 3))
           oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_3fx, 0, 6))
         else:
           # Include OARs for both sides:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_3fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_3fx, 0.1, 3))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_3fx, 0, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_3fx, 0, 6))
       elif prescription.nr_fractions == 5:
@@ -71,25 +77,37 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_5fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_5fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_5fx, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_5fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_mean, None, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_sbrt_v_15pc, 3))
+        oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_5fx_cc01, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_5fx_secondary, 0.1, 6))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_5fx_secondary, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.dose_at_abs_volume, TOL.chestwall_sbrt_5fx_v01, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.abs_volume_at_dose, 30, TOL.chestwall_sbrt_5fx_v30, 6))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_5fx_cc01, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_5fx_cc10, 10, 6))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.1, TOL.lung_sbrt_v_10pc, 6))
-        oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_5fx_cc01, 6))
+        oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_5fx_cc01_secondary, 6))
+        oars.append(CG.ClinicalGoal(ROIS.trachea.name, CG.at_most, CG.dose_at_abs_volume, TOL.trachea_sbrt_5fx_secondary, 0.1, 6))
         if prescription.region_code in [248, 250]:
           # Right:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_5fx, 0, 6))
         elif prescription.region_code in [247, 249]:
           # Left:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brac7hial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_5fx, 0, 6))
         else:
           # Include OARs for both sides:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_5fx, 0, 6))
           Coars.append(G.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_5fx, 0, 6))
       elif prescription.nr_fractions == 8:
@@ -101,9 +119,11 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_8fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_8fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_8fx, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_8fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_mean, None, 3))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_sbrt_v_15pc, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_8fx_secondary, 0.1, 6))
+        oars.append(CG.ClinicalGoal(ROIS.a_pulmonary.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_8fx_secondary, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.dose_at_abs_volume, TOL.chestwall_sbrt_8fx_v01, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.chestwall.name, CG.at_most, CG.abs_volume_at_dose, 30, TOL.chestwall_sbrt_8fx_v30, 6))
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_8fx_cc01, 0.1, 6))
@@ -112,14 +132,22 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_8fx_cc01, 6))
         if prescription.region_code in [248, 250]:
           # Right:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))          
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
         elif prescription.region_code in [247, 249]:
           # Left:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
         else:
-          # Include OARs for both sides:          
+          # Include OARs for both sides:
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))          
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
     else:
