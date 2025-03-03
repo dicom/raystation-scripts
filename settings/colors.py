@@ -69,6 +69,7 @@ levator_ani = 'Cyan'
 # Respiratory:
 trachea = 'Teal'
 main_bronchus = 'Green'
+bronchi_lobar = 'Olive'
 lungs = 'Green'
 lung = 'Lime'
 # Breast:

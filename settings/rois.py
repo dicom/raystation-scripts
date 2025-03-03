@@ -117,6 +117,8 @@ rib_y_r = ROI.ROI('Riby_R','Organ', COLORS.rib)
 ribs = ROI.ROI('Ribs','Organ', COLORS.ribs)
 main_bronchus_l = ROI.ROI('BronchusMain_L','Organ', COLORS.main_bronchus)
 main_bronchus_r = ROI.ROI('BronchusMain_R','Organ', COLORS.main_bronchus)
+bronchi_lobar_l = ROI.ROI('BronchiLobar_L','Organ', COLORS.bronchi_lobar)
+bronchi_lobar_r = ROI.ROI('BronchiLobar_R','Organ', COLORS.bronchi_lobar)
 # Spine SBRT:
 cauda_equina = ROI.ROI('CaudaEquina','Organ', COLORS.cauda)
 small_bowel = ROI.ROI('BowelSmall','Organ', COLORS.small_bowel)

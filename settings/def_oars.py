@@ -17,7 +17,7 @@ brain_stereotactic_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROI
 # Lung:
 lung_oars = [ROIS.lung_r, ROIS.lung_l, ROIS.lungs, ROIS.spinal_canal, ROIS.esophagus, ROIS.heart]
 # Stereotactic lung:
-lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.skin, ROIS.main_bronchus_r, ROIS.main_bronchus_l]
+lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.skin, ROIS.bronchi_lobar_l, ROIS.bronchi_lobar_r]
 
 
 # Prostate:
