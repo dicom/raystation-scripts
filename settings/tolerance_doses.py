@@ -188,8 +188,13 @@ spinalcanal_chemo_bid_40fx = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spina
 
 
 # Breast
-lung_v15_adx = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
-lung_v8_fastforward = EQD.Tolerance('Lung_L', 'Some failure', ab_lung, 5, 8, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+liver_mean_for_breast_rt = EQD.Tolerance('Liver', 'Risk for reduced liver function', ab_liver, 15, 3, 'Mean', 'Conventional RT')
+lung_v10_adx = EQD.Tolerance('Lung_L/R', 'Pneumonitis', ab_lung, fractions_breast_15, 16, 'Volume receiving tolerance dose being less than 10%', 'Conventional RT')
+lung_v15_adx = EQD.Tolerance('Lung_L/R', 'Pneumonitis', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
+lung_v20_adx = EQD.Tolerance('Lung_L/R', 'Pneumonitis', ab_lung, fractions_breast_15, 16, 'Volume receiving tolerance dose being less than 20%', 'Conventional RT')
+lung_mean_15fx = EQD.Tolerance('Lung_L/R', 'Pneumonitis', ab_lung, 15, 8, 'Mean', 'Conventional RT')
+lung_mean_15fx_secondary = EQD.Tolerance('Lung_L/R', 'Pneumonitis', ab_lung, 15, 4, 'Mean', 'Conventional RT')
+lung_v8_fastforward = EQD.Tolerance('Lung_L/R', 'Some failure', ab_lung, 5, 8, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 heart_mean_breast = EQD.Tolerance('Heart', 'Ischemic heart disease', ab_heart_darby, 1, 2, 'Mean', 'Conventional RT')
 heart_mean_breast_low_priority = EQD.Tolerance('Heart', 'Any cardiac event/Major cardiac event (AH Zureick et al, 2022)', ab_heart_darby, 0.4, 0.8, 'Mean', 'Conventional RT')
 heart_v7_fastforward = EQD.Tolerance('Heart', 'Some failure', ab_heart, 5, 7, 'Volume receiving tolerance dose being less than 5%', 'Conventional RT')
@@ -197,8 +202,8 @@ heart_v1_5_fastforward = EQD.Tolerance('Heart', 'Some failure', ab_heart, 5, 1.5
 heart_v13gy_import_high = EQD.Tolerance('Heart', 'Import HIGH protocol', ab_heart, 15, 13, 'Volume receiving tolerance dose being less than 10%', 'Conventional RT')
 lad_max = EQD.Tolerance('A_LAD', 'Any cardiac event/Major cardiac event (AH Zureick et al, 2022)', ab_lad, 3.35, 6.7, 'Max', 'Conventional RT')
 lad_mean = EQD.Tolerance('A_LAD', 'Any cardiac event/Major cardiac event (AH Zureick et al, 2022)', ab_lad, 1.4, 2.8, 'Mean', 'Conventional RT')
-contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 4, 'Mean', 'Conventional RT')
-contralat_breast_mean_young_patients = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 1, 'Mean', 'Conventional RT')
+contralat_breast_mean = EQD.Tolerance('Breast', 'Some failure', ab_breast, fractions_breast, 3, 'Mean', 'Conventional RT')
+contralat_breast_mean_young_patients = EQD.Tolerance('Breast', 'Some failure', ab_breast, 15, 1, 'Mean', 'Conventional RT')
 lung_v35_adx_25 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast, 20, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v35_adx_15 = EQD.Tolerance('Lung', 'Some failure', ab_lung, fractions_breast_15, 18, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v30 = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', 10, 4.305, 8.61, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
@@ -212,7 +217,9 @@ spinalcanal_breast = EQD.Tolerance('SpinalCanal', 'Myelopathy', ab_spinalcord_dm
 thyroid_mean = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 15, 21, 'Mean', 'Conventional RT')
 thyroid_mean_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 11.8, 'Mean', 'Conventional RT')
 thyroid_v8_5cc_adx_brt = EQD.Tolerance('ThyroidGland', 'Hypothyroidism', ab_thyroid, 25, 20, 'More than 8.5 cm^3 should receive less than the tolerance dose', 'Conventional RT')
-contralateral_lung_mean = EQD.Tolerance('Contralateral Lung', 'Secondary cancer risk', ab_lung, 25, 2, 'Mean', 'Conventional RT')
+contralateral_lung_mean = EQD.Tolerance('Contralateral Lung', 'Secondary cancer risk', ab_lung, 15, 1, 'Mean', 'Conventional RT')
+contralateral_lung_v10_adx = EQD.Tolerance('Lung_L/R', 'Secondary cancer risk', ab_lung, fractions_breast_15, 4.8, 'Volume receiving tolerance dose being less than 10%', 'Conventional RT')
+contralateral_lung_v15_adx = EQD.Tolerance('Lung_L/R', 'Secondary cancer risk', ab_lung, fractions_breast_15, 4.8, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 # Induration (for partial breast irradiation):
 ipsilateral_breast_177cc = EQD.Tolerance('Breast_L/R','5 % risk of induration', 3.6, 15, 40,'Volume receiving tolerance dose being less than 177 cc', 'Conventional RT' )
 ipsilateral_breast_426cc = EQD.Tolerance('Breast_L/R','10 % risk of induration', 3.6, 15, 40,'Volume receiving tolerance dose being less than 426 cc', 'Conventional RT' )
