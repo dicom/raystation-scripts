@@ -74,6 +74,8 @@ class Breast:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinalcanal_breast, 0.03, 2))
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean, None, 4))
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 5))
+      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.30, TOL.lung_v30, 7))
+      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.45, TOL.lung_v45, 7))
       # Thyroid absolute volume CG for regional breast:
       if SSF.has_named_roi_with_contours(ss, ROIS.thyroid.name):
         volume = ss.RoiGeometries[ROIS.thyroid.name].GetRoiVolume()
@@ -82,9 +84,17 @@ class Breast:
       if prescription.region_code in RC.breast_reg_l_codes:
         # Left side:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_mean_reg_15fx, None, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_mean_reg_15fx_secondary, None, 6))
+        oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.20, TOL.lung_v20, 6))
       elif prescription.region_code in RC.breast_reg_r_codes:
         # Right side:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx_15, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_mean_reg_15fx, None, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_mean_reg_15fx_secondary, None, 6))
+        oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.20, TOL.lung_v20, 6))
     else:
       # Non-regional breast:
       if prescription.region_code in RC.breast_l_codes:
@@ -159,6 +169,8 @@ class Breast:
       prescription_target = prescription.target
       if prescription.region_code in RC.breast_reg_codes:
         conformity_target = ROIS.ptv.name
+      elif prescription.region_code in RC.breast_partial_codes:
+        conformity_target = ROIS.ptv_sbc.name
       else:
         conformity_target = ROIS.ptv_c.name
     if prescription.region_code in RC.breast_reg_codes:
