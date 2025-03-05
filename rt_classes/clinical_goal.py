@@ -85,7 +85,7 @@ def setup_target(ss, es, prescription, cg):
   if SSF.has_roi(ss, cg.name):
     if cg.name in [ROIS.external.name, ROIS.igtv.name, ROIS.gtv.name] and cg.criteria == 'AtMost' and cg.tolerance != 5000:
       cg.apply_to(es, normalized_tolerance = round(cg.tolerance*prescription.total_dose*100,0))
-    elif cg.name in [ROIS.ctv_sb.name, ROIS.ptv_sbc.name] and target != ROIS.ctv_sb.name or cg.tolerance == 5000 or cg.type == homogeneity_index:
+    elif cg.name in [ROIS.ctv_sb.name, ROIS.ptv_sbc.name] and prescription.target != ROIS.ctv_sb.name or cg.tolerance == 5000 or cg.type == homogeneity_index:
       cg.apply_to(es)
     elif cg.type == conformity_index:
       cg.apply_to(es, normalized_value = round(cg.value*prescription.total_dose*100,0))
