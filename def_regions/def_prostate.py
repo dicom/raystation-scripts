@@ -95,7 +95,7 @@ class DefProstate(object):
       ptv_n = ROI.ROIExpanded(ROIS.ptv_n.name, ROIS.ptv_n.type, ROIS.ptv_n.color, source = ctv_n, margins = MARGINS.uniform_5mm_expansion)
       ptv_sb = ROI.ROIExpanded(ROIS.ptv_sb.name, ROIS.ptv_sb.type, ROIS.ptv_sb.color, source = ROIS.ctv_sb, margins = MARGINS.prostate_bed)
       if nodes == 'with_node_70':
-        # Positive node will have 70 Gy:        
+        # Positive node will have 70 Gy:
         ctv_70 = ROI.ROIAlgebra(ROIS.ctv_70.name, ROIS.ctv_70.type, COLORS.ctv_med, sourcesA = [ROIS.ctv_sb], sourcesB = [ctv_n], operator = 'Union')
         ptv_70 = ROI.ROIAlgebra(ROIS.ptv_70.name, ROIS.ptv_70.type, COLORS.ptv, sourcesA = [ptv_sb], sourcesB = [ptv_n], operator = 'Union', marginsA = MARGINS.zero , marginsB = MARGINS.zero)
         site.add_targets([ROIS.gtv_n, ctv_n, ptv_n, ptv_sb])
@@ -229,24 +229,6 @@ class DefProstate(object):
       site.add_targets([ptv_2_3])
       # Other derived ROIs:
       site.add_oars([wall_ptv3])
-    elif nodes == 'with_node':
-      # Elective nodes (with positive node):
-      # Targets:
-      ctv_n = ROI.ROIExpanded(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.pelvic_nodes, source = ROIS.gtv_n, margins = MARGINS.uniform_5mm_expansion)
-      ptv_n = ROI.ROIExpanded(ROIS.ptv_n.name, ROIS.ptv_n.type, ROIS.ptv_n.color, source = ctv_n, margins = MARGINS.prostate_lymph_nodes_seed_match)
-      ctv2 = ROI.ROIAlgebra(ctv2s.name, ctv2s.type, COLORS.ctv_med, sourcesA = [semves20, ctv_n], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.uniform_6mm_expansion, marginsB = MARGINS.zero)
-      ptv2 = ROI.ROIAlgebra(ptv2s.name, ptv2s.type, ptv2s.color, sourcesA = [ptv_semves, ptv_n], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      ptv_2_3 = ROI.ROIAlgebra(ptv_2_3s.name, ptv_2_3s.type, COLORS.ptv_low, sourcesA = [ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      ptv1 = ROI.ROIAlgebra(ptv1s.name, ptv1s.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_match, marginsB = MARGINS.zero)
-      ctv1 = ROI.ROIAlgebra(ctv1s.name, ctv1s.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      ptv_1_2_3 = ROI.ROIAlgebra(ptv_1_2_3s.name, ptv_1_2_3s.type, COLORS.ptv_low, sourcesA = [ptv1, ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      site.add_targets([ROIS.gtv_n, ctv_n, ctv1, ptv_n, ptv_semves, ptv1, ptv_2_3, ptv_1_2_3])
-      # OARs:
-      wall_ptv_2_3 = ROI.ROIWall(ptv_2_3w.name, ptv_2_3w.type, COLORS.wall, ptv_2_3, 1, 0)
-      wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
-      # Non-DL OARs:
-      site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
     elif nodes == 'with':
       # Elective nodes:
       # Targets:
@@ -262,6 +244,44 @@ class DefProstate(object):
       wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
       # Non-DL OARs:
       site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
+    else:
+      # Positive node (in addition to elective nodes):
+      ctv_n = ROI.ROIExpanded(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.pelvic_nodes, source = ROIS.gtv_n, margins = MARGINS.uniform_5mm_expansion)
+      ptv_n = ROI.ROIExpanded(ROIS.ptv_n.name, ROIS.ptv_n.type, ROIS.ptv_n.color, source = ctv_n, margins = MARGINS.prostate_lymph_nodes_seed_match)
+      if nodes == 'with_node_62.5':
+        # Positive node will have 62.5 Gy:
+        # Targets:
+        ctv2 = ROI.ROIAlgebra(ctv2s.name, ctv2s.type, COLORS.ctv_med, sourcesA = [semves20, ctv_n], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.uniform_6mm_expansion, marginsB = MARGINS.zero)
+        ptv2 = ROI.ROIAlgebra(ptv2s.name, ptv2s.type, ptv2s.color, sourcesA = [ptv_semves, ptv_n], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_2_3 = ROI.ROIAlgebra(ptv_2_3s.name, ptv_2_3s.type, COLORS.ptv_low, sourcesA = [ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv1 = ROI.ROIAlgebra(ptv1s.name, ptv1s.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_match, marginsB = MARGINS.zero)
+        ctv1 = ROI.ROIAlgebra(ctv1s.name, ctv1s.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_1_2_3 = ROI.ROIAlgebra(ptv_1_2_3s.name, ptv_1_2_3s.type, COLORS.ptv_low, sourcesA = [ptv1, ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        site.add_targets([ROIS.gtv_n, ctv_n, ctv1, ptv_n, ptv_semves, ptv1, ptv_2_3, ptv_1_2_3])
+        # OARs:
+        wall_ptv_2_3 = ROI.ROIWall(ptv_2_3w.name, ptv_2_3w.type, COLORS.wall, ptv_2_3, 1, 0)
+        wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
+        # Non-DL OARs:
+        site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
+      else:
+        # Positive node will have 60 Gy:
+        # Targets:
+        ctv2 = ROI.ROIExpanded(ctv2s.name, ctv2s.type, COLORS.ctv_med, source = semves20, margins = MARGINS.zero)
+        ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.uniform_6mm_expansion, marginsB = MARGINS.zero)
+        ptv2 = ROI.ROIAlgebra(ptv2s.name, ptv2s.type, ptv2s.color, sourcesA = [ptv_semves], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_2_3 = ROI.ROIAlgebra(ptv_2_3s.name, ptv_2_3s.type, COLORS.ptv_low, sourcesA = [ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ctv_60 = ROI.ROIAlgebra(ROIS.ctv__60.name, ROIS.ctv__60.type, COLORS.ctv_med, sourcesA = [ctv_n], sourcesB = [ptv2, ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_60 = ROI.ROIAlgebra(ROIS.ptv__60.name, ROIS.ptv__60.type, COLORS.ptv_med, sourcesA = [ctv_n], sourcesB = [ptv2, ptv3], operator = 'Subtraction', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.zero)
+        ptv1 = ROI.ROIAlgebra(ptv1s.name, ptv1s.type, COLORS.ptv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2, ptv_60], operator = 'Subtraction', marginsA = MARGINS.prostate_lymph_nodes_seed_match, marginsB = MARGINS.zero)
+        ctv1 = ROI.ROIAlgebra(ctv1s.name, ctv1s.type, COLORS.ctv_low, sourcesA = [ROIS.pelvic_nodes], sourcesB = [ptv3, ptv2, ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv_1_2_3 = ROI.ROIAlgebra(ptv_1_2_3s.name, ptv_1_2_3s.type, COLORS.ptv_low, sourcesA = [ptv1, ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        site.add_targets([ROIS.gtv_n, ctv_n, ctv_60, ctv1, ptv_n, ptv_semves, ptv_60, ptv1, ptv_2_3, ptv_1_2_3])
+        # OARs:
+        wall_ptv_2_3 = ROI.ROIWall(ptv_2_3w.name, ptv_2_3w.type, COLORS.wall, ptv_2_3, 1, 0)
+        wall_ptv_1_2_3 = ROI.ROIWall(ptv_1_2_3w.name, ptv_1_2_3w.type, COLORS.wall, ptv_1_2_3, 1, 0)
+        # Non-DL OARs:
+        site.add_oars([wall_ptv3, wall_ptv_2_3, wall_ptv_1_2_3])
     # Common ROIs for all conventional fractionation:
     site.add_targets([semves20, ctv3, ctv2, ptv3, ptv2])
   
