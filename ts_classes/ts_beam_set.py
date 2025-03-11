@@ -256,6 +256,11 @@ class TSBeamSet(object):
       ss = self.ts_structure_set().structure_set
       # Get the target geometry:
       roi = ss.RoiGeometries[self.prescription_roi_name()]
+      # For some regions with SIB prescription, an alternative target volume may be more appropriate to use:
+      if self.ts_label.label.region == 355:
+        roi = ss.RoiGeometries[ROIS.ptv_50_62_5_67_5.name]
+      elif self.ts_label.label.region == 356:
+        roi = ss.RoiGeometries[ROIS.ptv_56_70.name]
       target = roi.GetBoundingBox()
       target0 = target[0].z
       target1 = target[1].z
