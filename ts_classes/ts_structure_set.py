@@ -183,18 +183,18 @@ class TSStructureSet(object):
     else:
       return t.fail()
 
-  # Tests if there is a ROI called 'Prosthesis' and if the material is Titanium.
+  # Tests if there is a ROI called 'Prosthesis' and if the material is 'Titanium [Ti]'.
   def prosthesis_titanium_test(self):
-    t = TEST.Test("Hvis proteser er til stede, skal disse hete " + ROIS.prosthesis.name + ", " + ROIS.prosthesis_r.name + " eller " + ROIS.prosthesis_l.name + " og material skal være satt til 'Titanium'", None, self.param)
+    t = TEST.Test("Hvis proteser er til stede, skal disse hete " + ROIS.prosthesis.name + ", " + ROIS.prosthesis_r.name + " eller " + ROIS.prosthesis_l.name + " og material skal være satt til 'Titanium [Ti]'", None, self.param)
     invalid = []
     # Test for properly named ROI with invalid material:
     for rg in self.structure_set.RoiGeometries:
       if rg.OfRoi.Name in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name]:
-        if not rg.OfRoi.RoiMaterial or rg.OfRoi.RoiMaterial.OfMaterial.Name != 'Titanium':
+        if not rg.OfRoi.RoiMaterial or rg.OfRoi.RoiMaterial.OfMaterial.Name != 'Titanium [Ti]':
           invalid.append(rg.OfRoi.Name)
     # Test for ROI with prosthethic material but invalid name:
     for rg in self.structure_set.RoiGeometries:
-      if rg.OfRoi.RoiMaterial and rg.OfRoi.RoiMaterial.OfMaterial.Name == 'Titanium':
+      if rg.OfRoi.RoiMaterial and rg.OfRoi.RoiMaterial.OfMaterial.Name == 'Titanium [Ti]':
         if rg.OfRoi.Name not in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name]:
           invalid.append(rg.OfRoi.Name)
     if len(invalid) == 0:
