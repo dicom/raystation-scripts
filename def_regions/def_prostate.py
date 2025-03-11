@@ -47,22 +47,6 @@ class DefProstate(object):
     exclude = bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
     for roi in exclude:
       PMF.exclude_roi_from_export(pm, roi.name)
-    # Override density for vessel ROIs (may contain contrast and should be set to water for correct dose calculation):
-    vessel_rois = []
-    for roi_name in ["A_DescendingAorta", "A_CommonIliac_L", "A_CommonIliac_R", "A_ExternalIliac_L", "A_ExternalIliac_R", "A_InternalIliac_L", "A_InternalIliac_R", "V_InferiorVenaCava", "V_CommonIliac_L", "V_CommonIliac_R", "V_ExternalIliac_L", "V_ExternalIliac_R", "V_InternalIliac_L", "V_InternalIliac_R"]:
-      try:
-        if pm.RegionsOfInterest[roi_name]:
-          vessel_rois.append(roi_name)
-      except:
-        pass
-    water = None
-    for material in pm.Materials:
-      if material.Name == 'Water':
-        water = material
-        break
-    if water:
-      for roi_name in vessel_rois:
-        pm.RegionsOfInterest[roi_name].SetRoiMaterial(Material=water)
 
 
   # Adds target ROIs for prostate bed only to the site object.
