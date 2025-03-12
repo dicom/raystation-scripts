@@ -1,13 +1,10 @@
-﻿
-# Executes the QualityControl class which runs a suite of tests on the current patient,
+﻿# Executes the QualityControl class which runs a suite of tests on the current patient,
 # case and treatment plan (including ROIs, beam sets, beams, objectives, etc).
 #
 # Authors:
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
-#
-# Made for RayStation version: 12A
-# Python 3.8
+
 
 # System configuration:
 from connect import *
@@ -79,5 +76,18 @@ else:
   else:
     text += "\n\n" + "Tidsbruk: " + str(seconds) + " sek"
 
-# Display the messagebox GUI:
-messagebox.showinfo(title,text)
+# Display the messagebox GUI with a visible taskbar icon:
+# Create the root window:
+root = Tk()
+# Hide the root window
+root.withdraw()
+# Set the taskbar icon:
+root.iconbitmap(r'C:\temp\raystation-scripts\media\icons\qc.ico')
+# Show the root window (so it has a taskbar presence):
+root.deiconify()
+# Set title:
+root.title("Plan Quality Control")
+# Show the message box:
+messagebox.showinfo(title, text)
+# Close the root window after the messagebox is dismissed:
+root.destroy()
