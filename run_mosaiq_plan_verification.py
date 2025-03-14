@@ -92,5 +92,18 @@ else:
   else:
     text += "\n\n" + "Tidsbruk: " + str(seconds) + " sek"
 
-# Display the messagebox GUI:
-messagebox.showinfo(title,text)
+# Display the messagebox GUI with a visible taskbar icon:
+# Create the root window:
+root = Tk()
+# Hide the root window:
+root.withdraw()
+# Set the taskbar icon:
+root.iconbitmap(r'C:\temp\raystation-scripts\media\icons\qc.ico')
+# Show the root window (so it has a taskbar presence):
+root.deiconify()
+# Set title:
+root.title("Plan Quality Control")
+# Show the message box:
+messagebox.showinfo(title, text)
+# Close the root window after the messagebox is dismissed:
+root.destroy()
