@@ -138,7 +138,7 @@ class TSCase(object):
     primary_date = primary.GetExaminationDateTime()
     for examination in self.case.Examinations:
       current_date = examination.GetExaminationDateTime()
-      if current_date:
+      if current_date and primary_date:
         if current_date > primary_date:
           description = examination.GetAcquisitionDataFromDicom()['SeriesModule']['SeriesDescription']
           frame_uid = examination.EquipmentInfo.FrameOfReference
