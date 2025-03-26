@@ -3,6 +3,7 @@
 # Import local files:
 import colors as COLORS
 import def_oars as DEF
+import margin as MARGIN
 import margins as MARGINS
 import patient_model_functions as PMF
 import roi as ROI
@@ -14,7 +15,7 @@ class DefBreast(object):
 
 
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
-  def __init__(self, pm, examination, ss, choices, site):
+  def __init__(self, case, pm, examination, ss, choices, site):
     # Choice 1: Local/Regional/Regional with IMN
     region = choices[1]
     # Choice 2: Side - Left or right?
@@ -65,10 +66,12 @@ class DefBreast(object):
         ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.ctv_l], sourcesB = [ROIS.ctv_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ptvc_l, ROIS.ptvc_r], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         site.add_targets([ctv, ptv])
+    # Setup ROIs for simulated organ motion (SOM):
+    self.add_simulated_organ_motion_rois(pm, examination, ss, site, side, boost, bilateral=False)
     # Create all targets and OARs in RayStation:
     site.create_rois()
     # Modify ROI type/organ type:
-    for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R']:
+    for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R', 'zSOM_Robustness_L', 'zSOM_Robustness_R', 'zSOM_Breast_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R-Chestwall_Exp', 'zSOM_Chestwall_L', 'zSOM_Chestwall_R']:
       try:
         pm.RegionsOfInterest[roi_name].Type = 'Control'
         pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
@@ -100,6 +103,29 @@ class DefBreast(object):
           pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
     # Override the density of the breast string to 'Air' (since it is not present on treatments):
     self.set_breaststring_density(pm)
+    # Underive ROIs:
+    try:
+      if side == 'right':
+        pm.RegionsOfInterest['zSOM_Chestwall_R'].DeleteExpression()
+        pm.RegionsOfInterest['zSOM_Breast_R-Chestwall_Exp'].DeleteExpression()
+      else:
+        pm.RegionsOfInterest['zSOM_Chestwall_L'].DeleteExpression()
+        pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
+    except:
+      pass
+    # Simulate organ motion - Generate CT-series for deformed (expanded) breast:
+    if side == 'right':
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
+      inferior_margin = 0
+      if breast_volume > 1000:
+        inferior_margin = 1
+      case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+    else:
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
+      inferior_margin = 0
+      if breast_volume > 1000:
+        inferior_margin = 1
+      case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
 
   
   # Adds rois that are common across all cases.
@@ -249,17 +275,61 @@ class DefBreast(object):
     # IMN:
     if include_imn:
       ctv_n.sourcesA.extend([imn])
-    # Robustness evaluation volume:
-    if side == 'right':
-      ptv_robustness = ROI.ROIExpanded('PTV_Robustness'+suffix, ROIS.ptv.type, COLORS.ptv_breast, ptv_p, margins = MARGINS.breast_right_robustness)
-    else:
-      ptv_robustness = ROI.ROIExpanded('PTV_Robustness'+suffix, ROIS.ptv.type, COLORS.ptv_breast, ptv_p, margins = MARGINS.breast_left_robustness)
     # Common targets for all regional:
-    site.add_targets([ctv_p, ctv_n, ctv, ptv_p, ptv_n, ptv, ptv_robustness])
+    site.add_targets([ctv_p, ctv_n, ctv, ptv_p, ptv_n, ptv])
     # Add targets for boost (2 Gy x 8) if indicated:
     if boost == 'with':
       self.add_boost(site, side, ctv, ptv, ctv_p, ptv_p)
   
+  
+  # Adds ROIs used for simulated organ motion.
+  def add_simulated_organ_motion_rois(self, pm, examination, ss, site, side, boost, bilateral):
+    # Make an expanded volume based on the lung:
+    if side == 'right':
+      som_lung_exp = ROI.ROIAlgebra('zSOM_Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+    else:
+      som_lung_exp = ROI.ROIAlgebra('zSOM_Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+    # Determine distance from lung to external by iterative expansion:
+    has_contours = False
+    expansion = 2.0
+    while not has_contours:
+      if side == 'right':
+        m = MARGIN.Expansion(0, 0, expansion, 0, expansion, expansion)
+        exp_external_algebra = ROI.ROIAlgebra('zSOM_Chestwall_Exp_External', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
+      else:
+        m = MARGIN.Expansion(0, 0, expansion, 0, expansion, expansion)
+        exp_external_algebra = ROI.ROIAlgebra('zSOM_Chestwall_Exp_External', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
+      exp_external_roi = PMF.create_algebra_roi(pm, examination, ss, exp_external_algebra)
+      has_contours = ss.RoiGeometries[exp_external_roi.Name].HasContours()
+      expansion += 0.25
+    # Clean up temporary ROI:
+    PMF.delete_roi(pm, exp_external_algebra.name)
+    # Create a subtraction volume of the breast minus the lung expanded towards the external boundary:
+    if side == 'right':
+      breast_surface = ROI.ROIAlgebra('zSOM_Breast_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      outer_breast_prelimenary = ROI.ROIAlgebra('zSOM_Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast = ROI.ROIAlgebra('zSOM_Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary], sourcesB = [breast_surface], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    else:
+      breast_surface = ROI.ROIAlgebra('zSOM_Breast_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      outer_breast_prelimenary = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l, ROIS.heart], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary], sourcesB = [breast_surface], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    # Robustness and wall ROIs:
+    if side == 'right':
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
+      inferior_margin = 0.5
+      if breast_volume > 1000:
+        inferior_margin = 1.5
+      som_robustness = ROI.ROIAlgebra('zSOM_Robustness_R', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast], sourcesB = [ROIS.breast_r], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 1.5, 0), marginsB = MARGINS.zero)
+      wall = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ROIS.breast_r, 1.5, 0)
+    else:
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
+      inferior_margin = 0.5
+      if breast_volume > 1000:
+        inferior_margin = 1.5
+      som_robustness = ROI.ROIAlgebra('zSOM_Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
+      wall = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ROIS.breast_l, 1.5, 0)
+    site.add_targets([som_robustness, wall])
+    
   
   # Adds whole breast (left or right) ROIs to the site object.
   def add_whole_breast(self, pm, examination, site, side, boost, bilateral):
@@ -279,13 +349,8 @@ class DefBreast(object):
     # Targets:
     ctv = ROI.ROIAlgebra(ROIS.ctv.name+suffix, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [breast_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
     ptv = ROI.ROIAlgebra(ROIS.ptv_c.name+suffix, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    # Robustness evaluation volume:
-    if side == 'right':
-      ptv_robustness = ROI.ROIExpanded('PTV_Robustness'+suffix, ROIS.ptv.type, COLORS.ptv_breast, ptv, margins = MARGINS.breast_right_robustness)
-    else:
-      ptv_robustness = ROI.ROIExpanded('PTV_Robustness'+suffix, ROIS.ptv.type, COLORS.ptv_breast, ptv, margins = MARGINS.breast_left_robustness)
     # Targets for whole breast:
-    site.add_targets([ctv, ptv, ptv_robustness])
+    site.add_targets([ctv, ptv])
     # Add targets for boost (2 Gy x 8) if indicated:
     if boost == 'with':
       self.add_boost(site, side, ctv, ptv)

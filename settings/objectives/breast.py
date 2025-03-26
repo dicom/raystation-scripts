@@ -106,6 +106,8 @@ class Breast:
         # Sided targets:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', lower_dose*100*0.95, 100, beam_set_index=i))
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', lower_dose*100*0.95, 100, beam_set_index=i))
+      # Wall:
+      targets.append(OF.max_dose(ss, plan, ROIS.z_ptv_wall.name, lower_dose.total_dose*100*1.05, 200, beam_set_index=i))
     else:
       # Non-boost treatment:
       # CTV:
@@ -123,6 +125,8 @@ class Breast:
         # Sided targets:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100, beam_set_index=i))
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100, beam_set_index=i))
+      # Wall:
+      targets.append(OF.max_dose(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100*1.05, 200, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
   

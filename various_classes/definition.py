@@ -56,7 +56,7 @@ class Definition(object):
       DEF_LUNG.DefLung(pm, examination, ss, choices, site)
     elif region == 'breast':
       import def_breast as DEF_BREAST
-      DEF_BREAST.DefBreast(pm, examination, ss, choices, site)
+      DEF_BREAST.DefBreast(case, pm, examination, ss, choices, site)
     elif region == 'bladder':
       import def_bladder as DEF_BLADDER
       DEF_BLADDER.DefBladder(pm, examination, ss, choices, site)

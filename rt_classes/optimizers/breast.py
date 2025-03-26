@@ -18,10 +18,11 @@ class Breast(object):
   # -Plan
   # -Site
   # -Region code
-  def __init__(self, ss, plan, site, prescription):
+  def __init__(self, case, ss, plan, site, prescription):
     # Verify input:
     #assert isinstance(choices, list), "choices is not a list: %r" % choices
     # Assign parameters:
+    self.case = case
     self.ss = ss
     self.plan = plan
     self.site = site
@@ -46,7 +47,9 @@ class Breast(object):
         elif objective.ForRegionOfInterest.Type in ['Organ']:
           organ_objectives.append(objective)
         elif objective.ForRegionOfInterest.Type in ['Gtv', 'Ctv', 'Ptv']:
-          target_objectives.append(objective)   
+          target_objectives.append(objective)
+        elif 'Wall' in objective.ForRegionOfInterest.Name:
+          external_objectives.append(objective)
       # Configure optimization settings:
       optimization_parameters = OPT.sliding_window
       # Set MU limit based on fraction dose:
@@ -75,19 +78,15 @@ class Breast(object):
       if self.has_objective_with_positive_dose_and_further_dose_reduction_potential(organ_objectives):
         nr_reduction_iterations = self.reduce_organ_doses(po, organ_objectives, target_objectives, counter=1)
       # Preparation for third phase:
-      # Set robustness:
       # (since apparently the PlanOptimization script objects cannot be compared directly, we compare their related beam set numbers instead to establish equality)
       if po.OptimizedBeamSets[0].Number == self.plan.PlanOptimizations[0].OptimizedBeamSets[0].Number:
-        # Set robustness settings:
-        if self.prescription.region_code in RC.breast_r_codes:
-          # Right:
-          po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=1, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
-        elif self.prescription.region_code in RC.breast_l_codes:
-          # Left:
-          po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=1, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
-        elif self.prescription.region_code in RC.breast_bilateral_codes:
-          # Bilateral:
-          po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=1, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=[], PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000)
+        # Collect examinations to use for SOM robustness:
+        som_examinations = []
+        for e in self.case.Examinations:
+          if 'SOM' in e.Name:
+            som_examinations.append(e.Name)
+        # Set SOM robustness settings:
+        po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=0, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, UseReducedSetOfDensityShifts=False, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=som_examinations, PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000, PositionUncertaintyList=None, PositionUncertaintyFormation="Automatic", RobustMethodPerTreatmentCourse="WeightedPowerMean")
         # Set robustness for PTV min & max dose:
         # (But not max dose for PTVc/PTVpc in SIB cases, as this will conflict with min dose of PTVsbc)
         for obj in target_objectives:

@@ -190,7 +190,7 @@ class Plan(object):
 
 
     # Determine site:
-    site = SF.site(pm, examination, ss, plan, prescriptions, target)
+    site = SF.site(case, pm, examination, ss, plan, prescriptions, target)
 
 
     # Use robust optimization for breast:

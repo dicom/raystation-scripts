@@ -33,7 +33,9 @@ def bolus_names(pm):
 # Creates an algebra roi from a ROIAlgebra object.
 def create_algebra_roi(pm, examination, ss, roi):
   if not SSF.has_roi(ss, roi.name):
-    pm.CreateRoi(Name = roi.name, Color = roi.color, Type = roi.type)
+    rs_roi = pm.CreateRoi(Name = roi.name, Color = roi.color, Type = roi.type)
+  else:
+    rs_roi = pm.RegionsOfInterest[roi.name]
   # Get ROI geometry:
   roi_geometry = SSF.rg(ss, roi.name)
   # Make sure that all ROI sources exists:
@@ -64,6 +66,7 @@ def create_algebra_roi(pm, examination, ss, roi):
       GUIF.handle_failed_creation_of_roi(roi.name)
   else:
     GUIF.handle_missing_roi_for_derived_rois(roi.name, missing)
+  return rs_roi
 
 
 # Creates a couch (support) ROI from a couch template.

@@ -35,7 +35,7 @@ def lung(ss, plan, prescription, target):
 
 
 # Breast:
-def breast(ss, plan, prescription, target):
+def breast(case, ss, plan, prescription, target):
   obj = objectives.Breast(ss, plan, prescription)
   cg = clinical_goals.Breast(ss, plan, prescription)
   site = SITE.Site(RC.breast_codes, obj.oars, obj.targets, cg.oars, cg.targets)
@@ -43,7 +43,7 @@ def breast(ss, plan, prescription, target):
   if prescription.region_code in RC.breast_bilateral_codes:
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
-  site.optimizer = optimizers.Breast(ss, plan, site, prescription)
+  site.optimizer = optimizers.Breast(case, ss, plan, site, prescription)
   return site
 
 
@@ -101,7 +101,7 @@ def bladder(ss, plan, prescription):
 
 
 # Determines the site from the region code.
-def site(pm, examination, ss, plan, prescriptions, target):
+def site(case, pm, examination, ss, plan, prescriptions, target):
   ignore_identical = False
   prescription = prescriptions[0]
   if prescription.region_code in RC.brain_codes:
@@ -113,7 +113,7 @@ def site(pm, examination, ss, plan, prescriptions, target):
     site = brain(pm, examination, ss, plan, prescription)
   elif prescription.region_code in RC.breast_codes:
     # Breast:
-    site = breast(ss, plan, prescription, target)
+    site = breast(case, ss, plan, prescription, target)
   elif prescription.region_code in RC.lung_and_mediastinum_codes:
     # Lung:
     site = lung(ss, plan, prescription, target)
