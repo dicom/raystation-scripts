@@ -99,7 +99,7 @@ class Lung:
         elif prescription.region_code in [247, 249]:
           # Left:
           oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx, 0.1, 3))
-          oars.append(CG.ClinicalGoal(ROIS.brac7hial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_5fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_5fx, 0, 6))
         else:
