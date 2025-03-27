@@ -111,7 +111,7 @@ class Breast:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', lower_dose*100*0.95, 100, beam_set_index=i))
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', lower_dose*100*0.95, 100, beam_set_index=i))
       # Wall:
-      targets.append(OF.max_dose(ss, plan, wall_name, lower_dose.total_dose*100*1.05, 200, beam_set_index=i))
+      targets.append(OF.max_dose(ss, plan, wall_name, lower_dose*100*1.05, 200, beam_set_index=i))
     else:
       # Non-boost treatment:
       # CTV:
