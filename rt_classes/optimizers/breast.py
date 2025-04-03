@@ -91,11 +91,11 @@ class Breast(object):
         # (But not max dose for PTVc/PTVpc in SIB cases, as this will conflict with min dose of PTVsbc)
         for obj in target_objectives:
           if self.prescription.region_code in RC.breast_whole_codes:
-            if obj.ForRegionOfInterest.Name == 'PTVc':
+            if obj.ForRegionOfInterest.Name in ['PTVc', 'zPTVc-PTVsbc']:
               # For SIB, the max dose objective is set to 'PTVc-PTVsbc', thus max dose robustness will not be applied here.
               obj.UseRobustness = True
           elif self.prescription.region_code in RC.breast_reg_codes:
-            if obj.ForRegionOfInterest.Name == 'PTVpc':
+            if obj.ForRegionOfInterest.Name in ['PTVpc', 'zPTVpc-PTVsbc']:
               # For SIB, the max dose objective is set to 'PTVpc-PTVsbc', thus max dose robustness will not be applied here.
               obj.UseRobustness = True
       # Proceed to third opimization phase: Increase weights for targets to fullfil target clincal goals.
