@@ -80,6 +80,10 @@ class Breast(object):
       # Preparation for third phase:
       # (since apparently the PlanOptimization script objects cannot be compared directly, we compare their related beam set numbers instead to establish equality)
       if po.OptimizedBeamSets[0].Number == self.plan.PlanOptimizations[0].OptimizedBeamSets[0].Number:
+        # Determine examination used for this treatment plan:
+        examination = self.plan.BeamSets[0].GetPlanningExamination()
+        # Create SOM CT image series:
+        self.create_som_series(examination)
         # Collect examinations to use for SOM robustness:
         som_examinations = []
         for e in self.case.Examinations:
@@ -120,7 +124,23 @@ class Breast(object):
       else:
         optimization_comment += "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
       po.OptimizedBeamSets[0].Comment = optimization_comment
-
+  
+  # Simulate organ motion - Generate CT-series for deformed (expanded) breast:
+  def create_som_series(self, examination):
+    pm = self.case.PatientModel
+    if self.prescription.region_code in RC.breast_r_codes:
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
+      inferior_margin = 0
+      if breast_volume > 1000:
+        inferior_margin = 1
+      self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+    else:
+      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
+      inferior_margin = 0
+      if breast_volume > 1000:
+        inferior_margin = 1
+      self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+  
   # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
   # Returns True if coverage is fulfilled, False if not.
   # Note that for objectives which are not evaluated (e.q. Dose fall-off), True is returned.

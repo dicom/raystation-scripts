@@ -114,19 +114,6 @@ class DefBreast(object):
         pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
     except:
       pass
-    # Simulate organ motion - Generate CT-series for deformed (expanded) breast:
-    if side == 'right':
-      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
-      inferior_margin = 0
-      if breast_volume > 1000:
-        inferior_margin = 1
-      case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
-    else:
-      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
-      inferior_margin = 0
-      if breast_volume > 1000:
-        inferior_margin = 1
-      case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
 
   
   # Adds rois that are common across all cases.
