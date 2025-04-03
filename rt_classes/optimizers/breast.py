@@ -259,7 +259,7 @@ class Breast(object):
         for obj in po.Objective.ConstituentFunctions:
           if hasattr(obj.DoseFunctionParameters, 'FunctionType'):
             if obj.ForRegionOfInterest.Name == ipsilateral_lung and obj.DoseFunctionParameters.FunctionType == 'MaxDvh':
-              obj.DoseFunctionParameters.Weight = round(obj.DoseFunctionParameters.Weight * weight_factor * 2)
+              obj.DoseFunctionParameters.Weight = round(min(obj.DoseFunctionParameters.Weight * weight_factor * 2, weight_limit))
     # Adjustments have been made. Proceed with new optimization:
     po.RunOptimization()
     # If counter is below threshold, and some target objectives are still unfulfilled, repeat target dose escalation:
