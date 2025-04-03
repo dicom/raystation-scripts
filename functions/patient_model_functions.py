@@ -568,7 +568,9 @@ def exclude_rois_from_export(pm):
   for pm_roi in pm.RegionsOfInterest:
     if pm_roi.Type == 'Undefined':
       if not pm_roi.ExcludeFromExport:
-        exclude_list.append(pm_roi.Name)
+        # Make sure that we dont exlude any 'Mask' ROIs:
+        if not 'Mask' in pm_roi.Name:
+          exclude_list.append(pm_roi.Name)
   if len(exclude_list) > 0:
     pm.ToggleExcludeFromExport(ExcludeFromExport = True, RegionOfInterests=exclude_list, PointsOfInterests=[])
 
