@@ -89,8 +89,9 @@ class DefRectum(object):
       gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
       site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
     # Common for groin included or not:
-    ctv_p_default = ROI.ROIExpanded('CTVp_default', ROIS.ctv_50.type, COLORS.ctv_high, source = gtv, margins = MARGINS.uniform_10mm_expansion)
-    ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[gtv], sourcesB=[ROIS.ctv_e], operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion)
+    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     if groin == 'with':
@@ -108,7 +109,7 @@ class DefRectum(object):
     # Targets:
     ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, COLORS.ctv_alt, sourcesA = [ctv_47], sourcesB = [ctv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     ptv_47_50 = ROI.ROIAlgebra(ROIS.ptv_47_50.name, ROIS.ptv_47_50.type, COLORS.ptv_low, sourcesA = [ptv_47], sourcesB = [ptv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    site.add_targets([ROIS.ctv_e, ctv_p_default, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
+    site.add_targets([ROIS.ctv_e, ctv_p, ctv_n, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
     # OARs:
     wall_ptv_50 = ROI.ROIWall(ROIS.z_ptv_50_wall.name, ROIS.z_ptv_50_wall.type, COLORS.wall, ptv_50, 0.5, 0)
     wall_ptv_47_50 = ROI.ROIWall(ROIS.z_ptv_47_50_wall.name, ROIS.z_ptv_47_50_wall.type, COLORS.wall, ptv_47_50, 0.5, 0)
