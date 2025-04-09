@@ -562,15 +562,20 @@ def delete_derived_or_empty_contoured_roi(pm, roi):
       break
 
 
-# Exclude 'Undefined' ROIs from the export.
+# Exclude 'Other' & 'Undefined' ROIs from the export (as well as some other selected ROIs).
 def exclude_rois_from_export(pm):
+  whitelist = ['Clips_L', 'Clips_R', 'Mask_PTV', 'Mask_PTV1', 'Mask_PTV2', 'Mask_PTV3', 'Mask_PTV4', 'SurgicalBed_L', 'SurgicalBed_R', 'zSOM_Robustness_L', 'zSOM_Robustness_R']
+  organ_exclude = ['BowelBag_Draft', 'Brain-Brainstem', 'Brain-GTV', 'Brain-PTV', 'Lungs-IGTV']
   exclude_list = []
   for pm_roi in pm.RegionsOfInterest:
-    if pm_roi.Type == 'Undefined':
+    if pm_roi.Type in ['Control', 'Other', 'Undefined']:
+      # ROIs of these types will be excluded from export unless they are whitelisted:
       if not pm_roi.ExcludeFromExport:
-        # Make sure that we dont exlude any 'Mask' ROIs:
-        if not 'Mask' in pm_roi.Name:
+        if not pm_roi.Name in whitelist:
           exclude_list.append(pm_roi.Name)
+    elif pm_roi.Name in organ_exclude:
+      # ROIs of these types will be included from export unless they are marked for exclusion:
+      exclude_list.append(pm_roi.Name)
   if len(exclude_list) > 0:
     pm.ToggleExcludeFromExport(ExcludeFromExport = True, RegionOfInterests=exclude_list, PointsOfInterests=[])
 
