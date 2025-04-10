@@ -83,12 +83,11 @@ class Breast(object):
         # Determine examination used for this treatment plan:
         examination = self.plan.BeamSets[0].GetPlanningExamination()
         # Create SOM CT image series:
-        self.create_som_series(examination)
+        som_group = self.create_som_series(examination)
         # Collect examinations to use for SOM robustness:
         som_examinations = []
-        for e in self.case.Examinations:
-          if 'SOM' in e.Name:
-            som_examinations.append(e.Name)
+        for item in som_group.Items:
+          som_examinations.append(item.Examination.Name)
         # Set SOM robustness settings:
         po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=0, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, UseReducedSetOfDensityShifts=False, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=som_examinations, PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000, PositionUncertaintyList=None, PositionUncertaintyFormation="Automatic", RobustMethodPerTreatmentCourse="WeightedPowerMean")
         # Set robustness for PTV min & max dose:
@@ -125,21 +124,40 @@ class Breast(object):
         optimization_comment += "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
       po.OptimizedBeamSets[0].Comment = optimization_comment
   
-  # Simulate organ motion - Generate CT-series for deformed (expanded) breast:
+  # Simulate organ motion - Generate CT-series for deformed (expanded) breast.
+  # Note that if a SOM series already exists which is based on the given examination,
+  # we will not create a new SOM series (as we assume that in this case the new plan will use the existing SOM series).
   def create_som_series(self, examination):
     pm = self.case.PatientModel
-    if self.prescription.region_code in RC.breast_r_codes:
-      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
-      inferior_margin = 0
-      if breast_volume > 1000:
-        inferior_margin = 1
-      self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+    # Test if an existing SOM series exists for the given examination:
+    existing_som_group = None
+    for ex_group in self.case.ExaminationGroups:
+      if ex_group.Items[0].Examination.ReferenceExamination.Name == examination.Name:
+        existing_som_group = ex_group
+    # Create new series if one doesnt already exist:
+    if not existing_som_group:
+      if self.prescription.region_code in RC.breast_r_codes:
+        breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
+        inferior_margin = 0
+        if breast_volume > 1000:
+          inferior_margin = 1
+        new_som_group = self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+      else:
+        breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
+        inferior_margin = 0
+        if breast_volume > 1000:
+          inferior_margin = 1
+        new_som_group = self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+      # Determine the SOM group which was created:
+      for ex_group in self.case.ExaminationGroups:
+        if ex_group.Items[0].Examination.ReferenceExamination.Name == examination.Name:
+          new_som_group = ex_group
+          break
+    if existing_som_group:
+      som_group = existing_som_group
     else:
-      breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
-      inferior_margin = 0
-      if breast_volume > 1000:
-        inferior_margin = 1
-      self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+      som_group = new_som_group
+    return som_group
   
   # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
   # Returns True if coverage is fulfilled, False if not.
