@@ -27,30 +27,34 @@ class DefBreast(object):
       # Partial breast only:
       self.add_partial_breast(pm, examination, site, side)
       boost = 'without'
+      bilateral = False
     else:
-      # Whole breast (with or without regional nodes):
       # Choice 3: With our without boost?
       boost = choices[3]
       if region == 'whole':
-        self.add_whole_breast(pm, examination, site, side, boost, bilateral=False)
+        # Whole breast (with or without regional nodes):
+        bilateral = False
+        self.add_whole_breast(pm, examination, site, side, boost, bilateral)
       elif region in ['regional', 'regional_imn']:
         # Regional breast (with or without IMN):
+        bilateral = False
         if region == 'regional_imn':
-          self.add_regional_breast(pm, examination, site, side, boost, bilateral=False, include_imn=True)
+          self.add_regional_breast(pm, examination, site, side, boost, bilateral, include_imn=True)
         else:
-          self.add_regional_breast(pm, examination, site, side, boost, bilateral=False, include_imn=False)
+          self.add_regional_breast(pm, examination, site, side, boost, bilateral, include_imn=False)
       else:
         # Bilateral:
+        bilateral = True
         bilateral_left_side_target = choices[2]
         bilateral_right_side_target = choices[3]
         if bilateral_left_side_target == 'bilateral_left_whole':
-          self.add_whole_breast(pm, examination, site, 'left', boost, bilateral=True)
+          self.add_whole_breast(pm, examination, site, 'left', boost, bilateral)
         else:
-          self.add_regional_breast(pm, examination, site, 'left', boost, bilateral=True, include_imn=True)
+          self.add_regional_breast(pm, examination, site, 'left', boost, bilateral, include_imn=True)
         if bilateral_right_side_target == 'bilateral_right_whole':
-          self.add_whole_breast(pm, examination, site, 'right', boost, bilateral=True)
+          self.add_whole_breast(pm, examination, site, 'right', boost, bilateral)
         else:
-          self.add_regional_breast(pm, examination, site, 'right', boost, bilateral=True, include_imn=True)
+          self.add_regional_breast(pm, examination, site, 'right', boost, bilateral, include_imn=True)
         # If at least one side is locoregional, we should have a PTVpc union:
         if bilateral_left_side_target != 'bilateral_left_whole' or bilateral_right_side_target != 'bilateral_right_whole':
           if bilateral_left_side_target == 'bilateral_left_whole':
@@ -68,11 +72,11 @@ class DefBreast(object):
         ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ptvc_l, ROIS.ptvc_r], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         site.add_targets([ctv, ptv])
     # Setup ROIs for simulated organ motion (SOM):
-    self.add_simulated_organ_motion_rois(pm, examination, ss, site, side, region, boost, bilateral=False)
+    self.add_simulated_organ_motion_rois(pm, examination, ss, site, side, region, boost, bilateral)
     # Create all targets and OARs in RayStation:
     site.create_rois()
     # Modify ROI type/organ type:
-    for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R', 'zSOM_Robustness_L', 'zSOM_Robustness_R', 'zSOM_Breast_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R-Chestwall_Exp', 'zSOM_Chestwall_L', 'zSOM_Chestwall_R']:
+    for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R', 'zSOM_Robustness_L', 'zSOM_Robustness_R', 'zSOM_Breast_L_Surface', 'zSOM_Breast_R_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R-Chestwall_Exp', 'zSOM_Chestwall_L', 'zSOM_Chestwall_R']:
       try:
         pm.RegionsOfInterest[roi_name].Type = 'Control'
         pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
@@ -104,12 +108,18 @@ class DefBreast(object):
           pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
     # Override the density of the breast string to 'Air' (since it is not present on treatments):
     self.set_breaststring_density(pm)
-    # Underive ROIs:
+    # Underive ROIs (used for Simulate organ motion):
     try:
       if side == 'right':
         pm.RegionsOfInterest['zSOM_Chestwall_R'].DeleteExpression()
         pm.RegionsOfInterest['zSOM_Breast_R-Chestwall_Exp'].DeleteExpression()
+      elif side == 'left':
+        pm.RegionsOfInterest['zSOM_Chestwall_L'].DeleteExpression()
+        pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
       else:
+        # Bilateral:
+        pm.RegionsOfInterest['zSOM_Chestwall_R'].DeleteExpression()
+        pm.RegionsOfInterest['zSOM_Breast_R-Chestwall_Exp'].DeleteExpression()
         pm.RegionsOfInterest['zSOM_Chestwall_L'].DeleteExpression()
         pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
     except:
@@ -294,11 +304,11 @@ class DefBreast(object):
     PMF.delete_roi(pm, exp_external_algebra.name)
     # Create a subtraction volume of the breast minus the lung expanded towards the external boundary:
     if side == 'right':
-      breast_surface = ROI.ROIAlgebra('zSOM_Breast_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      breast_surface = ROI.ROIAlgebra('zSOM_Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
       outer_breast_prelimenary = ROI.ROIAlgebra('zSOM_Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
       outer_breast = ROI.ROIAlgebra('zSOM_Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary], sourcesB = [breast_surface], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     else:
-      breast_surface = ROI.ROIAlgebra('zSOM_Breast_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      breast_surface = ROI.ROIAlgebra('zSOM_Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
       outer_breast_prelimenary = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l, ROIS.heart], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
       outer_breast = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary], sourcesB = [breast_surface], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     # Robustness and wall ROIs:
@@ -316,6 +326,10 @@ class DefBreast(object):
       som_robustness = ROI.ROIAlgebra('zSOM_Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
     self.add_wall(site, side, region, boost)
     site.add_targets([som_lung_exp, breast_surface, outer_breast_prelimenary, outer_breast, som_robustness])
+    # If bilateral, execute this function again with side right and bilateral False (as in this first run, left side structures have been created):
+    if bilateral:
+      side = 'right'
+      self.add_simulated_organ_motion_rois(pm, examination, ss, site, side, region, boost, bilateral=False)
     
   
   # Adds a target wall ROI.

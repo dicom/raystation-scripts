@@ -128,8 +128,11 @@ class Breast:
         # Sided targets:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100, beam_set_index=i))
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100, beam_set_index=i))
-      # Wall:
-      if prescription.region_code not in RC.breast_partial_codes:
+        # Wall:
+        targets.append(OF.max_dose(ss, plan, 'zCTV_R_Wall', prescription.total_dose*100*1.05, 200, beam_set_index=i))
+        targets.append(OF.max_dose(ss, plan, 'zCTV_L_Wall', prescription.total_dose*100*1.05, 200, beam_set_index=i))
+      elif prescription.region_code not in RC.breast_partial_codes:
+        # Wall:
         targets.append(OF.max_dose(ss, plan, wall_name, prescription.total_dose*100*1.05, 200, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]

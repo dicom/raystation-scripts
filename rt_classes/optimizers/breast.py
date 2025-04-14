@@ -83,11 +83,12 @@ class Breast(object):
         # Determine examination used for this treatment plan:
         examination = self.plan.BeamSets[0].GetPlanningExamination()
         # Create SOM CT image series:
-        som_group = self.create_som_series(examination)
+        som_groups = self.create_som_series(examination)
         # Collect examinations to use for SOM robustness:
         som_examinations = []
-        for item in som_group.Items:
-          som_examinations.append(item.Examination.Name)
+        for som_group in som_groups:
+          for item in som_group.Items:
+            som_examinations.append(item.Examination.Name)
         # Set SOM robustness settings:
         po.OptimizationParameters.SaveRobustnessParameters(PositionUncertaintyAnterior=0, PositionUncertaintyPosterior=0, PositionUncertaintySuperior=0, PositionUncertaintyInferior=0, PositionUncertaintyLeft=0, PositionUncertaintyRight=0, DensityUncertainty=0, UseReducedSetOfDensityShifts=False, PositionUncertaintySetting="Universal", IndependentLeftRight=True, IndependentAnteriorPosterior=True, IndependentSuperiorInferior=True, ComputeExactScenarioDoses=False, NamesOfNonPlanningExaminations=som_examinations, PatientGeometryUncertaintyType="PerTreatmentCourse", PositionUncertaintyType="PerTreatmentCourse", TreatmentCourseScenariosFactor=1000, PositionUncertaintyList=None, PositionUncertaintyFormation="Automatic", RobustMethodPerTreatmentCourse="WeightedPowerMean")
         # Set robustness for PTV min & max dose:
@@ -130,34 +131,47 @@ class Breast(object):
   def create_som_series(self, examination):
     pm = self.case.PatientModel
     # Test if an existing SOM series exists for the given examination:
-    existing_som_group = None
+    existing_som_groups = []
     for ex_group in self.case.ExaminationGroups:
       if ex_group.Items[0].Examination.ReferenceExamination.Name == examination.Name:
-        existing_som_group = ex_group
+        existing_som_groups.append(ex_group)
     # Create new series if one doesnt already exist:
-    if not existing_som_group:
+    if len(existing_som_groups) == 0:
       if self.prescription.region_code in RC.breast_r_codes:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
         inferior_margin = 0
         if breast_volume > 1000:
           inferior_margin = 1
-        new_som_group = self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
-      else:
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+      elif self.prescription.region_code in RC.breast_l_codes:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
         inferior_margin = 0
         if breast_volume > 1000:
           inferior_margin = 1
-        new_som_group = self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="Simulated organ motion", MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
-      # Determine the SOM group which was created:
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+      elif self.prescription.region_code in RC.breast_bilateral_codes:
+        # Right:
+        breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
+        inferior_margin = 0
+        if breast_volume > 1000:
+          inferior_margin = 1
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+        # Left:
+        breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
+        inferior_margin = 0
+        if breast_volume > 1000:
+          inferior_margin = 1
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+      # Determine the SOM group(s) which was created:
+      new_som_groups = []
       for ex_group in self.case.ExaminationGroups:
         if ex_group.Items[0].Examination.ReferenceExamination.Name == examination.Name:
-          new_som_group = ex_group
-          break
-    if existing_som_group:
-      som_group = existing_som_group
+          new_som_groups.append(ex_group)
+    if len(existing_som_groups) > 0:
+      som_groups = existing_som_groups
     else:
-      som_group = new_som_group
-    return som_group
+      som_groups = new_som_groups
+    return som_groups
   
   # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
   # Returns True if coverage is fulfilled, False if not.

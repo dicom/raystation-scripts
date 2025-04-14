@@ -41,8 +41,8 @@ def breast(case, ss, plan, prescription, target):
   site = SITE.Site(RC.breast_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   # Set up treat ROIs for bilateral cases:
   if prescription.region_code in RC.breast_bilateral_codes:
-    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 0.5)
-    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 0.5)
+    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 1.5)
+    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 1.5)
   site.optimizer = optimizers.Breast(case, ss, plan, site, prescription)
   return site
 
