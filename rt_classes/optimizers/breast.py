@@ -94,7 +94,10 @@ class Breast(object):
         # Set robustness for PTV min & max dose:
         # (But not max dose for PTVc/PTVpc in SIB cases, as this will conflict with min dose of PTVsbc)
         for obj in target_objectives:
-          if self.prescription.region_code in RC.breast_whole_codes:
+          if self.prescription.region_code in RC.breast_partial_codes:
+            if obj.ForRegionOfInterest.Name in ['PTVsbc']:
+              obj.UseRobustness = True
+          elif self.prescription.region_code in RC.breast_whole_codes:
             if obj.ForRegionOfInterest.Name in ['PTVc', 'zPTVc-PTVsbc']:
               # For SIB, the max dose objective is set to 'PTVc-PTVsbc', thus max dose robustness will not be applied here.
               obj.UseRobustness = True
