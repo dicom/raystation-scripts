@@ -143,26 +143,26 @@ class Breast(object):
       if self.prescription.region_code in RC.breast_r_codes:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
         inferior_margin = 0
-        if breast_volume > 1000:
+        if breast_volume > 850:
           inferior_margin = 1
         self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
       elif self.prescription.region_code in RC.breast_l_codes:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
         inferior_margin = 0
-        if breast_volume > 1000:
+        if breast_volume > 850:
           inferior_margin = 1
         self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
       elif self.prescription.region_code in RC.breast_bilateral_codes:
         # Right:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
         inferior_margin = 0
-        if breast_volume > 1000:
+        if breast_volume > 850:
           inferior_margin = 1
         self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
         # Left:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
         inferior_margin = 0
-        if breast_volume > 1000:
+        if breast_volume > 850:
           inferior_margin = 1
         self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
       # Determine the SOM group(s) which was created:
