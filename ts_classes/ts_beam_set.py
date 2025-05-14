@@ -333,8 +333,9 @@ class TSBeamSet(object):
     t = TEST.Test("Statistisk usikkerhet for Monte Carlo doseberegning for elektroner skal være <= 0.1 %", '<=0.001', self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
-        if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MCStatisticalUncertaintyForFinalDose > 0.001:
-          return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.MCStatisticalUncertaintyForFinalDose)
+        uncertainty = self.beam_set.FractionDose.BeamDoses[0].DoseValues.RelativeStatisticalUncertainty
+        if uncertainty > 0.001:
+          return t.fail(uncertainty)
         else:
           return t.succeed()
 
