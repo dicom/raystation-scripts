@@ -46,9 +46,17 @@ class PrescriptionInterpreter(object):
     elif SSF.has_roi(ss, 'CTVp'):
       # Locoregional:
       if self.has_roi_in_expression_a('CTVp', 'Breast_L_Draft'):
-        self.region_code = 243
+        if SSF.has_roi(ss, 'BreastString_L'):
+          # (Presence of breast string is an indicator of cheastwall)
+          self.region_code = 241
+        else:
+          self.region_code = 243
       elif self.has_roi_in_expression_a('CTVp', 'Breast_R_Draft'):
-        self.region_code = 244
+        if SSF.has_roi(ss, 'BreastString_R'):
+          # (Presence of breast string is an indicator of cheastwall)
+          self.region_code = 242
+        else:
+          self.region_code = 244
       # SIB?
       if SSF.has_roi(ss, 'CTVsb'):
         sib = True
