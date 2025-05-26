@@ -84,6 +84,8 @@ class Breast(object):
         examination = self.plan.BeamSets[0].GetPlanningExamination()
         # Create SOM CT image series:
         som_groups = self.create_som_series(examination)
+        # Update (expand) dose grid related to the expanded SOM image series:
+        po.OptimizedBeamSets[0].FractionDose.UpdateDoseGridStructures()
         # Collect examinations to use for SOM robustness:
         som_examinations = []
         for som_group in som_groups:
