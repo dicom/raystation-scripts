@@ -80,12 +80,29 @@ class Breast(object):
       # Preparation for third phase:
       # (since apparently the PlanOptimization script objects cannot be compared directly, we compare their related beam set numbers instead to establish equality)
       if po.OptimizedBeamSets[0].Number == self.plan.PlanOptimizations[0].OptimizedBeamSets[0].Number:
+        bs = self.plan.BeamSets[0]
         # Determine examination used for this treatment plan:
-        examination = self.plan.BeamSets[0].GetPlanningExamination()
+        examination = bs.GetPlanningExamination()
         # Create SOM CT image series:
         som_groups = self.create_som_series(examination)
-        # Update (expand) dose grid related to the expanded SOM image series:
-        po.OptimizedBeamSets[0].FractionDose.UpdateDoseGridStructures()
+        # Update (expand) dose grid related to the expanded SOM image series (if needed):
+        # Existing dose grid:
+        dg = bs.FractionDose.InDoseGrid
+        # Collect most anterior value from External contour bounding box (most negative y value):
+        anterior_boundary = 100
+        for ss in self.case.PatientModel.StructureSets:
+          if ss.RoiGeometries['External'] and ss.RoiGeometries['External'].PrimaryShape:
+            bb = ss.RoiGeometries['External'].GetBoundingBox()
+            if bb[0].x < anterior_boundary:
+              anterior_boundary = bb[0].y
+        # If existing does grid doesn't cover the anterior boundary (with some margin), expand the dose grid anteriorly:
+        margin = 1.0
+        if dg.Corner.y > (anterior_boundary - margin):
+          # Set adjusted dose grid values:
+          new_corner_y = anterior_boundary - margin
+          diff_y = dg.Corner.y - new_corner_y
+          new_nr_voxels_y = dg.NrVoxels.y + round(diff_y / dg.VoxelSize.y)
+          bs.UpdateDoseGrid(Corner={ 'x': dg.Corner.x, 'y': new_corner_y, 'z': dg.Corner.z }, VoxelSize={ 'x': dg.VoxelSize.x, 'y': dg.VoxelSize.y, 'z': dg.VoxelSize.z }, NumberOfVoxels={ 'x': dg.NrVoxels.x, 'y': new_nr_voxels_y, 'z': dg.NrVoxels.z })
         # Collect examinations to use for SOM robustness:
         som_examinations = []
         for som_group in som_groups:
