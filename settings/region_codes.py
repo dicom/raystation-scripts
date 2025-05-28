@@ -60,7 +60,7 @@ palliative_abdomen_codes = list(range(62, 69+1)) + list(range(300, 311+1))
 palliative_abdomen_codes.extend((315, 316, 318, 320, 321, 322, 523, 351, 352, 259, 260))
 palliative_abdomen_and_pelvis_codes = [524]
 palliative_pelvis_codes = list(range(70, 85+1)) +list(range(342, 349+1)) + list(range(353, 354+1)) + list(range(512, 514+1)) + list(range(525, 527+1)) + list(range(541, 546+1))
-palliative_pelvis_codes.extend((312, 313, 314, 324, 325, 326, 328, 330, 332, 333, 334, 335, 336, 338, 373, 374, 385, 386, 573, 574))
+palliative_pelvis_codes.extend((312, 313, 314, 324, 325, 326, 328, 330, 332, 333, 334, 335, 336, 338, 350, 373, 374, 385, 386, 573, 574))
 palliative_other_codes = list(range(44, 61 +1)) + list(range(86, 91 +1)) + list(range(261, 272 +1)) + list(range(585, 594 +1)) + list(range(561, 572 +1))
 palliative_other_codes.extend((375, 376, 377, 378, 387, 388, 389, 390, 393, 394, 575, 576, 577, 578, 900, 400))
 palliative_codes = palliative_head_codes + palliative_neck_codes + palliative_thorax_codes + palliative_thorax_and_abdomen_codes + palliative_abdomen_codes + palliative_abdomen_and_pelvis_codes + palliative_pelvis_codes + palliative_other_codes
