@@ -195,10 +195,10 @@ class Breast(object):
     elif self.prescription.region_code in RC.breast_l_codes:
       som_lung_exp_l = ROI.ROIAlgebra('zSOM_Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
       breast_surface_l = ROI.ROIAlgebra('zSOM_Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
-      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
       outer_breast_l = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       u_rois.extend([som_lung_exp_l, outer_breast_l])
-      d_rois1.extend([breast_surface_r, outer_breast_prelimenary_r])
+      d_rois1.extend([breast_surface_l, outer_breast_prelimenary_l])
     else:
       # Bilateral:
       som_lung_exp_r = ROI.ROIAlgebra('zSOM_Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
@@ -206,7 +206,7 @@ class Breast(object):
       breast_surface_r = ROI.ROIAlgebra('zSOM_Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
       breast_surface_l = ROI.ROIAlgebra('zSOM_Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
       outer_breast_prelimenary_r = ROI.ROIAlgebra('zSOM_Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
-      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
       outer_breast_r = ROI.ROIAlgebra('zSOM_Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary_r], sourcesB = [breast_surface_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       outer_breast_l = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       u_rois.extend([som_lung_exp_r, breast_surface_r, outer_breast_prelimenary_r, outer_breast_r, som_lung_exp_l, outer_breast_l])
