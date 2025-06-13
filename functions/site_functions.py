@@ -21,6 +21,9 @@ def brain(pm, examination, ss, plan, prescription):
   obj = objectives.Brain(ss, plan, prescription, pm, examination)
   cg = clinical_goals.Brain(ss, plan, prescription)
   site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
+  # Set up treat ROI & margins for SRT:
+  if prescription.is_stereotactic :
+    BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], ROIS.ptv.name, 0.3, 0.3, 0.0, 0.0)
   site.optimizer = optimizers.Brain(ss, plan, site, prescription)
   return site
 
@@ -30,7 +33,7 @@ def lung(ss, plan, prescription, target):
   obj = objectives.Lung(ss, plan, prescription)
   cg = clinical_goals.Lung(ss, plan, prescription)
   site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
-  # Set up treat ROI for lung SBRT:
+  # Set up treat ROI & margins for SBRT:
   if prescription.is_stereotactic :
     BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], ROIS.ptv.name, 0.3, 0.3, 0.0, 0.0)
   site.optimizer = optimizers.General(ss, plan, site, prescription)
@@ -42,7 +45,7 @@ def breast(case, ss, plan, prescription, target):
   obj = objectives.Breast(ss, plan, prescription)
   cg = clinical_goals.Breast(ss, plan, prescription)
   site = SITE.Site(RC.breast_codes, obj.oars, obj.targets, cg.oars, cg.targets)
-  # Set up treat ROIs for bilateral cases:
+  # Set up treat ROIs & margins for bilateral cases:
   if prescription.region_code in RC.breast_bilateral_codes:
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 1.5)
     BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 1.5)
