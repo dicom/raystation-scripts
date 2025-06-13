@@ -257,6 +257,9 @@ class Breast(object):
         pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
       except:
         pass
+    # Exclude some ROIs from export:
+    for roi_name in ['zSOM_Breast_L_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Chestwall_L', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R_Surface', 'zSOM_Breast_R_Prelimenary', 'zSOM_Chestwall_R', 'zSOM_Breast_R-Chestwall_Exp']:
+      PMF.exclude_roi_from_export(pm, roi_name)
   
   # Simulate organ motion - Generate CT-series for deformed (expanded) breast.
   # Note that if a SOM series already exists which is based on the given examination,
