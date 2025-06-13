@@ -119,7 +119,9 @@ pituitary_mean = EQD.Tolerance('Pituitary', 'Some failure', ab_pituitary, fracti
 pituitary_2_mean = EQD.Tolerance('Pituitary', 'Some failure', ab_pituitary, fractions_pituitary_2, 20, 'Mean', 'Conventional RT')
 retina_v003_adx = EQD.Tolerance('Retina_R', 'Some failure', ab_retina, fractions_retina, 45, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
 cornea_v003_adx = EQD.Tolerance('Cornea', 'Some failure', ab_cornea, fractions_cornea, 50, 'Maximum dose at less than 0.03cc volume', 'Conventional RT')
-skin_v003_adx = EQD.Tolerance('Skin', 'Some failure', ab_skin, fractions_skin, 25,'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+skin_v003_adx = EQD.Tolerance('Skin', 'Permanent hair loss', ab_skin, fractions_skin, 25,'Maximum dose at less than 0.03cc volume', 'Conventional RT')
+skin_alopecia_chronic = EQD.Tolerance('Skin', 'Chronic alopecia', ab_skin, 17, 34,'Volume at tolerance dose being less than 5.4 cc', 'Conventional RT')
+skin_alopecia_acute = EQD.Tolerance('Skin', 'Acute alopecia', ab_skin, 6.75, 13.5,'Volume at tolerance dose being less than 5.2 cc', 'Conventional RT')
 hippocampus_v40 = EQD.Tolerance('Hippocampus_L', 'Some failure', ab_hippocampus, fractions_hippocampus, 7.3, 'Volume receiving tolerance dose being less than 40%', 'Conventional RT')
 
 

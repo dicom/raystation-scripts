@@ -111,6 +111,8 @@ class Brain:
         oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.volume_at_dose, 0.56, TOL.brain_lymphopenia_56pc, 6))
         oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.average_dose, TOL.brain_lymphopenia_mean, None, 6))
         oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.dose_at_volume, TOL.brain_lymphopenia_d98, 0.98, 6))
+        oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.abs_volume_at_dose, 5.4, TOL.skin_alopecia_chronic, 7))
+        oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.abs_volume_at_dose, 5.2, TOL.skin_alopecia_acute, 8))
     return oars
 
 
