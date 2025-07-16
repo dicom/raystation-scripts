@@ -85,8 +85,10 @@ lad = 'Red'
 # Vascular:
 artery1 = 'Maroon'
 artery2 = 'Red'
+a_pulmonary = 'Purple'
 vein1 = 'Navy'
 vein2 = 'Blue'
+v_pulmonary = 'DarkRed'
 # Gastrointenstinal:
 esophagus = 'Orange'
 stomach = 'RosyBrown'
