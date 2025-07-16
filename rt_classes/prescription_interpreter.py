@@ -2,6 +2,7 @@
 
 
 # Import local files:
+import region_codes as RC
 import structure_set_functions as SSF
 
 
@@ -75,15 +76,26 @@ class PrescriptionInterpreter(object):
       # SIB?
       if SSF.has_roi(ss, 'CTVsb'):
         sib = True
-    # Since all breast default prescriptions have the same nr of fractions, we can deduce
-    # that if region code has been determined, the nr of fractions should be set also.
-    # As for dose, it depends on whether we have a SIB or not:
+    # Configure fractionation:
     if self.region_code != '':
-      self.nr_fractions = 15
-      if sib:
-        self.fraction_dose = 3.2
+      # Breast RT is either 5 or 15 fractions (depending on region code and SIB):
+      if self.region_code in RC.breast_partial_codes or self.region_code in RC.breast_whole_codes:
+        if sib:
+          # 15 fractions:
+          self.nr_fractions = 15
+          self.fraction_dose = 3.2
+        else:
+          # 5 fractions:
+          self.nr_fractions = 5
+          self.fraction_dose = 5.2
       else:
-        self.fraction_dose = 2.67
+        # Regional breast is always 15 fractions:
+        self.nr_fractions = 15
+        # The fraction dose will depend on whether we have a SIB or not:
+        if sib:
+          self.fraction_dose = 3.2
+        else:
+          self.fraction_dose = 2.67
 
 
   # Tries to determine prescription values for a structure set which indicates that we have a prostate case.
