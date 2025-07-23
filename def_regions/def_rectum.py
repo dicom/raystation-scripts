@@ -67,11 +67,10 @@ class DefRectum(object):
     # Targets:
     gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
     # We will not use the CTVp in ROI algebra from now on, but we'll keep it present for visual aid:
-    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ctv_p, ctv_n], operator = 'Union')
-    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ctv], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, ctv_p, ctv_n, ROIS.ctv_e, ctv, ptv])
+    z_ctv_p_default = ROI.ROIAlgebra('zCTVp_default', 'Undefined', COLORS.ctv_high, sourcesA = [gtv], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsB = MARGINS.uniform_5mm_contraction)
+    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, z_ctv_p_default, ROIS.ctv_e, ctv, ptv])
     # OARs:
     wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 0.5, 0)
     # Non-DL OARs:
