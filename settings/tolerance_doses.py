@@ -310,6 +310,7 @@ spinal_canal_sbrt_5fx = EQD.Tolerance('SpinalCanal', 'Myelitis 1-5 %', ab_spinal
 esophagus_sbrt_5fx = EQD.Tolerance('Esophagus', 'Stenosis/Fistula', ab_esophagus, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 greatves_sbrt_5fx = EQD.Tolerance('GreatVes', 'Aneurism', ab_greatves, fractions_sbrt_5, 53, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 main_bronchus_sbrt_5fx = EQD.Tolerance('Main Bronchus', 'Stenosis/Fistula', ab_bronchus, fractions_sbrt_5, 38, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+main_bronchus_sbrt_5fx_secondary = EQD.Tolerance('Main Bronchus', 'Stenosis/Fistula', ab_bronchus, fractions_sbrt_5, 35, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 heart_sbrt_5fx = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, fractions_sbrt_5, 38, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 heart_sbrt_5fx_secondary = EQD.Tolerance('Heart', 'Pericarditis', ab_heart, fractions_sbrt_5, 29, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
 lung_sbrt_mean = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_sbrt_5, 8, 'Mean dose', 'SBRT')

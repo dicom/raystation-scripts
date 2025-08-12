@@ -87,6 +87,7 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_sbrt_5fx_cc10, 10, 6))
         oars.append(CG.ClinicalGoal(ROIS.lungs_igtv.name, CG.at_most, CG.volume_at_dose, 0.1, TOL.lung_sbrt_v_10pc, 6))
         oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_5fx_cc01_secondary, 6))
+        oars.append(CG.ClinicalGoal(ROIS.bronchial_tree.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx_secondary, 0.1, 6))
         oars.append(CG.ClinicalGoal(ROIS.trachea.name, CG.at_most, CG.dose_at_abs_volume, TOL.trachea_sbrt_5fx_secondary, 0.1, 6))
         if prescription.region_code in [248, 250]:
           # Right:
