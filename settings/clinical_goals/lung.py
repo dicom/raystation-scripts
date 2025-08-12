@@ -36,8 +36,7 @@ class Lung:
         # 3 fractions:
         oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinal_canal_sbrt_3fx, 0.035, 2))
         oars.append(CG.ClinicalGoal(ROIS.trachea.name, CG.at_most, CG.dose_at_abs_volume, TOL.trachea_sbrt_3fx, 0.1, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx, 0.1, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx, 0.1, 2))
+        oars.append(CG.ClinicalGoal(ROIS.bronchial_tree.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_3fx, 0.1, 2))
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_3fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_3fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_3fx, 0.1, 3))
@@ -72,8 +71,7 @@ class Lung:
         # 5 fractions:
         oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinal_canal_sbrt_5fx, 0.035, 2))
         oars.append(CG.ClinicalGoal(ROIS.trachea.name, CG.at_most, CG.dose_at_abs_volume, TOL.trachea_sbrt_5fx, 0.1, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx, 0.1, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx, 0.1, 2))
+        oars.append(CG.ClinicalGoal(ROIS.bronchial_tree.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_5fx, 0.1, 2))
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_5fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_5fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_5fx, 0.1, 3))
@@ -114,8 +112,7 @@ class Lung:
         # 8 fractions:
         oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinal_canal_sbrt_8fx, 0.035, 2))
         oars.append(CG.ClinicalGoal(ROIS.trachea.name, CG.at_most, CG.dose_at_abs_volume, TOL.trachea_sbrt_8fx, 0.1, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx, 0.01, 2))
-        oars.append(CG.ClinicalGoal(ROIS.main_bronchus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx, 0.01, 2))
+        oars.append(CG.ClinicalGoal(ROIS.bronchial_tree.name, CG.at_most, CG.dose_at_abs_volume, TOL.main_bronchus_sbrt_8fx, 0.01, 2))
         oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_sbrt_8fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.greatves.name, CG.at_most, CG.dose_at_abs_volume, TOL.greatves_sbrt_8fx, 0.1, 3))
         oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.dose_at_abs_volume, TOL.heart_sbrt_8fx, 0.1, 3))
