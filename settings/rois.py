@@ -104,7 +104,6 @@ thyroid = ROI.ROI('ThyroidGland','Organ', COLORS.thyroid)
 a_lad = ROI.ROI('A_LAD','Organ', COLORS.lad)
 # Lung, stereotactic:
 chestwall = ROI.ROI('Chestwall', 'Organ', COLORS.chestwall)
-greatves = ROI.ROI('GreatVessel','Organ', COLORS.heart)
 trachea = ROI.ROI('Trachea','Organ', COLORS.trachea)
 pancreas = ROI.ROI('Pancreas','Organ', COLORS.pancreas)
 spleen = ROI.ROI('Spleen','Organ', COLORS.spleen)
@@ -160,6 +159,8 @@ femur_head_neck_r = ROI.ROI('FemurHeadNeck_R', 'Organ', COLORS.bone_color1)
 bone = ROI.ROI('Bone', 'Organ', COLORS.bone_color1)
 
 # Vessels:
+a_aortic_arch = ROI.ROI('A_AorticArch', 'Organ', COLORS.artery_color4)
+a_ascending_aorta = ROI.ROI('A_AscendingAorta', 'Organ', COLORS.artery_color3)
 a_descending_aorta = ROI.ROI('A_DescendingAorta', 'Organ', COLORS.artery_color1)
 a_pulmonary = ROI.ROI('A_Pulmonary', 'Organ', COLORS.a_pulmonary)
 a_common_iliac_l = ROI.ROI('A_CommonIliac_L', 'Organ', COLORS.artery_color2)
@@ -169,6 +170,7 @@ a_internal_iliac_r = ROI.ROI('A_InternalIliac_R', 'Organ', COLORS.artery_color3)
 a_external_iliac_l = ROI.ROI('A_ExternalIliac_L', 'Organ', COLORS.artery_color4)
 a_external_iliac_r = ROI.ROI('A_ExternalIliac_R', 'Organ', COLORS.artery_color4)
 v_inferior_vena_cava = ROI.ROI('V_InferiorVenaCava', 'Organ', COLORS.vein_color1)
+v_superior_vena_cava = ROI.ROI('V_SuperiorVenaCava', 'Organ', COLORS.vein_color5)
 v_pulmonary = ROI.ROI('V_Pulmonary', 'Organ', COLORS.v_pulmonary)
 v_common_iliac_l = ROI.ROI('V_CommonIliac_L', 'Organ', COLORS.vein_color2)
 v_common_iliac_r = ROI.ROI('V_CommonIliac_R', 'Organ', COLORS.vein_color2)
@@ -176,6 +178,7 @@ v_internal_iliac_l = ROI.ROI('V_InternalIliac_L', 'Organ', COLORS.vein_color3)
 v_internal_iliac_r = ROI.ROI('V_InternalIliac_R', 'Organ', COLORS.vein_color3)
 v_external_iliac_l = ROI.ROI('V_ExternalIliac_L', 'Organ', COLORS.vein_color4)
 v_external_iliac_r = ROI.ROI('V_ExternalIliac_R', 'Organ', COLORS.vein_color4)
+greatves = ROI.ROIAlgebra('GreatVessel', 'Organ', COLORS.a_pulmonary, sourcesA = [a_aortic_arch, a_ascending_aorta, a_descending_aorta], sourcesB = [v_inferior_vena_cava, v_superior_vena_cava], operator = 'Union')
 
 # Undefined / Other ROIs
 # Breast organs:

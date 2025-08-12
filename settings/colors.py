@@ -35,6 +35,7 @@ vein_color1 = 'Navy'
 vein_color2 = 'Blue'
 vein_color3 = 'SlateBlue'
 vein_color4 = 'MediumSlateBlue'
+vein_color5 = 'RoyalBlue'
 # CNS:
 brain = 'DarkBlue'
 brainstem = 'Indigo'
