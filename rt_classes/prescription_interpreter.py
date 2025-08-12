@@ -120,7 +120,7 @@ class PrescriptionInterpreter(object):
     elif SSF.has_roi(ss, 'CTV'):
       # Presumably prostate STAMPEDE:
       self.region_code = 342
-      self.fraction_dose = 2.7
+      self.fraction_dose = 2.75
       self.nr_fractions = 20
   
   
