@@ -114,11 +114,20 @@ class Other:
           targets.append(CG.ClinicalGoal(ROIS.ctv.name+str(i+1), CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
           targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
       else:
+        ptv = self.ptv(ss, prescription.target)
         targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
         targets.append(CG.ClinicalGoal(prescription.target, CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
         targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
-        targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ptv, CG.at_least, CG.dose_at_volume, 0.95, 0.98, 4))
         targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
-        targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P"), CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
+        targets.append(CG.ClinicalGoal(ptv, CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     return targets
   
+  
+  # Determine the ptv name, based on the prescription target.
+  def ptv(self, ss, target):
+    ptv = target.replace("C", "P")
+    if not SSF.has_roi(ss, ptv):
+      # Assume cropped volume (PTVc):
+      ptv = ptv + "c"
+    return ptv

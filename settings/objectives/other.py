@@ -106,9 +106,10 @@ class Other:
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if nr_targets == 1:
       # Single target:
+      ptv = self.ptv(ss, prescription.target)
       targets.append(OF.uniform_dose(ss, plan, prescription.target, prescription.total_dose*100, 30, beam_set_index=i))
-      targets.append(OF.min_dose(ss, plan, prescription.target.replace("C", "P"), prescription.total_dose*100*0.95, 150, beam_set_index=i))
-      targets.append(OF.max_dose(ss, plan, prescription.target.replace("C", "P"), prescription.total_dose*100*1.05, 80, beam_set_index=i))
+      targets.append(OF.min_dose(ss, plan, ptv, prescription.total_dose*100*0.95, 150, beam_set_index=i))
+      targets.append(OF.max_dose(ss, plan, ptv, prescription.total_dose*100*1.05, 80, beam_set_index=i))
     else:
       if prescription.target[-1] in ['1', '2', '3', '4']:
         target = prescription.target[:-1]
@@ -129,3 +130,11 @@ class Other:
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
   
+  
+  # Determine the ptv name, based on the prescription target.
+  def ptv(self, ss, target):
+    ptv = target.replace("C", "P")
+    if not SSF.has_roi(ss, ptv):
+      # Assume cropped volume (PTVc):
+      ptv = ptv + "c"
+    return ptv
