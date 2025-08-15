@@ -62,7 +62,7 @@ class Breast:
     if prescription.nr_fractions == 5:
       # Tolerances specific for FastForward (5 fractions):
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.heart_v7_fastforward, 6))
-      oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.volume_at_dose, 0.3, TOL.heart_v1_5_fastforward, 6))
+      oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.volume_at_dose, 0.25, TOL.heart_v1_5_fastforward, 6))
       if prescription.region_code in RC.breast_l_codes:
         # Left side:
         oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v8_fastforward, 5))
