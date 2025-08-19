@@ -84,6 +84,26 @@ class Brain:
         oars.append(CG.ClinicalGoal(ROIS.lens_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_srt_3fx, 0.1, 4))
         oars.append(CG.ClinicalGoal(ROIS.lens_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_srt_3fx, 0.1, 4))
         oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.abs_volume_at_dose, 20, TOL.brain_srt_3fx, 4))
+      elif prescription.nr_fractions == 5 and prescription.is_stereotactic():
+        # SRT (5 fractions):
+        oars.append(CG.ClinicalGoal(ROIS.brainstem.name, CG.at_most, CG.dose_at_abs_volume, TOL.brainstem_srt_5fx_p1, 0.035, 2))
+        oars.append(CG.ClinicalGoal(ROIS.optic_chiasm.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_chiasm_srt_5fx_p1, 0.035, 2))
+        oars.append(CG.ClinicalGoal(ROIS.optic_nrv_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_nrv_srt_5fx_p1, 0.035, 2))
+        oars.append(CG.ClinicalGoal(ROIS.optic_nrv_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_nrv_srt_5fx_p1, 0.035, 2))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.abs_volume_at_dose, 30, TOL.brain_srt_5fx, 3))
+        oars.append(CG.ClinicalGoal(ROIS.brainstem.name, CG.at_most, CG.dose_at_abs_volume, TOL.brainstem_srt_5fx_p2, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.optic_chiasm.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_chiasm_srt_5fx_p2, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.optic_nrv_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_nrv_srt_5fx_p2, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.optic_nrv_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.optic_nrv_srt_5fx_p2, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.cochlea_l.name, CG.at_most, CG.average_dose, TOL.cochlea_srt_5fx, None, 3))
+        oars.append(CG.ClinicalGoal(ROIS.cochlea_r.name, CG.at_most, CG.average_dose, TOL.cochlea_srt_5fx, None, 3))
+        oars.append(CG.ClinicalGoal(ROIS.eye_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.eye_srt_5fx, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.eye_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.eye_srt_5fx, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_srt_5fx_v0_1, 0.1, 3))
+        oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.dose_at_abs_volume, TOL.skin_srt_5fx_v10, 10, 3))
+        oars.append(CG.ClinicalGoal(ROIS.lens_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_srt_5fx, 0.1, 4))
+        oars.append(CG.ClinicalGoal(ROIS.lens_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_srt_5fx, 0.1, 4))
+        oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.abs_volume_at_dose, 20, TOL.brain_srt_5fx, 4))
       else:
         # Partial brain:
         oars.append(CG.ClinicalGoal(ROIS.brainstem_surface.name, CG.at_most, CG.dose_at_abs_volume, TOL.brainstem_surface_v003_adx, 0.03, 2))

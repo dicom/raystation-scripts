@@ -379,6 +379,23 @@ skin_srt_3fx_v10 = EQD.Tolerance('Skin', 'Ulceration', ab_skin, fractions_sbrt_3
 spinal_cord_srt_3fx = EQD.Tolerance('SpinalCord', 'Myelopathy', ab_spinalcord, fractions_sbrt_3, 20.3, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
 
 
+# Brain SRT 5 fractions
+cochlea_srt_5fx = EQD.Tolerance('Cochlea_L', 'Hearing loss', ab_cochlea, 5, 25, 'Mean dose being less than', 'SBRT')
+optic_nrv_srt_5fx_p1 = EQD.Tolerance('OpticNrv_L','Optic neuropathy', ab_optic_nerve, 5, 20, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+optic_nrv_srt_5fx_p2 = EQD.Tolerance('OpticNrv_R','Optic neuropathy', ab_optic_nerve, 5, 15, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+optic_chiasm_srt_5fx_p1 = EQD.Tolerance('OpticChiasm', 'Optic neuropathy', ab_optic_chiasm, 5, 25, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+optic_chiasm_srt_5fx_p2 = EQD.Tolerance('OpticChiasm', 'Optic neuropathy', ab_optic_chiasm, 5, 22.5, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+eye_srt_5fx = EQD.Tolerance('Eye_L','Retinopathy', ab_eye, 5, 14.8, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+lens_srt_5fx = EQD.Tolerance('Lens_R','Cataracts', ab_lens, 5, 2.5, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+brainstem_srt_5fx_p1 = EQD.Tolerance('Brainstem', 'Necrosis', ab_brainstem, 5, 31, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+brainstem_srt_5fx_p2 = EQD.Tolerance('Brainstem', 'Necrosis', ab_brainstem, 5, 23, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+brain_srt_5fx = EQD.Tolerance('Brain', 'Necrosis', ab_brain, 5, 24, 'Volume receiving tolerance dose being less than 20/30 cm3', 'SBRT')
+skin_srt_5fx_v0_1 = EQD.Tolerance('Skin', 'Ulceration', ab_skin, 5, 39.5, 'Volume receiving tolerance dose being less than 0.1 cm3', 'SBRT')
+skin_srt_5fx_v10 = EQD.Tolerance('Skin', 'Ulceration', ab_skin, 5, 36.5, 'Volume receiving tolerance dose being less than 10 cm3', 'SBRT')
+spinal_cord_srt_5fx = EQD.Tolerance('SpinalCord', 'Myelopathy', ab_spinalcord, 5, 25.3, 'Volume receiving tolerance dose being less than 0.035 cm3', 'SBRT')
+
+
+
 # Bone/Spine SBRT 1 fraction
 esophagus_sbrt_1fx_v5 = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_sbrt_1, 11.9, 'Volume receiving tolerance dose being less than 5 cm3', 'SBRT')
 esophagus_sbrt_1fx_v0 = EQD.Tolerance('Esophagus', 'Some failure', ab_esophagus, fractions_sbrt_1, 16, 'Volume receiving tolerance dose being less than 0 cm3', 'SBRT')
