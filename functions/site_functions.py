@@ -23,7 +23,7 @@ def brain(pm, examination, ss, plan, prescription):
   site = SITE.Site(RC.brain_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   # Set up treat ROI & margins for SRT:
   if prescription.is_stereotactic():
-    BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], ROIS.ptv.name, 0.3, 0.3, 0.0, 0.0)
+    BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], prescription.target, 0.3, 0.3, 0.0, 0.0)
   site.optimizer = optimizers.Brain(ss, plan, site, prescription)
   return site
 
@@ -35,7 +35,7 @@ def lung(ss, plan, prescription, target):
   site = SITE.Site(RC.lung_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   # Set up treat ROI & margins for SBRT:
   if prescription.is_stereotactic():
-    BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], ROIS.ptv.name, 0.3, 0.3, 0.0, 0.0)
+    BF.set_up_treat_or_protect_with_individual_margins(plan.BeamSets[0].Beams[0], prescription.target, 0.3, 0.3, 0.0, 0.0)
   site.optimizer = optimizers.General(ss, plan, site, prescription)
   return site
 

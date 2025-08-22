@@ -24,9 +24,8 @@ def setup_beams(ss, examination, beam_set, isocenter, prescription, technique_na
       BSF.create_single_arc(beam_set, isocenter, iso_index=iso_index, beam_index=beam_index)
     elif prescription.region_code in RC.brain_partial_codes:
       # Partial brain:
-      if prescription.fraction_dose > 15:
-        BSF.create_single_arc(beam_set, isocenter, energy = energy_name, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
-      elif prescription.fraction_dose > 6: # Stereotactic brain
+      if prescription.is_stereotactic():
+        # Stereotactic brain:
         BSF.create_single_arc(beam_set, isocenter, energy = energy_name, collimator_angle = '5', iso_index=iso_index, beam_index=beam_index, bolus=bolus)
       else:
         # Partial brain (ordinary fractionation):
