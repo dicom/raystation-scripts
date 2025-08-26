@@ -11,6 +11,7 @@
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
+import structure_set_functions as SSF
 
 
 class Prostate:
@@ -153,6 +154,11 @@ class Prostate:
         targets.append(OF.max_dvh(ss, plan, 'PTV!_62.5', prescription.total_dose*0.95*100, 5, 50, beam_set_index=i))
         targets.append(OF.min_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*0.98, 100, beam_set_index=i))
         targets.append(OF.max_dose(ss, plan, 'PTV_67.5', prescription.total_dose*100*1.02, 70, beam_set_index=i))
+        # Plan includes positive nodes to be treated with 60 Gy?
+        if SSF.has_roi(ss, ROIS.ptv__60.name):
+          targets.append(OF.uniform_dose(ss, plan, ROIS.ctv__60.name, 60*100, 25, beam_set_index=i))
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv__60.name, 57*100, 100, beam_set_index=i))
+          targets.append(OF.max_dvh(ss, plan, ROIS.ptv__60.name, 60*1.025*100, 5, 50, beam_set_index=i))
       elif prescription.total_dose == 67.5:
         # High risk prostate only:
         targets.append(OF.uniform_dose(ss, plan, 'CTV!_62.5', 62.5*100, 25, beam_set_index=i))

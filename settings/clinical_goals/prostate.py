@@ -11,6 +11,7 @@
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
+import structure_set_functions as SSF
 import tolerance_doses as TOL
 
 
@@ -98,6 +99,14 @@ class Prostate:
           targets.append(CG.ClinicalGoal('PTV_50+62.5+67.5', CG.at_least, CG.conformity_index, 0.78, 0.703704, 5))
           targets.append(CG.ClinicalGoal('PTV!_50', CG.at_most, CG.dose_at_volume, 0.777778, 0.1, 5))
           targets.append(CG.ClinicalGoal('CTV!_50', CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
+          # Plan includes positive nodes to be treated with 60 Gy?
+          if SSF.has_roi(ss, ROIS.ptv__60.name):
+            targets.append(CG.ClinicalGoal('CTV!_60', CG.at_least, CG.dose_at_volume, 0.884444, 0.5, 1))
+            targets.append(CG.ClinicalGoal('CTV!_60', CG.at_most, CG.dose_at_volume, 0.893333, 0.5, 1))
+            targets.append(CG.ClinicalGoal('CTV!_60', CG.at_least, CG.dose_at_volume, 0.871111, 0.98, 2))
+            targets.append(CG.ClinicalGoal('PTV!_60', CG.at_least, CG.dose_at_volume, 0.844444, 0.98, 4))
+            targets.append(CG.ClinicalGoal('CTV!_60', CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
+            targets.append(CG.ClinicalGoal('PTV!_60', CG.at_most, CG.dose_at_volume, 0.933333, 0.1, 5))
       elif prescription.total_dose == 60:
         # Hypofractionated localized prostate:
         targets.append(CG.ClinicalGoal(ROIS.ctv_60.name, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
