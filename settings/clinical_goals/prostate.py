@@ -146,5 +146,13 @@ class Prostate:
         targets.append(CG.ClinicalGoal(ROIS.ptv_56.name, CG.at_least, CG.dose_at_volume, 0.76, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_56.name, CG.at_most, CG.dose_at_volume,  0.84, 0.05, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_56_70.name, CG.at_least, CG.conformity_index, 0.7, 0.76, 5))
+        # Plan includes positive nodes to be treated with 66 Gy?
+        if SSF.has_roi(ss, ROIS.ptv_66.name):
+          targets.append(CG.ClinicalGoal('CTV!_66', CG.at_least, CG.dose_at_volume, 0.938143, 0.5, 1))
+          targets.append(CG.ClinicalGoal('CTV!_66', CG.at_most, CG.dose_at_volume, 0.947571, 0.5, 1))
+          targets.append(CG.ClinicalGoal('CTV!_66', CG.at_least, CG.dose_at_volume, 0.924, 0.98, 2))
+          targets.append(CG.ClinicalGoal('PTV!_66', CG.at_least, CG.dose_at_volume, 0.895714, 0.98, 4))
+          targets.append(CG.ClinicalGoal('CTV!_66', CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
+          targets.append(CG.ClinicalGoal('PTV!_66', CG.at_most, CG.dose_at_volume, 0.99, 0.1, 5))
     return targets
   

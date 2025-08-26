@@ -136,6 +136,11 @@ class Prostate:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv_56.name, 54*100, 150, beam_set_index=i))
         targets.append(OF.max_dose(ss, plan, ROIS.ptv_70.name, prescription.total_dose*100*1.045, 70, beam_set_index=i))
         targets.append(OF.max_dvh(ss, plan, ROIS.ptv_56.name, 58.24*100, 5, 5, beam_set_index=i))
+        # Plan includes positive nodes to be treated with 66 Gy?
+        if SSF.has_roi(ss, ROIS.ptv_66.name):
+          targets.append(OF.uniform_dose(ss, plan, ROIS.ctv_66.name, 66*100, 25, beam_set_index=i))
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_66.name, 62.7*100, 100, beam_set_index=i))
+          targets.append(OF.max_dvh(ss, plan, ROIS.ptv_66.name, 66*1.025*100, 5, 50, beam_set_index=i))
       else:
         # Prostate bed only:
         targets.append(OF.uniform_dose(ss, plan, ROIS.ctv_70.name, prescription.total_dose*100, 25, beam_set_index=i))
