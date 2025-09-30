@@ -51,6 +51,8 @@ class Rectum:
     others = []
     if prescription.total_dose == 50:
       # SIB treatment (47 & 50 Gy):
+      others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=i))
+      others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=i))
       others.append(OF.fall_off(ss, plan, ROIS.z_ptv_50_wall.name, 49*100, 45*100, 0.65, 5, adapt=True, beam_set_index=i))
       others.append(OF.fall_off(ss, plan, ROIS.z_ptv_47_50_wall.name, 50*100, 32*100, 1.0, 5, adapt=True, beam_set_index=i))
     else:
