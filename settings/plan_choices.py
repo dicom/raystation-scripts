@@ -5,24 +5,17 @@ import property as P
 import structure_set_functions as SSF
 from tkinter import messagebox
 
+# Breast robustness (ptosis):
+ptosis = P.Property('Ptose', 'ptosis')
+std = P.Property('Standard', 'standard', default = True)
+
 # Setup techniques:
 conformal = P.Property('3D-CRT','Conformal')
 vmat = P.Property('VMAT','VMAT', default = True)
 
-'''
-# Setup techniques:
-conformal = P.Property('3D-CRT','Conformal', next_category = 'optimalisering')
-vmat = P.Property('VMAT','VMAT', next_category = 'optimalisering', default = True)
-# Optimization choices for vmat/conformal:
-for tech in [conformal, vmat]:
-  opt_without = P.Property('Uten optimalisering','without', parent = tech, default = True)
-  opt_init = P.Property('Initiell optimalisering', 'init', parent = tech)
-  opt_init_oar = P.Property('Initiell optimalisering med tilpasning til risikoorganer','oar', parent = tech)
-'''
 # List of choices:
 techniques = [conformal, vmat]
-#optimization = [opt_without, opt_init, opt_init_oar]
-#optimization_simple = [opt_without, opt_init_oar]
+breast_robustness = [ptosis, std]
 
 
 def beam_set_choices(ss):

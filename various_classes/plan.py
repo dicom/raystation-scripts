@@ -58,6 +58,7 @@ class Plan(object):
     # Setup and run GUI:
     my_window = Tk()
     (region_code, fraction_dose, nr_fractions, initials, total_dose) = GUIF.collect_fractionation_choices(my_window, ss)
+    my_window = Toplevel()
 
 
     # Load list of region codes and corresponding region names, and get the region name for our particular region code (raise error if a name is not retrieved):
@@ -65,6 +66,12 @@ class Plan(object):
     region_text = regions.get_text(region_code)
     assert region_text != None
     
+    # Launch extra dialog window based on region code?
+    inferior_robustness_breast = None
+    if region_code in RC.breast_codes:
+      # Ask the user for preference on planning robustness for ptosis:
+      inferior_robustness_breast = GUIF.handle_breast_ptosis(my_window)
+
     # Establish the number of target volumes:
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     
@@ -85,9 +92,6 @@ class Plan(object):
     
     # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
     plan = CF.create_plan(case, examination, region_text, initials)
-
-
-    my_window = Toplevel()
 
 
     # For extremeties there a choice will be given between VMAT or 3D-CRT (for all other sites, VMAT is default):
@@ -190,7 +194,7 @@ class Plan(object):
 
 
     # Determine site:
-    site = SF.site(case, pm, examination, ss, plan, prescriptions, target)
+    site = SF.site(case, pm, examination, ss, plan, prescriptions, target, option=inferior_robustness_breast)
 
 
     # Use robust optimization for breast:

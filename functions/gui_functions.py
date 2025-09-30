@@ -65,7 +65,7 @@ def collect_delete_choice(options, my_window, choices):
   my_window.mainloop()
   # Extract information from the users's selections in the GUI:
   if frame.ok:
-    (selection,value) = frame.get_results()
+    (selection, value) = frame.get_results()
   elif not frame.ok:
     print ("Script execution cancelled by user...")
     sys.exit(0)
@@ -148,6 +148,18 @@ def determine_choices(prescription, my_window):
     else:
       technique_name = 'VMAT'
   return technique, technique_name
+
+
+# Ask the user through a Radio button GUI whether robustness planning for ptosis is wanted.
+# Returns a boolean.
+def handle_breast_ptosis(my_window):  
+  r_options = RB.RadioButton('Bryst: Planlegge med robusthet for ptose?', 'Velg:', PC.breast_robustness)
+  robustness_choice = collect_choices(r_options, my_window, [])
+  result = False
+  for i in range(len(robustness_choice)):
+    if robustness_choice[i] == 'ptosis':
+      result = True
+  return result
 
 
 # Handles the situation when the attempt to delete a ROI results in a crash.
