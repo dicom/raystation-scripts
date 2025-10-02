@@ -196,3 +196,23 @@ class TSCase(object):
         return t.fail(None)
       else:
         return t.succeed()
+
+  # Tests that the case has a "Prosthesis" ROI if the examination contains metal (has a max HU of 3000 or more).
+  def case_has_prosthesis_roi_if_metal_is_present_in_examination_test(self):
+    t = TEST.Test("Case skal inneholde en protese ROI med tetthet titan hvis ytterkonturen inneholder metall (indikert ved HU over 3000)", 'Prosthesis', self.examination)
+    ce = get_current("Examination")
+    # Determine max Hounsfield unit in examination:
+    stats = ce.Series[0].ImageStack.GetIntensityStatistics(RoiName='External')
+    max_hu_dict = stats['Max']
+    max_hu = list(max_hu_dict.keys())[0]
+    if max_hu >= 3000:
+      # Determine if we have a prosthesis ROI:
+      # (to avoid false positives, we have to also exclude cases with seeds)
+      prosthesis_present = False
+      for roi in self.case.PatientModel.RegionsOfInterest:
+        if roi.Name in [ROIS.prosthesis.name, ROIS.prosthesis_r.name, ROIS.prosthesis_l.name, 'Marker1', 'Clips_L', 'Clips_R']:
+          prosthesis_present = True
+      if prosthesis_present:
+        return t.succeed()
+      else:
+        return t.fail(None)
