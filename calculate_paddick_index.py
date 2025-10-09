@@ -1,5 +1,3 @@
-# encoding: utf8
-
 # Calculates the Paddick conformity index for the prescription ROI and displays the result in a GUI.
 # For prescriptions using median dose, the Paddick index is calculated on the 95% dose value.
 #
@@ -7,8 +5,6 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
 
 from __future__ import division
 import math
@@ -98,5 +94,3 @@ for beam_set in plan.BeamSets:
   root = Tk()
   root.withdraw()
   messagebox.showinfo(title, text)
-
-

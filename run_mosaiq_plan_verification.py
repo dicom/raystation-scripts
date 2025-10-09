@@ -1,5 +1,4 @@
-﻿
-# Verifies that the current plan in RayStation has been exported successfully to Mosaiq.
+﻿# Verifies that the current plan in RayStation has been exported successfully to Mosaiq.
 # This is achieved by attempting to locate the corresponding plan (Rad Rx) in the Mosiaq
 # database and verify all plan parameters (e.q. monitor units, gantry angle, collimator angle,
 # couch angle, jaw positions, mlc positions, etc).
@@ -8,8 +7,6 @@
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 12A
-# Python 3.6
 
 # System configuration:
 from connect import *

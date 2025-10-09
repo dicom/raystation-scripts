@@ -4,8 +4,6 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
 
 # Import system libraries:
 from connect import *
@@ -42,15 +40,8 @@ else:
 
 # Compute perturbed doses
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': x, 'y': 0, 'z': 0 }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': -x, 'y': 0, 'z': 0 }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': 0, 'y': 0, 'z': y }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': 0, 'y': 0, 'z': -y }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': 0, 'y': -z, 'z': 0 }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
 beam_set.ComputePerturbedDose(DensityPerturbation = 0, PatientShift = { 'x': 0, 'y': z, 'z': 0 }, OnlyOneDosePerImageSet = False, AllowGridExpansion = False, ExaminationNames = [name], FractionNumbers = [0], ComputeBeamDoses = True)
-
-

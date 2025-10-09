@@ -1,3 +1,5 @@
+# Export dose statistics to Excel.
+#
 
 from __future__ import division
 import math
@@ -29,7 +31,7 @@ import radio_button as RB
 import statistics_frame as FRAME
 import statistics_region_code_frame as REGION_FRAME
 import region_codes as RC
-#import check_button_frame as FRAME
+
 # Create an Excel file and sheet
 headline = 'DoseStatistikkBrystReg2019'
 file = '.xlsx'
@@ -183,7 +185,6 @@ def create_parameter_dict(patient, plan, plan_dose, beam_set, patient_nr, roi_di
     parameter_dict['External, Average [Gy]'] = nr_fractions*plan_dose.GetDoseStatistic(RoiName=has_roi(roi_dict, external_list), DoseType='Average')/100
   except:
     print ("Hei")
-
 
 
   try:
@@ -554,7 +555,3 @@ for j in list(range(len(parameter_dict))):
 
 worksheet.write(patient_nr+2, 0, 'Gjennomsnitt')      
 workbook.close()
-
-
-
-

@@ -1,13 +1,9 @@
-# encoding: utf8
-
 # Updates all ROIs which are derived and not up to date.
 #
 # Authors:
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 6.0
-# Python 3.6
 
 from connect import *
 
@@ -28,6 +24,3 @@ for struct in case.PatientModel.StructureSets:
       if roi.OfRoi.DerivedRoiExpression:
         # Construct the ROI by using the update feature:
         roi.OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
-
-
-

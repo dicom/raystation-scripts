@@ -1,13 +1,9 @@
-# encoding: utf8
-
 # Gives a list of OARs in a GUI, and creates those that are selected.
 #
 # Authors:
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
 
 # Import system libraries:
 from connect import *
@@ -49,6 +45,7 @@ ss = PMF.get_structure_set(pm, examination)
 
 def get_my_key(obj):
   return obj.name
+
 # OAR choices:
 oar_list = [
   ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r,

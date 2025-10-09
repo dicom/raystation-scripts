@@ -5,8 +5,8 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
+
+
 from __future__ import division
 import math
 # encoding: utf8

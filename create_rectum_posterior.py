@@ -1,13 +1,9 @@
-# encoding: utf8
-
 # Creates a Rectum posterior half ROI.
 #
 # Authors:
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
 
 # Import system libraries:
 from connect import *

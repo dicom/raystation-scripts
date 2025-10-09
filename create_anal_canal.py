@@ -1,13 +1,9 @@
-# encoding: utf8
-
 # Creates an Anal Canal ROI from a Rectum ROI by copying the caudal 4 cm of Rectum ROI.
 #
 # Authors:
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 9.A
-# Python 3.6
 
 # Import system libraries:
 from connect import *

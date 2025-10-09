@@ -1,8 +1,7 @@
 # Expand the trachea ROI by 1.5mm laterally and AP.
 # The reason for having this script, is that it is easier to delineate manually the internal wall
 # of the trachea, then expand it, then to manually delieate the outer walls of the trachea.
-
-# RayStation 10B - Python 3.6
+#
 
 # System files:
 from connect import *

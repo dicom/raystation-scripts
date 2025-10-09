@@ -43,5 +43,3 @@ except:
   print("FEIL: Klarte ikke å slette den eksisterende skript-mappen!")
 
 copytree(source, destination, symlinks=False, ignore=None)
-
-

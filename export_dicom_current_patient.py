@@ -1,6 +1,5 @@
 # Export DICOM files for the current patient.
-
-# RayStation 10B - Python 3.6
+#
 
 # System files:
 from connect import get_current
@@ -43,4 +42,3 @@ def export(patient, case):
 
 # Export the current patient/case:
 export(patient, case)
-

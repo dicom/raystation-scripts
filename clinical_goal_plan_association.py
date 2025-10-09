@@ -1,4 +1,9 @@
-#Forces all clinical goals to be associated with the plan
+# Forces all clinical goals to be associated with the plan.
+#
+# Authors:
+# Robert Hoggard
+# Helse Møre og Romsdal HF
+#
 
 # Import RS resources
 from connect import *

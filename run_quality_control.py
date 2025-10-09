@@ -4,7 +4,7 @@
 # Authors:
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
-
+#
 
 # System configuration:
 from connect import *

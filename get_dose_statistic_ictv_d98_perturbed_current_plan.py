@@ -4,8 +4,6 @@
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 10B
-# Python 3.6
 
 # Import system libraries:
 from connect import *
@@ -131,6 +129,3 @@ for doe in case.TreatmentDelivery.FractionEvaluations[0].DoseOnExaminations:
         messagebox.showinfo(title, text)
 
       i += 1
-      
-
-

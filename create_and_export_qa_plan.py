@@ -1,12 +1,9 @@
-# encoding: utf8
 # Creates a QA plan with standard settings and exports it to specified folder.
 #
 # Authors:
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 10B
-# Python 3.6
 
 # Import system libraries:
 from connect import *

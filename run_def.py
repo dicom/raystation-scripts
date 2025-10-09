@@ -1,13 +1,9 @@
-# encoding: utf8
-
 # Executes the Definition class, which sets up all ROIs and POIs needed for treatment planning in RayStation.
 #
 # Authors:
 # Christoffer Lervåg & Marit Funderud
 # Helse Møre og Romsdal HF
 #
-# Made for RayStation version: 10B
-# Python 3.6
 
 # Import system libraries:
 from connect import *
