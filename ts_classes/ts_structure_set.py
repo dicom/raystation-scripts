@@ -259,7 +259,7 @@ class TSStructureSet(object):
   def no_geometries_outside_external_test(self):
     t = TEST.Test("Geometri forventes å ikke være definert utenfor 'External' for noen ROI", None, self.geometry)
     # Known ROIs which are expected to exceed the External ROI:
-    excluded_roi_names = ['PTV_Robustness', 'Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall', 'zCTV_R_Wall', 'zSOM_Robustness_L', 'zSOM_Robustness_R']
+    excluded_roi_names = ['PTV_Robustness', 'Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall', 'zSOM_Robustness_L', 'zSOM_Robustness_R']
     external = None
     geometries = []
     failed_geometries = []
