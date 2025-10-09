@@ -6,7 +6,6 @@
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
 #
-# Python 3.6
 
 import clinical_goal as CG
 import region_codes as RC
@@ -164,6 +163,7 @@ class Breast:
         conformity_target = ROIS.ptv.name
       else:
         conformity_target = ROIS.ptv_c.name
+      hi_lower_dose_level_score = 0.92
     else:
       homogeneity_target = prescription.target
       prescription_target = prescription.target
@@ -173,6 +173,7 @@ class Breast:
         conformity_target = ROIS.ptv_sbc.name
       else:
         conformity_target = ROIS.ptv_c.name
+      hi_lower_dose_level_score = 0.95
     if prescription.region_code in RC.breast_reg_codes:
       # Regional breast:
       if prescription.region_code in RC.breast_bilateral_codes:
@@ -197,7 +198,7 @@ class Breast:
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
+        targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, hi_lower_dose_level_score, 0.95, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
       else:
         # Single-sided regional:
@@ -212,14 +213,14 @@ class Breast:
         targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
+        targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, hi_lower_dose_level_score, 0.95, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
     else:
       # Non-regional breast (whole or partial breast):
       targets.append(CG.ClinicalGoal(prescription_target, CG.at_least, CG.dose_at_volume, 0.995*mod, 0.50, 1))
       targets.append(CG.ClinicalGoal(prescription_target, CG.at_most, CG.dose_at_volume, 1.005*mod, 0.50, 1))
       targets.append(CG.ClinicalGoal(prescription_target, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
-      targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
+      targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, hi_lower_dose_level_score, 0.95, 5))
       targets.append(CG.ClinicalGoal(conformity_target, CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
       if prescription.target == ROIS.ctv_sb.name and prescription.total_dose != 48:
         # Partial breast:
@@ -253,7 +254,7 @@ class Breast:
       targets.append(CG.ClinicalGoal(ROIS.ptv_sbc.name, CG.at_least, CG.dose_at_volume, 0.95,  0.95, 2))
       targets.append(CG.ClinicalGoal(ROIS.ctv_sb.name, CG.at_least, CG.homogeneity_index, 0.95, 0.95, 5))
       targets.append(CG.ClinicalGoal(ROIS.ptv_sbc.name, CG.at_least, CG.conformity_index, 0.75, 0.95, 5))
-    # Breast tolerance speficic for 18 fx SIB (Skagen trial):
+    # Breast tolerance speficic for SIB:
     # (For regional use CTVp-CTVsb, for whole breast use CTV-CTVsb)
     if SSF.has_roi_with_shape(ss, ROIS.ctv_p_ctv_sb.name):
       targets.append(CG.ClinicalGoal(ROIS.ctv_p_ctv_sb.name, CG.at_most, CG.volume_at_dose, 0.40, 43.46*100, 5))
