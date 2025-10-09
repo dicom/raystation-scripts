@@ -102,7 +102,7 @@ class Breast:
         targets.append(OF.max_dose(ss, plan, 'z'+ROIS.ptv_pc_ptv_sbc.name, lower_dose*100*1.05, 80, beam_set_index=i))
       else:
         # Whole breast:
-        targets.append(OF.min_dose(ss, plan, prescription.target, lower_dose*100*0.95, 150, beam_set_index=i))
+        targets.append(OF.min_dose(ss, plan, 'z'+ROIS.ctv_ptv_sbc.name, lower_dose*100*0.95, 150, beam_set_index=i))
         targets.append(OF.uniform_dose(ss, plan, 'z'+ROIS.ctv_ptv_sbc.name, lower_dose*100, 30, beam_set_index=i))
         targets.append(OF.max_dose(ss, plan, 'z'+ROIS.ptv_c_ptv_sbc.name, lower_dose*100*1.05, 80, beam_set_index=i))
       if prescription.region_code in RC.breast_bilateral_codes:
