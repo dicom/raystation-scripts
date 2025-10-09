@@ -214,7 +214,6 @@ lung_v35 = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_breast_15, 17
 lung_v20 = EQD.Tolerance('Lung', 'Pneumonitis', ab_lung, fractions_breast_15, 17, 'Volume receiving tolerance dose being less than 35%', 'Conventional RT')
 lung_v30 = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', 10, 4.305, 8.61, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
 lung_v45 = EQD.Tolerance('Lung', 'Radiation induced lymphopenia', 10, 2.12, 4.24, 'Volume receiving tolerance dose being less than 45%', 'Conventional RT')
-lung_mean_import_high = EQD.Tolerance('Lung_L/R', 'Import HIGH protocol', ab_lung, 15, 6, 'Mean', 'Conventional RT')
 lung_v2_5gy_import_high = EQD.Tolerance('Lung', 'Import HIGH protocol', ab_heart, 15, 2.5, 'Volume receiving tolerance dose being less than 15%', 'Conventional RT')
 lungs_v30 = EQD.Tolerance('Lungs', 'Lymphopenia', ab_blood, fractions_breast_15, 9.7, 'Volume receiving tolerance dose being less than 30%', 'Conventional RT')
 lungs_v45 = EQD.Tolerance('Lungs', 'Lymphopenia', ab_blood, fractions_breast_15, 4.93, 'Volume receiving tolerance dose being less than 45%', 'Conventional RT')
