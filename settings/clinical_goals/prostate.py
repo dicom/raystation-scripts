@@ -44,8 +44,8 @@ class Prostate:
     # Medium priority:
     oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195, TOL.bowel_bag_v195cc, 4))
     oars.append(CG.ClinicalGoal(ROIS.anal_canal.name, CG.at_most, CG.average_dose, TOL.anal_canal_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
     # Lower priority:
     oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.dose_at_abs_volume, TOL.bowel_bag_dmax, 0.03, 6))
     oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.average_dose, TOL.penile_bulb_mean, None, 6))
@@ -57,8 +57,8 @@ class Prostate:
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.60, TOL.rectum_v60pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.19, TOL.bladder_v19pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc_freq, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
     oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1000, TOL.bone_v1000cc, 6))
     oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1520, TOL.bone_v1520cc, 6))
     oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1250, TOL.bone_v1250cc, 6))

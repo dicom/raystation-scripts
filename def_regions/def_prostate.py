@@ -23,7 +23,7 @@ class DefProstate(object):
     else:
       self.setup_bed(pm, examination, site, choices)
     # Create "Bone" ROI Algebra:
-    bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
+    bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     for roi in [ROIS.l4, ROIS.l3, ROIS.l2]:
       try:
@@ -109,7 +109,9 @@ class DefProstate(object):
     # DL OARs:
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
-        "Bladder": "Bladder"
+        "Bladder": "Bladder",
+        "FemoralHead_L": "Femur_Head_L",
+        "FemoralHead_R": "Femur_Head_R"
       },
       'Alesund Male Pelvic CT': {
         "CaudaEquina": "CaudaEquina",
@@ -122,8 +124,8 @@ class DefProstate(object):
         "PelvicGirdle_L": "PelvicGirdle_L",
         "PelvicGirdle_R": "PelvicGirdle_R",
         "PenileBulb": "PenileBulb",
-        "FemurHeadNeck_L": "FemurHeadNeck_L",
-        "FemurHeadNeck_R": "FemurHeadNeck_R"
+        "Femur_L": "FemurHeadNeck_L",
+        "Femur_R": "FemurHeadNeck_R"
       }
     })
     # Exclude Rectum from BowelBag:
