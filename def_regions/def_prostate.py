@@ -273,26 +273,33 @@ class DefProstate(object):
     site.add_targets([semves20, ctv3, ctv2, ptv3, ptv2])
   
   
-  # Adds target ROIs for intermediate risk or high risk (20 fx) prostate treatment to the site object.
-  def add_prostate_intermediate_or_high_risk_targets(self, pm, examination, site, high_risk=False):
-    # Hypofractionated prostate with vesicles (3 Gy x 20):
+  # Adds target ROIs for intermediate risk (5 or 20 fx) or high risk (20 fx) prostate treatment to the site object.
+  def add_prostate_intermediate_or_high_risk_targets(self, pm, examination, site, high_risk=False, sbrt=False):
+    # Intact prostate and vesicles, but no elective nodes:
     # Seminal vesicles (which for intermediate risk is 10 mm and for high risk is 20 mm):
     if high_risk:
       semves = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
     else:
       semves = ROI.ROIAlgebra('SeminalVes10', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_10mm_expansion)
     # Targets:
-    ctv_60 = ROI.ROIAlgebra(ROIS.ctv_60.name, ROIS.ctv_60.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
-    ctv_57_60 = ROI.ROIAlgebra(ROIS.ctv_57_60.name, ROIS.ctv_57_60.type, COLORS.ctv_low, sourcesA = [ctv_60], sourcesB = [semves], marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
-    ptv_57_60 = ROI.ROIAlgebra(ROIS.ptv_57_60.name, ROIS.ptv_57_60.type, COLORS.ptv_low, sourcesA = [ctv_60], sourcesB = [semves], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_6mm_expansion)
-    ptv_60 = ROI.ROIExpanded(ROIS.ptv_60.name, ROIS.ptv_60.type, COLORS.ptv_high, source = ctv_60, margins = MARGINS.prostate_seed_expansion)
-    ctv_57 = ROI.ROIAlgebra(ROIS.ctv_57.name, ROIS.ctv_57.type, COLORS.ctv_med, sourcesA = [ctv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
-    ptv_57 = ROI.ROIAlgebra(ROIS.ptv_57.name, ROIS.ptv_57.type, COLORS.ptv_med, sourcesA = [ptv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    site.add_targets([semves, ctv_60, ctv_57, ctv_57_60, ptv_57_60, ptv_60, ptv_57])
-    # Other derived ROIs:
-    wall_ptv_60 = ROI.ROIWall(ROIS.z_ptv_60_wall.name, ROIS.z_ptv_60_wall.type, COLORS.wall, ptv_60, 0.5, 0)
-    wall_ptv_57_60 = ROI.ROIWall(ROIS.z_ptv_57_60_wall.name, ROIS.z_ptv_57_60_wall.type, COLORS.wall, ptv_57_60, 1, 0)
-    site.add_oars([wall_ptv_60, wall_ptv_57_60])
+    if sbrt:
+      ctv_40 = ROI.ROIAlgebra(ROIS.ctv_40.name, ROIS.ctv_40.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [semves], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_high, source = ctv_40, margins = MARGINS.prostate_seed_expansion)
+      site.add_targets([semves, ctv_40, ptv])
+      wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 0.5, 0)
+      site.add_oars([wall_ptv])
+    else:
+      ctv_60 = ROI.ROIAlgebra(ROIS.ctv_60.name, ROIS.ctv_60.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
+      ctv_57_60 = ROI.ROIAlgebra(ROIS.ctv_57_60.name, ROIS.ctv_57_60.type, COLORS.ctv_low, sourcesA = [ctv_60], sourcesB = [semves], marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
+      ptv_57_60 = ROI.ROIAlgebra(ROIS.ptv_57_60.name, ROIS.ptv_57_60.type, COLORS.ptv_low, sourcesA = [ctv_60], sourcesB = [semves], marginsA = MARGINS.prostate_seed_expansion, marginsB = MARGINS.uniform_6mm_expansion)
+      ptv_60 = ROI.ROIExpanded(ROIS.ptv_60.name, ROIS.ptv_60.type, COLORS.ptv_high, source = ctv_60, margins = MARGINS.prostate_seed_expansion)
+      ctv_57 = ROI.ROIAlgebra(ROIS.ctv_57.name, ROIS.ctv_57.type, COLORS.ctv_med, sourcesA = [ctv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
+      ptv_57 = ROI.ROIAlgebra(ROIS.ptv_57.name, ROIS.ptv_57.type, COLORS.ptv_med, sourcesA = [ptv_57_60], sourcesB = [ptv_60], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      site.add_targets([semves, ctv_60, ctv_57, ctv_57_60, ptv_57_60, ptv_60, ptv_57])
+      # Other derived ROIs:
+      wall_ptv_60 = ROI.ROIWall(ROIS.z_ptv_60_wall.name, ROIS.z_ptv_60_wall.type, COLORS.wall, ptv_60, 0.5, 0)
+      wall_ptv_57_60 = ROI.ROIWall(ROIS.z_ptv_57_60_wall.name, ROIS.z_ptv_57_60_wall.type, COLORS.wall, ptv_57_60, 1, 0)
+      site.add_oars([wall_ptv_60, wall_ptv_57_60])
   
   
   # Adds target ROIs for palliative prostate treatment to the site object.
@@ -353,13 +360,16 @@ class DefProstate(object):
       if nodes != 'no':
         self.add_lymph_node_rois(pm, examination, site)
       self.add_prostate_high_risk_targets(pm, examination, site, choices)
-    elif fractionation in ['hypo_60', 'hypo_60_highrisk']:
+    elif fractionation in ['sbrt_40', 'hypo_60', 'hypo_60_highrisk']:
+      # Intermediate (5 or 20 fx) or high risk without elective nodes (20 fx):
       high_risk = False
+      sbrt = False
       if fractionation == 'hypo_60_highrisk':
         high_risk = True
-      # Hypofractionated prostate with vesicles (3 Gy x 20):
+      elif fractionation == 'sbrt_40':
+        sbrt = True
       self.add_prostate_rois(pm, examination, site, 'seeds')
-      self.add_prostate_intermediate_or_high_risk_targets(pm, examination, site, high_risk)
+      self.add_prostate_intermediate_or_high_risk_targets(pm, examination, site, high_risk, sbrt)
     elif fractionation in ['hypo_55','palliative']:
       if fractionation == 'hypo_55':
         self.add_prostate_rois(pm, examination, site, choices[3])
