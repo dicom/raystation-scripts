@@ -121,6 +121,7 @@ class DefProstate(object):
         "Coccyx": "Coccyx",
         "PelvicGirdle_L": "PelvicGirdle_L",
         "PelvicGirdle_R": "PelvicGirdle_R",
+        "PenileBulb": "PenileBulb",
         "FemurHeadNeck_L": "FemurHeadNeck_L",
         "FemurHeadNeck_R": "FemurHeadNeck_R"
       }
@@ -128,7 +129,7 @@ class DefProstate(object):
     # Exclude Rectum from BowelBag:
     ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
-    site.add_oars([ROIS.bowel_bag, ROIS.penile_bulb])
+    site.add_oars([ROIS.bowel_bag])
   
   
   # Adds rois that are relevant for lymph node treatment.
