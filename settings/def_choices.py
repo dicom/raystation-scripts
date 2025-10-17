@@ -106,7 +106,7 @@ prostate_bed = P.Property('Prostataseng', 'bed', parent = prostate, next_categor
 prostate_bergen = P.Property('Høy risiko (67.5 Gy / 25 fx)', 'hypo_bergen', parent = prostate_normal, next_category ='', default = True)
 prostate_hypo_high = P.Property('Høy risiko u/LK (60 Gy / 20 fx)', 'hypo_60_highrisk', parent = prostate_normal, next_category ='')
 prostate_hypo = P.Property('Intermediær risiko (60 Gy / 20 fx)', 'hypo_60', parent = prostate_normal, next_category ='')
-prostate_sbrt = P.Property('Intermediær risiko (40 Gy / 5 fx)', 'sbrt_40', parent = prostate_normal, next_category ='')
+prostate_sbrt = P.Property('Intermediær risiko (36.25 Gy / 5 fx)', 'sbrt_5fx', parent = prostate_normal, next_category ='')
 prostate_lc = P.Property('Lokal kontroll (STAMPEDE: 55 Gy)', 'hypo_55', parent = prostate_normal, next_category ='')
 prostate_palliative = P.Property('Palliativ behandling', 'palliative', parent = prostate_normal, next_category ='')
 

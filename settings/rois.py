@@ -347,6 +347,7 @@ ctv_60 = ROI.ROI('CTV_60', 'Ctv', COLORS.ctv_high)
 ptv_57 = ROI.ROI('PTV!_57', 'Ptv', COLORS.ptv_med)
 ctv_57 = ROI.ROI('CTV!_57', 'Ctv', COLORS.ctv_med)
 ctv_40 = ROI.ROI('CTV_40', 'Ctv', COLORS.ctv_high)
+ptv_36_25 = ROI.ROI('PTV_36.25', 'Ptv', COLORS.ptv_high)
 
 ptv_semves = ROI.ROI('PTV_SeminalVes', 'Ptv', COLORS.ptv_med)
 
