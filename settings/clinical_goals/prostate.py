@@ -30,49 +30,71 @@ class Prostate:
   # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
     oars = []
-    # Higher priority:
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.22, TOL.rectum_v22pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.38, TOL.rectum_v38pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.51, TOL.rectum_v51pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.64, TOL.rectum_v64pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.80, TOL.rectum_v80pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.01, TOL.bladder_v01pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.20, TOL.bladder_v20pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.bladder_v05pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc, 3))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.02, TOL.bladder_v02pc, 3))
-    # Medium priority:
-    oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195, TOL.bowel_bag_v195cc, 4))
-    oars.append(CG.ClinicalGoal(ROIS.anal_canal.name, CG.at_most, CG.average_dose, TOL.anal_canal_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    # Lower priority:
-    oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.dose_at_abs_volume, TOL.bowel_bag_dmax, 0.03, 6))
-    oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.average_dose, TOL.penile_bulb_mean, None, 6))
-    oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.dose_at_volume, TOL.penile_bulb_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.01, TOL.rectum_v01pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.18, TOL.rectum_v18pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.31, TOL.rectum_v31pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.44, TOL.rectum_v44pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.60, TOL.rectum_v60pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.19, TOL.bladder_v19pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc_freq, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1000, TOL.bone_v1000cc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1520, TOL.bone_v1520cc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1250, TOL.bone_v1250cc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 850, TOL.bone_v850cc, 6))
-    if prescription.region_code in RC.prostate_node_codes:
-      # Lymph node irradiation:
-      oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcanal_v2_adx, 0.02, 2))
+    if prescription.total_dose == 36.25:
+      # Bladder:
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.4, TOL.bladder_paceb1, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 10, TOL.bladder_paceb2, 4))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 5, TOL.bladder_paceb3, 7))
+      # Bowel:
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 5, TOL.bowel_paceb1, 4))
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 1, TOL.bowel_paceb2, 4))
+      # Femoral heads:
+      oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.femoral_paceb1, 4))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.femoral_paceb1, 4))
+      # Penile bulb:
+      oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.penile_bulb_paceb1, 6))
+      # Rectum:
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.rectum_paceb1, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.rectum_paceb2, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.abs_volume_at_dose, 1, TOL.rectum_paceb3, 4))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.abs_volume_at_dose, 2, TOL.rectum_paceb4, 7))
+      # Urethra:
+      oars.append(CG.ClinicalGoal(ROIS.urethra.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.urethra_paceb1, 4))
+    else:
+      # Higher priority:
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.22, TOL.rectum_v22pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.38, TOL.rectum_v38pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.51, TOL.rectum_v51pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.64, TOL.rectum_v64pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.80, TOL.rectum_v80pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.01, TOL.bladder_v01pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.20, TOL.bladder_v20pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.bladder_v05pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.02, TOL.bladder_v02pc, 3))
+      # Medium priority:
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195, TOL.bowel_bag_v195cc, 4))
+      oars.append(CG.ClinicalGoal(ROIS.anal_canal.name, CG.at_most, CG.average_dose, TOL.anal_canal_mean, None, 4))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+      # Lower priority:
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.dose_at_abs_volume, TOL.bowel_bag_dmax, 0.03, 6))
+      oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.average_dose, TOL.penile_bulb_mean, None, 6))
+      oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.dose_at_volume, TOL.penile_bulb_d02pc, 0.02, 6))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.01, TOL.rectum_v01pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.18, TOL.rectum_v18pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.31, TOL.rectum_v31pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.44, TOL.rectum_v44pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.60, TOL.rectum_v60pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.19, TOL.bladder_v19pc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc_freq, 6))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1000, TOL.bone_v1000cc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1520, TOL.bone_v1520cc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1250, TOL.bone_v1250cc, 6))
+      oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 850, TOL.bone_v850cc, 6))
+      if prescription.region_code in RC.prostate_node_codes:
+        # Lymph node irradiation:
+        oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcanal_v2_adx, 0.02, 2))
     return oars
 
 
   # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
     targets = []
-    targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
+    if not prescription.is_stereotactic():
+      targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
     if prescription.region_code in RC.prostate_intact_codes:
       # Intact prostate:
       if prescription.total_dose == 67.5:
@@ -122,6 +144,14 @@ class Prostate:
         targets.append(CG.ClinicalGoal(ROIS.ptv_60.name, CG.at_least, CG.conformity_index, 0.95, 0.98, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_57.name, CG.at_most, CG.dose_at_volume, 0.9975, 0.02, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_57_60.name, CG.at_least, CG.conformity_index, 0.8, 0.9025, 5))
+      elif prescription.total_dose == 36.25:
+        # SBRT for localized prostate:
+        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.volume_at_dose, 0.95, 36.25*100, 1))
+        targets.append(CG.ClinicalGoal(ROIS.ctv_40.name, CG.at_least, CG.volume_at_dose, 0.95, 40*100, 2))
+        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.dose_at_volume, 0.948966, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_most, CG.dose_at_volume, 1.1806897, 0.02, 4))
+        targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.324138, 0.0, 4))
+        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.conformity_index, 0.95, 0.98, 5))
       else:
         # Palliative prostate:
         targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))

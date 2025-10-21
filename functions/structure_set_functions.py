@@ -253,7 +253,10 @@ def determine_target(ss, roi_dict, prescription):
   expected_targets = [ROIS.ctv.name, ROIS.ctv_p.name, 'CTV_'+ total_dose, ROIS.ictv.name, ROIS.ctv1.name, ROIS.ctv_sb.name, ROIS.ctv2.name, ROIS.ctv3.name]
   # SRT/SBRT (where PTV is prescription target, instead of CTV for conventional treatment):
   if prescription.is_stereotactic():
-    if determine_nr_of_indexed_ptvs(ss) > 1:
+    if has_roi(ss, 'PTV_36.25'):
+      # Prostate SBRT:
+      expected_targets.insert(0, 'PTV_36.25')
+    elif determine_nr_of_indexed_ptvs(ss) > 1:
       expected_targets.insert(0, ROIS.ptv1.name)
     else:
       expected_targets.insert(0, ROIS.ptv.name)

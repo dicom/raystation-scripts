@@ -76,6 +76,14 @@ class Prostate:
         oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 14*100, 1, 2, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.femoral_l.name, 7*100, 1, 1, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.femoral_r.name, 7*100, 1, 1, beam_set_index=i))
+      elif prescription.total_dose == 36.25:
+        # Favorable intermediate prostate (SBRT):
+        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 3*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 7*100, 1, 2, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femoral_l.name, 3*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.femoral_r.name, 3*100, 1, 1, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 12*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_dvh(ss, plan, ROIS.urethra.name, 42*100, 2, 2, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
         oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 23*100, 1, 4, beam_set_index=i))
@@ -103,7 +111,9 @@ class Prostate:
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, prescription.total_dose*100, 56*100, 1, 1, beam_set_index=i))
     else:
       # Prostate:
-      others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25, beam_set_index=i))
+      if not prescription.total_dose == 36.25:
+        # For non-SBRT prostate:
+        others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.038, 25, beam_set_index=i))
       if prescription.total_dose == 67.5 and prescription.region_code in RC.prostate_node_codes:
         # High risk prostate with elective nodes:
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_67_5_wall.name, prescription.total_dose*100, 62*100, 0.3, 1, adapt=True, beam_set_index=i))
@@ -117,8 +127,9 @@ class Prostate:
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_60_wall.name, prescription.total_dose*100, 57*100, 0.3, 1, adapt=True, beam_set_index=i))
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_57_60_wall.name, prescription.total_dose*100, 42*100, 0.8, 12, adapt=True, beam_set_index=i))
       else:
-        # STAMPEDE or palliative:
-        others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.8*prescription.total_dose*100, 1, 1, adapt=True, beam_set_index=i))
+        if not prescription.total_dose == 36.25:
+          # STAMPEDE or palliative:
+          others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.8*prescription.total_dose*100, 1, 1, adapt=True, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
   
@@ -181,6 +192,12 @@ class Prostate:
         targets.append(OF.min_dose(ss, plan, ROIS.ctv_57.name, prescription.total_dose*100*0.93, 35, beam_set_index=i))
         targets.append(OF.max_dose(ss, plan, ROIS.ptv_60.name, prescription.total_dose*100*1.02, 60, beam_set_index=i))
         targets.append(OF.max_dvh(ss, plan, ROIS.ptv_57.name, prescription.total_dose*0.978*100, 1, 50, beam_set_index=i))
+      elif prescription.total_dose == 36.25:
+        # Favorable intermediate prostate (SBRT):
+        targets.append(OF.min_dvh(ss, plan, ROIS.ctv_40.name, 40*100, 95, 50, beam_set_index=i))
+        targets.append(OF.min_dvh(ss, plan, ROIS.ptv_36_25.name, 36.25*100, 95, 100, beam_set_index=i))
+        targets.append(OF.min_dose(ss, plan, ROIS.ptv_36_25.name, 34.4*100, 50, beam_set_index=i))
+        targets.append(OF.max_dose(ss, plan, ROIS.ptv_36_25.name, 43*100, 25, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
         targets.append(OF.uniform_dose(ss, plan, ROIS.ctv.name, prescription.total_dose*100, 40, beam_set_index=i))

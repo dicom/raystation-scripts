@@ -101,7 +101,12 @@ class PrescriptionInterpreter(object):
   # Tries to determine prescription values for a structure set which indicates that we have a prostate case.
   def interpret_prostate(self, ss):
     # Determine category of prostate treatment:
-    if SSF.has_roi(ss, 'CTV_60'):
+    if SSF.has_roi(ss, 'CTV_40'):
+      # Prostate and vesicles:
+      self.region_code = 343
+      self.fraction_dose = 7.25
+      self.nr_fractions = 5
+    elif SSF.has_roi(ss, 'CTV_60'):
       # Prostate and vesicles:
       self.region_code = 343
       self.fraction_dose = 3
