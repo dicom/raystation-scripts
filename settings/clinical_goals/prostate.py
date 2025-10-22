@@ -45,10 +45,10 @@ class Prostate:
       # Penile bulb:
       oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.penile_bulb_paceb1, 6))
       # Rectum:
-      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.abs_volume_at_dose, 2, TOL.rectum_paceb1, 2))
-      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.rectum_paceb2, 4))
-      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.rectum_paceb3, 4))
-      oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.abs_volume_at_dose, 1, TOL.rectum_paceb4, 4))
+      oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.abs_volume_at_dose, 2, TOL.rectum_paceb1, 2))
+      oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.rectum_paceb2, 4))
+      oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.rectum_paceb3, 4))
+      oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.abs_volume_at_dose, 1, TOL.rectum_paceb4, 4))
       # Urethra:
       oars.append(CG.ClinicalGoal(ROIS.urethra.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.urethra_paceb1, 4))
     else:

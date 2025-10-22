@@ -78,11 +78,10 @@ class Prostate:
         oars.append(OF.max_eud(ss, plan, ROIS.femoral_r.name, 7*100, 1, 1, beam_set_index=i))
       elif prescription.total_dose == 36.25:
         # Favorable intermediate prostate (SBRT):
-        oars.append(OF.max_eud(ss, plan, ROIS.anal_canal.name, 3*100, 1, 2, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 7*100, 1, 2, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.femoral_l.name, 3*100, 1, 1, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.femoral_r.name, 3*100, 1, 1, beam_set_index=i))
-        oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 12*100, 1, 4, beam_set_index=i))
+        oars.append(OF.max_eud(ss, plan, ROIS.anorectum.name, 12*100, 1, 4, beam_set_index=i))
         oars.append(OF.max_dvh(ss, plan, ROIS.urethra.name, 42*100, 2, 2, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
