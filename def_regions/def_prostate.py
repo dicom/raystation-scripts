@@ -283,11 +283,14 @@ class DefProstate(object):
       semves = ROI.ROIAlgebra('SeminalVes10', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_10mm_expansion)
     # Targets:
     if sbrt:
+      # For SBRT we use Anorectum instead of Rectum and AnalCanal:
+      anorectum = ROI.ROIAlgebra(ROIS.anorectum.name, ROIS.anorectum.type, COLORS.rectum, sourcesA = [ROIS.rectum], sourcesB = [ROIS.anal_canal], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      # Targets:
       ctv_40 = ROI.ROIAlgebra(ROIS.ctv_40.name, ROIS.ctv_40.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [semves], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       ptv_36_25 = ROI.ROIExpanded(ROIS.ptv_36_25.name, ROIS.ptv_36_25.type, COLORS.ptv_high, source = ctv_40, margins = MARGINS.prostate_seed_expansion)
       site.add_targets([semves, ctv_40, ptv_36_25])
       wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv_36_25, 0.5, 0)
-      site.add_oars([wall_ptv])
+      site.add_oars([anorectum, wall_ptv])
     else:
       ctv_60 = ROI.ROIAlgebra(ROIS.ctv_60.name, ROIS.ctv_60.type, COLORS.ctv_high, sourcesA = [ROIS.prostate], sourcesB = [ROIS.rectum, ROIS.anal_canal, ROIS.levator_ani], operator = 'Subtraction', marginsA = MARGINS.prostate_ctv, marginsB = MARGINS.zero)
       ctv_57_60 = ROI.ROIAlgebra(ROIS.ctv_57_60.name, ROIS.ctv_57_60.type, COLORS.ctv_low, sourcesA = [ctv_60], sourcesB = [semves], marginsA = MARGINS.zero, marginsB = MARGINS.zero)        
