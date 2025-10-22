@@ -50,7 +50,9 @@ def determine_isodoses(case, ss, prescription):
   elif prescription.region_code in RC.breast_codes and prescription.total_dose == 48:
     ISODOSES.breast_sib_15fx.apply_to(case)
   elif prescription.region_code in RC.prostate_codes:
-    if prescription.fraction_dose in [2.0, 2.2]:
+    if prescription.is_stereotactic():
+      ISODOSES.prostate_sbrt.apply_to(case)
+    elif prescription.fraction_dose in [2.0, 2.2]:
       if prescription.region_code in RC.prostate_bed_codes:
         if SSF.has_roi_with_shape(ss, ROIS.ctv_56.name):
           ISODOSES.prostate_bed_56_70.apply_to(case)

@@ -73,6 +73,16 @@ standard_isodoses.append(Isodose(105, orange))
 standard_isodoses.append(Isodose(110, red))
 
 
+# Prostate SBRT:
+prostate_sbrt_isodoses = []
+prostate_sbrt_isodoses.append(Isodose(30, sea_green))
+prostate_sbrt_isodoses.append(Isodose(50, white))
+prostate_sbrt_isodoses.append(Isodose(90, blue))
+prostate_sbrt_isodoses.append(Isodose(100, green))
+prostate_sbrt_isodoses.append(Isodose(110.344828, yellow))
+prostate_sbrt_isodoses.append(Isodose(118.068966, red))
+
+
 # Prostate SIB 56/70/77 isodose setup:
 prostate_56_70_77_isodoses = []
 prostate_56_70_77_isodoses.append(Isodose(30, sea_green))
@@ -190,12 +200,13 @@ stereotactic_isodoses.append(Isodose(150, red))
 
 # Set up the color tables to be used:
 standard = ColorTable(standard_isodoses)
+prostate_sbrt = ColorTable(prostate_sbrt_isodoses)
 prostate_56_70_77 = ColorTable(prostate_56_70_77_isodoses)
 prostate_70_77 = ColorTable(prostate_70_77_isodoses)
 prostate_50_62_5_67_5 = ColorTable(prostate_50_62_5_67_5_isodoses)
 prostate_62_5_67_5 = ColorTable(prostate_62_5_67_5_isodoses)
 prostate_57_60 = ColorTable(prostate_57_60_isodoses)
+prostate_bed_56_70 = ColorTable(prostate_bed_56_70_isodoses)
 sib_47_50 = ColorTable(sib_47_50_isodoses)
 breast_sib_15fx = ColorTable(breast_sib_15fx_isodoses)
-prostate_bed_56_70 = ColorTable(prostate_bed_56_70_isodoses)
 stereotactic = ColorTable(stereotactic_isodoses)
