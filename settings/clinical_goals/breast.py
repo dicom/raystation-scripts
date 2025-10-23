@@ -31,8 +31,6 @@ class Breast:
     oars = []
     # Common for all breast variants:
     oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_breast, None, 3))
-    oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.30, TOL.lung_v30, 6))
-    oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.45, TOL.lung_v45, 6))
     oars.append(CG.ClinicalGoal(ROIS.a_lad.name, CG.at_most, CG.dose_at_abs_volume, TOL.lad_max, 0.03, 6))
     oars.append(CG.ClinicalGoal(ROIS.a_lad.name, CG.at_most, CG.average_dose, TOL.lad_mean, None, 6))
     oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_breast_low_priority, None, 6))
