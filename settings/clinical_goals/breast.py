@@ -253,6 +253,7 @@ class Breast:
     if SSF.has_roi_with_shape(ss, ROIS.ctv_p_ctv_sb.name):
       targets.append(CG.ClinicalGoal(ROIS.ctv_p_ctv_sb.name, CG.at_most, CG.volume_at_dose, 0.40, 43.46*100, 5))
       targets.append(CG.ClinicalGoal('z'+ROIS.ptv_pc_ptv_sbc.name, CG.at_most, CG.dose_at_volume, 1.05*mod,  0.02, 8))
+      targets.append(CG.ClinicalGoal(ROIS.ptv_nc.name, CG.at_most, CG.dose_at_volume, 1.05*mod,  0.02, 8))
     elif SSF.has_roi_with_shape(ss, ROIS.ctv_ctv_sb.name):
       targets.append(CG.ClinicalGoal(ROIS.ctv_ctv_sb.name, CG.at_most, CG.volume_at_dose, 0.40, 43.46*100, 5))
       targets.append(CG.ClinicalGoal('z'+ROIS.ptv_c_ptv_sbc.name, CG.at_most, CG.dose_at_volume, 1.05*mod,  0.02, 8))
