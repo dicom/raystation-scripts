@@ -157,7 +157,7 @@ class Prostate:
         targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.dose_at_volume, 0.948966, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_most, CG.dose_at_volume, 1.1806897, 0.02, 4))
         targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.324138, 0.0, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.conformity_index, 0.95, 0.98, 5))
+        targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.conformity_index, 0.92, 0.98, 5))
       else:
         # Palliative prostate:
         targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
