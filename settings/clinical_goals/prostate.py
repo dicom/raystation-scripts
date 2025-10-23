@@ -35,7 +35,7 @@ class Prostate:
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 20, TOL.bladder_paceb1, 2))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.4, TOL.bladder_paceb2, 4))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 10, TOL.bladder_paceb3, 4))
-      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 5, TOL.bladder_paceb4, 7))
+      oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.abs_volume_at_dose, 5, TOL.bladder_paceb4, 6))
       # Bowel:
       oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 5, TOL.bowel_paceb1, 4))
       oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 1, TOL.bowel_paceb2, 4))
@@ -43,7 +43,7 @@ class Prostate:
       oars.append(CG.ClinicalGoal(ROIS.femoral_l.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.femoral_paceb1, 4))
       oars.append(CG.ClinicalGoal(ROIS.femoral_r.name, CG.at_most, CG.volume_at_dose, 0.05, TOL.femoral_paceb1, 4))
       # Penile bulb:
-      oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.penile_bulb_paceb1, 6))
+      oars.append(CG.ClinicalGoal(ROIS.penile_bulb.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.penile_bulb_paceb1, 7))
       # Rectum:
       oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.abs_volume_at_dose, 2, TOL.rectum_paceb1, 2))
       oars.append(CG.ClinicalGoal(ROIS.anorectum.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.rectum_paceb2, 4))
@@ -152,7 +152,7 @@ class Prostate:
         targets.append(CG.ClinicalGoal(ROIS.ctv_40.name, CG.at_least, CG.volume_at_dose, 0.9, 40*100, 1))
         # "Minor variation":
         targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.volume_at_dose, 0.95, 36.25*100, 3))
-        targets.append(CG.ClinicalGoal(ROIS.ctv_40.name, CG.at_least, CG.volume_at_dose, 0.95, 40*100, 3))
+        targets.append(CG.ClinicalGoal(ROIS.ctv_40.name, CG.at_least, CG.volume_at_dose, 0.95, 40*100, 4))
         # Other
         targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_least, CG.dose_at_volume, 0.948966, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_36_25.name, CG.at_most, CG.dose_at_volume, 1.1806897, 0.02, 4))
