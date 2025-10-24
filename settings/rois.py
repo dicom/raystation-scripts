@@ -128,6 +128,7 @@ colon = ROI.ROI('Colon','Organ', COLORS.colon)
 brachial_plexus_l = ROI.ROI('BrachialPlexus_L','Organ', COLORS.brachial_plexus)
 brachial_plexus_r = ROI.ROI('BrachialPlexus_R','Organ', COLORS.brachial_plexus)
 # Pelvis, prostate:
+bladder_draft = ROI.ROI('Bladder_Draft', 'Organ', COLORS.bladder)
 bladder = ROI.ROI('Bladder', 'Organ', COLORS.bladder, case ='PelvicMale',  model = 'Bladder')
 bowel_space = ROI.ROI('BowelBag', 'Organ', COLORS.bowel_space)
 anorectum = ROI.ROI('Anorectum', 'Organ', COLORS.rectum)

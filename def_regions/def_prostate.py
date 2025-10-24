@@ -16,7 +16,7 @@ class DefProstate(object):
     # Choice 1: Region - prostate or bed?
     region = choices[1]
     # Add ROIs which are common for all cases:
-    self.add_common_rois(pm, examination, site)
+    self.add_common_rois(pm, examination, site, region)
     # Setup targets and site specific ROIs:
     if region == 'prostate':
       self.setup_prostate(pm, examination, site, choices)
@@ -36,7 +36,7 @@ class DefProstate(object):
     # Create all targets and OARs in RayStation:
     site.create_rois()
     # Change type to 'Other' for selected ROIs:
-    for roi_name in ['Prostate', 'SeminalVes', 'LN_Iliac', 'BowelBag_Draft', bone.name]:
+    for roi_name in ['Prostate', 'SeminalVes', 'LN_Iliac', 'Bladder_Draft', 'BowelBag_Draft', bone.name]:
       try:
         if pm.RegionsOfInterest[roi_name]:
           if pm.RegionsOfInterest[roi_name].OrganData.OrganType != "Other":
@@ -105,11 +105,15 @@ class DefProstate(object):
   
   
   # Adds rois that are common across all cases.
-  def add_common_rois(self, pm, examination, site):
+  def add_common_rois(self, pm, examination, site, region):
+    if region == 'prostate':
+      bladder_name = 'Bladder_Draft'
+    else:
+      bladder_name = 'Bladder'
     # DL OARs:
     examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
       'RSL DLS CT': {
-        "Bladder": "Bladder",
+        f"{bladder_name}": "Bladder",
         "FemoralHead_L": "Femur_Head_L",
         "FemoralHead_R": "Femur_Head_R"
       },
@@ -128,6 +132,10 @@ class DefProstate(object):
         "Femur_R": "FemurHeadNeck_R"
       }
     })
+    # For intact prostate patients, use bladder draft, and extract prostate from the bladder ROI:
+    if bladder_name == 'Bladder_Draft':
+      bladder = ROI.ROIAlgebra('Bladder', 'Organ', COLORS.bladder, sourcesA = [ROIS.bladder_draft], sourcesB = [ROIS.prostate], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      site.add_oars([bladder])
     # Exclude Rectum from BowelBag:
     ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
