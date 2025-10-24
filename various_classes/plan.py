@@ -117,11 +117,6 @@ class Plan(object):
       energy_name = '6 FFF'
     elif target in [ROIS.ctv1.name, ROIS.ctv2.name, ROIS.ctv3.name, ROIS.ctv4.name] and palliative_choices[0] in ['sep_beamset_sep_iso', 'sep_plan']:
       energy_name = SSF.determine_energy_single_target(ss, target)
-    elif region_code in RC.breast_codes:
-      if region_code in RC.breast_partial_codes:
-        energy_name = '6 FFF'
-      else:
-        energy_name = '6'
     else:
       # Determine the energy quality from the size of the target volume:
       energy_name = SSF.determine_energy(ss, target)
