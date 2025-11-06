@@ -14,10 +14,8 @@ brain_partial_oars = [ROIS.brain, ROIS.brainstem, ROIS.brainstem_core, ROIS.brai
 brain_stereotactic_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.brain, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.optic_nrv_l, ROIS.optic_nrv_r, ROIS.optic_chiasm, ROIS.pituitary, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.brainstem, ROIS.skin_srt]
 
 
-# Lung:
-lung_oars = [ROIS.lung_r, ROIS.lung_l, ROIS.lungs, ROIS.spinal_canal, ROIS.esophagus, ROIS.heart]
 # Stereotactic lung:
-lung_stereotactic_oars = [ROIS.chestwall,  ROIS.greatves,  ROIS.skin, ROIS.bronchi_lobar_l, ROIS.bronchi_lobar_r, ROIS.bronchial_tree]
+lung_stereotactic_oars = [ROIS.bronchi_lobar_l, ROIS.bronchi_lobar_r, ROIS.bronchial_tree, ROIS.chestwall, ROIS.skin]
 
 
 # Prostate:

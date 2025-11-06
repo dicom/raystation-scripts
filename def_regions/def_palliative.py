@@ -310,7 +310,7 @@ class DefPalliative(object):
       }
     })
     # Non-DL OARs:
-    site.add_oars([ROIS.kidneys, ROIS.lungs])
+    site.add_oars([ROIS.greatves, ROIS.kidneys, ROIS.lungs])
   
   
   # Adds thorax/abdomen OARs to the site object.
@@ -345,7 +345,7 @@ class DefPalliative(object):
     ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pancreas, ROIS.spleen, ROIS.stomach])
     ROIS.bowel_bag.sourcesB.remove(ROIS.bladder)
     # Non-DL OARs:
-    site.add_oars([ROIS.bowel_bag, ROIS.kidneys, ROIS.lungs])
+    site.add_oars([ROIS.bowel_bag, ROIS.greatves, ROIS.kidneys, ROIS.lungs])
   
   
   # Adds target ROIs to the site object.
