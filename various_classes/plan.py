@@ -174,8 +174,17 @@ class Plan(object):
     
     # Create secondary beam sets (if applicable):
     if nr_targets > 1 and not palliative_choices[0] in ['beamset']:
-      if region_code in RC.brain_codes + RC.lung_codes and prescription.is_stereotactic():
-        additional_beam_sets, additional_prescriptions = PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+      if region_code in RC.brain_codes + RC.lung_codes:
+        if prescription.is_stereotactic():
+          additional_beam_sets, additional_prescriptions = PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+        else:
+          # Conventional cases with multiple targets:
+          if palliative_choices[0] == 'sep_beamset_iso':
+            # Separate beam sets, but with the same isocenter:
+            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+          elif palliative_choices[0] == 'sep_beamset_sep_iso':
+            # Separate beams sets and separate isocenter:
+            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
         if palliative_choices[0] == 'sep_beamset_iso':

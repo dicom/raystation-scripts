@@ -109,6 +109,10 @@ def collect_target_strategy_and_region_codes(ss, nr_targets, prescription):
         region_codes = multiple_beamset_form(ss, Toplevel())
         check_region_codes(prescription.region_code, region_codes)
         palliative_choices = ['sep_beamset_sep_iso']
+      else:
+        palliative_choices = palliative_beamset_form(ss, Toplevel())
+        region_codes = multiple_beamset_form(ss, Toplevel())
+        check_region_codes(prescription.region_code, region_codes)
     elif prescription.region_code in RC.palliative_codes:
       # For palliative cases with multiple targets:
       palliative_choices = palliative_beamset_form(ss, Toplevel())
