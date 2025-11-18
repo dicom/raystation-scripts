@@ -59,13 +59,13 @@ class Definition(object):
       DEF_BREAST.DefBreast(case, pm, examination, ss, choices, site)
     elif region == 'bladder':
       import def_bladder as DEF_BLADDER
-      DEF_BLADDER.DefBladder(pm, examination, ss, choices, site)
+      DEF_BLADDER.DefBladder(patient, pm, examination, ss, choices, site)
     elif region == 'prostate':
       import def_prostate as DEF_PROSTATE
       DEF_PROSTATE.DefProstate(pm, examination, ss, choices, site)
     elif region == 'rectum':
       import def_rectum as DEF_RECTUM
-      DEF_RECTUM.DefRectum(pm, examination, ss, choices, site)
+      DEF_RECTUM.DefRectum(patient, pm, examination, ss, choices, site)
     elif region == 'other':
       import def_palliative as DEF_PALLIATIVE
       DEF_PALLIATIVE.DefPalliative(pm, examination, ss, choices, site)

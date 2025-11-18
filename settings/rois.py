@@ -143,6 +143,8 @@ penile_bulb = ROI.ROI('PenileBulb', 'Organ', COLORS.penile_bulb)
 levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
 bowel_bag_draft = ROI.ROI('BowelBag_Draft', 'Other', COLORS.bowel_space)
 bowel_bag = ROI.ROIAlgebra('BowelBag', 'Organ', COLORS.bowel_space, sourcesA = [bowel_bag_draft], sourcesB = [bladder], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+# Pelvic female:
+uterus = ROI.ROI('Uterus', 'Organ', COLORS.uterus)
 
 # Bone ROIs:
 humeral_l = ROI.ROI('HumeralHead_L', 'Organ', COLORS.bone_color1)

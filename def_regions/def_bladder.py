@@ -12,9 +12,11 @@ import rois as ROIS
 class DefBladder(object):
 
   # Adds target and OAR ROIs to the given site and creates them in RayStation.
-  def __init__(self, pm, examination, ss, choices, site):
+  def __init__(self, patient, pm, examination, ss, choices, site):
     # Add ROIs which are common for all cases:
     self.add_common_rois(pm, examination, site)
+    # Add ROIs based on gender:
+    self.add_gender_based_rois(patient, pm, examination, site)
     # Choice 1: Intent
     intent = choices[1]
     if intent == 'palliative':
@@ -58,6 +60,19 @@ class DefBladder(object):
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
     site.add_oars([bone, ROIS.bowel_bag])
+  
+  
+  # Adds rois that are based on gender.
+  def add_gender_based_rois(self, patient, pm, examination, site):
+    if patient.Gender == 'Female':
+      site.add_oars([ROIS.uterus])
+    elif patient.Gender == 'Male':
+      # DL OARs:
+      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+        'Alesund Male Pelvic CT': {
+          "PenileBulb": "PenileBulb"
+        }
+      })
   
   
   # Adds curative ROIs to the site object.

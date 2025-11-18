@@ -117,11 +117,13 @@ level1 = 'Khaki'
 level = 'DarkSlateGray'
 imn = 'Maroon'
 pelvic_nodes = 'Magenta'
-# Genital:
+# Pelvic male:
 prostate = 'DeepPink'
 prostate_bed = 'DeepPink'
 vesicles = 'Violet'
 penile_bulb = 'PaleVioletRed'
+# Pelvic female:
+uterus = 'DeepPink'
 
 
 # PRVs:
