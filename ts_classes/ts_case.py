@@ -198,6 +198,7 @@ class TSCase(object):
         return t.succeed()
 
   # Tests that the case has a "Prosthesis" ROI if the examination contains metal (has a max HU of 3000 or more).
+  # FIXME: This test has been deactivated as it gave too many false positives.
   def case_has_prosthesis_roi_if_metal_is_present_in_examination_test(self):
     t = TEST.Test("Case skal inneholde en protese ROI med tetthet titan hvis ytterkonturen inneholder metall (indikert ved HU over 3000)", 'Prosthesis', self.examination)
     ce = get_current("Examination")

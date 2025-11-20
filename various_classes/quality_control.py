@@ -77,7 +77,7 @@ class QualityControl(object):
     ts_case.dibh_control_examinations_present_on_dibh_case_test()
     ts_case.ctv_not_contracted_from_external_for_breast_case_with_virtual_bolus_test()
     ts_case.virtual_bolus_without_density_override_test()
-    ts_case.case_has_prosthesis_roi_if_metal_is_present_in_examination_test()
+    #ts_case.case_has_prosthesis_roi_if_metal_is_present_in_examination_test()
     
     # ROI tests:
     for ts_roi in ts_case.ts_rois:
