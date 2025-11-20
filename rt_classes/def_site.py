@@ -77,7 +77,7 @@ class DefSite(object):
     # Verify input:
     assert isinstance(oars, list), "oars is not a list: %r" % oars
     for oar in oars:
-      assert oar.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "oar is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % oar
+      assert oar.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "oar is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % oar
     # Assign oars:
     self.oars.extend(oars)
 
@@ -100,6 +100,8 @@ class DefSite(object):
               PMF.create_model_roi(self.pm, self.examination, roi)
             else:
               PMF.create_empty_roi(self.pm, roi)
+          elif roi.__class__.__name__ == 'ROIDLS':
+            PMF.create_dls_roi(self.pm, self.examination, roi)
           elif roi.__class__.__name__ == 'ROIExpanded':
             PMF.create_expanded_roi(self.pm, self.examination, self.ss, roi)
           elif roi.__class__.__name__ == 'ROIAlgebra':
@@ -133,10 +135,10 @@ class DefSite(object):
   # be created in opposite source level order (0 first, highest number last) in order to avoid dependence errors when creating ROIs.
   def set_source_level(self, roi, level):
     # Verify input:
-    assert roi.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "roi is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % roi
+    assert roi.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "roi is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % roi
     assert isinstance(level, int), "level is not a int: %r" % level
     # Set level:
-    if roi.__class__.__name__ != 'ROI':
+    if not roi.__class__.__name__ in ['ROI', 'ROIDLS']:
       if level > roi.source_level:
         roi.source_level = level
       if roi.__class__.__name__ == 'ROIAlgebra':

@@ -175,6 +175,16 @@ def create_localization_point(pm, examination):
     pm.CreatePoi(Examination = examination, Name = 'Ref', Color = COLORS.ref , Type = 'LocalizationPoint')
 
 
+# Creates deep learning segmentation based ROIs.
+def create_dls_roi(pm, examination, roi_dls):
+  assert roi_dls.__class__.__name__ == 'ROIDLS', "roi_dls is not a ROIDLS: %r" % roi_dls
+  examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
+    roi_dls.model: {
+      roi_dls.name: roi_dls.lib_name
+    }
+  })
+
+
 # Creates model based ROIs.
 def create_model_roi(pm, examination, roi):
   # Model based segmentation sometimes crashes. We need to catch these situations to allow scripts to go on:

@@ -18,6 +18,25 @@ class ROI(object):
       self.source_level = 999
 
 
+# ROIDLS class - used for deep learning segementation ROIs.
+class ROIDLS(object):
+
+    def __init__(self, name, type, color, model, lib_name=None):
+      # The name used in RayStation (e.q. Prostate):
+      self.name = name
+      self.type = type
+      self.color = color
+      # Deep learning segmentation model:
+      self.model = model # e.g. 'RSL Thorax-Abdomen CT'
+      # The name used for the ROI in the RayStation script library (e.q. Prostate_minus_VenousPlexus)
+      if lib_name:
+        self.lib_name = lib_name
+      else:
+        # Default to name if not specified:
+        self.lib_name = name
+      self.source_level = 999
+
+
 # ROIExpanded class - used for simple derived ROIs (having only one dependence).
 class ROIExpanded(object):
 
@@ -46,9 +65,9 @@ class ROIAlgebra(object):
       assert isinstance(sourcesA, list), "sourcesA is not a list: %r" % sourcesA
       assert isinstance(sourcesB, list), "sourcesB is not a list: %r" % sourcesB
       for sourceA in sourcesA:
-        assert sourceA.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceA is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceA
+        assert sourceA.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceA is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceA
       for sourceB in sourcesB:
-        assert sourceB.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceB is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceB
+        assert sourceB.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "sourceB is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % sourceB
       assert operator in ['Union', 'Intersection', 'Subtraction'], "operator is not a valid value (Union, Intersection, Subtraction): %r" % operator
       assert operatorA in ['Union', 'Intersection'], "operatorA is not a valid value (Union, Intersection): %r" % operatorA
       assert operatorB in ['Union', 'Intersection'], "operatorB is not a valid value (Union, Intersection): %r" % operatorB

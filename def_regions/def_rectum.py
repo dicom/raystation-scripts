@@ -40,28 +40,11 @@ class DefRectum(object):
 
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
-    # DL ROIs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "Bladder": "Bladder"
-      },
-      'Alesund Male Pelvic CT': {
-        "CaudaEquina": "CaudaEquina",
-        "BowelBag_Draft": "BowelBag",
-        "L5": "L5",
-        "Sacrum": "Sacrum",
-        "Coccyx": "Coccyx",
-        "PelvicGirdle_L": "PelvicGirdle_L",
-        "PelvicGirdle_R": "PelvicGirdle_R",
-        "FemurHeadNeck_L": "FemurHeadNeck_L",
-        "FemurHeadNeck_R": "FemurHeadNeck_R"
-      }
-    })
     # Create "Bone" ROI Algebra:
-    bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
+    pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
-    bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
-    site.add_oars([bone, ROIS.bowel_bag])
+    bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = pelvic_bone_rois, sourcesB = vertebrae_rois)
+    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
   
   
   # Adds rois that are based on gender.
@@ -69,12 +52,7 @@ class DefRectum(object):
     if patient.Gender == 'Female':
       site.add_oars([ROIS.uterus])
     elif patient.Gender == 'Male':
-      # DL OARs:
-      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-        'Alesund Male Pelvic CT': {
-          "PenileBulb": "PenileBulb"
-        }
-      })
+      site.add_oars([ROIS.penile_bulb])
   
   
   # Adds hypo fx (5 Gy x 5) ROIs to the site object.
