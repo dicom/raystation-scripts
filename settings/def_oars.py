@@ -20,7 +20,7 @@ lung_stereotactic_oars = [ROIS.bronchi_lobar_l, ROIS.bronchi_lobar_r, ROIS.bronc
 
 # Prostate:
 # Common:
-prostate_common_oars = [ROIS.bladder, ROIS.bowel_space, ROIS.femoral_l, ROIS.femoral_r, ROIS.rectum]
+prostate_common_oars = [ROIS.bladder, ROIS.bowel_space, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.rectum]
 # Prostate bed:
 prostate_bed_oars = prostate_common_oars
 # Prostate bed with nodes:
@@ -36,11 +36,11 @@ prostate_non_dl_oars = [ROIS.bowel_bag, ROIS.levator_ani, ROIS.seed1, ROIS.seed2
 
 
 # Rectum:
-rectum_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space, ROIS.cauda_equina]
+rectum_oars = [ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.bladder, ROIS.bowel_space, ROIS.cauda_equina]
 
 
 # Bladder:
-bladder_oars = [ROIS.femoral_l, ROIS.femoral_r, ROIS.bladder, ROIS.bowel_space, ROIS.rectum]
+bladder_oars = [ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.bladder, ROIS.bowel_space, ROIS.rectum]
 
 
 # Palliative:

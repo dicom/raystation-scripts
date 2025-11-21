@@ -23,7 +23,7 @@ class DefProstate(object):
     else:
       self.setup_bed(pm, examination, site, choices)
     # Create "Bone" ROI Algebra:
-    bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
+    pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     for roi in [ROIS.l4, ROIS.l3, ROIS.l2]:
       try:
@@ -31,7 +31,7 @@ class DefProstate(object):
           vertebrae_rois.insert(0, roi)
       except:
         pass
-    bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
+    bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = pelvic_bone_rois, sourcesB = vertebrae_rois)
     site.add_oars([bone])
     # Create all targets and OARs in RayStation:
     site.create_rois()
@@ -44,7 +44,7 @@ class DefProstate(object):
       except:
         pass
     # Exclude some ROIs from export:
-    exclude = bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
+    exclude = pelvic_bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
     for roi in exclude:
       PMF.exclude_roi_from_export(pm, roi.name)
 
@@ -107,84 +107,25 @@ class DefProstate(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site, region):
     if region == 'prostate':
-      bladder_name = 'Bladder_Draft'
+      site.add_oars([ROIS.bladder_draft, ROIS.bladder_derived])
     else:
-      bladder_name = 'Bladder'
-    # DL OARs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        f"{bladder_name}": "Bladder",
-        "FemoralHead_L": "Femur_Head_L",
-        "FemoralHead_R": "Femur_Head_R"
-      },
-      'Alesund Male Pelvic CT': {
-        "CaudaEquina": "CaudaEquina",
-        "BowelBag_Draft": "BowelBag",
-        "Rectum": "Rectum",
-        "AnalCanal": "AnalCanal",
-        "L5": "L5",
-        "Sacrum": "Sacrum",
-        "Coccyx": "Coccyx",
-        "PelvicGirdle_L": "PelvicGirdle_L",
-        "PelvicGirdle_R": "PelvicGirdle_R",
-        "PenileBulb": "PenileBulb",
-        "Femur_L": "FemurHeadNeck_L",
-        "Femur_R": "FemurHeadNeck_R"
-      }
-    })
-    # For intact prostate patients, use bladder draft, and extract prostate from the bladder ROI:
-    if bladder_name == 'Bladder_Draft':
-      bladder = ROI.ROIAlgebra('Bladder', 'Organ', COLORS.bladder, sourcesA = [ROIS.bladder_draft], sourcesB = [ROIS.prostate], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      site.add_oars([bladder])
+      site.add_oars([ROIS.bladder])
     # Exclude Rectum from BowelBag:
     ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
-    site.add_oars([ROIS.bowel_bag])
+    site.add_oars([ROIS.anal_canal, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum])
   
   
   # Adds rois that are relevant for lymph node treatment.
   def add_lymph_node_rois(self, pm, examination, site):
-    # DL OARs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'Alesund Male Pelvic CT': {
-        "LN_Iliac": "LN_Iliac",
-        "Kidney_L": "Kidney_L",
-        "Kidney_R": "Kidney_R",
-        "Liver": "Liver",
-        "IliopsoasMuscle_L": "IliopsoasMuscle_L",
-        "IliopsoasMuscle_R": "IliopsoasMuscle_R",
-        "L2": "L2",
-        "L3": "L3",
-        "L4": "L4",
-        "A_DescendingAorta": "A_DescendingAorta",
-        "A_CommonIliac_L": "A_CommonIliac_L",
-        "A_CommonIliac_R": "A_CommonIliac_R",
-        "A_ExternalIliac_L": "A_ExternalIliac_L",
-        "A_ExternalIliac_R": "A_ExternalIliac_R",
-        "A_InternalIliac_L": "A_InternalIliac_L",
-        "A_InternalIliac_R": "A_InternalIliac_R",
-        "V_InferiorVenaCava": "V_InferiorVenaCava",
-        "V_CommonIliac_L": "V_CommonIliac_L",
-        "V_CommonIliac_R": "V_CommonIliac_R",
-        "V_ExternalIliac_L": "V_ExternalIliac_L",
-        "V_ExternalIliac_R": "V_ExternalIliac_R",
-        "V_InternalIliac_L": "V_InternalIliac_L",
-        "V_InternalIliac_R": "V_InternalIliac_R"
-      }
-    })
     # Exclude Kidneys, Liver and LN_Iliac from BowelBag:
     ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pelvic_nodes])
+    site.add_oars([ROIS.a_common_iliac_l, ROIS. a_common_iliac_r, ROIS.a_descending_aorta, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.iliopsoas_muscle_l, ROIS.iliopsoas_muscle_l, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.liver, ROIS.pelvic_nodes, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r])
   
   
   # Adds rois that are relevant for intact prostate treatment.
   def add_prostate_rois(self, pm, examination, site, match):
-    # DL OARs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "Prostate": "Prostate_minus_VenousPlexus",
-        "SeminalVes": "SeminalVesicles"
-      }
-    })
+    site.add_oars([ROIS.prostate, ROIS.seminal_vesicles])
     if match == 'seeds':
       # Non-DL OARs:
       site.add_oars([ROIS.levator_ani, ROIS.seed1, ROIS.seed2, ROIS.seed3, ROIS.urethra])
@@ -197,7 +138,7 @@ class DefProstate(object):
     # Choice 3: Nodes - none, elective only or elective + positive node?
     nodes = choices[3]
     # Seminal vesicles (which for high risk is 20 mm):
-    semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
+    semves20 = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.seminal_vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
     # Setup dose named ROIs:
     ctv3s = ROIS.ctv_67_5
     ptv3s = ROIS.ptv_67_5
@@ -286,9 +227,9 @@ class DefProstate(object):
     # Intact prostate and vesicles, but no elective nodes:
     # Seminal vesicles (which for intermediate risk is 10 mm and for high risk is 20 mm):
     if high_risk:
-      semves = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
+      semves = ROI.ROIAlgebra('SeminalVes20', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.seminal_vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_20mm_expansion)
     else:
-      semves = ROI.ROIAlgebra('SeminalVes10', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_10mm_expansion)
+      semves = ROI.ROIAlgebra('SeminalVes10', ROIS.ctv.type, COLORS.vesicles, sourcesA = [ROIS.seminal_vesicles], sourcesB = [ROIS.prostate], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_10mm_expansion)
     # Targets:
     if sbrt:
       # For SBRT we use Anorectum instead of Rectum and AnalCanal:

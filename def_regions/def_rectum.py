@@ -33,7 +33,7 @@ class DefRectum(object):
     pm.RegionsOfInterest['Bone'].OrganData.OrganType = "Other"
     pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"
     # Exclude some ROIs from export:
-    exclude = ["L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "FemurHeadNeck_L", "FemurHeadNeck_R"]
+    exclude = ["L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "Femur_L", "Femur_R"]
     for roi_name in exclude:
       PMF.exclude_roi_from_export(pm, roi_name)
 
@@ -44,7 +44,7 @@ class DefRectum(object):
     pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = pelvic_bone_rois, sourcesB = vertebrae_rois)
-    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
+    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
   
   
   # Adds rois that are based on gender.
