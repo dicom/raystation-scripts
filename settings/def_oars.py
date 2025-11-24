@@ -8,10 +8,10 @@ import rois as ROIS
 # Whole brain:
 brain_whole_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.brain, ROIS.lacrimal_r, ROIS.lacrimal_l, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.skin_brain, ROIS.nasal_cavity]
 # Partial brain:
-brain_partial_oars = [ROIS.brain, ROIS.brainstem, ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r, ROIS.cochlea_l, ROIS.cochlea_r, 
+brain_partial_oars = [ROIS.brain, ROIS.brainstem, ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.cochlea_l, ROIS.cochlea_r, 
 	ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.pituitary, ROIS.skin_brain_5,ROIS.eye_l, ROIS.eye_r]
 # Stereotactic brain:
-brain_stereotactic_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.brain, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.optic_nrv_l, ROIS.optic_nrv_r, ROIS.optic_chiasm, ROIS.pituitary, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.brainstem, ROIS.skin_srt]
+brain_stereotactic_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.brain, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.optic_chiasm, ROIS.pituitary, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.brainstem, ROIS.skin_srt]
 
 
 # Stereotactic lung:
@@ -45,9 +45,9 @@ bladder_oars = [ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.bladder, ROIS.bow
 
 # Palliative:
 # Head:
-palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal_head]
+palliative_head_oars = [ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r, ROIS.brain, ROIS.brainstem, ROIS.spinal_canal]
 # Neck:
-palliative_neck_oars = [ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.parotids, ROIS.spinal_canal_head, ROIS.submand_l, ROIS.submand_r, ROIS.submands]
+palliative_neck_oars = [ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.parotids, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r, ROIS.submands]
 # Thorax:
 palliative_thorax_oars = [ROIS.heart, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.spinal_canal]
 palliative_thorax_abdomen_oars = [ROIS.bowel_space, ROIS.heart, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.liver, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.spinal_canal]

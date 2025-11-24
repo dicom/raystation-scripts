@@ -44,31 +44,7 @@ class DefBrain(object):
   
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
-    # DL ROIs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "Brain": "Brain",
-        "Brainstem": "Brainstem",
-        "Cochlea_L": "Cochlea_L",
-        "Cochlea_R": "Cochlea_R",
-        "Eye_L": "Eye_L",
-        "Eye_R": "Eye_R",
-        "LacrimalGland_L": "LacrimalGland_L",
-        "LacrimalGland_R": "LacrimalGland_R",
-        "Lens_L": "Lens_L",
-        "Lens_R": "Lens_R",
-        "OpticChiasm": "OpticChiasm",
-        "OpticNerve_L": "OpticNerve_L",
-        "OpticNerve_R": "OpticNerve_R",
-        "OralCavity": "OralCavity",
-        "Parotid_L": "ParotidGland_L",
-        "Parotid_R": "ParotidGland_R",
-        "Pituitary": "Pituitary",
-        "SpinalCanal": "SpinalCanal",
-        "SubmandGland_L": "SubmandibularGland_L",
-        "SubmandGland_R": "SubmandibularGland_R"
-      }
-    })
+    site.add_oars([ROIS.brain, ROIS.brainstem, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.eye_l, ROIS.eye_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r])
 
 
   # Adds partial brain ROIs to the site object.

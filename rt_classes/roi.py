@@ -126,7 +126,7 @@ class ROIWall(object):
       assert isinstance(name, str), "name is not a string: %r" % name
       assert isinstance(type, str), "type is not a string: %r" % type
       assert isinstance(color, str), "color is not a string: %r" % color
-      assert source.__class__.__name__ in ['ROI', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "source is not a ROI (or ROIAlgebra, ROIExpanded, ROIWall): %r" % source
+      assert source.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "source is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % source
       assert isinstance(outward_dist, (float, int)), "outward_dist is not a float or integer: %r" % outward_dist
       assert isinstance(inward_dist, (float, int)), "inward_dist is not a float or integer: %r" % inward_dist
       # Assign parameters:
