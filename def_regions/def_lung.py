@@ -63,36 +63,7 @@ class DefLung(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL OARs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "A_AorticArch": "A_Aorta_arcus",
-        "A_AscendingAorta": "A_Aorta_Ascen",
-        "A_DescendingAorta": "A_Aorta_Desc",
-        "A_LAD": "A_LAD",
-        "BrachialPlexus_L": "Brachial_Plexus_L",
-        "BrachialPlexus_R": "Brachial_Plexus_R",
-        "BronchusMain_L": "Bronchus_Main_L",
-        "BronchusMain_R": "Bronchus_Main_R",
-        "BronchusIntermedius": "Bronchus_InterM",
-        "Carina": "Carina",
-        "Esophagus": "Esophagus",
-        "Heart": "Heart_pa_separate",
-        "Kidney_L": "Kidney_L",
-        "Kidney_R": "Kidney_R",
-        "Liver": "Liver",
-        "Lung_L": "Lung_L",
-        "Lung_R": "Lung_R",
-        "Pancreas": "Pancreas",
-        "SpinalCanal": "SpinalCanal",
-        "Spleen": "Spleen",
-        "Sternum": "Sternum",
-        "Stomach": "Stomach",
-        "ThyroidGland": "ThyroidGland",
-        "Trachea": "Trachea_1cm_sup_carina",
-        "V_InferiorVenaCava": "V_Cava_inferior",
-        "V_SuperiorVenaCava": "V_Cava_superior"
-      }
-    })
+    site.add_oars([ROIS.a_aortic_arch, ROIS.a_ascending_aorta, ROIS.a_descending_aorta, ROIS.a_lad, ROIS.brachial_plexus_l, ROIS.brachial_plexus_r, ROIS.bronchus_intermedius, ROIS.bronchus_main_l, ROIS.bronchus_main_r, ROIS.carina, ROIS.esophagus, ROIS.heart, ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.lung_l, ROIS.lung_r, ROIS.pancreas, ROIS.spinal_canal, ROIS.spleen, ROIS.sternum, ROIS.stomach, ROIS.thyroid, ROIS.trachea, ROIS.v_inferior_vena_cava, ROIS.v_superior_vena_cava])
     # Non-DL OARs:
     site.add_oars([ROIS.a_pulmonary, ROIS.greatves, ROIS.lungs])
   
