@@ -57,7 +57,7 @@ class DefBrain(object):
     site.add_targets([ROIS.gtv, ctv, ptv, ROIS.wall_ptv])
     # Derived OARs:
     brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
-    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
     mask = ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_conv_mask_expansion)
     # Non-DL OARs:
     site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, mask])
@@ -95,7 +95,7 @@ class DefBrain(object):
     # Common for single or multiple SRT targets:
     # Brain with targets excluded:
     brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [gtv], operator = 'Subtraction')
-    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.other_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
+    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
     # Add to site:
     site.add_targets(gtvs + ptvs)
     # Non-DL OARs:

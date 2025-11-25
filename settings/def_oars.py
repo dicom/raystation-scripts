@@ -63,6 +63,6 @@ palliative_stereotactic_cervical_oars = [ROIS.brain, ROIS.brainstem, ROIS.oral_c
 # SBRT spine thorax:
 palliative_stereotactic_thorax_oars = [ROIS.esophagus, ROIS.heart, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.lung_l, ROIS.lung_r, ROIS.lungs, ROIS.skin, ROIS.spinal_cord, ROIS.trachea]
 # SBRT spine pelvis:
-palliative_stereotactic_spine_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord]
+palliative_stereotactic_spine_pelvis_oars = [ROIS.bladder, ROIS.bowel_small, ROIS.cauda_equina, ROIS.colon, ROIS.kidney_l, ROIS.kidney_r, ROIS.kidneys, ROIS.rectum, ROIS.skin, ROIS.spinal_cord]
 # SBRT pelvis:
-palliative_stereotactic_pelvis_oars = [ROIS.bladder, ROIS.cauda_equina, ROIS.colon, ROIS.rectum, ROIS.skin, ROIS.small_bowel]
+palliative_stereotactic_pelvis_oars = [ROIS.bladder, ROIS.bowel_small, ROIS.cauda_equina, ROIS.colon, ROIS.rectum, ROIS.skin]

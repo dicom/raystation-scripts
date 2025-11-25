@@ -5,14 +5,57 @@ import colors as COLORS
 import margins as MARGINS
 import roi as ROI
 
-
+# Common ROIs:
 # External:
 external = ROI.ROI('External', 'External', COLORS.external)
 body = ROI.ROI('Body', 'Organ', COLORS.external)
-
-
 # Support:
 couch = ROI.ROI('Couch', 'Support', COLORS.couch)
+
+
+# Empty organ ROIs:
+a_pulmonary = ROI.ROI('A_Pulmonary', 'Organ', COLORS.a_pulmonary)
+anorectum = ROI.ROI('Anorectum', 'Organ', COLORS.rectum)
+bone = ROI.ROI('Bone', 'Organ', COLORS.bone_color1)
+bowel_small = ROI.ROI('BowelSmall','Organ', COLORS.small_bowel)
+bowel_space = ROI.ROI('BowelBag', 'Organ', COLORS.bowel_space) # FIXME: Remove this and replace with bowel_bag_draft/bowel_bag_derived
+bronchi_lobar_l = ROI.ROI('BronchiLobar_L','Organ', COLORS.bronchi_lobar)
+bronchi_lobar_r = ROI.ROI('BronchiLobar_R','Organ', COLORS.bronchi_lobar)
+chestwall = ROI.ROI('Chestwall', 'Organ', COLORS.chestwall)
+colon = ROI.ROI('Colon','Organ', COLORS.colon)
+cornea_l = ROI.ROI('Cornea_L', 'Organ', COLORS.cornea) 
+cornea_r = ROI.ROI('Cornea_R', 'Organ', COLORS.cornea)
+hippocampus_l = ROI.ROI('Hippocampus_L','Organ', COLORS.hippocampus)
+hippocampus_r = ROI.ROI('Hippocampus_R','Organ', COLORS.hippocampus)
+levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
+nasal_cavity = ROI.ROI('NasalCavity', 'Organ', COLORS.nasal_cavity)
+prostate_bed = ROI.ROI('SurgicalBed', 'Ctv', COLORS.prostate_bed)
+retina_l = ROI.ROI('Retina_L', 'Organ', COLORS.retina) 
+retina_r = ROI.ROI('Retina_R', 'Organ', COLORS.retina)
+rib_x_l = ROI.ROI('Ribx_L','Organ', COLORS.rib)
+rib_x_r = ROI.ROI('Ribx_R','Organ', COLORS.rib)
+rib_y_l = ROI.ROI('Riby_L','Organ', COLORS.rib)
+rib_y_r = ROI.ROI('Riby_R','Organ', COLORS.rib)
+ribs = ROI.ROI('Ribs','Organ', COLORS.ribs)
+spinal_cord = ROI.ROI('SpinalCord', 'Organ', COLORS.spinal_cord)
+urethra = ROI.ROI('Urethra', 'Organ', COLORS.urethra)
+uterus = ROI.ROI('Uterus', 'Organ', COLORS.uterus)
+v_pulmonary = ROI.ROI('V_Pulmonary', 'Organ', COLORS.v_pulmonary)
+
+
+# Undefined / Other ROIs
+marker1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
+marker2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
+marker3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
+marker4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
+markers = ROI.ROI('Markers', 'Marker', COLORS.clips)
+prosthesis = ROI.ROI('Prosthesis','Undefined', COLORS.prosthesis)
+prosthesis_l = ROI.ROI('Prosthesis_L','Undefined', COLORS.prosthesis)
+prosthesis_r = ROI.ROI('Prosthesis_R','Undefined', COLORS.prosthesis)
+seed1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
+seed2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
+seed3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
+seed4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
 
 
 # Target volumes:
@@ -68,113 +111,6 @@ ptvc_l = ROI.ROI('PTVc_L', 'Ptv', COLORS.ptv)
 ptvc_r = ROI.ROI('PTVc_R', 'Ptv', COLORS.ptv)
 
 
-# OARs: Empty (will be delineated manually):
-# Head:
-hippocampus_l = ROI.ROI('Hippocampus_L','Organ', COLORS.hippocampus)
-hippocampus_r = ROI.ROI('Hippocampus_R','Organ', COLORS.hippocampus)
-nasal_cavity = ROI.ROI('NasalCavity', 'Organ', COLORS.nasal_cavity)
-cornea_l = ROI.ROI('Cornea_L', 'Organ', COLORS.cornea) 
-cornea_r = ROI.ROI('Cornea_R', 'Organ', COLORS.cornea)
-retina_l = ROI.ROI('Retina_L', 'Organ', COLORS.retina) 
-retina_r = ROI.ROI('Retina_R', 'Organ', COLORS.retina)
-# Thorax:
-spinal_cord = ROI.ROI('SpinalCord', 'Organ', COLORS.spinal_cord)
-# Lung, stereotactic:
-chestwall = ROI.ROI('Chestwall', 'Organ', COLORS.chestwall)
-rib_x_l = ROI.ROI('Ribx_L','Organ', COLORS.rib)
-rib_x_r = ROI.ROI('Ribx_R','Organ', COLORS.rib)
-rib_y_l = ROI.ROI('Riby_L','Organ', COLORS.rib)
-rib_y_r = ROI.ROI('Riby_R','Organ', COLORS.rib)
-ribs = ROI.ROI('Ribs','Organ', COLORS.ribs)
-bronchi_lobar_l = ROI.ROI('BronchiLobar_L','Organ', COLORS.bronchi_lobar)
-bronchi_lobar_r = ROI.ROI('BronchiLobar_R','Organ', COLORS.bronchi_lobar)
-# Spine SBRT:
-small_bowel = ROI.ROI('BowelSmall','Organ', COLORS.small_bowel)
-colon = ROI.ROI('Colon','Organ', COLORS.colon)
-# Pelvis, prostate:
-bowel_space = ROI.ROI('BowelBag', 'Organ', COLORS.bowel_space)
-anorectum = ROI.ROI('Anorectum', 'Organ', COLORS.rectum)
-prostate_bed = ROI.ROI('SurgicalBed', 'Ctv', COLORS.prostate_bed)
-urethra = ROI.ROI('Urethra', 'Organ', COLORS.urethra)
-levator_ani = ROI.ROI('LevatorAni', 'Organ', COLORS.levator_ani)
-# Pelvic female:
-uterus = ROI.ROI('Uterus', 'Organ', COLORS.uterus)
-
-# Bone ROIs:
-femur_l = ROI.ROI('Femur_L', 'Organ', COLORS.bone_color1)
-femur_r = ROI.ROI('Femur_R', 'Organ', COLORS.bone_color1)
-bone = ROI.ROI('Bone', 'Organ', COLORS.bone_color1)
-
-# Vessels:
-a_pulmonary = ROI.ROI('A_Pulmonary', 'Organ', COLORS.a_pulmonary)
-v_pulmonary = ROI.ROI('V_Pulmonary', 'Organ', COLORS.v_pulmonary)
-
-# Undefined / Other ROIs
-# Breast organs:
-surgical_bed_l = ROI.ROI('SurgicalBed_L','Undefined', COLORS.breast_draft)
-surgical_bed_r = ROI.ROI('SurgicalBed_R','Undefined', COLORS.breast_draft)
-imn_l = ROI.ROI('LN_IMN_L', 'Undefined', COLORS.imn)
-imn_r = ROI.ROI('LN_IMN_R', 'Undefined', COLORS.imn)
-level4_l = ROI.ROI('LN_Ax_L4_L', 'Undefined', COLORS.level4)
-level3_l = ROI.ROI('LN_Ax_L3_L', 'Undefined', COLORS.level3)
-level2_l = ROI.ROI('LN_Ax_L2_L', 'Undefined', COLORS.level2)
-level1_l = ROI.ROI('LN_Ax_L1_L', 'Undefined', COLORS.level1)
-level_l = ROI.ROI('LN_Ax_Pectoral_L', 'Undefined', COLORS.level)
-level4_r = ROI.ROI('LN_Ax_L4_R', 'Undefined', COLORS.level4)
-level3_r = ROI.ROI('LN_Ax_L3_R', 'Undefined', COLORS.level3)
-level2_r = ROI.ROI('LN_Ax_L2_R', 'Undefined', COLORS.level2)
-level1_r = ROI.ROI('LN_Ax_L1_R', 'Undefined', COLORS.level1)
-level_r = ROI.ROI('LN_Ax_Pectoral_R', 'Undefined', COLORS.level)
-artery1_l = ROI.ROI('A_Subclavian_L', 'Undefined', COLORS.artery2)
-artery2_l = ROI.ROI('A_Carotid_L', 'Undefined', COLORS.artery2)
-vein1_l = ROI.ROI('V_Brachioceph', 'Undefined', COLORS.vein2)
-vein2_l = ROI.ROI('V_Subclavian_L','Undefined', COLORS.vein2)
-vein3_l = ROI.ROI('V_Jugular_Int_L','Undefined', COLORS.vein2)
-artery1_r = ROI.ROI('A_Brachioceph', 'Undefined', COLORS.artery2)
-artery2_r = ROI.ROI('A_Subclavian_R', 'Undefined', COLORS.artery2)
-artery3_r = ROI.ROI('A_Carotid_R', 'Undefined', COLORS.artery2)
-vein1_r = ROI.ROI('V_Brachioceph_R', 'Undefined', COLORS.vein2)
-vein2_r = ROI.ROI('V_Subclavian_R', 'Undefined', COLORS.vein2)
-vein3_r = ROI.ROI('V_Jugular_Int_R','Undefined', COLORS.vein2)
-prosthesis = ROI.ROI('Prosthesis','Undefined', COLORS.prosthesis)
-prosthesis_l = ROI.ROI('Prosthesis_L','Undefined', COLORS.prosthesis)
-prosthesis_r = ROI.ROI('Prosthesis_R','Undefined', COLORS.prosthesis)
-# Markers:
-markers = ROI.ROI('Markers', 'Marker', COLORS.clips)
-seed1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
-seed2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
-seed3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
-seed4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
-marker1 = ROI.ROI('Marker1', 'Marker', COLORS.seed)
-marker2 = ROI.ROI('Marker2', 'Marker', COLORS.seed)
-marker3 = ROI.ROI('Marker3', 'Marker', COLORS.seed)
-marker4 = ROI.ROI('Marker4', 'Marker', COLORS.seed)
-
-
-# OARs: Unions:
-ribs_l = ROI.ROIAlgebra('Ribs_L','Organ', COLORS.ribs, sourcesA=[rib_x_l], sourcesB=[rib_y_l])
-ribs_r = ROI.ROIAlgebra('Ribs_R','Organ', COLORS.ribs, sourcesA=[rib_x_r], sourcesB=[rib_y_r])
-
-
-# OARs: Target subtracted
-# Other:
-other_ptv = ROI.ROI('Other_PTV', 'Organ', COLORS.other_ptv)
-
-
-# PRVs:
-spinal_cord_prv = ROI.ROIExpanded('SpinalCord_PRV', 'Avoidance', COLORS.prv, source=spinal_cord, margins=MARGINS.uniform_2mm_expansion)
-
-
-# Walls:
-skin_srt = ROI.ROIWall('Skin','Organ', COLORS.skin, body, 0, 0.3)
-skin = ROI.ROIWall('Skin','Organ', COLORS.skin, external, 0, 0.3)
-skin_brain_5 = ROI.ROIWall('Skin','Organ', COLORS.skin, body, 0, 0.5)
-skin_brain = ROI.ROIWall('Skin','Organ', COLORS.skin, external, 0, 0.5)
-wall_ptv = ROI.ROIWall('zPTV_Wall', 'Undefined', COLORS.wall, iptv, 1, 0)
-wall_ptv1 = ROI.ROIWall('zPTV1_Wall', 'Undefined', COLORS.wall, iptv1, 1, 0)
-wall_ptv2 = ROI.ROIWall('zPTV2_Wall', 'Undefined', COLORS.wall, iptv2, 1, 0)
-wall_ptv3 = ROI.ROIWall('zPTV3_Wall', 'Undefined', COLORS.wall, iptv3, 1, 0)
-
 # ROIs for optimization:
 z_water =  ROI.ROI('zWater', 'Undefined', COLORS.other_ptv)
 z_heart =  ROI.ROI('zHeart', 'Undefined', COLORS.heart)
@@ -182,8 +118,6 @@ z_esophagus =  ROI.ROI('zEsophagus', 'Undefined', COLORS.esophagus)
 z_bladder = ROI.ROI('zBladder','Undefined', COLORS.bladder)
 z_spc_bowel = ROI.ROI('zBowelBag','Undefined', COLORS.bowel_space)
 z_rectum = ROI.ROI('zRectum', 'Undefined', COLORS.rectum)
-dorso_rectum = ROI.ROI('zRectum_P', 'Undefined', COLORS.dorso_rectum)
-z_rectum_p = ROI.ROI('zRectum_P', 'Undefined', COLORS.dorso_rectum)
 z_ptv_77_wall = ROI.ROI('zPTV_77_Wall', 'Undefined', COLORS.wall)
 z_ptv_70_77_wall = ROI.ROI('zPTV_70+77_Wall', 'Undefined', COLORS.wall)
 z_ptv_67_5_wall = ROI.ROI('zPTV_67.5_Wall', 'Undefined', COLORS.wall)
@@ -208,8 +142,10 @@ ctv_oars = ROI.ROI('zCTV-OARs', 'Ctv', COLORS.ctv)
 ptv_oars = ROI.ROI('zPTV-OARs', 'Ptv', COLORS.ptv)
 ptv_and_oars = ROI.ROI('zPTV_AND_OARs', 'Ptv', COLORS.other_ptv)
 
+
 # Substitute ROI objects (only used for naming):
-# Targets:
+ptv_semves = ROI.ROI('PTV_SeminalVes', 'Ptv', COLORS.ptv_med)
+# Prostate 56/66/70/77:
 ptv_77 = ROI.ROI('PTV_77', 'Ptv', COLORS.ptv_high)
 ptv_70 = ROI.ROI('PTV_70', 'Ptv', COLORS.ptv_med)
 ptv_70_sib = ROI.ROI('PTV!_70', 'Ptv', COLORS.ptv_med)
@@ -224,7 +160,7 @@ ptv_70_77 = ROI.ROI('PTV_70+77', 'Ptv', COLORS.ptv_low)
 ctv_70_77 = ROI.ROI('CTV_70+77', 'Ctv', COLORS.ctv_low)
 ptv_56_70_77 = ROI.ROI('PTV_56+70+77', 'Ptv', COLORS.ptv_low)
 ptv_56_70 = ROI.ROI('PTV_56+70', 'Ptv', COLORS.ptv_low)
-
+# Prostate 50/60/62.5/67.5:
 ptv_67_5 = ROI.ROI('PTV_67.5', 'Ptv', COLORS.ptv_high)
 ptv_62_5 = ROI.ROI('PTV_62.5', 'Ptv', COLORS.ptv_med)
 ptv_62_5_sib = ROI.ROI('PTV!_62.5', 'Ptv', COLORS.ptv_med)
@@ -239,18 +175,17 @@ ptv_62_5_67_5 = ROI.ROI('PTV_62.5+67.5', 'Ptv', COLORS.ptv_low)
 ctv_62_5_67_5 = ROI.ROI('CTV_62.5+67.5', 'Ctv', COLORS.ctv_low)
 ptv_50_62_5_67_5 = ROI.ROI('PTV_50+62.5+67.5', 'Ptv', COLORS.ptv_low)
 ptv_50_62_5 = ROI.ROI('PTV_50+62.5', 'Ptv', COLORS.ptv_low)
-
+# Prostate 57/60:
 ptv_57_60 = ROI.ROI('PTV_57+60', 'Ptv', COLORS.ptv_low)
 ctv_57_60 = ROI.ROI('CTV_57+60', 'Ctv', COLORS.ctv_low)
 ptv_60 = ROI.ROI('PTV_60', 'Ptv', COLORS.ptv_high)
 ctv_60 = ROI.ROI('CTV_60', 'Ctv', COLORS.ctv_high)
 ptv_57 = ROI.ROI('PTV!_57', 'Ptv', COLORS.ptv_med)
 ctv_57 = ROI.ROI('CTV!_57', 'Ctv', COLORS.ctv_med)
+# Prostate 36.25/40:
 ctv_40 = ROI.ROI('CTV_40', 'Ctv', COLORS.ctv_high)
 ptv_36_25 = ROI.ROI('PTV_36.25', 'Ptv', COLORS.ptv_high)
-
-ptv_semves = ROI.ROI('PTV_SeminalVes', 'Ptv', COLORS.ptv_med)
-
+# Breast:
 ptv_pc =  ROI.ROI('PTVpc', 'Ptv', COLORS.ptv)
 ptv_pc_l =  ROI.ROI('PTVpc_L', 'Ptv', COLORS.ptv)
 ptv_pc_r =  ROI.ROI('PTVpc_R', 'Ptv', COLORS.ptv)
@@ -264,7 +199,7 @@ ptv4 =  ROI.ROI('PTV4', 'Ptv', COLORS.ptv)
 ptv_c = ROI.ROI('PTVc', 'Ptv', COLORS.ptv)
 ptv_sb = ROI.ROI('PTVsb', 'Ptv', COLORS.ptv)
 ptv_sbc = ROI.ROI('PTVsbc', 'Ptv', COLORS.ptv)
-
+# Rectum:
 ctv_47_50 =  ROI.ROI('CTV_47+50', 'Ctv', COLORS.ctv_low)
 ptv_47_50 =  ROI.ROI('PTV_47+50', 'Ptv', COLORS.ptv_low)
 ptv_50 = ROI.ROI('PTV_50', 'Ptv', COLORS.ptv_high)
@@ -427,6 +362,8 @@ bowel_bag = ROI.ROIAlgebra('BowelBag', 'Organ', COLORS.bowel_space, sourcesA = [
 bladder_derived = ROI.ROIAlgebra('Bladder', 'Organ', COLORS.bladder, sourcesA = [bladder_draft], sourcesB = [prostate], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
 brainstem_core = ROI.ROIExpanded('BrainstemCore', 'Organ', COLORS.brainstem_core, brainstem, margins = MARGINS.uniform_2mm_contraction)
 brainstem_surface = ROI.ROIAlgebra('BrainstemSurface', 'Organ', COLORS.brainstem_surface, sourcesA = [brainstem], sourcesB = [brainstem_core], operator = 'Subtraction')
+# Expansion:
+spinal_cord_prv = ROI.ROIExpanded('SpinalCord_PRV', 'Avoidance', COLORS.prv, source=spinal_cord, margins=MARGINS.uniform_2mm_expansion)
 # Union:
 breast_l = ROI.ROIAlgebra('Breast_L', 'Organ', COLORS.contralat, sourcesA = [breast_l_draft], sourcesB = [external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
 breast_r = ROI.ROIAlgebra('Breast_R', 'Organ', COLORS.contralat, sourcesA = [breast_r_draft], sourcesB = [external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
@@ -436,7 +373,17 @@ kidneys =  ROI.ROIAlgebra('Kidneys', 'Organ', COLORS.kidneys, sourcesA=[kidney_l
 lungs =  ROI.ROIAlgebra('Lungs', 'Organ', COLORS.lungs, sourcesA=[lung_l], sourcesB=[lung_r])
 lungs_igtv = ROI.ROIAlgebra('Lungs-IGTV', 'Organ', COLORS.lungs, sourcesA=[lungs], sourcesB=[igtv], operator = 'Subtraction')
 parotids = ROI.ROIAlgebra('Parotids', 'Organ', COLORS.parotid, sourcesA=[parotid_l], sourcesB=[parotid_r])
+ribs_l = ROI.ROIAlgebra('Ribs_L','Organ', COLORS.ribs, sourcesA=[rib_x_l], sourcesB=[rib_y_l])
+ribs_r = ROI.ROIAlgebra('Ribs_R','Organ', COLORS.ribs, sourcesA=[rib_x_r], sourcesB=[rib_y_r])
 submands = ROI.ROIAlgebra('SubmandGlands', 'Organ', COLORS.submand, sourcesA=[submand_l], sourcesB=[submand_r])
 # Wall:
+skin = ROI.ROIWall('Skin','Organ', COLORS.skin, external, 0, 0.3)
+skin_brain = ROI.ROIWall('Skin','Organ', COLORS.skin, external, 0, 0.5)
+skin_brain_5 = ROI.ROIWall('Skin','Organ', COLORS.skin, body, 0, 0.5)
+skin_srt = ROI.ROIWall('Skin','Organ', COLORS.skin, body, 0, 0.3)
+wall_ptv = ROI.ROIWall('zPTV_Wall', 'Undefined', COLORS.wall, iptv, 1, 0)
+wall_ptv1 = ROI.ROIWall('zPTV1_Wall', 'Undefined', COLORS.wall, iptv1, 1, 0)
+wall_ptv2 = ROI.ROIWall('zPTV2_Wall', 'Undefined', COLORS.wall, iptv2, 1, 0)
+wall_ptv3 = ROI.ROIWall('zPTV3_Wall', 'Undefined', COLORS.wall, iptv3, 1, 0)
 z_eye_l = ROI.ROIWall('zEye_L','Undefined', COLORS.wall, eye_l, 0, 0.2)
 z_eye_r = ROI.ROIWall('zEye_R','Undefined', COLORS.wall, eye_r, 0, 0.2)

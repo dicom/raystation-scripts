@@ -93,12 +93,12 @@ class DefPalliative(object):
         elif region == 'col pelvis':
           self.add_oars_pelvis(pm, examination, site)
           # SBRT specific OARs:
-          site.add_oars([ROIS.colon, ROIS.skin, ROIS.small_bowel, ROIS.spinal_cord, ROIS.spinal_cord_prv])
+          site.add_oars([ROIS.bowel_small, ROIS.colon, ROIS.skin, ROIS.spinal_cord, ROIS.spinal_cord_prv])
       else:
         # Non-columna SBRT (assumed pelvis):
         self.add_oars_pelvis(pm, examination, site)
         # SBRT specific OARs:
-        site.add_oars([ROIS.colon, ROIS.skin, ROIS.small_bowel])
+        site.add_oars([ROIS.bowel_small, ROIS.colon, ROIS.skin])
     else:
       # Non-stereotactic:
       # Region:

@@ -179,7 +179,7 @@ class DefBreast(object):
       site.add_oars([ROIS.a_brachiocephalic, ROIS.a_carotid_r, ROIS.a_subclavian_r, ROIS.brachial_plexus_r, ROIS.bronchus_main_r, ROIS.bronchus_intermedius, ROIS.ln_ax_l1_r, ROIS.ln_ax_l2_r, ROIS.ln_ax_l3_r, ROIS.ln_ax_l4_r, ROIS.ln_ax_pectoral_r, ROIS.ln_imn_r, ROIS.scalene_muscle_ant_r, ROIS.v_brachiocephalic_r, ROIS.v_jugular_int_r, ROIS.v_subclavian_r])
       # Targets:
       ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name+suffix, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.ln_ax_pectoral_r, ROIS.ln_ax_l1_r, ROIS.ln_ax_l2_r, ROIS.ln_ax_l3_r, ROIS.ln_ax_l4_r], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if include_imn:
         imn = ROIS.ln_imn_r
     else:
@@ -187,7 +187,7 @@ class DefBreast(object):
       site.add_oars([ROIS.a_carotid_l, ROIS.a_subclavian_l, ROIS.brachial_plexus_l, ROIS.bronchus_main_l, ROIS.ln_ax_l1_l, ROIS.ln_ax_l2_l, ROIS.ln_ax_l3_l, ROIS.ln_ax_l4_l, ROIS.ln_ax_pectoral_l, ROIS.ln_imn_l, ROIS.scalene_muscle_ant_l, ROIS.v_brachiocephalic_l, ROIS.v_jugular_int_l, ROIS.v_subclavian_l])
       # Targets:
       ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name+suffix, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-      ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.ln_ax_pectoral_l, ROIS.ln_ax_l1_l, ROIS.ln_ax_l2_l, ROIS.ln_ax_l3_l, ROIS.ln_ax_l4_l], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if include_imn:
         imn = ROIS.ln_imn_l
     # Common targets for left and right:
