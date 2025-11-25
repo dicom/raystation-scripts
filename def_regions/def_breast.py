@@ -129,19 +129,7 @@ class DefBreast(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # DL ROIs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "A_LAD": "A_LAD",
-        "Breast_L_Draft": "IpsilateralBreast_L",
-        "Breast_R_Draft": "IpsilateralBreast_R",
-        "Esophagus": "Esophagus",
-        "Heart": "Heart_pa_separate",
-        "Lung_L": "Lung_L",
-        "Lung_R": "Lung_R",
-        "Sternum": "Sternum",
-        "ThyroidGland": "ThyroidGland"
-      }
-    })
+    site.add_oars([ROIS.a_lad, ROIS.breast_l_draft, ROIS.breast_r_draft, ROIS.esophagus, ROIS.heart, ROIS.lung_l, ROIS.lung_r, ROIS.sternum, ROIS.thyroid])
     # Add derived ROIs:
     site.add_oars([ROIS.breast_l, ROIS.breast_r, ROIS.lungs])
   
@@ -149,30 +137,9 @@ class DefBreast(object):
   # Adds rois that are specific for left or right side.
   def add_sided_rois(self, pm, examination, site, side):
     if side == 'right':
-      # DL model for right sided breast:
-      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-        'RSL DLS CT': {
-          "HumeralHead_R": "HumeralHead_R",
-          "Liver": "Liver",
-        },
-        'St. Olavs-Alesund Breast CT': {
-          "BreastString_R": "BreastString_R",
-          "Clips_R": "Clips_R",
-          "SurgicalBed_R": "SurgicalBed_R"
-        }
-      })
+      site.add_oars([ROIS.breast_string_r, ROIS.clips_r, ROIS.humeral_head_r, ROIS.liver, ROIS.surgical_bed_r])
     else:
-      # DL model for left sided whole breast:
-      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-        'RSL DLS CT': {
-          "HumeralHead_L": "HumeralHead_L"
-        },
-        'St. Olavs-Alesund Breast CT': {
-          "BreastString_L": "BreastString_L",
-          "Clips_L": "Clips_L",
-          "SurgicalBed_L": "SurgicalBed_L"
-        }
-      })
+      site.add_oars([ROIS.breast_string_l, ROIS.clips_l, ROIS.humeral_head_l, ROIS.surgical_bed_l])
   
   
   # Adds partial breast (left or right) ROIs to the site object.
@@ -196,14 +163,8 @@ class DefBreast(object):
   
   # Adds regional breast (left or right) ROIs to the site object.
   def add_regional_breast(self, pm, examination, site, side, boost, bilateral, include_imn):
-    # DL regional ROIs:
-    examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-      'RSL DLS CT': {
-        "Carina": "Carina",
-        "SpinalCanal": "SpinalCanal",
-        "Trachea": "Trachea_1cm_sup_carina"
-      }
-    })
+    # Common ROIs for regional breast:
+    site.add_oars([ROIS.carina, ROIS.spinal_canal, ROIS.trachea])
     self.add_sided_rois(pm, examination, site, side)
     # Laterality suffix for targets for bilateral cases:
     suffix = ''
@@ -214,57 +175,21 @@ class DefBreast(object):
         suffix = '_L'
     # Side dependent targets and support structures for regional treatment:
     if side == 'right':
-      # DL model for right sided regional nodes:
-      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-        'RSL DLS CT': {
-          "A_Brachiocephalic": "A_Brachiocephalic",
-          "A_Carotid_R": "A_Carotid_R",
-          "A_Subclavian_R": "A_Subclavian_R",
-          "BrachialPlexus_R": "Brachial_Plexus_R",
-          "BronchusMain_R": "Bronchus_Main_R",
-          "BronchusIntermedius": "Bronchus_InterM",
-          "LN_Ax_L1_R": "LN_Ax_L1_R",
-          "LN_Ax_L2_R": "LN_Ax_L2_R",
-          "LN_Ax_L3_R": "LN_Ax_L3_R",
-          "LN_Ax_L4_R": "LN_Ax_L4_R",
-          "LN_Ax_Pectoral_R": "LN_Ax_Pectoral_R",
-          "LN_IMN_R": "LN_IMN_R",
-          "ScaleneMuscle_Ant_R": "M_Scalene_Ant_R",
-          "V_Brachiocephalic_R": "V_Brachiocephalic_R",
-          "V_Jugular_Int_R": "V_Jugular_Int_R",
-          "V_Subclavian_R": "V_Subclavian_R"
-        }
-      })
+      # ROIs for right sided regional nodes:
+      site.add_oars([ROIS.a_brachiocephalic, ROIS.a_carotid_r, ROIS.a_subclavian_r, ROIS.brachial_plexus_r, ROIS.bronchus_main_r, ROIS.bronchus_intermedius, ROIS.ln_ax_l1_r, ROIS.ln_ax_l2_r, ROIS.ln_ax_l3_r, ROIS.ln_ax_l4_r, ROIS.ln_ax_pectoral_r, ROIS.ln_imn_r, ROIS.scalene_muscle_ant_r, ROIS.v_brachiocephalic_r, ROIS.v_jugular_int_r, ROIS.v_subclavian_r])
       # Targets:
       ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name+suffix, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_r_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_r, ROIS.level1_r, ROIS.level2_r, ROIS.level3_r, ROIS.level4_r], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if include_imn:
-        imn = ROIS.imn_r
+        imn = ROIS.ln_imn_r
     else:
-      # DL model for left sided regional nodes and support structures:
-      examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
-        'RSL DLS CT': {
-          "A_Carotid_L": "A_Carotid_L",
-          "A_Subclavian_L": "A_Subclavian_L",
-          "BrachialPlexus_L": "Brachial_Plexus_L",
-          "BronchusMain_L": "Bronchus_Main_L",
-          "LN_Ax_L1_L": "LN_Ax_L1_L",
-          "LN_Ax_L2_L": "LN_Ax_L2_L",
-          "LN_Ax_L3_L": "LN_Ax_L3_L",
-          "LN_Ax_L4_L": "LN_Ax_L4_L",
-          "LN_Ax_Pectoral_L": "LN_Ax_Pectoral_L",
-          "LN_IMN_L": "LN_IMN_L",
-          "ScaleneMuscle_Ant_L": "M_Scalene_Ant_L",
-          "V_Brachiocephalic_L": "V_Brachiocephalic_L",
-          "V_Jugular_Int_L": "V_Jugular_Int_L",
-          "V_Subclavian_L": "V_Subclavian_L"
-        }
-      })
+      # ROIs for left sided regional nodes:
+      site.add_oars([ROIS.a_carotid_l, ROIS.a_subclavian_l, ROIS.brachial_plexus_l, ROIS.bronchus_main_l, ROIS.ln_ax_l1_l, ROIS.ln_ax_l2_l, ROIS.ln_ax_l3_l, ROIS.ln_ax_l4_l, ROIS.ln_ax_pectoral_l, ROIS.ln_imn_l, ROIS.scalene_muscle_ant_l, ROIS.v_brachiocephalic_l, ROIS.v_jugular_int_l, ROIS.v_subclavian_l])
       # Targets:
       ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name+suffix, ROIS.ctv_p.type, ROIS.ctv.color, sourcesA = [ROIS.breast_l_draft], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
       ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name+suffix, ROIS.ctv_n.type, ROIS.ctv.color, sourcesA = [ROIS.level_l, ROIS.level1_l, ROIS.level2_l, ROIS.level3_l, ROIS.level4_l], sourcesB = [ctv_p], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       if include_imn:
-        imn = ROIS.imn_l
+        imn = ROIS.ln_imn_l
     # Common targets for left and right:
     ctv = ROI.ROIAlgebra(ROIS.ctv.name+suffix, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ctv_n], sourcesB = [ctv_p], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     ptv_p = ROI.ROIAlgebra(ROIS.ptv_pc.name+suffix, ROIS.ptv_pc.type, ROIS.ptv.color, sourcesA = [ctv_p], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
