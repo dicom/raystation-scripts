@@ -175,7 +175,7 @@ def create_localization_point(pm, examination):
     pm.CreatePoi(Examination = examination, Name = 'Ref', Color = COLORS.ref , Type = 'LocalizationPoint')
 
 
-# Creates deep learning segmentation based ROIs.
+# Creates deep learning segmentation ROI from a ROIDLS object.
 def create_dls_roi(pm, examination, roi_dls):
   assert roi_dls.__class__.__name__ == 'ROIDLS', "roi_dls is not a ROIDLS: %r" % roi_dls
   examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames={
@@ -183,6 +183,19 @@ def create_dls_roi(pm, examination, roi_dls):
       roi_dls.name: roi_dls.lib_name
     }
   })
+
+
+# Creates deep learning segmentation ROIs from a list of ROIDLS objects.
+def create_dls_rois(pm, examination, dls_rois):
+  dls_dict = {}
+  for roi in dls_rois:
+    if roi.model in dls_dict:
+      # Model exists, add key-value pair:
+      dls_dict[roi.model][roi.name] = roi.lib_name
+    else:
+      # No ROIs added with this model yet, so we will create a dict for this model:
+      dls_dict[roi.model] = {roi.name: roi.lib_name}
+  examination.RunDeepLearningSegmentationWithCustomRoiNames(ModelAndRoiNames=dls_dict)
 
 
 # Creates model based ROIs.

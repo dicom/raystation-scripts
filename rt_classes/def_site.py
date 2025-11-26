@@ -90,7 +90,18 @@ class DefSite(object):
       for roi in group[key]:
         PMF.delete_derived_or_empty_contoured_roi(self.pm, roi)
     group = self.grouped_rois()
-    # Create ROIs (in reverse sorted order):
+    # Collect DLS ROIs in a list for group creation (because it is much faster than creating DLS ROIs one at a time):
+    dls_rois = []
+    for key in group:
+      for roi in group[key]:
+        # We are only interested in creating ROI if it doesn't already exist:
+        if not PMF.has_roi(self.pm, roi.name):
+          if roi.__class__.__name__ == 'ROIDLS':
+            dls_rois.append(roi)
+    # Create the DLS ROIs:
+    if len(dls_rois) > 0:
+      PMF.create_dls_rois(self.pm, self.examination, dls_rois)
+    # Create non-DLS ROIs (in reverse sorted order):
     for key in reversed(sorted(iter(group))):
       for roi in group[key]:
         # Only create ROI if it doesn't already exist:
@@ -100,8 +111,6 @@ class DefSite(object):
               PMF.create_model_roi(self.pm, self.examination, roi)
             else:
               PMF.create_empty_roi(self.pm, roi)
-          elif roi.__class__.__name__ == 'ROIDLS':
-            PMF.create_dls_roi(self.pm, self.examination, roi)
           elif roi.__class__.__name__ == 'ROIExpanded':
             PMF.create_expanded_roi(self.pm, self.examination, self.ss, roi)
           elif roi.__class__.__name__ == 'ROIAlgebra':
