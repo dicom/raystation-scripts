@@ -75,8 +75,8 @@ class Other:
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 41.6*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 33.8*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.cauda_equina.name, 35.8*100, 2, beam_set_index=i))
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 33.2*100, 2, 2, beam_set_index=i))
-      oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 33.2*100, 2, 2, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femoral_head_l.name, 33.2*100, 2, 2, beam_set_index=i))
+      oars.append(OF.max_dvh(ss, plan, ROIS.femoral_head_r.name, 33.2*100, 2, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 33.6*100, 1, 2, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]

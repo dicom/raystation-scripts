@@ -113,7 +113,7 @@ class DefProstate(object):
     # Exclude Rectum from BowelBag:
     ROIS.bowel_bag.sourcesB.append(ROIS.rectum)
     # Non-DL OARs:
-    site.add_oars([ROIS.anal_canal, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum])
+    site.add_oars([ROIS.anal_canal, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.penile_bulb, ROIS.rectum, ROIS.sacrum])
   
   
   # Adds rois that are relevant for lymph node treatment.

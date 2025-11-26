@@ -8,6 +8,7 @@
 #
 # Python 3.6
 
+import colors as COLORS
 import gui_functions as GUIF
 import margins as MARGINS
 import objective_functions as OF
@@ -59,8 +60,8 @@ class Brain:
           oars.append(OF.max_dose(ss, plan, ROIS.brainstem_surface.name, (TOL.brainstem_surface_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 60, beam_set_index=i))
           oars.append(OF.max_dose(ss, plan, ROIS.brainstem_core.name, (TOL.brainstem_core_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 80, beam_set_index=i))
           oars.append(OF.max_dose(ss, plan, ROIS.optic_chiasm.name, (TOL.optic_chiasm_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 40, beam_set_index=i))
-          oars.append(OF.max_dose(ss, plan, ROIS.optic_nrv_l.name, (TOL.optic_nrv_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 20, beam_set_index=i))
-          oars.append(OF.max_dose(ss, plan, ROIS.optic_nrv_r.name, (TOL.optic_nrv_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 20, beam_set_index=i))
+          oars.append(OF.max_dose(ss, plan, ROIS.optic_nerve_l.name, (TOL.optic_nrv_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 20, beam_set_index=i))
+          oars.append(OF.max_dose(ss, plan, ROIS.optic_nerve_r.name, (TOL.optic_nrv_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 20, beam_set_index=i))
           # Setup of objectives for less prioritized OARs:
           other_oars = [ROIS.cochlea_l, ROIS.cochlea_r, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.lens_l, ROIS.lens_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.retina_l, ROIS.retina_r, ROIS.cornea_r, ROIS.cornea_l, ROIS.pituitary]
           tolerances = [TOL.cochlea_mean_tinnitus, TOL.cochlea_mean_tinnitus, TOL.hippocampus_v40, TOL.hippocampus_v40, TOL.lens_v003_adx, TOL.lens_v003_adx, TOL.lacrimal_mean, TOL.lacrimal_mean, TOL.retina_v003_adx, TOL.retina_v003_adx, TOL.cornea_v003_adx, TOL.cornea_v003_adx, TOL.pituitary_mean]
@@ -136,7 +137,7 @@ class Brain:
         targets.append(OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.97, 150, beam_set_index=i))
       else:
         # Partial brain:
-        prioritized_oars = [ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nrv_l, ROIS.optic_nrv_r]
+        prioritized_oars = [ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r]
         tolerances = [TOL.brainstem_core_v003_adx, TOL.brainstem_surface_v003_adx, TOL.optic_chiasm_v003_adx, TOL.optic_nrv_v003_adx, TOL.optic_nrv_v003_adx]
         conflict_oars = []
         for index in range(len(prioritized_oars)):
@@ -147,7 +148,7 @@ class Brain:
           # Create subtraction and intersect ROIs for planning of conflicting sites:
           ctv_oars = ROI.ROIAlgebra(ROIS.ctv_oars.name, ROIS.ctv_oars.type, ROIS.ctv.color, sourcesA = [ROIS.ctv], sourcesB = conflict_oars, operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_2mm_expansion)
           ptv_oars = ROI.ROIAlgebra(ROIS.ptv_oars.name, ROIS.ptv_oars.type, ROIS.ptv.color, sourcesA = [ROIS.ptv], sourcesB = conflict_oars, operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_2mm_expansion)
-          ptv_and_oars = ROI.ROIAlgebra(ROIS.ptv_and_oars.name, ROIS.ptv_and_oars.type, ROIS.other_ptv.color, sourcesA = [ROIS.ptv], sourcesB = conflict_oars, operator='Intersection')
+          ptv_and_oars = ROI.ROIAlgebra(ROIS.ptv_and_oars.name, ROIS.ptv_and_oars.type, COLORS.other_ptv, sourcesA = [ROIS.ptv], sourcesB = conflict_oars, operator='Intersection')
           rois = [ctv_oars, ptv_oars, ptv_and_oars]
           PMF.delete_matching_rois(pm, rois)
           for index in range(len(rois)):

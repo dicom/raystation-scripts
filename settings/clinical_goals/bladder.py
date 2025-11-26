@@ -35,15 +35,15 @@ class Bladder:
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.64, TOL.rectum_v64pc, 3))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.80, TOL.rectum_v80pc, 3))
     oars.append(CG.ClinicalGoal(ROIS.anal_canal.name, CG.at_most, CG.average_dose, TOL.anal_canal_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.01, TOL.rectum_v01pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.18, TOL.rectum_v18pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.31, TOL.rectum_v31pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.44, TOL.rectum_v44pc, 6))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.60, TOL.rectum_v60pc, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
     return oars
 
 

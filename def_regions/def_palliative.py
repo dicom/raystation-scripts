@@ -134,7 +134,7 @@ class DefPalliative(object):
   # Adds abdomen/pelvis OARs to the site object.
   def add_oars_abdomen_pelvis(self, pm, examination, site):
     # DL OARs:
-    site.add_oars([ROIS.a_descending_aorta, ROIS.anal_canal, ROIS.bladder, ROIS.bowel_bag_draft, ROIS.cauda_equina, ROIS.coccyx, ROIS.femur_l, ROIS.femur_r, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.liver, ROIS.pancreas, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum, ROIS.spinal_canal, ROIS.spleen, ROIS.stomach, ROIS.v_inferior_vena_cava])
+    site.add_oars([ROIS.a_descending_aorta, ROIS.anal_canal, ROIS.bladder, ROIS.bowel_bag_draft, ROIS.cauda_equina, ROIS.coccyx, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.liver, ROIS.pancreas, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum, ROIS.spinal_canal, ROIS.spleen, ROIS.stomach, ROIS.v_inferior_vena_cava])
     # Exclude abdominal organs from BowelBag:
     ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pancreas, ROIS.spleen, ROIS.stomach])
     # Non-DL OARs:
@@ -160,7 +160,7 @@ class DefPalliative(object):
   # Adds pelvis OARs to the site object.
   def add_oars_pelvis(self, pm, examination, site):
     # DL OARs:
-    site.add_oars([ROIS.bladder, ROIS.anal_canal, ROIS.bowel_bag_draft, ROIS.cauda_equina, ROIS.coccyx, ROIS.femur_l, ROIS.femur_r, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.liver, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum])
+    site.add_oars([ROIS.bladder, ROIS.anal_canal, ROIS.bowel_bag_draft, ROIS.cauda_equina, ROIS.coccyx, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.liver, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.rectum, ROIS.sacrum])
     # Non-DL OARs:
     site.add_oars([ROIS.kidneys, ROIS.bowel_bag])
   

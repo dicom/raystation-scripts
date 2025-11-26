@@ -41,10 +41,10 @@ class DefRectum(object):
   # Adds rois that are common across all cases.
   def add_common_rois(self, pm, examination, site):
     # Create "Bone" ROI Algebra:
-    pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r]
+    pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = pelvic_bone_rois, sourcesB = vertebrae_rois)
-    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
+    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
   
   
   # Adds rois that are based on gender.
@@ -60,7 +60,7 @@ class DefRectum(object):
     # Targets:
     gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
     # We will not use the CTVp in ROI algebra from now on, but we'll keep it present for visual aid:
-    z_ctv_p_default = ROI.ROIAlgebra('zCTVp_default', 'Undefined', COLORS.ctv_high, sourcesA = [gtv], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    z_ctv_p_default = ROI.ROIAlgebra('zCTVp_default', 'Undefined', COLORS.ctv_high, sourcesA = [gtv], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
     ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsB = MARGINS.uniform_5mm_contraction)
     ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, z_ctv_p_default, ROIS.ctv_e, ctv, ptv])
@@ -82,8 +82,8 @@ class DefRectum(object):
       gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
       site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
     # Common for groin included or not:
-    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_head_neck_l, ROIS.femur_head_neck_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
+    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
     ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
     ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)

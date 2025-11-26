@@ -30,8 +30,8 @@ class Bladder:
   # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
     oars = []
-    oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_l.name, 45*100, 2, 1, beam_set_index=i))
-    oars.append(OF.max_dvh(ss, plan, ROIS.femur_head_neck_r.name, 45*100, 2, 1, beam_set_index=i))
+    oars.append(OF.max_dvh(ss, plan, ROIS.femoral_head_l.name, 45*100, 2, 1, beam_set_index=i))
+    oars.append(OF.max_dvh(ss, plan, ROIS.femoral_head_r.name, 45*100, 2, 1, beam_set_index=i))
     oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 50*100, 1, 2, beam_set_index=i))
     oars.append(OF.max_eud(ss, plan, ROIS.bowel_space.name, 20*100, 1, 2, beam_set_index=i))
     # Return objectives (filtered for possible None elements):

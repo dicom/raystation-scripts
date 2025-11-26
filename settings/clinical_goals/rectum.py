@@ -31,10 +31,10 @@ class Rectum:
     oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcanal_v2_adx, 0.02, 2))
     oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 2))
     oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc_freq, 3))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-    oars.append(CG.ClinicalGoal(ROIS.femur_head_neck_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.average_dose, TOL.femoral_head_mean, None, 4))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+    oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
     return oars
 
 
