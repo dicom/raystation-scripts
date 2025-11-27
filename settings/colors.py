@@ -123,7 +123,7 @@ prostate_bed = 'DeepPink'
 vesicles = 'Violet'
 penile_bulb = 'PaleVioletRed'
 # Pelvic female:
-uterus = 'DeepPink'
+uterus = 'Purple'
 
 
 # PRVs:
