@@ -161,8 +161,9 @@ def create_external_geometry(pm, examination, ss):
       break
   if not exists:
     pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
-  # Create the external ROI geometry:
-  pm.RegionsOfInterest[ROIS.external.name].CreateExternalGeometry(Examination=examination, ThresholdLevel=None)
+  # Create the external ROI geometry (if it is editable):
+  if ss.RoiGeometries[ROIS.external.name].IsRoiGeometryEditable():
+    pm.RegionsOfInterest[ROIS.external.name].CreateExternalGeometry(Examination=examination, ThresholdLevel=None)
 
 
 # Creates a localization point (if one doesn't already exist).
@@ -683,22 +684,25 @@ def set_all_undefined_to_organ_type_other(pm):
       roi.OrganData.OrganType = 'Other'
 
 
-# Translates the couch such that it lies close to the patient in the anterior-posterior direction and centers it in the left-right direction.
+# Translates the couch to be positioned close to the patient in the anterior-posterior direction
+# and centers it in the left-right direction.
 def translate_couch(pm, ss, examination, external, couch_thickness = 5.55):
   # Only attempt manipulation if there is actually a ROI geometry:
   if ss.RoiGeometries[ROIS.couch.name].PrimaryShape:
-    ext_box = ss.RoiGeometries[external].GetBoundingBox()
-    ext_center = SSF.roi_center_x(ss, external)
-    if abs(ext_center) > 5:
-      ext_center = 0
-    couch_center_x = SSF.roi_center_x(ss, ROIS.couch.name)
-    couch_box = ss.RoiGeometries[ROIS.couch.name].GetBoundingBox()
-    y_translation = -(abs(couch_box[1].y - ext_box[1].y)-couch_thickness)
-    x_translation = ext_center - couch_center_x
-    transMat = {
-      'M11':1.0,'M12':0.0,'M13':0.0,'M14':x_translation,
-      'M21':0.0,'M22':1.0,'M23':0.0,'M24':y_translation,
-      'M31':0.0,'M32':0.0,'M33':1.0,'M34':0.0,
-      'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
-      }
-    pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)
+    # Proceed only if the ROI geometry is actually editable:
+    if ss.RoiGeometries[ROIS.couch.name].IsRoiGeometryEditable():
+      ext_box = ss.RoiGeometries[external].GetBoundingBox()
+      ext_center = SSF.roi_center_x(ss, external)
+      if abs(ext_center) > 5:
+        ext_center = 0
+      couch_center_x = SSF.roi_center_x(ss, ROIS.couch.name)
+      couch_box = ss.RoiGeometries[ROIS.couch.name].GetBoundingBox()
+      y_translation = -(abs(couch_box[1].y - ext_box[1].y)-couch_thickness)
+      x_translation = ext_center - couch_center_x
+      transMat = {
+        'M11':1.0,'M12':0.0,'M13':0.0,'M14':x_translation,
+        'M21':0.0,'M22':1.0,'M23':0.0,'M24':y_translation,
+        'M31':0.0,'M32':0.0,'M33':1.0,'M34':0.0,
+        'M41':0.0,'M42':0.0,'M43':0.0,'M44':1.0
+        }
+      pm.RegionsOfInterest[ROIS.couch.name].TransformROI3D(Examination=examination, TransformationMatrix=transMat)
