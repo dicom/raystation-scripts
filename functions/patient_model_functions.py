@@ -681,7 +681,14 @@ def is_empty(ss, roi):
 def set_all_undefined_to_organ_type_other(pm):
   for roi in pm.RegionsOfInterest:
     if roi.Type in ['Undefined','Marker']:
-      roi.OrganData.OrganType = 'Other'
+      try:
+        roi.OrganData.OrganType = 'Other'
+      except Exception as e:
+        if e.__class__.__name__ == 'InvalidOperationException':
+          # If ROI is approved and cannot be mutated, ignore the exception and proceed:
+          pass
+        else:
+          raise e
 
 
 # Translates the couch to be positioned close to the patient in the anterior-posterior direction

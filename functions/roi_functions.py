@@ -23,3 +23,16 @@ def roi_vicinity_approximate(roi_geometry1, roi_geometry2, threshold):
     if length < max_length:
       result = True
   return result
+
+
+# Changes OrganType of the given ROI.
+def set_organ_type(roi, value):
+  try:
+    # Change OrganType:
+    roi.OrganData.OrganType = value
+  except Exception as e:
+    if e.__class__.__name__ == 'InvalidOperationException':
+      # If ROI is approved and cannot be mutated, ignore the exception and proceed:
+      pass
+    else:
+      raise e

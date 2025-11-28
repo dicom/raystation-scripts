@@ -6,6 +6,7 @@ import def_oars as DEF
 import margins as MARGINS
 import patient_model_functions as PMF
 import roi as ROI
+import roi_functions as RF
 import rois as ROIS
 
 # Definitions script for rectum treatments (conventional 50 Gy SIB and hypofractionated 25 Gy).
@@ -30,8 +31,8 @@ class DefRectum(object):
     # Create all targets and OARs in RayStation:
     site.create_rois()
     # Change type to "Other":
-    pm.RegionsOfInterest['Bone'].OrganData.OrganType = "Other"
-    pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"
+    RF.set_organ_type(pm.RegionsOfInterest['Bone'], "Other")
+    RF.set_organ_type(pm.RegionsOfInterest['BowelBag_Draft'], "Other")
     # Exclude some ROIs from export:
     exclude = ["L5", "Sacrum", "Coccyx", "PelvicGirdle_L", "PelvicGirdle_R", "Femur_L", "Femur_R"]
     for roi_name in exclude:
