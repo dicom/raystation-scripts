@@ -569,7 +569,7 @@ def delete_derived_or_empty_contoured_roi(pm, roi):
         try:
           pm_roi.DeleteRoi()
         except:
-          GUIF.handle_delete_roi_error(roi.name)
+          pass
       else:
         # When it is non-derived, we will only delete it if it is empty:
         # Assume a ROI can be deleted, until we find otherwise:
@@ -582,7 +582,7 @@ def delete_derived_or_empty_contoured_roi(pm, roi):
           try:
             pm_roi.DeleteRoi()
           except:
-            GUIF.handle_delete_roi_error(roi.name)
+            pass
       break
 
 
