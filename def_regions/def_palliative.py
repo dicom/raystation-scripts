@@ -6,6 +6,7 @@ import def_oars as DEF
 import margins as MARGINS
 import patient_model_functions as PMF
 import roi as ROI
+import roi_functions as RF
 import rois as ROIS
 
 # Definitions script for palliative treatments (prostate/prostate bed, with or without lymph nodes, normo/hypofractionated).
@@ -38,7 +39,7 @@ class DefPalliative(object):
     site.create_rois()
     # Change type to "Other":
     if bone:
-      pm.RegionsOfInterest[bone.name].OrganData.OrganType = "Other"
+      RF.set_organ_type(pm.RegionsOfInterest[bone.name], "Other")
     try:
       if pm.RegionsOfInterest['BowelBag_Draft']:
         pm.RegionsOfInterest['BowelBag_Draft'].OrganData.OrganType = "Other"
@@ -60,17 +61,11 @@ class DefPalliative(object):
     bone_candidates = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_candidatates = [ROIS.l2, ROIS.l3, ROIS.l4, ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     for roi in bone_candidates:
-      try:
-        if pm.RegionsOfInterest[roi.name]:
-          bone_rois.insert(0, roi)
-      except:
-        pass
+      if roi in site.oars:
+        bone_rois.insert(0, roi)
     for roi in vertebrae_candidatates:
-      try:
-        if pm.RegionsOfInterest[roi.name]:
-          vertebrae_rois.insert(0, roi)
-      except:
-        pass
+      if roi in site.oars:
+        vertebrae_rois.insert(0, roi)
     if len(bone_rois) > 0 and len(vertebrae_rois) > 0:
       bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = bone_rois, sourcesB = vertebrae_rois)
       site.add_oars([bone])
