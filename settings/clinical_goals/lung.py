@@ -240,7 +240,7 @@ class Lung:
         targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.conformity_index, 0.88, 1.0, 5))
       else:
         for i in range(0, nr_targets):
-          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.dose_at_volume, 1.0, 0.99, 1))
+          targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.dose_at_volume, 1.0, 0.98, 1))
           targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_most, CG.dose_at_volume, max_factor, 0.02, 4))
           targets.append(CG.ClinicalGoal(ROIS.ptv.name+str(i+1), CG.at_least, CG.conformity_index, 0.88, 1.0, 5))
     else:
