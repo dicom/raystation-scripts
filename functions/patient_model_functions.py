@@ -493,24 +493,17 @@ def is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
   return match  
 
 
-# As there can only be one External ROI, another "External" is created for brain stereotactic treatments,
+# As there can only be one External ROI, another external like ROI is created for brain stereotactic treatments,
 # called 'Body', where only the patient geometry is included (Fixation equipment is excluded).
 # This Body ROI is the same as the normal 'External' for other patient groups.
 def create_stereotactic_body_geometry(pm, examination, ss):
   body = None
   try:
     body = pm.RegionsOfInterest[ROIS.body.name]
-    body.DeleteRoi()
+    ss.RoiGeometries[ROIS.body.name].DeleteRoiGeometry()
   except:
-    pass
-  if not body:
     body = pm.CreateRoi(Name = ROIS.body.name, Color = ROIS.body.color, Type = ROIS.body.type)
-  try:
-    body_rg = ss.RoiGeometries[ROIS.body.name]
-  except:
-    body_rg = None
-  if body_rg == None or body_rg and body_rg.IsRoiGeometryEditable():
-    body.CreateExternalGeometry(Examination = examination, ThresholdLevel = None)
+  body.CreateExternalGeometry(Examination = examination, ThresholdLevel = None)
 
 
 # Creates an external ROI used for brain stereotactic treatments where fixation and mask is included in the ROI.
@@ -518,17 +511,10 @@ def create_stereotactic_external_geometry(pm, examination, ss):
   external = None
   try:
     external = pm.RegionsOfInterest[ROIS.external.name]
-    external.DeleteRoi()
+    ss.RoiGeometries[ROIS.external.name].DeleteRoiGeometry()
   except:
-    pass
-  if not external:
     external = pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
-  try:
-    external_rg = ss.RoiGeometries[ROIS.external.name]
-  except:
-    external_rg = None
-  if external_rg == None or external_rg and ss.RoiGeometries[ROIS.external.name].IsRoiGeometryEditable():
-    external.CreateExternalGeometry(Examination = examination, ThresholdLevel = -980)
+  external.CreateExternalGeometry(Examination = examination, ThresholdLevel = -980)
 
 
 # Creates a wall ROI from a ROI object.
