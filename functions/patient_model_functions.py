@@ -502,8 +502,10 @@ def create_stereotactic_body_geometry(pm, examination, ss):
     body = pm.RegionsOfInterest[ROIS.body.name]
     ss.RoiGeometries[ROIS.body.name].DeleteRoiGeometry()
   except:
-    body = pm.CreateRoi(Name = ROIS.body.name, Color = ROIS.body.color, Type = ROIS.body.type)
-  body.CreateExternalGeometry(Examination = examination, ThresholdLevel = None)
+    if pm.GetRoiNameWithRespectToExistingRois(DesiredRoiName=ROIS.body.name, ExaminationName=examination.Name) == ROIS.body.name:
+      body = pm.CreateRoi(Name = ROIS.body.name, Color = ROIS.body.color, Type = ROIS.body.type)
+  if ss.RoiGeometries[ROIS.body.name].IsRoiGeometryEditable():
+    body.CreateExternalGeometry(Examination = examination, ThresholdLevel = None)
 
 
 # Creates an external ROI used for brain stereotactic treatments where fixation and mask is included in the ROI.
@@ -513,8 +515,10 @@ def create_stereotactic_external_geometry(pm, examination, ss):
     external = pm.RegionsOfInterest[ROIS.external.name]
     ss.RoiGeometries[ROIS.external.name].DeleteRoiGeometry()
   except:
-    external = pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
-  external.CreateExternalGeometry(Examination = examination, ThresholdLevel = -980)
+    if pm.GetRoiNameWithRespectToExistingRois(DesiredRoiName=ROIS.external.name, ExaminationName=examination.Name) == ROIS.external.name:
+      external = pm.CreateRoi(Name = ROIS.external.name, Color = ROIS.external.color, Type = ROIS.external.type)
+  if ss.RoiGeometries[ROIS.external.name].IsRoiGeometryEditable():
+    external.CreateExternalGeometry(Examination = examination, ThresholdLevel = -980)
 
 
 # Creates a wall ROI from a ROI object.
