@@ -14,8 +14,8 @@ other = P.Property('Skjelett og øvrig bløtvev', 'other', next_category = '')
 
 
 # Brain: Scope:
-brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, next_category ='involvering av hjernehinne', default = True)
-brain_partial = P.Property('Del av hjerne', 'part', parent=brain)
+brain_whole = P.Property('Hele hjernen', 'whole', parent=brain, next_category ='involvering av hjernehinne')
+brain_partial = P.Property('Del av hjerne', 'part', parent=brain, default = True)
 brain_stereotactic = P.Property('Stereotaksi','stereotactic', parent = brain, next_category ='antall målvolum')
 
 # Brain: Whole
@@ -125,8 +125,8 @@ prostate_with_ln_boost_62_5 =  P.Property('Med lymfeknuter og 62.5 Gy boost til 
 prostate_with_ln_boost_60 =  P.Property('Med lymfeknuter og 60 Gy boost til positiv lymfeknute', 'with_node_60', parent = prostate_bergen, next_category ='')
 
 # Prostate bed: Lymph nodes:
-prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = prostate_bed_normo, next_category ='', default = True)
-prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = prostate_bed_normo, next_category ='')
+prostate_without_ln =  P.Property('Uten lymfeknuter', 'no',  parent = prostate_bed_normo, next_category ='')
+prostate_with_ln =  P.Property('Med lymfeknuter', 'with', parent = prostate_bed_normo, next_category ='', default = True)
 prostate_with_ln_boost_70 =  P.Property('Med lymfeknuter og 70 Gy boost til positiv lymfeknute', 'with_node_70', parent = prostate_bed_normo, next_category ='')
 prostate_with_ln_boost_66 =  P.Property('Med lymfeknuter og 66 Gy boost til positiv lymfeknute', 'with_node_66', parent = prostate_bed_normo, next_category ='')
 
