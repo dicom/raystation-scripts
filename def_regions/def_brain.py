@@ -6,6 +6,7 @@
 import colors as COLORS
 import def_oars as DEF
 import margins as MARGINS
+import patient_model_functions as PMF
 import structure_set_functions as SSF
 import roi as ROI
 import rois as ROIS
@@ -34,6 +35,8 @@ class DefBrain(object):
       self.add_stereotactic_brain(pm, examination, site, nr_targets)
     # Create all targets and OARs in RayStation:
     site.create_rois()
+    # Create cornea and retina ROIs:
+    PMF.create_cornea_and_retina_rois(pm, examination, ss)
     # Change ROI type to "Other" for selected ROIs:
     for name in [ROIS.brain_gtv.name, ROIS.brain_ptv.name, 'Brain-Brainstem']:
       try:
@@ -115,4 +118,3 @@ class DefBrain(object):
     site.add_targets([ctv, ptv])
     # Non-DL OARs:
     site.add_oars([ROIS.skin_brain, ROIS.nasal_cavity])
-    

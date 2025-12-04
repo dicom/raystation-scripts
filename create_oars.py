@@ -144,18 +144,8 @@ if selected_oar_list.get(ROIS.anal_canal):
   PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
 if selected_oar_list.get(ROIS.dorso_rectum):
   PMF.create_posterior_half(pm, examination, ss, ROIS.rectum, ROIS.dorso_rectum)
-if selected_oar_list.get(ROIS.cornea_l) and selected_oar_list.get(ROIS.retina_l):
-  PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l, ROIS.cornea_l)
-elif selected_oar_list.get(ROIS.retina_l) and not selected_oar_list.get(ROIS.cornea_l):
-  PMF.create_retina(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l)
-elif selected_oar_list.get(ROIS.cornea_l) and not selected_oar_list.get(ROIS.retina_l):
-  PMF.create_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.cornea_l)
-if selected_oar_list.get(ROIS.cornea_r) and selected_oar_list.get(ROIS.retina_r):
-  PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r, ROIS.cornea_r)
-elif selected_oar_list.get(ROIS.retina_r) and not selected_oar_list.get(ROIS.cornea_r):
-  PMF.create_retina(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r)
-elif selected_oar_list.get(ROIS.cornea_r) and not selected_oar_list.get(ROIS.retina_r):
-  PMF.create_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.cornea_r)
+if selected_oar_list.get(ROIS.cornea_l) or selected_oar_list.get(ROIS.cornea_r) or selected_oar_list.get(ROIS.retina_l) or selected_oar_list.get(ROIS.retina_r):
+  PMF.create_cornea_and_retina_rois(pm, examination, ss)
 
 
 # Create ROIs:

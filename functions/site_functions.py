@@ -112,10 +112,6 @@ def site(case, pm, examination, ss, plan, prescriptions, target, option=None):
   prescription = prescriptions[0]
   if prescription.region_code in RC.brain_codes:
     # Brain:
-    if prescription.region_code not in RC.brain_whole_codes:
-      if prescription.nr_fractions > 5:
-        PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_l, ROIS.box_l, ROIS.eye_l, ROIS.retina_l, ROIS.cornea_l)
-        PMF.create_retina_and_cornea(pm, examination, ss, ROIS.lens_r, ROIS.box_r, ROIS.eye_r, ROIS.retina_r, ROIS.cornea_r)
     site = brain(pm, examination, ss, plan, prescription)
   elif prescription.region_code in RC.breast_codes:
     # Breast:
