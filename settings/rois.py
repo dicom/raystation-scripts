@@ -248,7 +248,7 @@ a_carotid_l = ROI.ROIDLS('A_Carotid_L', 'Organ', COLORS.artery_color6, 'RSL DLS 
 a_carotid_r = ROI.ROIDLS('A_Carotid_R', 'Organ', COLORS.artery_color6, 'RSL DLS CT')
 a_common_iliac_l = ROI.ROIDLS('A_CommonIliac_L', 'Organ', COLORS.artery_color2, 'Alesund Male Pelvic CT')
 a_common_iliac_r = ROI.ROIDLS('A_CommonIliac_R', 'Organ', COLORS.artery_color2, 'Alesund Male Pelvic CT')
-a_descending_aorta = ROI.ROIDLS('A_DescendingAorta', 'Organ', COLORS.artery_color1, 'Alesund Male Pelvic CT')
+a_descending_aorta = ROI.ROIDLS('A_DescendingAorta', 'Organ', COLORS.artery_color1, 'RSL DLS CT', lib_name = 'A_Aorta_Desc')
 a_external_iliac_l = ROI.ROIDLS('A_ExternalIliac_L', 'Organ', COLORS.artery_color4, 'Alesund Male Pelvic CT')
 a_external_iliac_r = ROI.ROIDLS('A_ExternalIliac_R', 'Organ', COLORS.artery_color4, 'Alesund Male Pelvic CT')
 a_internal_iliac_l = ROI.ROIDLS('A_InternalIliac_L', 'Organ', COLORS.artery_color3, 'Alesund Male Pelvic CT')
