@@ -65,8 +65,10 @@ brain_partial = [
   # Conventional:
   Prescription(25, 5, 'MedianDose'),
   Prescription(34, 10, 'MedianDose'),
+  Prescription(35, 10, 'MedianDose'),
   Prescription(39, 13, 'MedianDose'),
   Prescription(40.05, 15, 'MedianDose'),
+  Prescription(36, 18, 'MedianDose'),
   Prescription(50, 20, 'MedianDose'),
   Prescription(54, 27, 'MedianDose'),
   Prescription(50.4, 28, 'MedianDose'),
