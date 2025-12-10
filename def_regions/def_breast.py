@@ -25,9 +25,9 @@ class DefBreast(object):
     # Region:
     if region == 'partial':
       # Partial breast only:
-      self.add_partial_breast(pm, examination, site, side)
       boost = 'without'
       bilateral = False
+      self.add_partial_breast(pm, examination, site, side, bilateral)
     else:
       # Choice 3: With our without boost?
       boost = choices[3]
@@ -47,29 +47,46 @@ class DefBreast(object):
         bilateral = True
         bilateral_left_side_target = choices[2]
         bilateral_right_side_target = choices[3]
-        if bilateral_left_side_target == 'bilateral_left_whole':
+        if bilateral_left_side_target == 'bilateral_left_partial':
+          self.add_partial_breast(pm, examination, site, 'left', bilateral)
+          ctv_l = ROIS.ctv_sb_l
+          ptv_l = ROIS.ptv_sbc_l
+        elif bilateral_left_side_target == 'bilateral_left_whole':
           self.add_whole_breast(pm, examination, site, 'left', boost, bilateral)
+          ctv_l = ROIS.ctv_l
+          ptv_l = ROIS.ptvc_l
         else:
           self.add_regional_breast(pm, examination, site, 'left', boost, bilateral, include_imn=True)
-        if bilateral_right_side_target == 'bilateral_right_whole':
+          ctv_l = ROIS.ctv_l
+          ptv_l = ROIS.ptvc_l
+        if bilateral_right_side_target == 'bilateral_right_partial':
+          self.add_partial_breast(pm, examination, site, 'right', bilateral)
+          ctv_r = ROIS.ctv_sb_r
+          ptv_r = ROIS.ptv_sbc_r
+        elif bilateral_right_side_target == 'bilateral_right_whole':
           self.add_whole_breast(pm, examination, site, 'right', boost, bilateral)
+          ctv_r = ROIS.ctv_r
+          ptv_r = ROIS.ptvc_r
         else:
           self.add_regional_breast(pm, examination, site, 'right', boost, bilateral, include_imn=True)
-        # If at least one side is locoregional, we should have a PTVpc union:
-        if bilateral_left_side_target != 'bilateral_left_whole' or bilateral_right_side_target != 'bilateral_right_whole':
-          if bilateral_left_side_target == 'bilateral_left_whole':
-            left_primary = ROIS.ptvc_l
-          else:
-            left_primary = ROIS.ptv_pc_l
-          if bilateral_right_side_target == 'bilateral_right_whole':
-            right_primary = ROIS.ptvc_r
-          else:
-            right_primary = ROIS.ptv_pc_r
-          ptv_pc = ROI.ROIAlgebra(ROIS.ptv_pc.name, ROIS.ptv_pc.type, ROIS.ptv_pc.color, sourcesA = [left_primary, right_primary], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
-          site.add_targets([ptv_pc])
+          ctv_r = ROIS.ctv_r
+          ptv_r = ROIS.ptvc_r
+        # If at least one side is locoregional, and the other side is not partial, we add a PTVpc union:
+        if bilateral_left_side_target == 'bilateral_left_regional' or bilateral_right_side_target == 'bilateral_right_regional':
+          if bilateral_left_side_target != 'bilateral_left_partial' and bilateral_right_side_target != 'bilateral_right_partial':
+            if bilateral_left_side_target == 'bilateral_left_whole':
+              left_primary = ROIS.ptvc_l
+            else:
+              left_primary = ROIS.ptv_pc_l
+            if bilateral_right_side_target == 'bilateral_right_whole':
+              right_primary = ROIS.ptvc_r
+            else:
+              right_primary = ROIS.ptv_pc_r
+            ptv_pc = ROI.ROIAlgebra(ROIS.ptv_pc.name, ROIS.ptv_pc.type, ROIS.ptv_pc.color, sourcesA = [left_primary, right_primary], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+            site.add_targets([ptv_pc])
         # Targets (L+R union):
-        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ROIS.ctv_l], sourcesB = [ROIS.ctv_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-        ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ROIS.ptvc_l, ROIS.ptvc_r], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
+        ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [ctv_l], sourcesB = [ctv_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+        ptv = ROI.ROIAlgebra(ROIS.ptv_c.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ptv_l, ptv_r], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.zero, marginsB = MARGINS.uniform_5mm_contraction)
         site.add_targets([ctv, ptv])
     # Add wall:
     self.add_wall(site, side, region, boost)
@@ -143,8 +160,15 @@ class DefBreast(object):
   
   
   # Adds partial breast (left or right) ROIs to the site object.
-  def add_partial_breast(self, pm, examination, site, side):
+  def add_partial_breast(self, pm, examination, site, side, bilateral):
     self.add_sided_rois(pm, examination, site, side)
+    # Laterality suffix for targets for bilateral cases:
+    suffix = ''
+    if bilateral:
+      if side == 'right':
+        suffix = '_R'
+      else:
+        suffix = '_L'
     # ROIs are dependent on side:
     if side == 'right':
       sb = ROIS.surgical_bed_r
@@ -153,10 +177,10 @@ class DefBreast(object):
       sb = ROIS.surgical_bed_l
       breast = ROIS.breast_l
     # Targets:
-    ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-    ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    ctv_sb = ROI.ROIAlgebra(ROIS.ctv_sb.name+suffix, ROIS.ctv.type, ROIS.ctv.color, sourcesA = [sb], sourcesB = [breast], operator = 'Intersection', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+    ptv_sbc = ROI.ROIAlgebra(ROIS.ptv_sbc.name+suffix, ROIS.ptv.type, ROIS.ptv.color, sourcesA = [ctv_sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     # Image verification volume:
-    clips_control = ROI.ROIAlgebra('ClipsControl', ROIS.markers.type, ROIS.markers.color, sourcesA = [sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
+    clips_control = ROI.ROIAlgebra('ClipsControl'+suffix, ROIS.markers.type, ROIS.markers.color, sourcesA = [sb], sourcesB = [ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
     # Targets for whole breast:
     site.add_targets([ctv_sb, ptv_sbc, clips_control])
   

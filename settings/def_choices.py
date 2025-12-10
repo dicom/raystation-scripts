@@ -84,11 +84,13 @@ for b in [breast_locoregional, breast_imn]:
     breast_without_boost = P.Property('Uten ungdomsboost', 'without', parent = side, default = True)
 
 # Bilateral breast left side:
+breast_bilateral_left_partial = P.Property('Venstre side: Delbryst', 'bilateral_left_partial', parent = breast_bilateral, next_category = '')
 breast_bilateral_left_whole = P.Property('Venstre side: Bryst/Brystvegg', 'bilateral_left_whole', parent = breast_bilateral, next_category = '', default = True)
 breast_bilateral_left_regional = P.Property('Venstre side: Lokoregional', 'bilateral_left_regional', parent = breast_bilateral, next_category = '')
 
 # Bilateral breast right side:
-for t in [breast_bilateral_left_whole, breast_bilateral_left_regional]:
+for t in [breast_bilateral_left_partial, breast_bilateral_left_whole, breast_bilateral_left_regional]:
+  breast_bilateral_right_partial = P.Property('Høyre side: Delbryst', 'bilateral_right_partial', parent = t, next_category = '')
   breast_bilateral_right_whole = P.Property('Høyre side: Bryst/Brystvegg', 'bilateral_right_whole', parent = t, next_category = '', default = True)
   breast_bilateral_right_regional = P.Property('Høyre side: Lokoregional', 'bilateral_right_regional', parent = t, next_category = '')
 
