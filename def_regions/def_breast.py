@@ -230,33 +230,54 @@ class DefBreast(object):
   
   
   # Adds a target wall ROI.
-  def add_wall(self, site, side, region, boost):
-    # Configure values for left or right:
-    if side == 'right':
-      wall_draft_name = 'zCTV_R_Wall_Draft'
-      wall_name = 'zCTV_R_Wall'
-      right_margin = 1.5
-      left_margin = 0.5
+  def add_wall(self, site, side, region, boost, target_roi=None):
+    if 'bilateral' in side:
+      # For bilateral cases, recursively use this function two times to create left and right walls:
+      l_region = side.split('_')[-1]
+      if l_region == 'partial':
+        t = ROIS.ctv_sb_l
+      else:
+        t = ROIS.ctv_l
+      self.add_wall(site, 'left', l_region, '', target_roi=t)
+      r_region = boost.split('_')[-1]
+      if r_region == 'partial':
+        t = ROIS.ctv_sb_r
+      else:
+        t = ROIS.ctv_r
+      self.add_wall(site, 'right', r_region, '', target_roi=t)
     else:
-      wall_draft_name = 'zCTV_L_Wall_Draft'
-      wall_name = 'zCTV_L_Wall'
-      right_margin = 0.5
-      left_margin = 1.5
-    # Which target to use for wall:
-    if region == 'partial':
-      target_roi = ROIS.ctv_sb
-    else:
-      target_roi = ROIS.ctv
-    if boost == 'with':
-      # For SIB cases, we will need to ensure that the wall has a minimum distance to the boost PTV for dose fall off.
-      # We accomplish this by first creating a wall draft, and then using a ROI algebra for the final wall.
-      wall_draft = ROI.ROIWall(wall_draft_name, ROIS.z_ptv_wall.type, COLORS.wall, target_roi, 1.5, 0)
-      wall = ROI.ROIAlgebra(wall_name, ROIS.z_ptv_wall.type, COLORS.wall, sourcesA = [wall_draft], sourcesB = [ROIS.ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Expansion(0.5, 0.5, 1.5, 0.5, right_margin, left_margin))
-      site.add_targets([wall_draft])
-    else:
-      # For non-SIb we have a plain wall:
-      wall = ROI.ROIWall(wall_name, ROIS.z_ptv_wall.type, COLORS.wall, target_roi, 1.5, 0)      
-    site.add_targets([wall])
+      # Configure values for left or right:
+      if side == 'right':
+        wall_draft_name = 'zCTV_R_Wall_Draft'
+        wall_name = 'zCTV_R_Wall'
+        right_margin = 1.5
+        left_margin = 0.5
+      else:
+        wall_draft_name = 'zCTV_L_Wall_Draft'
+        wall_name = 'zCTV_L_Wall'
+        right_margin = 0.5
+        left_margin = 1.5
+      # Which target to use for wall:
+      if region == 'partial':
+        if target_roi:
+          t = target_roi
+        else:
+          t = ROIS.ctv_sb
+      else:
+        if target_roi:
+          t = target_roi
+        else:
+          t = ROIS.ctv
+      if boost == 'with':
+        # For SIB cases, we will need to ensure that the wall has a minimum distance to the boost PTV for dose fall off.
+        # We accomplish this by first creating a wall draft, and then using a ROI algebra for the final wall.
+        wall_draft = ROI.ROIWall(wall_draft_name, ROIS.z_ptv_wall.type, COLORS.wall, target_roi, 1.5, 0)
+        wall = ROI.ROIAlgebra(wall_name, ROIS.z_ptv_wall.type, COLORS.wall, sourcesA = [wall_draft], sourcesB = [ROIS.ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Expansion(0.5, 0.5, 1.5, 0.5, right_margin, left_margin))
+        site.add_targets([wall_draft])
+      else:
+        # For non-SIb we have a plain wall:
+        wall = ROI.ROIWall(wall_name, ROIS.z_ptv_wall.type, COLORS.wall, t, 1.5, 0)      
+      site.add_targets([wall])
   
   
   # Adds whole breast (left or right) ROIs to the site object.
