@@ -11,6 +11,7 @@
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
+import structure_set_functions as SSF
 
 
 class Breast:
@@ -108,8 +109,14 @@ class Breast:
         targets.append(OF.max_dose(ss, plan, 'z'+ROIS.ptv_c_ptv_sbc.name, lower_dose*100*1.05, 80, beam_set_index=i))
       if prescription.region_code in RC.breast_bilateral_codes:
         # Bilateral: Sided targets:
-        targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', lower_dose*100*0.95, 100, beam_set_index=i))
-        targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', lower_dose*100*0.95, 100, beam_set_index=i))
+        if SSF.has_roi(ss, ROIS.ptv_sbc_l.name):
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_sbc_l.name, lower_dose*100*0.95, 100, beam_set_index=i))
+        else:
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', lower_dose*100*0.95, 100, beam_set_index=i))
+        if SSF.has_roi(ss, ROIS.ptv_sbc_r.name):
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_sbc_r.name, lower_dose*100*0.95, 100, beam_set_index=i))
+        else:
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', lower_dose*100*0.95, 100, beam_set_index=i))
       # Wall:
       targets.append(OF.max_dose(ss, plan, wall_name, lower_dose*100*1.05, 200, beam_set_index=i))
     else:
@@ -127,8 +134,14 @@ class Breast:
         targets.append(OF.max_dose(ss, plan, ROIS.ptv_pc.name, prescription.total_dose*100*1.05, 80, beam_set_index=i))
       if prescription.region_code in RC.breast_bilateral_codes:
         # Sided targets:
-        targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100, beam_set_index=i))
-        targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100, beam_set_index=i))
+        if SSF.has_roi(ss, ROIS.ptv_sbc_l.name):
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_sbc_l.name, prescription.total_dose*100*0.95, 100, beam_set_index=i))
+        else:
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_L', prescription.total_dose*100*0.95, 100, beam_set_index=i))
+        if SSF.has_roi(ss, ROIS.ptv_sbc_r.name):
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_sbc_r.name, prescription.total_dose*100*0.95, 100, beam_set_index=i))
+        else:
+          targets.append(OF.min_dose(ss, plan, ROIS.ptv_c.name+'_R', prescription.total_dose*100*0.95, 100, beam_set_index=i))
         # Wall:
         targets.append(OF.max_dose(ss, plan, 'zCTV_R_Wall', prescription.total_dose*100*1.05, 200, beam_set_index=i))
         targets.append(OF.max_dose(ss, plan, 'zCTV_L_Wall', prescription.total_dose*100*1.05, 200, beam_set_index=i))

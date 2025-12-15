@@ -6,10 +6,11 @@ import objectives
 import optimizers
 import beam_functions as BF
 import clinical_goal as CG
-import region_codes as RC
-import rt_site as SITE
-import rois as ROIS
 import patient_model_functions as PMF
+import region_codes as RC
+import rois as ROIS
+import rt_site as SITE
+import structure_set_functions as SSF
 
 
 # Example:
@@ -47,8 +48,16 @@ def breast(case, ss, plan, prescription, target, inferior_robustness_breast):
   site = SITE.Site(RC.breast_codes, obj.oars, obj.targets, cg.oars, cg.targets)
   # Set up treat ROIs & margins for bilateral cases:
   if prescription.region_code in RC.breast_bilateral_codes:
-    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], ROIS.ptv_c.name + '_R', 1.5)
-    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], ROIS.ptv_c.name + '_L', 1.5)
+    if SSF.has_roi(ss, ROIS.ptv_sbc_l.name):
+      target_l = ROIS.ptv_sbc_l.name
+    else:
+      target_l = ROIS.ptv_c.name + '_L'
+    if SSF.has_roi(ss, ROIS.ptv_sbc_r.name):
+      target_r = ROIS.ptv_sbc_r.name
+    else:
+      target_r = ROIS.ptv_c.name + '_R'
+    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[0], target_r, 1.5)
+    BF.set_up_treat_or_protect(plan.BeamSets[0].Beams[1], target_l, 1.5)
   site.optimizer = optimizers.Breast(case, ss, plan, site, prescription, inferior_robustness_breast)
   return site
 

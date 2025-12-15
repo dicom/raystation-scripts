@@ -168,6 +168,27 @@ class Breast:
       else:
         conformity_target = ROIS.ptv_c.name
       hi_lower_dose_level_score = 0.95
+    # Sided targets for bilateral cases:
+    if prescription.region_code in RC.breast_bilateral_codes:
+      # Left:
+      if SSF.has_roi(ss, ROIS.ctv_sb_l.name):
+        ctv_l = ROIS.ctv_sb_l
+      else:
+        ctv_l = ROIS.ctv_l
+      if SSF.has_roi(ss, ROIS.ptv_sbc_l.name):
+        ptv_l = ROIS.ptv_sbc_l
+      else:
+        ptv_l = ROIS.ptvc_l
+      # Right:
+      if SSF.has_roi(ss, ROIS.ctv_sb_r.name):
+        ctv_r = ROIS.ctv_sb_r
+      else:
+        ctv_r = ROIS.ctv_r
+      if SSF.has_roi(ss, ROIS.ptv_sbc_r.name):
+        ptv_r = ROIS.ptv_sbc_r
+      else:
+        ptv_r = ROIS.ptvc_r
+    # Set up clinical goals:
     if prescription.region_code in RC.breast_reg_codes:
       # Regional breast:
       if prescription.region_code in RC.breast_bilateral_codes:
@@ -175,25 +196,27 @@ class Breast:
         targets.append(CG.ClinicalGoal(prescription_target, CG.at_least, CG.dose_at_volume, 0.995*mod, 0.50, 1))
         targets.append(CG.ClinicalGoal(prescription_target, CG.at_most, CG.dose_at_volume, 1.005*mod, 0.50, 1))
         targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ctv_l.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ctv_r.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_L', CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_R', CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ptv_l.name, CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ptv_r.name, CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name, CG.at_least, CG.dose_at_volume, 0.9*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', CG.at_least, CG.dose_at_volume, 0.9*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', CG.at_least, CG.dose_at_volume, 0.9*mod, 0.98, 2))
         targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_L', CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_R', CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ctv_l.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ctv_r.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ptv_l.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
+        targets.append(CG.ClinicalGoal(ptv_r.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
         targets.append(CG.ClinicalGoal(homogeneity_target, CG.at_least, CG.homogeneity_index, hi_lower_dose_level_score, 0.95, 5))
         targets.append(CG.ClinicalGoal(ROIS.ptv_c.name, CG.at_least, CG.conformity_index, 0.75, 0.95*mod, 5))
+        if SSF.has_roi(ss, ROIS.ptv_pc.name + '_L'):
+          targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', CG.at_least, CG.dose_at_volume, 0.9*mod, 0.98, 2))
+          targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
+        if SSF.has_roi(ss, ROIS.ptv_pc.name + '_R'):
+          targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', CG.at_least, CG.dose_at_volume, 0.9*mod, 0.98, 2))
+          targets.append(CG.ClinicalGoal(ROIS.ptv_pc.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 4))
       else:
         # Single-sided regional:
         targets.append(CG.ClinicalGoal(prescription_target, CG.at_least, CG.dose_at_volume, 0.995*mod, 0.50, 1))
@@ -232,14 +255,14 @@ class Breast:
           targets.append(CG.ClinicalGoal(prescription.target.replace("C", "P")+"c", CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 5))
       if prescription.region_code in RC.breast_bilateral_codes:
         # Bilateral whole breast:
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_L', CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_R', CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_L', CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 5))
-        targets.append(CG.ClinicalGoal(ROIS.ctv.name + '_R', CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 5))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_L', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 5))
-        targets.append(CG.ClinicalGoal(ROIS.ptv_c.name + '_R', CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 5))
+        targets.append(CG.ClinicalGoal(ctv_l.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ctv_r.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ptv_l.name, CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ptv_r.name, CG.at_least, CG.dose_at_volume, 0.93*mod, 0.98, 2))
+        targets.append(CG.ClinicalGoal(ctv_l.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 5))
+        targets.append(CG.ClinicalGoal(ctv_r.name, CG.at_least, CG.dose_at_volume, 0.96*mod, 0.98, 5))
+        targets.append(CG.ClinicalGoal(ptv_l.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 5))
+        targets.append(CG.ClinicalGoal(ptv_r.name, CG.at_least, CG.dose_at_volume, 0.95*mod, 0.98, 5))
     if SSF.has_roi_with_shape(ss, ROIS.ctv_sb.name) and prescription.region_code not in RC.breast_partial_codes:
       # SIB boost (40.05 & 48 Gy in 15 fx):
       targets.append(CG.ClinicalGoal(ROIS.ctv_sb.name, CG.at_least, CG.dose_at_volume, 0.995, 0.50, 1))
