@@ -134,7 +134,7 @@ def determine_isocenter(examination, ss, region_code, target, external, multiple
   if iso == False:
     if region_code in RC.breast_codes:
       # Breast treatment:
-      isocenter = find_isocenter_vmat_breast(ss, target)
+      isocenter = find_isocenter_vmat_breast(ss, target, region_code)
     else:
       # All other cases:
       isocenter = find_isocenter(examination, ss, target, external, multiple_targets=multiple_targets)
@@ -332,14 +332,17 @@ def find_isocenter(examination, ss, target, external, multiple_targets=False):
   return center
 
 
-# Determines the isocenter for VMAT breast with regional lymph nodes.
-def find_isocenter_vmat_breast(ss, target):
+# Determines the isocenter for VMAT breast.
+def find_isocenter_vmat_breast(ss, target, region_code):
   # Find the center of the target ROI:
   if has_named_roi_with_contours(ss, target):
     isocenter = ss.RoiGeometries[target].GetCenterOfRoi()
     # Determine the center x and y coordinate of the patient external contour:
     patient_center_x = roi_center_x(ss, ROIS.external.name)
     patient_center_y = roi_center_y(ss, ROIS.external.name)
+    # For bilateral breast cases, center the isocenter (laterally) according to the patient insead of the target volume:
+    if region_code in RC.breast_bilateral_codes:
+      isocenter.x = patient_center_x
     # Determine the length from the isocenter to the patient center (in the axial plane):
     length = math.sqrt((isocenter.x - patient_center_x)**2 +(isocenter.y - patient_center_y)**2)
     # Define the max tolerated length:
