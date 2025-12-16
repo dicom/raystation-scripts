@@ -261,6 +261,10 @@ class Breast(object):
     # Exclude some ROIs from export:
     for roi_name in ['zSOM_Breast_L_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Chestwall_L', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R_Surface', 'zSOM_Breast_R_Prelimenary', 'zSOM_Chestwall_R', 'zSOM_Breast_R-Chestwall_Exp']:
       PMF.exclude_roi_from_export(pm, roi_name)
+    # Update derived ROIs which may have become 'red' (non-updated):
+    for name in ['CTV_L', 'CTV_R', 'CTVsb_L', 'CTVsb_R', 'PTVC_L', 'PTVc_R', 'PTVsvc_L', 'PTVsbc_R', 'CTV', 'PTVc', 'zCTV_L_Wall', 'zCTV_R_Wall']:
+      if PMF.has_roi(pm, name):
+        pm.RegionsOfInterest[name].UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
   
   # Simulate organ motion - Generate CT-series for deformed (expanded) breast.
   # Note that if a SOM series already exists which is based on the given examination,
