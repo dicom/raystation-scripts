@@ -354,3 +354,46 @@ class TSBeam(object):
           else:
             return t.succeed()
 
+  # Tests cutout name (e.q. 'Ø70') correlates with the cutour contour (e.q. difference of max and min x and y coordinates).
+  def cutout_name_and_cutout_contour_seems_to_correlate_for_electrons_test(self):
+    t = TEST.Test("For elektron-felt foreventes det at feltåpning på innsatsen skal stemme overens med angitt diameter på cutout.", '', self.opening)
+    # It is only relevant to run this test if we actually have an electron beam (i.e. having an Applicator):
+    if 'Applicator' in dir(self.beam):
+      name = self.beam.Applicator.Insert.Name
+      # Proceed with test if we have one of the expected 'circular' cutout names:
+      if name in ['Ø50', 'Ø60', 'Ø70', 'Ø80']:
+        # Determine and set expectation value:
+        expected = 0
+        if name == 'Ø50':
+          expected = 5.0
+        elif name == 'Ø60':
+          expected = 6.0
+        elif name == 'Ø70':
+          expected = 7.0
+        elif name == 'Ø80':
+          expected = 8.0
+        t.expected = str(expected)
+        # Determine the X and Y cutout size (from min and max coordinates):
+        x_min = 0
+        x_max = 0
+        y_min = 0
+        y_max = 0
+        x = []
+        y = []
+        for c in self.beam.Applicator.Insert.Contour:
+          x.append(c.x)
+          y.append(c.y)
+        x_min = min(x)
+        y_min = min(y)
+        x_max = max(x)
+        y_max = max(y)
+        x_diff = x_max - x_min
+        y_diff = y_max - y_min
+        if abs(x_diff-expected) > 0.1:
+          # Failed in X-axis:
+          return t.fail(str(x_diff))
+        elif abs(y_diff-expected) > 0.1:
+          # Failed in Y-axis:
+          return t.fail(str(y_diff))
+        else:
+          return t.succeed()

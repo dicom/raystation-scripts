@@ -189,6 +189,7 @@ class QualityControl(object):
         ts_beam.segment_test()
         ts_beam.bolus_set_test()
         ts_beam.couch_rotation_angle_test()
+        ts_beam.cutout_name_and_cutout_contour_seems_to_correlate_for_electrons_test()
         #ts_beam.narrow_jaw_opening_for_filter_energies()
         # Segment tests (at the moment we have no segment tests):
         #for ts_segment in ts_beam.ts_segments:
