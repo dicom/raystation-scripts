@@ -120,7 +120,7 @@ class DefProstate(object):
   def add_lymph_node_rois(self, pm, examination, site):
     # Exclude Kidneys, Liver and LN_Iliac from BowelBag:
     ROIS.bowel_bag.sourcesB.extend([ROIS.kidney_l, ROIS.kidney_r, ROIS.liver, ROIS.pelvic_nodes])
-    site.add_oars([ROIS.a_common_iliac_l, ROIS. a_common_iliac_r, ROIS.a_descending_aorta, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.iliopsoas_muscle_l, ROIS.iliopsoas_muscle_l, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.liver, ROIS.pelvic_nodes, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r])
+    site.add_oars([ROIS.a_common_iliac_l, ROIS. a_common_iliac_r, ROIS.a_descending_aorta, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.iliopsoas_muscle_l, ROIS.iliopsoas_muscle_r, ROIS.kidney_l, ROIS.kidney_r, ROIS.l2, ROIS.l3, ROIS.l4, ROIS.liver, ROIS.pelvic_nodes, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r])
   
   
   # Adds rois that are relevant for intact prostate treatment.
