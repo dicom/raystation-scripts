@@ -259,19 +259,19 @@ class DefBreast(object):
         left_margin = 1.5
       # Which target to use for wall:
       if region == 'partial':
-        if target_roi:
+        if target_roi is not None:
           t = target_roi
         else:
           t = ROIS.ctv_sb
       else:
-        if target_roi:
+        if target_roi is not None:
           t = target_roi
         else:
           t = ROIS.ctv
       if boost == 'with':
         # For SIB cases, we will need to ensure that the wall has a minimum distance to the boost PTV for dose fall off.
         # We accomplish this by first creating a wall draft, and then using a ROI algebra for the final wall.
-        wall_draft = ROI.ROIWall(wall_draft_name, ROIS.z_ptv_wall.type, COLORS.wall, target_roi, 1.5, 0)
+        wall_draft = ROI.ROIWall(wall_draft_name, ROIS.z_ptv_wall.type, COLORS.wall, t, 1.5, 0)
         wall = ROI.ROIAlgebra(wall_name, ROIS.z_ptv_wall.type, COLORS.wall, sourcesA = [wall_draft], sourcesB = [ROIS.ptv_sbc], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Expansion(0.5, 0.5, 1.5, 0.5, right_margin, left_margin))
         site.add_targets([wall_draft])
       else:
