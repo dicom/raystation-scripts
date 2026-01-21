@@ -15,6 +15,7 @@
 from .control_point import ControlPoint
 from .database import Database
 from .scheduled_field import ScheduledField
+from .delivered_dose import DeliveredDose
 
 class Field:
   

@@ -47,7 +47,7 @@ class DeliveredDose:
   @classmethod
   def for_prescription(cls, prescription):
     delivered_doses = list()
-    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE SIT_ID = '{}'".format(field.id))
+    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE SIT_ID = '{}'".format(prescription.id))
     for row in rows:
       delivered_doses.append(cls(row))
     return delivered_doses
@@ -56,7 +56,7 @@ class DeliveredDose:
   @classmethod
   def for_scheduled_field(cls, scheduled_field):
     delivered_doses = list()
-    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE PTC_ID = '{}'".format(field.id))
+    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE PTC_ID = '{}'".format(scheduled_field.id))
     for row in rows:
       delivered_doses.append(cls(row))
     return delivered_doses

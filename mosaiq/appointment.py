@@ -13,6 +13,10 @@
 #from tkinter import messagebox
 
 from .database import Database
+from .location import Location
+from .task import Task
+from .patient import Patient
+#from pprint import pprint
 
 class Appointment:
   
@@ -25,6 +29,30 @@ class Appointment:
       instance = cls(row)
     return instance
   
+  # Gives all appointment belonging to a specific Location_id (str)
+  # Excludes deleted appointments (suppressed = true).
+  # Excludes historic appointments (version != 0).
+  # Returns appointments sorted by their start_date parameter.
+  @classmethod
+  def for_location_id(cls, location_id):
+    appointments = list()
+    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Location = '{}' AND Suppressed != {} AND Version = 0".format(location_id, 1)) # GCUK MSQ this is bit, not bool
+    for row in rows:
+      appointments.append(cls(row))
+    return appointments
+  
+  # Gives all appointment belonging to a specific Location object
+  # Excludes deleted appointments (suppressed = true).
+  # Excludes historic appointments (version != 0).
+  # Returns appointments sorted by their start_date parameter.
+  @classmethod
+  def for_location(cls, location):
+    appointments = list()
+    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Location = '{}' AND Suppressed != {} AND Version = 0".format(location.id, 1)) # GCUK MSQ this is bit, not bool
+    for row in rows:
+      appointments.append(cls(row))
+    return appointments
+
   # Gives all appointments belonging to the given patient.
   # Excludes deleted appointments (suppressed = true).
   # Excludes historic appointments (version != 0).
@@ -32,7 +60,8 @@ class Appointment:
   @classmethod
   def for_patient(cls, patient):
     appointments = list()
-    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, True))
+    #rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, True))
+    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, 1)) # GCUK MSQ this is bit, not bool
     for row in rows:
       appointments.append(cls(row))
     return appointments
@@ -43,6 +72,7 @@ class Appointment:
     self.sch_id = row['Sch_Id']
     self.sch_set_id = row['Sch_Set_Id']
     self.related_appointment_id = row['Sch_Set_Id']
+    self.activity_code_long = row['Activity']
     self.activity_code = row['Activity'].rstrip() # If this crashes sometimes, we have to test if the string exists.
     self.start_date = row['App_DtTm']
     self.location_id = row['Location']
@@ -134,6 +164,7 @@ class Appointment:
   # Gives the task item referenced by this appointment.
   def task(self):
     if not self.instance_task:
-      self.instance_task = Task.find(self.task_id)
+      #self.instance_task = Task.find(self.task_id)
+      self.instance_task = Task.find(self.id)
     return self.instance_task
   
