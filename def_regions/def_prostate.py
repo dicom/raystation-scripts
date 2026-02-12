@@ -25,9 +25,10 @@ class DefProstate(object):
     # Create "Bone" ROI Algebra:
     pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
-    for roi in [ROIS.l4, ROIS.l3, ROIS.l2]:
+    # Add L3 and L4 to bone roi if relevant (for lymph node irradiation):
+    for roi in [ROIS.l4, ROIS.l3]:
       try:
-        if pm.RegionsOfInterest[roi.name]:
+        if roi in site.oars:
           vertebrae_rois.insert(0, roi)
       except:
         pass
