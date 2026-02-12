@@ -45,18 +45,20 @@ class TSOptimization(object):
           match = True
     return match
   
-  # Tests if Constrain leaf motion of 0.3 cm/deg is used for stereotactic plans.
+  # Tests if Constrain leaf motion of max 0.3 cm/deg is used for lung SBRT plans.
   def constrain_leaf_motion_test(self):
     t = TEST.Test("Skal i utgangspunktet bruke Constrain leaf motion <= 0.3 cm/deg", True, self.parameter)
     match = True
     arc_properties = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties
     if self.ts_beam_set.ts_label.label.technique:
       if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
-        if arc_properties.UseMaxLeafTravelDistancePerDegree:
-          if arc_properties.MaxLeafTravelDistancePerDegree > 0.3:
+        # Only use test for lung SBRT:
+        if self.ts_beam_set.ts_label.label.region in RC.lung_and_mediastinum_codes:
+          if arc_properties.UseMaxLeafTravelDistancePerDegree:
+            if arc_properties.MaxLeafTravelDistancePerDegree > 0.3:
+              match = False
+          else:
             match = False
-        else:
-          match = False
     if match:
       return t.succeed()
     else:
@@ -82,7 +84,7 @@ class TSOptimization(object):
     if self.is_stereotactic():
       if self.ts_beam_set.ts_label.label.region in RC.brain_codes:
         max_voxel_size = 0.1
-      elif self.ts_beam_set.ts_label.label.region in RC.lung_and_mediastinum_codes:
+      elif self.ts_beam_set.ts_label.label.region in RC.lung_and_mediastinum_codes or self.ts_beam_set.ts_label.label.region in RC.prostate_codes:
         max_voxel_size = 0.2
       else:
         # Bone mets SBRT:
