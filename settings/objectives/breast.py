@@ -34,11 +34,17 @@ class Breast:
     # Independent objectives:
     oars.append(OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2, beam_set_index=i))
     oars.append(OF.max_eud(ss, plan, ROIS.heart.name, 2*100, 1, 3, beam_set_index=i))
-    # Regional objectives (common for both sides):
+    # Regional objectives:
     if prescription.region_code in RC.breast_reg_codes:
+      # Common for both sides:
       oars.append(OF.max_eud(ss, plan, ROIS.thyroid.name, 8.7*100, 1, 1, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.esophagus.name, 8.2*100, 1, 1, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 20*100, 1, beam_set_index=i))
+      # Specific for left or right:
+      if prescription.region_code in RC.breast_reg_l_codes:
+        oars.append(OF.max_eud(ss, plan, ROIS.humeral_head_l.name, 5*100, 1, 1, beam_set_index=i))
+      elif prescription.region_code in RC.breast_reg_r_codes:
+        oars.append(OF.max_eud(ss, plan, ROIS.humeral_head_r.name, 5*100, 1, 1, beam_set_index=i))
     # Side-dependent objectives:
     if prescription.region_code in RC.breast_l_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.lung_l.name, 16*100, 1, 2, beam_set_index=i))
