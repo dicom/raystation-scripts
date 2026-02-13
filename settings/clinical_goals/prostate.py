@@ -130,6 +130,10 @@ class Prostate:
             targets.append(CG.ClinicalGoal('PTV!_60', CG.at_least, CG.dose_at_volume, 0.844444, 0.98, 4))
             targets.append(CG.ClinicalGoal('CTV!_60', CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
             targets.append(CG.ClinicalGoal('PTV!_60', CG.at_most, CG.dose_at_volume, 0.933333, 0.1, 5))
+          elif SSF.has_roi(ss, ROIS.ptv_n.name):
+            # Include CG's for positive node treated with 62.5 Gy:
+            targets.append(CG.ClinicalGoal('CTVn', CG.at_least, CG.dose_at_volume, 0.907407, 0.98, 2))
+            targets.append(CG.ClinicalGoal('PTVn', CG.at_least, CG.dose_at_volume, 0.879630, 0.98, 4))
       elif prescription.total_dose == 60:
         # Hypofractionated localized prostate:
         targets.append(CG.ClinicalGoal(ROIS.ctv_60.name, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
