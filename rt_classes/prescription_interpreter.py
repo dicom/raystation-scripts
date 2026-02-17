@@ -195,7 +195,7 @@ class PrescriptionInterpreter(object):
   def is_expansion_of(self, parent_name, child_name):
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
-    if parent_rg:
+    if parent_rg and parent_rg.OfRoi.DerivedRoiExpression:
       if len(parent_rg.OfRoi.DerivedRoiExpression.Children[0].Children) == 0:
         if parent_rg.OfRoi.DerivedRoiExpression.Children[0].RegionOfInterest.Name == child_name:
           match = True
