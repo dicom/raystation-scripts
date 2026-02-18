@@ -95,9 +95,9 @@ class DefSite(object):
     dls_rois = []
     for key in group:
       for roi in group[key]:
-        # We are only interested in creating ROI if it doesn't already exist:
-        if not PMF.has_roi(self.pm, roi.name):
-          if roi.__class__.__name__ == 'ROIDLS':
+        if roi.__class__.__name__ == 'ROIDLS':
+          # We will create the DLS geometry only if the ROI does not exist, or if it exists but has no geometry:
+          if not PMF.has_roi(self.pm, roi.name) or self.ss.RoiGeometries[roi.name].PrimaryShape is None:
             dls_rois.append(roi)
     # Create the DLS ROIs:
     if len(dls_rois) > 0:
