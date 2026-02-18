@@ -189,6 +189,7 @@ def handle_existing_rois(pm, ss):
     my_window = Tk()
     choice_d=[]
     delete_choice = collect_delete_choice(delete, my_window, choice_d)
+    # Choices: yes, some, no
     for i in range(len(delete_choice)):
       if delete_choice[i] == 'yes':
         # All ROIs are to be deleted:

@@ -84,11 +84,12 @@ class DefSite(object):
 
   # Creates all ROIs that are setup in this DefSite (targets + OARs) in RayStation.
   def create_rois(self):
+    # Do not delete ROIs at this stage any more:
     # Delete pre-existing ROIs (except those which are manually contoured) in sorted order:
-    group = self.grouped_rois()
-    for key in sorted(iter(group)):
-      for roi in group[key]:
-        PMF.delete_derived_or_empty_contoured_roi(self.pm, roi)
+    #group = self.grouped_rois()
+    #for key in sorted(iter(group)):
+    #  for roi in group[key]:
+    #    PMF.delete_derived_or_empty_contoured_roi(self.pm, roi)
     group = self.grouped_rois()
     # Collect DLS ROIs in a list for group creation (because it is much faster than creating DLS ROIs one at a time):
     dls_rois = []
