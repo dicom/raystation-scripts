@@ -72,7 +72,7 @@ class Breast:
     others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=i))
     if prescription.region_code in RC.breast_partial_codes:
       # Partial breast:
-      others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 1.5, 30, beam_set_index=i))
+      others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2.0, 30, beam_set_index=i))
     else:
       # Whole or regional breast:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 5.0, 30, beam_set_index=i))
