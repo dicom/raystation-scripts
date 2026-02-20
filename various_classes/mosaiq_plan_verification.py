@@ -76,6 +76,7 @@ class MosaiqPlanVerification(object):
 
     # Run tests:
     mqv_plan.test_matching_patient()
+    mqv_plan.test_other_unapproved_treatment_plans_in_case()
     # Beam set tests:
     for mqv_beam_set in mqv_plan.mqv_beam_sets:
       mqv_beam_set.test_matching_beam_set_name()

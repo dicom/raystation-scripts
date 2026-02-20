@@ -29,6 +29,7 @@ class MQVPlan(object):
     # Parameters:
     self.param = TEST.Parameter('Plan', plan.Name, None)
     self.patient = TEST.Parameter('Patient', self.patient.Name, self.param)
+    self.case_param = TEST.Parameter('Case', self.case.CaseName, self.param)
   
   
   # Checks that a matching patient has been found in Mosaiq.
@@ -38,3 +39,18 @@ class MQVPlan(object):
       return t.succeed()
     else:
       return t.fail()
+  
+  # Checks that this case doesnt contain any other unapproved treatment plans.
+  # At this stage, only approved treatment plans should be present in the case,
+  # as unapproved plans should have been deleted.
+  def test_other_unapproved_treatment_plans_in_case(self):
+    t = TEST.Test("Skal ikke inneholde andre planer som er unapproved (disse bør være ryddet opp og slettet når planleggingen er ferdig).", None, self.case_param)
+    other_unapproved_plans = []
+    for plan in self.case.TreatmentPlans:
+      if plan.Name != self.plan.Name:
+        if not plan.Review:
+          other_unapproved_plans.append(plan.Name)
+    if len(other_unapproved_plans) == 0:
+      return t.succeed()
+    else:
+      return t.fail(str(other_unapproved_plans))
