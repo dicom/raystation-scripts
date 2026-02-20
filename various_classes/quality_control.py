@@ -94,6 +94,7 @@ class QualityControl(object):
         ts_structure_set.external_ptv_bounding_test()
         ts_structure_set.couch_test()
         ts_structure_set.couch_close_to_patient_test()
+        ts_structure_set.couch_joint_close_to_ptv_test()
         ts_structure_set.breast_seeds_test()
         ts_structure_set.no_empty_slice_between_rectum_and_analcanal_test()
         ts_structure_set.no_geometries_outside_external_test()

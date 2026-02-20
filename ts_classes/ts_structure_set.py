@@ -102,6 +102,62 @@ class TSStructureSet(object):
                 else:
                   return t.succeed()
 
+  # Tests if a couch joint (high-density insert in the couch ROI) is close to the PTV in longitudinal direction.
+  # Heuristic based on HU statistics in the Couch ROI. Default thresholds: mean > -870 HU OR max > 400 HU, margin 5 cm
+  def couch_joint_close_to_ptv_test(self, avg_hu_threshold=-870.0, max_hu_threshold=400.0, margin_cm=5.0):
+    t = TEST.Test("OBS! Bordskjøt nær PTV.", True, self.couch)
+    # Only relevant for photon plans.
+    try:
+      if self.ts_case.ts_plan.ts_beam_sets[0].beam_set.Modality != 'Photons':
+        return
+      # Skip stereotactic brain where external is used to define couch.
+      if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique.upper() == 'S' and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.brain_codes:
+        print("Debug: SBRT Brain detected, no couch joint test run")
+        return
+    except Exception:
+      return
+    # Require couch contours.
+    if not SSF.has_named_roi_with_contours(self.structure_set, ROIS.couch.name):
+      return
+    couch_rg = self.structure_set.RoiGeometries[ROIS.couch.name]
+    # Max-density point in couch ROI 
+    try:
+      cz = float(couch_rg.GetCoordinateForMaxGrayLevel()['z'])
+    except Exception:
+      return
+    # HU statistics in couch ROI 
+    try:
+      stats = self.structure_set.OnExamination.Series[0].ImageStack.GetIntensityStatistics(RoiName=ROIS.couch.name)
+      avg_hu = float(next(iter(stats['Average'])))
+      max_hu = float(next(iter(stats['Max'])))
+    except Exception:
+      return
+    # Joint present?
+    joint_detected = (avg_hu > avg_hu_threshold) or (max_hu > max_hu_threshold)
+    if not joint_detected:
+      return t.succeed()
+    # Collect all PTV geometries with contours and determine combined Z-range:
+    zmins = []
+    zmaxs = []
+    for rg in self.structure_set.RoiGeometries:
+      try:
+        if rg.OfRoi.Type == 'Ptv' and rg.HasContours():
+          box = rg.GetBoundingBox()  
+          z0 = float(box[0]['z'])
+          z1 = float(box[1]['z'])
+          zmins.append(min(z0, z1))
+          zmaxs.append(max(z0, z1))
+      except Exception:
+        pass
+    # Any PTV geometries collected?
+    if len(zmins) == 0:
+      return
+    ptv_min_z = min(zmins)
+    ptv_max_z = max(zmaxs)
+    # Determine if joint and ptv are close:
+    z_close = (ptv_min_z - margin_cm) <= cz <= (ptv_max_z + margin_cm)
+    return t.fail() if z_close else t.succeed()
+  
   # Tests for presence of an external.
   def external_test(self):
     t = TEST.Test("Struktursettet må ha definert en ytterkontur (navn og type skal være: External)", True, self.external)
