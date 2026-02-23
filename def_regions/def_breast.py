@@ -120,9 +120,11 @@ class DefBreast(object):
         # Delete the ROI if the patient doesnt seem to have a breast string:
         if rg.HasContours():
           if rg.GetRoiVolume() < 0.5:
-            pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
+            if not PMF.is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
+              pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
         else:
-          pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
+          if not PMF.is_approved_roi_structure_in_one_of_all_structure_sets(pm, roi_name):
+            pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
     # Override the density of the breast string to 'Air' (since it is not present on treatments):
     self.set_breaststring_density(pm)
     # Underive ROIs (used for Simulate organ motion):
