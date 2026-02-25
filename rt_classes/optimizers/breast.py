@@ -89,10 +89,12 @@ class Breast(object):
         bs = self.plan.BeamSets[0]
         # Determine examination used for this treatment plan:
         examination = bs.GetPlanningExamination()
+        # Determine prefix to use for SOM ROIs (based on Examination Name):
+        prefix = 'zSOM_' + examination.Name.replace(' ', '_') + '_'
         # Create SOM ROIs:
-        self.create_som_rois(examination)
+        self.create_som_rois(examination, prefix)
         # Create SOM CT image series:
-        som_groups = self.create_som_series(examination)
+        som_groups = self.create_som_series(examination, prefix)
         # Update (expand) dose grid related to the expanded SOM image series (if needed):
         # Existing dose grid:
         dg = bs.FractionDose.InDoseGrid
@@ -158,7 +160,7 @@ class Breast(object):
   # Simulate organ motion - create ROIs needed for the SOM workflow.
   # (These are ROIs which are dependent on the breast ROI, which must therefore be created after the
   # breast ROI has been corrected manually - e.g. they cannot be created in the DEF script)
-  def create_som_rois(self, examination):
+  def create_som_rois(self, examination, prefix):
     pm = self.case.PatientModel
     # Determine distance from lung to external by iterative expansion:
     # (using a temporary ROI)
@@ -167,10 +169,10 @@ class Breast(object):
     while not has_contours:
       if self.prescription.region_code in RC.breast_r_codes:
         m = MARGIN.Expansion(0, 0, expansion, 0, expansion, expansion)
-        exp_external_algebra = ROI.ROIAlgebra('zSOM_Chestwall_Exp_External', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
+        exp_external_algebra = ROI.ROIAlgebra(prefix+'Chestwall_Exp_External', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
       else:
         m = MARGIN.Expansion(0, 0, expansion, 0, expansion, expansion)
-        exp_external_algebra = ROI.ROIAlgebra('zSOM_Chestwall_Exp_External', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
+        exp_external_algebra = ROI.ROIAlgebra(prefix+'Chestwall_Exp_External', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = m, marginsB = MARGINS.zero)
       exp_external_roi = PMF.create_algebra_roi(pm, examination, self.ss, exp_external_algebra)
       has_contours = self.ss.RoiGeometries[exp_external_roi.Name].HasContours()
       expansion += 0.25
@@ -180,43 +182,47 @@ class Breast(object):
     self.ss.RoiGeometries[ROIS.breast_r.name].OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
     self.ss.RoiGeometries[ROIS.breast_l.name].OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
     # Make sure to keep derived ROIs which depends on the above ROIs updated as well:
-    for name in ['CTVsb', 'PTVsbc', 'zCTV_L_Wall', 'zCTV_R_Wall', 'CTV-CTVsb', 'CTV-PTVsbc', 'zCTV-PTVsbc', 'zPTVc-PTVsbc', 'zSOM_Breast_L_Surface', 'zSOM_Breast_R_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Robustness_L', 'zSOM_Robustness_R']:
+    for name in ['CTVsb', 'PTVsbc', 'zCTV_L_Wall', 'zCTV_R_Wall', 'CTV-CTVsb', 'CTV-PTVsbc', 'zCTV-PTVsbc', 'zPTVc-PTVsbc']:
       if PMF.has_roi(pm, name):
         self.ss.RoiGeometries[name].OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
+    # Make sure derived SOM ROIs are updated as well:
+    for roi in pm.RegionsOfInterest:
+      if 'SOM' in roi.Name and roi.DerivedRoiExpression is not None:
+        roi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
     # Configure SOM volumes (some of which later will be underived):
     d_rois1 = []
     u_rois = []
     if self.prescription.region_code in RC.breast_r_codes:
-      som_lung_exp_r = ROI.ROIAlgebra('zSOM_Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-      breast_surface_r = ROI.ROIAlgebra('zSOM_Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
-      outer_breast_prelimenary_r = ROI.ROIAlgebra('zSOM_Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
-      outer_breast_r = ROI.ROIAlgebra('zSOM_Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary_r], sourcesB = [breast_surface_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      som_lung_exp_r = ROI.ROIAlgebra(prefix+'Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+      breast_surface_r = ROI.ROIAlgebra(prefix+'Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      outer_breast_prelimenary_r = ROI.ROIAlgebra(prefix+'Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_r = ROI.ROIAlgebra(prefix+'Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary_r], sourcesB = [breast_surface_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       u_rois.extend([som_lung_exp_r, outer_breast_r])
       d_rois1.extend([breast_surface_r, outer_breast_prelimenary_r])
     elif self.prescription.region_code in RC.breast_l_codes:
-      som_lung_exp_l = ROI.ROIAlgebra('zSOM_Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-      breast_surface_l = ROI.ROIAlgebra('zSOM_Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
-      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
-      outer_breast_l = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      som_lung_exp_l = ROI.ROIAlgebra(prefix+'Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+      breast_surface_l = ROI.ROIAlgebra(prefix+'Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      outer_breast_prelimenary_l = ROI.ROIAlgebra(prefix+'Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_l = ROI.ROIAlgebra(prefix+'Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       u_rois.extend([som_lung_exp_l, outer_breast_l])
       d_rois1.extend([breast_surface_l, outer_breast_prelimenary_l])
     else:
       # Bilateral:
-      som_lung_exp_r = ROI.ROIAlgebra('zSOM_Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-      som_lung_exp_l = ROI.ROIAlgebra('zSOM_Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
-      breast_surface_r = ROI.ROIAlgebra('zSOM_Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
-      breast_surface_l = ROI.ROIAlgebra('zSOM_Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
-      outer_breast_prelimenary_r = ROI.ROIAlgebra('zSOM_Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
-      outer_breast_prelimenary_l = ROI.ROIAlgebra('zSOM_Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
-      outer_breast_r = ROI.ROIAlgebra('zSOM_Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary_r], sourcesB = [breast_surface_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      outer_breast_l = ROI.ROIAlgebra('zSOM_Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      som_lung_exp_r = ROI.ROIAlgebra(prefix+'Chestwall_R', ROIS.lung_r.type, ROIS.lungs.color, sourcesA = [ROIS.lung_r, ROIS.liver], sourcesB = [ROIS.breast_r], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+      som_lung_exp_l = ROI.ROIAlgebra(prefix+'Chestwall_L', ROIS.lung_l.type, ROIS.lungs.color, sourcesA = [ROIS.lung_l, ROIS.heart], sourcesB = [ROIS.breast_l], operator = 'Subtraction', marginsA = MARGINS.uniform_15mm_expansion, marginsB = MARGINS.zero)
+      breast_surface_r = ROI.ROIAlgebra(prefix+'Breast_R_Surface', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      breast_surface_l = ROI.ROIAlgebra(prefix+'Breast_L_Surface', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.external], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGIN.Contraction(0.7, 0.7, 0.7, 0.7, 0.7, 0.7))
+      outer_breast_prelimenary_r = ROI.ROIAlgebra(prefix+'Breast_R_Prelimenary', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [ROIS.breast_r], sourcesB = [ROIS.lung_r, ROIS.liver], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_prelimenary_l = ROI.ROIAlgebra(prefix+'Breast_L_Prelimenary', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [ROIS.breast_l], sourcesB = [ROIS.lung_l], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = m)
+      outer_breast_r = ROI.ROIAlgebra(prefix+'Breast_R-Chestwall_Exp', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_prelimenary_r], sourcesB = [breast_surface_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+      outer_breast_l = ROI.ROIAlgebra(prefix+'Breast_L-Chestwall_Exp', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_prelimenary_l], sourcesB = [breast_surface_l], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
       u_rois.extend([som_lung_exp_r, breast_surface_r, outer_breast_prelimenary_r, outer_breast_r, som_lung_exp_l, outer_breast_l])
       d_rois1.extend([breast_surface_r, outer_breast_prelimenary_r, breast_surface_l, outer_breast_prelimenary_l])
     # Create ROIs:
     for roi in d_rois1 + u_rois:
       if not PMF.has_roi(pm, roi.name):
         PMF.create_algebra_roi(pm, examination, self.ss, roi)
-    # Underive the SOM ROIs:
+    # Underive selected SOM ROIs:
     for roi in u_rois:
       try:
         pm.RegionsOfInterest[roi.name].DeleteExpression()
@@ -229,14 +235,14 @@ class Breast(object):
       inferior_margin = 0.5
       if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
         inferior_margin = 1.5
-      som_robustness_r = ROI.ROIAlgebra('zSOM_Robustness_R', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_r], sourcesB = [ROIS.breast_r], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 1.5, 0), marginsB = MARGINS.zero)
+      som_robustness_r = ROI.ROIAlgebra(prefix+'Robustness_R', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_r], sourcesB = [ROIS.breast_r], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 1.5, 0), marginsB = MARGINS.zero)
       d_rois2.extend([som_robustness_r])
     elif self.prescription.region_code in RC.breast_l_codes:
       breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L'].GetRoiVolume()
       inferior_margin = 0.5
       if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
         inferior_margin = 1.5
-      som_robustness_l = ROI.ROIAlgebra('zSOM_Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_l], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
+      som_robustness_l = ROI.ROIAlgebra(prefix+'Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_l], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
       d_rois2.extend([som_robustness_l])
     else:
       # Bilateral:
@@ -244,23 +250,25 @@ class Breast(object):
       inferior_margin = 0.5
       if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
         inferior_margin = 1.5
-      som_robustness_r = ROI.ROIAlgebra('zSOM_Robustness_R', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_r], sourcesB = [ROIS.breast_r], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 1.5, 0), marginsB = MARGINS.zero)
-      som_robustness_l = ROI.ROIAlgebra('zSOM_Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_l], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
+      som_robustness_r = ROI.ROIAlgebra(prefix+'Robustness_R', ROIS.breast_r.type, ROIS.breast_r.color, sourcesA = [outer_breast_r], sourcesB = [ROIS.breast_r], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 1.5, 0), marginsB = MARGINS.zero)
+      som_robustness_l = ROI.ROIAlgebra(prefix+'Robustness_L', ROIS.breast_l.type, ROIS.breast_l.color, sourcesA = [outer_breast_l], sourcesB = [ROIS.breast_l], operator = 'Union', marginsA = MARGIN.Expansion(0, inferior_margin, 1.5, 0, 0, 1.5), marginsB = MARGINS.zero)
       d_rois2.extend([som_robustness_r, som_robustness_l])
     # Create the derived ROIs:
     for roi in d_rois2:
       if not PMF.has_roi(pm, roi.name):
         PMF.create_algebra_roi(pm, examination, self.ss, roi)
-    # Modify ROI type/organ type:
-    for roi_name in ['zSOM_Robustness_L', 'zSOM_Robustness_R', 'zSOM_Breast_L_Surface', 'zSOM_Breast_R_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R-Chestwall_Exp', 'zSOM_Chestwall_L', 'zSOM_Chestwall_R']:
-      try:
-        pm.RegionsOfInterest[roi_name].Type = 'Control'
-        pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
-      except:
-        pass
-    # Exclude some ROIs from export:
-    for roi_name in ['zSOM_Breast_L_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Chestwall_L', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R_Surface', 'zSOM_Breast_R_Prelimenary', 'zSOM_Chestwall_R', 'zSOM_Breast_R-Chestwall_Exp']:
-      PMF.exclude_roi_from_export(pm, roi_name)
+    # Post-process ROI settings:
+    for roi in pm.RegionsOfInterest:
+      if prefix in roi.Name:
+        try:
+          # Modify ROI type/organ type:
+          pm.RegionsOfInterest[roi_name].Type = 'Control'
+          pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
+          # Exclude ROIs except the Robustness ROI from export:
+          if not 'Robustness' in roi.Name:
+            PMF.exclude_roi_from_export(pm, roi_name)
+        except:
+          pass
     # Update derived ROIs which may have become 'red' (non-updated):
     for name in ['CTV_L', 'CTV_R', 'CTVsb_L', 'CTVsb_R', 'PTVC_L', 'PTVc_R', 'PTVsvc_L', 'PTVsbc_R', 'CTV', 'PTVc', 'zCTV_L_Wall', 'zCTV_R_Wall']:
       if PMF.has_roi(pm, name):
@@ -269,7 +277,7 @@ class Breast(object):
   # Simulate organ motion - Generate CT-series for deformed (expanded) breast.
   # Note that if a SOM series already exists which is based on the given examination,
   # we will not create a new SOM series (as we assume that in this case the new plan will use the existing SOM series).
-  def create_som_series(self, examination):
+  def create_som_series(self, examination, prefix):
     pm = self.case.PatientModel
     # Test if an existing SOM series exists for the given examination:
     existing_som_groups = []
@@ -283,26 +291,26 @@ class Breast(object):
         inferior_margin = 0
         if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
           inferior_margin = 1
-        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName=prefix+"Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", prefix+"Chestwall_R"])
       elif self.prescription.region_code in RC.breast_l_codes:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
         inferior_margin = 0
         if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
           inferior_margin = 1
-        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName=prefix+"Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", prefix+"Chestwall_L"])
       elif self.prescription.region_code in RC.breast_bilateral_codes:
         # Right:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_R_Draft'].GetRoiVolume()
         inferior_margin = 0
         if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
           inferior_margin = 1
-        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName="zSOM_Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_R"])
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 1, 'Left': 0 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_R:"+examination.Name, MotionRoiName=prefix+"Breast_R-Chestwall_Exp", FixedRoiNames=["Sternum", prefix+"Chestwall_R"])
         # Left:
         breast_volume = pm.StructureSets[examination.Name].RoiGeometries['Breast_L_Draft'].GetRoiVolume()
         inferior_margin = 0
         if self.inferior_robustness_breast and self.prescription.region_code not in [241, 242]:
           inferior_margin = 1
-        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName="zSOM_Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", "zSOM_Chestwall_L"])
+        self.case.GenerateOrganMotionExaminationGroup(OrganUncertaintySettings={ 'Superior': 0, 'Inferior': inferior_margin, 'Anterior': 1, 'Posterior': 0, 'Right': 0, 'Left': 1 }, OnlySimulateMaxOrganMotion=True, SourceExaminationName=examination.Name, ExaminationGroupName="SOM_L:"+examination.Name, MotionRoiName=prefix+"Breast_L-Chestwall_Exp", FixedRoiNames=["Sternum", prefix+"Chestwall_L"])
       # Determine the SOM group(s) which was created:
       new_som_groups = []
       for ex_group in self.case.ExaminationGroups:
