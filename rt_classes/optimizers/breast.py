@@ -262,11 +262,11 @@ class Breast(object):
       if prefix in roi.Name:
         try:
           # Modify ROI type/organ type:
-          pm.RegionsOfInterest[roi_name].Type = 'Control'
-          pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
+          pm.RegionsOfInterest[roi.Name].Type = 'Control'
+          pm.RegionsOfInterest[roi.Name].OrganData.OrganType = 'Other'
           # Exclude ROIs except the Robustness ROI from export:
           if not 'Robustness' in roi.Name:
-            PMF.exclude_roi_from_export(pm, roi_name)
+            PMF.exclude_roi_from_export(pm, roi.Name)
         except:
           pass
     # Update derived ROIs which may have become 'red' (non-updated):
