@@ -92,13 +92,6 @@ class DefBreast(object):
     self.add_wall(site, side, region, boost)
     # Create all targets and OARs in RayStation:
     site.create_rois()
-    # Modify ROI type/organ type:
-    for roi_name in ['PTV_Robustness', 'PTV_Robustness_L', 'PTV_Robustness_R', 'zSOM_Robustness_L', 'zSOM_Robustness_R', 'zSOM_Breast_L_Surface', 'zSOM_Breast_R_Surface', 'zSOM_Breast_L_Prelimenary', 'zSOM_Breast_R_Prelimenary', 'zSOM_Breast_L-Chestwall_Exp', 'zSOM_Breast_R-Chestwall_Exp', 'zSOM_Chestwall_L', 'zSOM_Chestwall_R']:
-      try:
-        pm.RegionsOfInterest[roi_name].Type = 'Control'
-        pm.RegionsOfInterest[roi_name].OrganData.OrganType = 'Other'
-      except:
-        pass
     # Change organ type to 'Other' for selected ROIs:
     for roi_name in ['Clips_L','Clips_R','BreastString_L','BreastString_R','Breast_L_Draft','Breast_R_Draft','SurgicalBed_L','SurgicalBed_R','LN_Ax_Pectoral_L','LN_Ax_Pectoral_R','LN_Ax_L1_L','LN_Ax_L1_R','LN_Ax_L2_L','LN_Ax_L2_R','LN_Ax_L3_L','LN_Ax_L3_R','LN_Ax_L4_L','LN_Ax_L4_R','LN_IMN_L','LN_IMN_R','ScaleneMuscle_Ant_L','A_Carotid_L','A_Subclavian_L','V_Brachiocephalic_L','V_Jugular_Int_L','V_Subclavian_L','ScaleneMuscle_Ant_R','A_Brachiocephalic','A_Carotid_R','A_Subclavian_R','V_Brachiocephalic_R','V_Jugular_Int_R','V_Subclavian_R']:
       # Some of these ROIs may not always be defined, and give an error:
@@ -127,22 +120,6 @@ class DefBreast(object):
             pm.RegionsOfInterest[rg.OfRoi.Name].DeleteRoi()
     # Override the density of the breast string to 'Air' (since it is not present on treatments):
     self.set_breaststring_density(pm)
-    # Underive ROIs (used for Simulate organ motion):
-    try:
-      if side == 'right':
-        pm.RegionsOfInterest['zSOM_Chestwall_R'].DeleteExpression()
-        pm.RegionsOfInterest['zSOM_Breast_R-Chestwall_Exp'].DeleteExpression()
-      elif side == 'left':
-        pm.RegionsOfInterest['zSOM_Chestwall_L'].DeleteExpression()
-        pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
-      else:
-        # Bilateral:
-        pm.RegionsOfInterest['zSOM_Chestwall_R'].DeleteExpression()
-        pm.RegionsOfInterest['zSOM_Breast_R-Chestwall_Exp'].DeleteExpression()
-        pm.RegionsOfInterest['zSOM_Chestwall_L'].DeleteExpression()
-        pm.RegionsOfInterest['zSOM_Breast_L-Chestwall_Exp'].DeleteExpression()
-    except:
-      pass
 
   
   # Adds rois that are common across all cases.

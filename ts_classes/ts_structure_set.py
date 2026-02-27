@@ -315,7 +315,7 @@ class TSStructureSet(object):
   def no_geometries_outside_external_test(self):
     t = TEST.Test("Geometri forventes å ikke være definert utenfor 'External' for noen ROI", None, self.geometry)
     # Known ROIs which are expected to exceed the External ROI:
-    excluded_roi_names = ['PTV_Robustness', 'Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall', 'zSOM_Robustness_L', 'zSOM_Robustness_R']
+    excluded_roi_names = ['Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall']
     external = None
     geometries = []
     failed_geometries = []
@@ -323,7 +323,7 @@ class TSStructureSet(object):
     for ts_rg in self.ts_roi_geometries:
       if ts_rg.roi().Type == 'External':
         external = ts_rg
-      elif ts_rg.roi().Type != 'Support' and ts_rg.roi().Name not in excluded_roi_names and ts_rg.primary_shape():
+      elif ts_rg.roi().Type != 'Support' and ts_rg.roi().Name not in excluded_roi_names and ts_rg.primary_shape() and 'Robustness' not in ts_rg.roi().Name:
         # The ROI geometry actually has a shape, and is not a couch ROI, or among excluded ROIs, so it is relevant for the test:
         geometries.append(ts_rg)
     if external and len(geometries) > 0:
