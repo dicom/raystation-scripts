@@ -183,7 +183,7 @@ class Breast(object):
     self.ss.RoiGeometries[ROIS.breast_l.name].OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
     # Make sure to keep derived ROIs which depends on the above ROIs updated as well:
     for name in ['CTVsb', 'PTVsbc', 'zCTV_L_Wall', 'zCTV_R_Wall', 'CTV-CTVsb', 'CTV-PTVsbc', 'zCTV-PTVsbc', 'zPTVc-PTVsbc']:
-      if PMF.has_roi(pm, name):
+      if PMF.has_roi(pm, name) and self.ss.RoiGeometries[name].OfRoi.DerivedRoiExpression is not None:
         self.ss.RoiGeometries[name].OfRoi.UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
     # Make sure derived SOM ROIs are updated as well:
     for roi in pm.RegionsOfInterest:
