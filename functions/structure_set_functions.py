@@ -20,15 +20,17 @@ import def_brain as DEF_BRAIN
 import region_codes as RC
 
 
-# Checks if a given roi takes part in a approved structure set
-# FIXME: It seems that in 12A approval status is per structure set, not per ROI,
-# so we may consider rewriting this code.
+# Checks if a given roi is approved in this structure set.
 def is_approved_roi_structure(ss, roi_name):
   match = False
   for sub_ss in ss.SubStructureSets:
     if sub_ss.Review:
       if sub_ss.Review.ApprovalStatus == 'Approved':
-        match = True
+        try:
+          if roi_name in sub_ss.RoiStructures:
+            match = True
+        except:
+          pass
   return match
 
 
@@ -462,8 +464,9 @@ def roi_overlap(pm, examination, ss, roi1, roi2, threshold):
   PMF.create_algebra_roi(pm, examination, ss, subtraction)
   # Is overlapping volume less than threshold?
   overlap = False
-  if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
-    overlap = True
+  if ss.RoiGeometries[roi1.name].HasContours() and ss.RoiGeometries[subtraction.name].HasContours():
+    if ss.RoiGeometries[roi1.name].GetRoiVolume() - ss.RoiGeometries[subtraction.name].GetRoiVolume() > threshold:
+      overlap = True
   PMF.delete_roi(pm, subtraction.name)
   return overlap
 
