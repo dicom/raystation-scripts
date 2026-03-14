@@ -27,9 +27,12 @@ class Document:
   
   # Gives all documents belonging to the given patient.
   @classmethod
-  def for_patient(cls, patient):
+  def for_patient(cls, patient, type_id=None):
+    query = "SELECT * FROM Object WHERE Pat_ID1 = '{}'".format(patient.id)
+    if type_id:
+      query += " AND DocType = '{}'".format(type_id)
     documents = list()
-    rows = Database.fetch_all("SELECT * FROM Object WHERE Pat_ID1 = '{}'".format(patient.id))
+    rows = Database.fetch_all(query)
     for row in rows:
       documents.append(cls(row))
     return documents
@@ -53,6 +56,7 @@ class Document:
     self.document_id = row['OBJ_SET_ID']
     self.version = row['Version']
     self.institution_id = row['Inst_ID']
+    self.document_template = row['DocumentTemplate']
     # Convenience attributes:
     self.id = self.obj_id
     # Cache attributes:
@@ -63,6 +67,7 @@ class Document:
     self.instance_note = None
     self.instance_nr_pages = None
     self.instance_patient = None
+    self.document_type = None
     
   # The staff who approved the document.
   def approved_by(self):
@@ -99,7 +104,7 @@ class Document:
   # The file name of the document.
   def file_name(self):
     if not self.instance_file_name:
-      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(id)))
+      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(self.id)))
       if row != None:
         self.instance_file_name = row['eSCANFilename']
     return self.instance_file_name
@@ -117,6 +122,15 @@ class Document:
       if row != None:
         self.instance_nr_pages = row['PageNumber']
     return self.instance_nr_pages
+  
+  # The document type
+  def document_type(self):
+    if not self.document_type:
+      row = Database.fetch_one("SELECT * FROM ObjPhd WHERE OBJ_ID = '{}'".format(str(id)))
+      print(row)
+      if row != None:
+        self.document_type = row["Description"]
+    return self.document_type
   
   # Gives the patient which this document belongs to.
   def patient(self):
