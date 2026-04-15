@@ -270,7 +270,7 @@ class Breast(object):
         except:
           pass
     # Update derived ROIs which may have become 'red' (non-updated):
-    for name in ['CTV_L', 'CTV_R', 'CTVsb_L', 'CTVsb_R', 'PTVC_L', 'PTVc_R', 'PTVsvc_L', 'PTVsbc_R', 'CTV', 'PTVc', 'zCTV_L_Wall', 'zCTV_R_Wall']:
+    for name in ['CTV', 'CTV_L', 'CTV_R', 'CTVsb_L', 'CTVsb_R', 'CTV-CTVsb', 'CTV-PTVsbc', 'PTVc', 'PTVc_L', 'PTVc_R', 'PTVsbc_L', 'PTVsbc_R', 'PTVc-PTVsbc', 'zCTV_L_Wall', 'zCTV_R_Wall', 'zCTV-PTVsbc', 'zPTVc-PTVsbc']:
       if PMF.has_roi(pm, name):
         pm.RegionsOfInterest[name].UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
   
