@@ -323,7 +323,7 @@ class TSStructureSet(object):
     for ts_rg in self.ts_roi_geometries:
       if ts_rg.roi().Type == 'External':
         external = ts_rg
-      elif ts_rg.roi().Type != 'Support' and ts_rg.roi().Name not in excluded_roi_names and ts_rg.primary_shape() and 'Robustness' not in ts_rg.roi().Name:
+      elif ts_rg.roi().Type != 'Support' and ts_rg.roi().Name not in excluded_roi_names and ts_rg.primary_shape() and 'Robustness' not in ts_rg.roi().Name and 'External' not in ts_rg.roi().Name:
         # The ROI geometry actually has a shape, and is not a couch ROI, or among excluded ROIs, so it is relevant for the test:
         geometries.append(ts_rg)
     if external and len(geometries) > 0:
