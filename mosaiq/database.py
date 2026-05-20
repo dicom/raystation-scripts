@@ -13,11 +13,14 @@
 #from tkinter import messagebox
 
 import pymssql
+import pyodbc
+from pathlib import Path
 
 class Database:
   
-  # The Mosaiq SQL server address:
-  server = open(r'C:\temp\raystation-scripts\mosaiq\database.txt', "r").read()
+  # The Mosaiq SQL server address and (optional) database:
+  server = open(r'C:\temp\raystation-scripts\mosaiq\server.txt', "r").read()
+  database = open(r'C:\temp\raystation-scripts\mosaiq\database.txt').read()
   # The username to be used for access to the Mosaiq database:
   user = open(r'C:\temp\raystation-scripts\mosaiq\user.txt', "r").read()
   # The password to be used for access to the Mosaiq database:
@@ -26,7 +29,7 @@ class Database:
   # Returns all rows matching the given query text (or an empty list if no match).
   @staticmethod
   def fetch_all(text):
-    conn = pymssql.connect(server=Database.server, user=Database.user, password=Database.password)
+    conn = pymssql.connect(server=Database.server, database=Database.database, user=Database.user, password=Database.password)
     cursor = conn.cursor(as_dict=True)
     cursor.execute(text)
     rows = list()
@@ -39,7 +42,7 @@ class Database:
   # Returns a single row matching the given query text (or None if no match).
   @staticmethod
   def fetch_one(text):
-    conn = pymssql.connect(server=Database.server, user=Database.user, password=Database.password)
+    conn = pymssql.connect(server=Database.server, database=Database.database, user=Database.user, password=Database.password)
     cursor = conn.cursor(as_dict=True)
     cursor.execute(text)
     row = cursor.fetchone()

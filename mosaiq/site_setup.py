@@ -50,9 +50,9 @@ class SiteSetup:
     self.patient_orientation_id = row['Patient_Orient']
     self.prescribed_offset_id = row['Off_Set_ID']
     self.description = row['Setup_Technique_Description']
-    self.iso_x = float(row['Isocenter_Position_X'])
-    self.iso_y = float(row['Isocenter_Position_Y'])
-    self.iso_z = float(row['Isocenter_Position_Z'])
+    #self.iso_x = float(row['Isocenter_Position_X'])
+    #self.iso_y = float(row['Isocenter_Position_Y'])
+    #self.iso_z = float(row['Isocenter_Position_Z'])
     self.approved_date = row['Sanct_DtTm']
     self.approved_by_id = row['Sanct_ID']
     self.status_id = row['Status_Enum']
