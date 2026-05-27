@@ -56,7 +56,7 @@ class Optimization(object):
 default = Optimization()
 sliding_window = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=120, use_sliding_window_sequencing=True)
 sliding_window_quick = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=70, use_sliding_window_sequencing=True)
-sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, max_leaf_travel_distance_per_degree=0.3, use_max_leaf_travel_distance_per_degree=True, use_sliding_window_sequencing=True)
+sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, use_sliding_window_sequencing=True)
 
 
 # Set up optimization parameters, based on region code (i.e. treatment site) and fraction dose (i.e. fractionated treatment or SBRT).
