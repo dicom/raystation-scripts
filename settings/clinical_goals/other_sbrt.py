@@ -53,8 +53,8 @@ class OtherSBRT:
         # Common for pelvis spine/non-spine:
         oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, 0.035, 2))
         oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.cauda_equina_sbrt_1fx_v0, 5, 2))
-        oars.append(CG.ClinicalGoal(ROIS.small_bowel.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v0, 0.035, 3))
-        oars.append(CG.ClinicalGoal(ROIS.small_bowel.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v5, 5, 3))
+        oars.append(CG.ClinicalGoal(ROIS.bowel_small.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v0, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.bowel_small.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_1fx_v5, 5, 3))
         oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.dose_at_abs_volume, TOL.rectum_sbrt_1fx_v0, 0.035, 3))
         oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.dose_at_abs_volume, TOL.rectum_sbrt_1fx_v20, 20, 3))
         oars.append(CG.ClinicalGoal(ROIS.colon.name, CG.at_most, CG.dose_at_abs_volume, TOL.colon_sbrt_1fx_v0, 0, 3))
@@ -91,8 +91,8 @@ class OtherSBRT:
         # Common for pelvis spine/non-spine:
         oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v0, 0.035, 2))
         oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.cauda_equina_sbrt_3fx_v5, 5, 2))
-        oars.append(CG.ClinicalGoal(ROIS.small_bowel.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v0, 0.035, 3))
-        oars.append(CG.ClinicalGoal(ROIS.small_bowel.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v5, 5, 3))
+        oars.append(CG.ClinicalGoal(ROIS.bowel_small.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v0, 0.035, 3))
+        oars.append(CG.ClinicalGoal(ROIS.bowel_small.name, CG.at_most, CG.dose_at_abs_volume, TOL.small_bowel_sbrt_3fx_v5, 5, 3))
         oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.dose_at_abs_volume, TOL.rectum_sbrt_3fx_v0, 0.035, 3))
         oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.dose_at_abs_volume, TOL.rectum_sbrt_3fx_v20, 20, 3))
         oars.append(CG.ClinicalGoal(ROIS.colon.name, CG.at_most, CG.dose_at_abs_volume, TOL.colon_sbrt_3fx_v0, 0.035, 3))

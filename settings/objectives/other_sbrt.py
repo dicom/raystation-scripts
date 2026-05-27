@@ -69,7 +69,7 @@ class OtherSBRT:
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_cord.name, 5*100, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_pelvis_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 5*100, 1, 2, beam_set_index=i))
-      oars.append(OF.max_eud(ss, plan, ROIS.small_bowel.name, 5*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.bowel_small.name, 5*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.cauda_equina.name, 5*100, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.colon.name, 5*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.rectum.name, 5*100, 1, 2, beam_set_index=i))
