@@ -73,9 +73,9 @@ bone_codes = list(range(501, 506+1)) + list(range(512, 514+1)) + list(range(517,
 extremity_codes = list(range(46, 61+1)) + list(range(80, 91+1)) + list(range(261, 272+1)) + list(range(375, 394+1)) + list(range(561, 572+1)) + list(range(575, 594+1))
 
 # Palliative: Stereotactic
-stereotactic_pelvis_codes = [513, 514, 527, 573, 574, 575, 576, 577, 578, 585, 586]
-stereotactic_spine_thorax_codes = [520, 521, 522]
-stereotactic_spine_pelvis_codes = [523, 524, 525]
+stereotactic_pelvis_codes = [513, 514, 541, 542, 543, 544, 545, 546, 573, 574, 575, 576, 577, 578, 585, 586]
+stereotactic_spine_thorax_codes = [518, 519, 520, 521, 522]
+stereotactic_spine_pelvis_codes = [523, 524, 525, 527]
 
 # Whole pelvis:
 whole_pelvis_codes = [512]
