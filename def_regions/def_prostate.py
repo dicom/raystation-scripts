@@ -8,6 +8,7 @@ import patient_model_functions as PMF
 import roi as ROI
 import rois as ROIS
 
+
 # Definitions script for prostate treatments (prostate/prostate bed, with or without lymph nodes, fractionation).
 class DefProstate(object):
 
@@ -44,6 +45,15 @@ class DefProstate(object):
             pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
       except:
         pass
+    # Override density for gold seeds (if present):
+    gold = None
+    for material in pm.Materials:
+      if material.Name == 'Gold [Au]':
+        gold = material
+        break
+    if gold:
+      for roi_name in [ROIS.seed1.name, ROIS.seed2.name, ROIS.seed3.name]:
+        pm.RegionsOfInterest[roi_name].SetRoiMaterial(Material=gold)
     # Exclude some ROIs from export:
     exclude = pelvic_bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
     for roi in exclude:
