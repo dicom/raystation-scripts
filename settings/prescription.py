@@ -174,6 +174,8 @@ palliative = [
   Prescription(8, 1, 'MedianDose'),
   Prescription(10, 1, 'MedianDose'),
   Prescription(20, 5, 'MedianDose'),
+  Prescription(25, 5, 'MedianDose'),
+  Prescription(28, 7, 'MedianDose'),
   Prescription(30, 10, 'MedianDose'),
   Prescription(36, 12, 'MedianDose'),
   Prescription(39, 13, 'MedianDose'),
