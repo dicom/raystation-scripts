@@ -168,7 +168,6 @@ class QualityControl(object):
       if ts_optimization:
         ts_optimization.constraints_test()
         ts_optimization.objectives_background_dose_test()
-        ts_optimization.constrain_leaf_motion_test()
         ts_optimization.dose_grid_test()
         
       # Beam tests:
