@@ -69,7 +69,7 @@ class TSOptimization(object):
         max_voxel_size = 0.2
       else:
         # Bone mets SBRT:
-        max_voxel_size = 0.1
+        max_voxel_size = 0.2
     else:
       # Conventional treatment:
       if self.ts_beam_set.ts_label.label.region in RC.brain_codes:
