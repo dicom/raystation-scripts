@@ -81,7 +81,6 @@ class DefLung(object):
     lungs_igtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [igtv], operator='Subtraction')
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[igtv], operator='Subtraction', operatorA = 'Intersection')
     site.add_oars([lungs_igtv, water])
-    self.add_ptv_derived_rois(pm, examination, site, ptv)
   
   
   # Adds curative free breathing ROIs to the site object.
@@ -97,7 +96,6 @@ class DefLung(object):
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_gtv.name, ROIS.lungs_gtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [gtv], operator='Subtraction')
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[gtv], operator='Subtraction', operatorA = 'Intersection')
     site.add_oars([lungs_gtv, water])
-    self.add_ptv_derived_rois(pm, examination, site, ptv)
   
   
   # Adds curative post-operative ROIs to the site object.
@@ -109,7 +107,6 @@ class DefLung(object):
     # Other derived ROIs:
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[ctv], operator='Subtraction', operatorA = 'Intersection')
     site.add_oars([water])
-    self.add_ptv_derived_rois(pm, examination, site, ptv)
   
   
   # Adds palliative 4DCT ROIs to the site object.
@@ -122,7 +119,6 @@ class DefLung(object):
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [ROIS.igtv], operator='Subtraction')
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[ROIS.igtv], operator='Subtraction', operatorA = 'Intersection')
     site.add_oars([lungs_gtv, water])
-    self.add_ptv_derived_rois(pm, examination, site, ptv)
   
   
   # Adds palliative free breathing ROIs to the site object.
@@ -135,15 +131,6 @@ class DefLung(object):
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_gtv.name, ROIS.lungs_gtv.type, COLORS.lungs, sourcesA = [ROIS.lungs], sourcesB = [ROIS.gtv], operator='Subtraction')
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv, sourcesA=[ROIS.lungs, ptv], sourcesB=[ROIS.gtv], operator='Subtraction', operatorA = 'Intersection')
     site.add_oars([lungs_gtv, water])
-    self.add_ptv_derived_rois(pm, examination, site, ptv)
-  
-  
-  # Adds ROIs derived by the PTV to the site object.
-  def add_ptv_derived_rois(self, pm, examination, site, ptv):
-    # Common for all palliative cases:
-    heart_ptv = ROI.ROIAlgebra(ROIS.z_heart.name, ROIS.z_heart.type, COLORS.heart, sourcesA = [ROIS.heart], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    esophagus_ptv = ROI.ROIAlgebra(ROIS.z_esophagus.name, ROIS.z_esophagus.type, COLORS.esophagus, sourcesA = [ROIS.esophagus], sourcesB = [ptv], operator='Subtraction', marginsB = MARGINS.uniform_3mm_expansion)
-    site.add_oars([heart_ptv, esophagus_ptv])
   
   
   # Adds stereotactic lung ROIs to the site object.
