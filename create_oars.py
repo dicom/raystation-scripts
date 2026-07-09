@@ -114,12 +114,6 @@ if selected_oar_list.get(ROIS.parotids):
 if selected_oar_list.get(ROIS.submands):
   selected_oar_list[ROIS.submand_l] = True
   selected_oar_list[ROIS.submand_r] = True
-if selected_oar_list.get(ROIS.ribs_l):
-  selected_oar_list[ROIS.rib_y_l] = True
-  selected_oar_list[ROIS.rib_x_l] = True  
-if selected_oar_list.get(ROIS.ribs_r):
-  selected_oar_list[ROIS.rib_y_r] = True
-  selected_oar_list[ROIS.rib_x_r] = True  
 if selected_oar_list.get(ROIS.lungs):
   selected_oar_list[ROIS.lung_l] = True
   selected_oar_list[ROIS.lung_r] = True    
@@ -140,10 +134,6 @@ if selected_oar_list.get(ROIS.body):
   PMF.create_stereotactic_external_geometry(pm, examination, ss)
 if selected_oar_list.get(ROIS.external):
   PMF.create_external_geometry(pm, examination, ss)
-if selected_oar_list.get(ROIS.anal_canal):
-  PMF.create_bottom_part_x_cm(pm, examination, ss, ROIS.rectum, ROIS.anal_canal, 4)
-if selected_oar_list.get(ROIS.dorso_rectum):
-  PMF.create_posterior_half(pm, examination, ss, ROIS.rectum, ROIS.dorso_rectum)
 if selected_oar_list.get(ROIS.cornea_l) or selected_oar_list.get(ROIS.cornea_r) or selected_oar_list.get(ROIS.retina_l) or selected_oar_list.get(ROIS.retina_r):
   PMF.create_cornea_and_retina_rois(pm, examination, ss)
 

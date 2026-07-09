@@ -143,9 +143,9 @@ class DefLung(object):
     site.add_oars(DEF.lung_stereotactic_oars)
     # Side dependent OARs:
     if side == 'right':
-      site.add_oars([ROIS.rib_x_r, ROIS.rib_y_r, ROIS.ribs_r])
+      site.add_oars([ROIS.ribs_r])
     elif side == 'left':
-      site.add_oars([ROIS.rib_x_l, ROIS.rib_y_l, ROIS.ribs_l])
+      site.add_oars([ROIS.ribs_l])
     # Targets:
     if nr_targets == 1:
       # Single target:
