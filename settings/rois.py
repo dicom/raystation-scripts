@@ -118,13 +118,6 @@ iptv3 = ROI.ROIExpanded('PTV3', 'Ptv', COLORS.ptv, ictv3, margins = MARGINS.unif
 
 # ROIs for optimization:
 z_water =  ROI.ROI('zWater', 'Undefined', COLORS.other_ptv)
-z_heart =  ROI.ROI('zHeart', 'Undefined', COLORS.heart)
-z_esophagus =  ROI.ROI('zEsophagus', 'Undefined', COLORS.esophagus)
-z_bladder = ROI.ROI('zBladder','Undefined', COLORS.bladder)
-z_spc_bowel = ROI.ROI('zBowelBag','Undefined', COLORS.bowel_space)
-z_rectum = ROI.ROI('zRectum', 'Undefined', COLORS.rectum)
-z_ptv_77_wall = ROI.ROI('zPTV_77_Wall', 'Undefined', COLORS.wall)
-z_ptv_70_77_wall = ROI.ROI('zPTV_70+77_Wall', 'Undefined', COLORS.wall)
 z_ptv_67_5_wall = ROI.ROI('zPTV_67.5_Wall', 'Undefined', COLORS.wall)
 z_ptv_62_5_67_5_wall = ROI.ROI('zPTV_62.5+67.5_Wall', 'Undefined', COLORS.wall)
 z_ptv_50_62_5_67_5_wall = ROI.ROI('zPTV_50+62.5+67.5_Wall', 'Undefined', COLORS.wall)
@@ -150,20 +143,15 @@ ptv_and_oars = ROI.ROI('zPTV_AND_OARs', 'Ptv', COLORS.other_ptv)
 
 # Substitute ROI objects (only used for naming):
 ptv_semves = ROI.ROI('PTV_SeminalVes', 'Ptv', COLORS.ptv_med)
-# Prostate 56/66/70/77:
-ptv_77 = ROI.ROI('PTV_77', 'Ptv', COLORS.ptv_high)
+# Prostate 56/66/70:
 ptv_70 = ROI.ROI('PTV_70', 'Ptv', COLORS.ptv_med)
 ptv_70_sib = ROI.ROI('PTV!_70', 'Ptv', COLORS.ptv_med)
-ctv_77 = ROI.ROI('CTV_77', 'Ctv', COLORS.ctv_high)
 ctv_70 = ROI.ROI('CTV_70', 'Ctv', COLORS.ctv_med)
 ctv_70_sib = ROI.ROI('CTV!_70', 'Ctv', COLORS.ctv_med)
 ptv_66 = ROI.ROI('PTV!_66', 'Ptv', COLORS.ptv_med)
 ctv_66 = ROI.ROI('CTV!_66', 'Ctv', COLORS.ctv_med)
 ptv_56 = ROI.ROI('PTV!_56', 'Ptv', COLORS.ptv_low)
 ctv_56 = ROI.ROI('CTV!_56', 'Ctv', COLORS.ctv_low)
-ptv_70_77 = ROI.ROI('PTV_70+77', 'Ptv', COLORS.ptv_low)
-ctv_70_77 = ROI.ROI('CTV_70+77', 'Ctv', COLORS.ctv_low)
-ptv_56_70_77 = ROI.ROI('PTV_56+70+77', 'Ptv', COLORS.ptv_low)
 ptv_56_70 = ROI.ROI('PTV_56+70', 'Ptv', COLORS.ptv_low)
 # Prostate 50/60/62.5/67.5:
 ptv_67_5 = ROI.ROI('PTV_67.5', 'Ptv', COLORS.ptv_high)
