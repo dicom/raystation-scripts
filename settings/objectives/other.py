@@ -32,8 +32,14 @@ class Other:
   def create_oar_objectives(self, ss, plan, prescription, i):
     oars = []
     if prescription.region_code in RC.palliative_head_codes:
-      oars.append(OF.max_eud(ss, plan, ROIS.eye_l.name, 13*100, 1, 2, beam_set_index=i))
-      oars.append(OF.max_eud(ss, plan, ROIS.eye_r.name, 13*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.brain.name, 29*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.cochlea_l.name, 27*100, 1, 1, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.cochlea_r.name, 27*100, 1, 1, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.lacrimal_l.name, 23*100, 1, 1, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.lacrimal_r.name, 23*100, 1, 1, beam_set_index=i))
+      oars.append(OF.max_dose(ss, plan, ROIS.lens_l.name, 13*100, 1, beam_set_index=i))
+      oars.append(OF.max_dose(ss, plan, ROIS.lens_r.name, 13*100, 1, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.pituitary.name, 20*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_neck_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.esophagus.name, 25*100, 1, 2, beam_set_index=i))

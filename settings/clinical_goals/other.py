@@ -33,9 +33,17 @@ class Other:
     oars = []
     if prescription.region_code in RC.palliative_head_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
-      oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.dose_at_abs_volume, TOL.brain_v003, 0, 3))
-      oars.append(CG.ClinicalGoal(ROIS.lens_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_v003_adx, 0, 4))
-      oars.append(CG.ClinicalGoal(ROIS.lens_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_v003_adx, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.dose_at_abs_volume, TOL.brain_v003, 3, 3))
+      oars.append(CG.ClinicalGoal(ROIS.parotids.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.submands.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.brain.name, CG.at_most, CG.average_dose, TOL.brain_lymphopenia_mean, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.cochlea_l.name, CG.at_most, CG.average_dose, TOL.cochlea_mean_tinnitus, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.cochlea_r.name, CG.at_most, CG.average_dose, TOL.cochlea_mean_tinnitus, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.lacrimal_l.name, CG.at_most, CG.average_dose, TOL.lacrimal_mean, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.lacrimal_r.name, CG.at_most, CG.average_dose, TOL.lacrimal_mean, 0, 4))
+      oars.append(CG.ClinicalGoal(ROIS.lens_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_v003_adx, 0.03, 4))
+      oars.append(CG.ClinicalGoal(ROIS.lens_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_v003_adx, 0.03, 4))
+      oars.append(CG.ClinicalGoal(ROIS.pituitary.name, CG.at_most, CG.average_dose, TOL.pituitary_2_mean, None, 4))
     elif prescription.region_code in RC.palliative_neck_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
       oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_mean, None, 3))
