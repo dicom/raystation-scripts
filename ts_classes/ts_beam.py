@@ -9,7 +9,7 @@ from connect import *
 import sys
 
 # GUI framework (debugging only):
-from tkinter import messagebox
+#from tkinter import messagebox
 
 # Local script imports:
 import test_p as TEST
@@ -30,6 +30,7 @@ class TSBeam(object):
     else:
       self.parent_param = None
     # Cache attributes:
+    self._jaw_min_max = None
     self._leaf_min_max = None
     # Parameters:
     self.param = TEST.Parameter('Felt', str(beam.Number), self.parent_param)
@@ -47,6 +48,23 @@ class TSBeam(object):
     # Other attributes:
     self.segment_length = None
 
+  # Gives the cached jawe min and max positions of the segments of this beam.
+  def jaw_min_max(self):
+    if not self._jaw_min_max:
+      # Only relevant for VMAT beams:
+      if self.is_vmat():
+        if self.has_segment():
+          # Extract field size from 3 segments (avoid pulling data from all segments to save execution time).
+          segment_first = self.beam.Segments[0]
+          segment_middle = self.beam.Segments[round(len(self.beam.Segments)/2)]
+          segment_last = self.beam.Segments[len(self.beam.Segments)-1]
+          # For Y1 more negative number means larger field size:
+          maxJawY1 = min([segment_first.JawPositions[2], segment_middle.JawPositions[2], segment_last.JawPositions[2]])
+          # For Y2 more positive number means larger field size:
+          maxJawY2 = max([segment_first.JawPositions[3], segment_middle.JawPositions[3], segment_last.JawPositions[3]])
+          self._jaw_min_max = [maxJawY1, maxJawY2]
+    return self._jaw_min_max
+  
   # Gives the cached leaf min and leaf max positions of the segments of this beam.
   def leaf_min_max(self):
     if not self._leaf_min_max:
@@ -64,6 +82,18 @@ class TSBeam(object):
           maxMLCX2 = val
       self._leaf_min_max = [minMLCX1, maxMLCX2]
     return self._leaf_min_max
+  
+  # Gives the max field size opening in cm (which may be either jaw or leaf opening).
+  def max_field_size_opening(self):
+    max_size = None
+    jaw_max = self.jaw_min_max()
+    leaf_max = self.leaf_min_max()
+    if jaw_max and leaf_max:
+      if (jaw_max[1] - jaw_max[0]) > (leaf_max[1] - leaf_max[0]):
+        max_size = jaw_max[1] - jaw_max[0]
+      else:
+        max_size = leaf_max[1] - leaf_max[0]
+    return max_size
   
   # Gives true/false if the beam has segments or not.
   def has_segment(self):
@@ -113,30 +143,6 @@ class TSBeam(object):
             return t.fail(maxJawY2)
           else:
             return t.succeed()
-
-  # Tests if the maximum jaw opening is more than 10.5 cm for both Y1 and Y2 jaws for an VMAT arc, to be able to measure it with the ArcCHECK-phantom.
-  def asymmetric_jaw_opening_for_vmat_qa_detector_test(self):
-    t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
-    # Perform the test only for VMAT beams:
-    if self.is_vmat():
-      if self.has_segment():
-        maxJawY1 = self.beam.Segments[0].JawPositions[2]
-        maxJawY2 = self.beam.Segments[0].JawPositions[3]
-        
-        for segment in self.beam.Segments:
-          if segment.JawPositions[2] < maxJawY1:
-            maxJawY1 = segment.JawPositions[2]
-          if segment.JawPositions[3] > maxJawY1:
-            maxJawY2 = segment.JawPositions[3]
-        messagebox.showinfo("", "2")
-        if maxJawY1 < -10.5 and maxJawY2 > 10.5:
-          return t.succeed()
-        elif maxJawY1 < -10.5:
-          return t.fail(abs(maxJawY1))
-        elif maxJawY2 > 10.5:
-          return t.fail(maxJawY2)
-        else:
-          return t.succeed()
 
   # Tests if a bolus is activated for the beam (in cases where a bolus exists among the ROIs).
   def bolus_set_test(self):
@@ -319,19 +325,9 @@ class TSBeam(object):
     if self.is_vmat():
       if self.beam.BeamQualityId == '6 FFF':
         if self.has_segment():
-          # Extract field size from 3 segments (avoid pulling data from all segments to save execution time).
-          segment_first = self.beam.Segments[0]
-          segment_middle = self.beam.Segments[round(len(self.beam.Segments)/2)]
-          segment_last = self.beam.Segments[len(self.beam.Segments)-1]
-          # For Y1 more negative number means larger field size:
-          maxJawY1 = min([segment_first.JawPositions[2], segment_middle.JawPositions[2], segment_last.JawPositions[2]])
-          # For Y2 more positive number means larger field size:
-          maxJawY2 = max([segment_first.JawPositions[3], segment_middle.JawPositions[3], segment_last.JawPositions[3]])
-          leaf_min_max = self.leaf_min_max()
-          if leaf_min_max[1] - leaf_min_max[0] > 25:
-            return t.fail(leaf_min_max[1] - leaf_min_max[0])
-          elif maxJawY2 - maxJawY1 > 25:
-            return t.fail(maxJawY2 - maxJawY1)
+          max_size = self.max_field_size_opening()
+          if max_size > 25:
+            return t.fail(max_size)
           else:
             return t.succeed()
             

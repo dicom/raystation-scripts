@@ -9,6 +9,7 @@ import patient_model_functions as PMF
 import region_codes as RC
 import roi as ROI
 import rois as ROIS
+import ts_beam as TS_B
 
 # Import system files:
 import datetime
@@ -80,6 +81,8 @@ class Breast(object):
             # Although it did crash, it wasnt because of the time error:
             possible_beam_delivery_time_error = False
             GUIF.handle_optimization_error(po, e)
+      # After initial optimization, check field size and choice of energy:
+      self.ensure_proper_energy_used()
       # Perform second optimization phase: Reduction of OAR doses until target_objectives are compromised:
       if self.has_objective_with_positive_dose_and_further_dose_reduction_potential(organ_objectives):
         nr_reduction_iterations = self.reduce_organ_doses(po, organ_objectives, target_objectives, counter=1)
@@ -321,6 +324,30 @@ class Breast(object):
     else:
       som_groups = new_som_groups
     return som_groups
+  
+  # Ensures that a proper energy is set up for the geometry of this case.
+  # If the max field opening is larger than 25 cm, we want the 6 MV energy to be used.
+  # If the max field opening is below 25 cm, we want the 6FFF energy to be used.
+  def ensure_proper_energy_used(self):
+    # Set up a test suite Beam instance for handling field sizes:
+    beam = self.plan.BeamSets[0].Beams[0]
+    ts_beam = TS_B.TSBeam(beam)
+    changed = False
+    if ts_beam.max_field_size_opening() > 25:
+      # Ensure 6 MV:
+      if beam.BeamQualityId == '6 FFF':
+        beam.BeamQualityId = '6'
+        changed = True
+    else:
+      # Ensure 6 FFF:
+      if beam.BeamQualityId == '6':
+        beam.BeamQualityId = '6 FFF'
+        changed = True
+    # Do we need to start a new optimization?
+    if changed:
+      # Iterate plan optimization(s):
+      for po in self.plan.PlanOptimizations:
+        po.RunOptimization()
   
   # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
   # Returns True if coverage is fulfilled, False if not.
