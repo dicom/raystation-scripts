@@ -36,8 +36,11 @@ class Other:
       oars.append(OF.max_eud(ss, plan, ROIS.eye_r.name, 13*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_neck_codes:
+      oars.append(OF.max_eud(ss, plan, ROIS.esophagus.name, 25*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.parotids.name, 20*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_dose(ss, plan, ROIS.spinal_canal.name, 35.8*100, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.submands.name, 20*100, 1, 2, beam_set_index=i))
+      oars.append(OF.max_eud(ss, plan, ROIS.thyroid.name, 10*100, 1, 2, beam_set_index=i))
     elif prescription.region_code in RC.palliative_thorax_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.esophagus.name, 24.9*100, 1, 2, beam_set_index=i))
       oars.append(OF.max_eud(ss, plan, ROIS.heart.name, 20.7*100, 1, 2, beam_set_index=i))

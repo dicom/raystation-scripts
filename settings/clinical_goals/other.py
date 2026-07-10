@@ -38,7 +38,11 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.lens_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.lens_v003_adx, 0, 4))
     elif prescription.region_code in RC.palliative_neck_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
+      oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.parotids.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.submands.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.pituitary.name, CG.at_most, CG.average_dose, TOL.pituitary_2_mean, None, 4))
+      oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 4))
     elif prescription.region_code in RC.palliative_thorax_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_quantec, None, 3))
