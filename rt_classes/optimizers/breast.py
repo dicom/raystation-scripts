@@ -326,14 +326,14 @@ class Breast(object):
     return som_groups
   
   # Ensures that a proper energy is set up for the geometry of this case.
-  # If the max field opening is larger than 25 cm, we want the 6 MV energy to be used.
-  # If the max field opening is below 25 cm, we want the 6FFF energy to be used.
+  # If the max field opening is larger than 24 cm, we want the 6 MV energy to be used.
+  # If the max field opening is below 24 cm, we want the 6FFF energy to be used.
   def ensure_proper_energy_used(self):
     # Set up a test suite Beam instance for handling field sizes:
     beam = self.plan.BeamSets[0].Beams[0]
     ts_beam = TS_B.TSBeam(beam)
     changed = False
-    if ts_beam.max_field_size_opening() > 25:
+    if ts_beam.max_field_size_opening() > 24:
       # Ensure 6 MV:
       if beam.BeamQualityId == '6 FFF':
         beam.BeamQualityId = '6'
