@@ -59,6 +59,8 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.average_dose, TOL.lung_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx, 3))
+      oars.append(CG.ClinicalGoal(ROIS.spleen.name, CG.at_most, CG.average_dose, TOL.spleen_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 4))
     elif prescription.region_code in RC.palliative_thorax_and_abdomen_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_quantec, None, 3))
