@@ -220,6 +220,9 @@ class Lung:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_abs_volume, tol_spinalcanal_chemo, 0.03, 6))
       oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.dose_at_abs_volume, TOL.esophagus_grade2plus_max, 2.0, 7))
       oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_grade2plus_mean, None, 7))
+      oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 7))
+      oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0, TOL.stomach_min, 7))
+      oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 7))
     return oars
 
 
