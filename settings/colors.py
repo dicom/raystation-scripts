@@ -73,6 +73,8 @@ thyroid = 'Teal'
 muscle = 'Darkcyan'
 levator_ani = 'Cyan'
 # Respiratory:
+larynx_glottis = 'GreenYellow'
+larynx_supraglottis = 'PeachPuff'
 trachea = 'Teal'
 carina = 'GreenYellow'
 bronchus_main = 'Green'

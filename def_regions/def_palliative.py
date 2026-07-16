@@ -139,7 +139,7 @@ class DefPalliative(object):
   # Adds head OARs to the site object.
   def add_oars_head(self, pm, examination, site):
     # DL OARs:
-    site.add_oars([ROIS.brain, ROIS.brainstem, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.eye_l, ROIS.eye_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r])
+    site.add_oars([ROIS.brain, ROIS.brainstem, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.eye_l, ROIS.eye_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.mandible, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r])
     # Non-DL OARs:
     site.add_oars([ROIS.parotids, ROIS.submands])
   
@@ -147,7 +147,7 @@ class DefPalliative(object):
   # Adds neck OARs to the site object.
   def add_oars_neck(self, pm, examination, site):
     # DL OARs:
-    site.add_oars([ROIS.brachial_plexus_l, ROIS.brachial_plexus_r, ROIS.brain, ROIS.brainstem, ROIS.esophagus, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r, ROIS.thyroid, ROIS.trachea])
+    site.add_oars([ROIS.brachial_plexus_l, ROIS.brachial_plexus_r, ROIS.brain, ROIS.brainstem, ROIS.cricopharyngeus, ROIS.esophagus, ROIS.larynx_glottis, ROIS.larynx_supraglottis, ROIS.mandible, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r, ROIS.thyroid, ROIS.trachea])
     # Non-DL OARs:
     site.add_oars([ROIS.parotids, ROIS.submands])
   
