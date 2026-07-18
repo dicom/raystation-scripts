@@ -126,8 +126,11 @@ hippocampus_v40 = EQD.Tolerance('Hippocampus_L', 'Some failure', ab_hippocampus,
 
 
 # Neck
-parotids_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_parotid, 25, 'Mean', 'Conventional RT')
-parotid_mean = EQD.Tolerance('Parotid', 'Some failure', ab_parotid, fractions_parotid, 20, 'Mean', 'Conventional RT')
+cricopharyngeus_mean = EQD.Tolerance('Crycopharyngeus', 'Dysphagia', 3, 25, 50, 'Mean', 'Conventional RT')
+larynx_mean = EQD.Tolerance('Larynx', 'Laryngeal edema', 3, 22.5, 45, 'Mean', 'Conventional RT')
+mandible_max = EQD.Tolerance('Mandible', 'Osteoradionecrosis', 3, 35, 70, 'Max', 'Conventional RT')
+parotids_mean = EQD.Tolerance('Parotid', 'Xerostomia', ab_parotid, fractions_parotid, 25, 'Mean', 'Conventional RT')
+parotid_mean = EQD.Tolerance('Parotid', 'Xerostomia', ab_parotid, fractions_parotid, 20, 'Mean', 'Conventional RT')
 
 
 # Thorax

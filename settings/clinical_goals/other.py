@@ -49,6 +49,9 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.parotids.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.submands.name, CG.at_most, CG.average_dose, TOL.parotids_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.cricopharyngeus.name, CG.at_most, CG.average_dose, TOL.cricopharyngeus_mean, None, 4))
+      oars.append(CG.ClinicalGoal(ROIS.larynx_glottis.name, CG.at_most, CG.average_dose, TOL.larynx_mean, None, 4))
+      oars.append(CG.ClinicalGoal(ROIS.larynx_supraglottis.name, CG.at_most, CG.average_dose, TOL.larynx_mean, None, 4))
       oars.append(CG.ClinicalGoal(ROIS.pituitary.name, CG.at_most, CG.average_dose, TOL.pituitary_2_mean, None, 4))
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 4))
     elif prescription.region_code in RC.palliative_thorax_codes:
