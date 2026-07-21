@@ -11,8 +11,8 @@
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
-import tolerance_doses as TOL
 import structure_set_functions as SSF
+import tolerance_doses as TOL
 
 
 class Other:
@@ -56,9 +56,9 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 4))
     elif prescription.region_code in RC.palliative_thorax_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
+      oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_quantec, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.volume_at_dose, 0.46, TOL.heart_v46_quantec, 3))
-      oars.append(CG.ClinicalGoal(ROIS.esophagus.name, CG.at_most, CG.average_dose, TOL.esophagus_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.average_dose, TOL.lung_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx, 3))
@@ -66,45 +66,51 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 4))
     elif prescription.region_code in RC.palliative_thorax_and_abdomen_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_quantec, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.volume_at_dose, 0.46, TOL.heart_v46_quantec, 3))
-      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.average_dose, TOL.lung_mean, None, 3))
-      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.average_dose, TOL.kidney_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.55, TOL.kidney_v55_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.32, TOL.kidney_v32_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.3, TOL.kidney_v30_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.kidney_v20_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 3))
-      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.average_dose, TOL.lung_mean, None, 3))
+      oars.append(CG.ClinicalGoal(ROIS.lungs.name, CG.at_most, CG.volume_at_dose, 0.35, TOL.lung_v35_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.spleen.name, CG.at_most, CG.average_dose, TOL.spleen_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0, TOL.stomach_min, 3))
     elif prescription.region_code in RC.palliative_abdomen_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.average_dose, TOL.kidney_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.55, TOL.kidney_v55_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.32, TOL.kidney_v32_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.3, TOL.kidney_v30_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.kidney_v20_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 3))
-      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.pancreas.name, CG.at_most, CG.average_dose, TOL.pancreas_mean_high, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.spleen.name, CG.at_most, CG.average_dose, TOL.spleen_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0, TOL.stomach_min, 3))
+      oars.append(CG.ClinicalGoal(ROIS.pancreas.name, CG.at_most, CG.average_dose, TOL.pancreas_mean_low, None, 4))
     elif prescription.region_code in RC.palliative_abdomen_and_pelvis_codes:
+      oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
+      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.average_dose, TOL.kidney_mean, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.55, TOL.kidney_v55_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.32, TOL.kidney_v32_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.3, TOL.kidney_v30_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.volume_at_dose, 0.2, TOL.kidney_v20_adx, 3))
       oars.append(CG.ClinicalGoal(ROIS.liver.name, CG.at_most, CG.average_dose, TOL.liver_mean, None, 3))
-      oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
+      oars.append(CG.ClinicalGoal(ROIS.pancreas.name, CG.at_most, CG.average_dose, TOL.pancreas_mean_high, None, 3))
       oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.51, TOL.rectum_v51pc,  3))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.bladder_v50_quantec, 4))
+      oars.append(CG.ClinicalGoal(ROIS.pancreas.name, CG.at_most, CG.average_dose, TOL.pancreas_mean_low, None, 4))
     elif prescription.region_code in RC.palliative_pelvis_codes:
       oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
       oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
       oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.51, TOL.rectum_v51pc,  3))
+      oars.append(CG.ClinicalGoal(ROIS.anal_canal.name, CG.at_most, CG.average_dose, TOL.anal_canal_mean, None, 4))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.bladder_v50_quantec, 4))
     return oars
 
