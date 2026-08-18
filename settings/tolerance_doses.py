@@ -235,6 +235,11 @@ ipsilateral_breast_177cc = EQD.Tolerance('Breast_L/R','5 % risk of induration', 
 ipsilateral_breast_426cc = EQD.Tolerance('Breast_L/R','10 % risk of induration', 3.6, 15, 40,'Volume receiving tolerance dose being less than 426 cc', 'Conventional RT' )
 
 
+# Abdomen:
+pancreas_mean_high = EQD.Tolerance('Pancreas', 'Volume reduction', 3, 25, 45, 'Mean', 'Conventional RT')
+pancreas_mean_low = EQD.Tolerance('Pancreas', 'Volume reduction', 3, 25, 25, 'Mean', 'Conventional RT')
+
+
 # Prostate
 # Bowel bag:
 bowel_bag_v195cc = EQD.Tolerance('BowelBag', 'Acute GI toxicity (QUANTEC, Roeske)', ab_bowel, 21.5, 43, 'Volume receiving tolerance dose being less than 195 cm^3', 'Conventional RT')
