@@ -552,9 +552,14 @@ def exclude_rois_from_export(pm):
 
 # Exclude the given ROI from from the export.
 def exclude_roi_from_export(pm, roi_name):
-  for pm_roi in pm.RegionsOfInterest:
-    if pm_roi.Name == roi_name:
-      if not pm_roi.ExcludeFromExport:
+  try:
+    roi = pm.RegionsOfInterest[roi_name]
+  except:
+    print(roi_name + " could not be deleted because this ROI does not exist in the patient model")
+  else:
+    if not roi.ExcludeFromExport:
+      # Note that ROIs with set material cannot be excluded from export.
+      if not roi.RoiMaterial:
         pm.ToggleExcludeFromExport(ExcludeFromExport = True, RegionOfInterests=[roi_name], PointsOfInterests=[])
 
 

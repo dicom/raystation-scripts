@@ -45,6 +45,22 @@ class DefProstate(object):
             pm.RegionsOfInterest[roi_name].OrganData.OrganType = "Other"
       except:
         pass
+    # Override density for arteries (for cases where IV contrast is used - which is cases with a GTVn):
+    iv_contrast = None
+    try:
+      if pm.RegionsOfInterest['GTVn']:
+        iv_contrast = True
+    except:
+      pass
+    if iv_contrast:
+      water = None
+      for material in pm.Materials:
+        if material.Name == 'Water':
+          water = material
+          break
+      if water:
+        for roi in [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r]:
+          pm.RegionsOfInterest[roi.name].SetRoiMaterial(Material=water)
     # Override density for gold seeds (if present):
     gold = None
     for material in pm.Materials:
@@ -53,7 +69,10 @@ class DefProstate(object):
         break
     if gold:
       for roi_name in [ROIS.seed1.name, ROIS.seed2.name, ROIS.seed3.name]:
-        pm.RegionsOfInterest[roi_name].SetRoiMaterial(Material=gold)
+        try:
+          pm.RegionsOfInterest[roi_name].SetRoiMaterial(Material=gold)
+        except:
+          pass
     # Exclude some ROIs from export:
     exclude = pelvic_bone_rois + vertebrae_rois + [ROIS.a_descending_aorta, ROIS.a_common_iliac_l, ROIS.a_common_iliac_r, ROIS.a_internal_iliac_l, ROIS.a_internal_iliac_r, ROIS.a_external_iliac_l, ROIS.a_external_iliac_r, ROIS.v_inferior_vena_cava, ROIS.v_common_iliac_l, ROIS.v_common_iliac_r, ROIS.v_internal_iliac_l, ROIS.v_internal_iliac_r, ROIS.v_external_iliac_l, ROIS.v_external_iliac_r]
     for roi in exclude:
