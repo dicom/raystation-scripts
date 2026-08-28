@@ -233,7 +233,7 @@ class DefProstate(object):
       else:
         # Positive node will have 60 Gy:
         # Targets:
-        ctv2 = ROI.ROIExpanded(ctv2s.name, ctv2s.type, COLORS.ctv_med, source = semves20, margins = MARGINS.zero)
+        ctv2 = ROI.ROIAlgebra(ctv2s.name, ctv2s.type, COLORS.ctv_med, sourcesA = [semves20], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv_semves = ROI.ROIAlgebra(ROIS.ptv_semves.name, ROIS.ptv_semves.type, COLORS.ptv_med, sourcesA = [semves20], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.uniform_6mm_expansion, marginsB = MARGINS.zero)
         ptv2 = ROI.ROIAlgebra(ptv2s.name, ptv2s.type, ptv2s.color, sourcesA = [ptv_semves], sourcesB = [ptv3], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
         ptv_2_3 = ROI.ROIAlgebra(ptv_2_3s.name, ptv_2_3s.type, COLORS.ptv_low, sourcesA = [ptv2], sourcesB = [ptv3], marginsA = MARGINS.zero, marginsB = MARGINS.zero)
