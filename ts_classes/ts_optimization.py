@@ -34,6 +34,7 @@ class TSOptimization(object):
     self.mu = TEST.Parameter('MU', '', self.param)
     self.parameter = TEST.Parameter('Parameter', '', self.param)
     self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
+    self.prescription = TEST.Parameter('Normeringsvolum', '', self.param)
 
 
   # Gives true/false if this optimization is in a stereotactic beam_set or not.
@@ -126,3 +127,18 @@ class TSOptimization(object):
           return tt.fail(str(len(target_fails)) + ": " + str(target_fails))
         else:
           return tt.succeed()
+
+  # Tests that an objective exists for the prescription ROI.
+  def objective_for_prescription_roi_test(self):
+    roi_name = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
+    t = TEST.Test("Det forventes å eksistere minst ett objective for normeringsvolumet", roi_name, self.prescription)
+    match = False
+    # Iterate objectives
+    for cf in self.optimization.Objective.ConstituentFunctions:
+      if cf.ForRegionOfInterest.Name == roi_name:
+        match = True
+        break
+    if match:
+      return t.succeed()
+    else:
+      return t.fail(None)
