@@ -29,3 +29,6 @@ from .scheduled_field import ScheduledField
 from .session import Session
 from .site_setup import SiteSetup
 from .task import Task
+from .episode import Episode
+from .payer import Payer
+from .pay_pay import PatPay

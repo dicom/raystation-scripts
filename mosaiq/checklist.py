@@ -13,8 +13,26 @@
 #from tkinter import messagebox
 
 from .database import Database
+from .patient import Patient
+from .task import Task
 
 class Checklist:
+
+
+  def __repr__(self):
+    status = "complete" if self.complete else "incomplete"
+    suppressed = "suppressed" if self.suppressed else "active"
+
+    # Dates are often datetime/None in Mosaiq extracts; keep readable and safe.
+    due = self.due_date.date() if self.due_date else None
+    done = self.completed_date.date() if self.completed_date else None
+
+    return (
+      f"Checklist(patient_id={self.patient().last_name!r}, "
+      f"task_id={self.task().description!r}, "
+      f"{status} "
+      f"due_date={due!r}, completed_date={done!r})"
+    )
   
   # Returns a single checklist matching the given database id (Chk_id) (or None if no match).
   @classmethod
@@ -24,14 +42,43 @@ class Checklist:
     if row != None:
       instance = cls(row)
     return instance
+
+  # Gives all checklists with a given task_id across all patients
+  @classmethod
+  def of_type(cls, task_id, complete=None):
+    query = "SELECT * FROM Chklist WHERE TSK_ID = '{}'".format(task_id)
+    if complete is not None:
+      query += " AND Complete = '{}'".format(str(complete))
+    checklists = list()
+    rows = Database.fetch_all(query)
+    for row in rows:
+      checklists.append(cls(row))
+    return checklists
   
   # Gives all checklists belonging to the given patient.
   # Optionally the query may be restricted to a given task type (specified by id).
   @classmethod
-  def for_patient(cls, patient, task_id=None):
+  def for_patient(cls, patient, task_id=None, complete=None):
     query = "SELECT * FROM Chklist WHERE Pat_ID1 = '{}'".format(patient.id)
     if task_id:
       query += " AND TSK_ID = '{}'".format(task_id)
+    if complete is not None:
+      query += " AND Complete = '{}'".format(str(complete))
+    checklists = list()
+    rows = Database.fetch_all(query)
+    for row in rows:
+      checklists.append(cls(row))
+    return checklists
+
+  # Gives all checklists for a staff/location/group
+  # Optionally the query may be restricted to a given task type (specified by id).
+  @classmethod
+  def for_responsible(cls, responsible, task_id=None, complete=None):
+    query = "SELECT * FROM Chklist WHERE Rsp_Staff_ID = '{}'".format(responsible.id)
+    if task_id:
+      query += " AND TSK_ID = '{}'".format(task_id)
+    if complete is not None:
+      query += " AND Complete = '{}'".format(str(complete))
     checklists = list()
     rows = Database.fetch_all(query)
     for row in rows:

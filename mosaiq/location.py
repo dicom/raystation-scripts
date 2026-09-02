@@ -13,6 +13,7 @@
 #from tkinter import messagebox
 
 from .database import Database
+from pprint import pprint
 
 class Location:
   
@@ -21,6 +22,17 @@ class Location:
   def find(cls, id):
     instance = None
     row = Database.fetch_one("SELECT * FROM Staff WHERE Staff_ID = '{}'".format(str(id)))
+    #pprint(row)
+    if row != None:
+      instance = cls(row)
+    return instance
+
+  # Returns a single location (Staff/Machine) matching the given username (User_Name) (or nil if no match).
+  @classmethod
+  def find_by_username(cls, user_name):
+    instance = None
+    row = Database.fetch_one("SELECT * FROM Staff WHERE User_Name = '{}'".format(str(user_name)))
+    #pprint(row)
     if row != None:
       instance = cls(row)
     return instance
