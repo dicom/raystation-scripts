@@ -83,6 +83,14 @@ class TSBeam(object):
       self._leaf_min_max = [minMLCX1, maxMLCX2]
     return self._leaf_min_max
   
+  # Gives the max field radius (distance from isocenter to field edge) in cm.
+  # (Note also that this method does not measure the true max radius (e.g. corner radius),
+  # it only measures the distance orthogonally in the 4 jaw/leaf directions along the central axis)
+  def max_field_radius(self):
+    jaw_max = self.jaw_min_max()
+    leaf_max = self.leaf_min_max()
+    return max(-jaw_max[0], jaw_max[1], -leaf_max[0], leaf_max[1])
+  
   # Gives the max field size opening in cm (which may be either jaw or leaf opening).
   def max_field_size_opening(self):
     max_size = None
