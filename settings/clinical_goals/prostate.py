@@ -79,15 +79,15 @@ class Prostate:
       oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.60, TOL.rectum_v60pc, 6))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.19, TOL.bladder_v19pc, 6))
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.41, TOL.bladder_v41pc_freq, 6))
-      oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
-      oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_head_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.femoral_d02pc, 0.03, 6))
+      oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.femoral_d02pc, 0.03, 6))
       oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1000, TOL.bone_v1000cc, 6))
       oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1520, TOL.bone_v1520cc, 6))
       oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 1250, TOL.bone_v1250cc, 6))
       oars.append(CG.ClinicalGoal(ROIS.bone.name, CG.at_most, CG.abs_volume_at_dose, 850, TOL.bone_v850cc, 6))
       if prescription.region_code in RC.prostate_node_codes:
         # Lymph node irradiation:
-        oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_volume, TOL.spinalcanal_v2_adx, 0.02, 2))
+        oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinalcanal_v2_adx, 0.03, 2))
     return oars
 
 
