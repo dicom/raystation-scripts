@@ -1,7 +1,3 @@
-# encoding: utf8
-
-# Import system libraries:
-
 # Import local files:
 import colors as COLORS
 import def_oars as DEF
@@ -11,30 +7,42 @@ import structure_set_functions as SSF
 import roi as ROI
 import rois as ROIS
 
-# Definitions script for brain treatments (whole brain, part of brain, stereotactic brain).
-class DefBrain(object):
 
-  # Adds target and OAR ROIs to the given site and creates them in RayStation.
-  def __init__(self, pm, examination, ss, choices, site):
+class DefBrain(object):
+  """Configuration of ROIs used for cases of brain cancer."""
+
+  # Adds target and OAR ROIs to the given pm_setup and creates them in RayStation.
+  def __init__(self, pm, examination, ss, choices, pm_setup):
+    """Initializes the brain case configuration with the relevant RayStation instances and the user's GUI selections.
+
+    Based on the settings given, a set of ROIs (Targets, OARs & Others) are created on the patient case in RayStation.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      examination (PyScriptObject): The RayStation Examination instance.
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      choices (list): The choices made by the user in the definitions script GUI.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     # Add ROIs which are common for all cases:
-    self.add_common_rois(pm, examination, site)
+    self.add_common_rois(pm, pm_setup)
     # Choice 1: Scope (whole brain, part or stereotactic).
     region = choices[1]
     # Region:
     if region== 'whole':
       # Choice 2: Involvement of menignes.
       meninges = choices[2]
-      self.add_whole_brain(pm, examination, site, meninges)
+      self.add_whole_brain(pm, pm_setup, meninges)
     elif region == 'part':
       # Partial Brain:
-      self.add_partial_brain(pm, examination, site)
+      self.add_partial_brain(pm, pm_setup)
     elif region == 'stereotactic':
       # Stereotactic brain:
       # Choice 2: Nr of targets.
       nr_targets = int(choices[2])
-      self.add_stereotactic_brain(pm, examination, site, nr_targets)
+      self.add_stereotactic_brain(pm, pm_setup, nr_targets)
     # Create all targets and OARs in RayStation:
-    site.create_rois()
+    pm_setup.create_rois()
     # Create cornea and retina ROIs:
     PMF.create_cornea_and_retina_rois(pm, examination, ss)
     # Change ROI type to "Other" for selected ROIs:
@@ -43,31 +51,65 @@ class DefBrain(object):
         pm.RegionsOfInterest[name].OrganData.OrganType = "Other"
       except:
         pass
-  
-  
-  # Adds rois that are common across all cases.
-  def add_common_rois(self, pm, examination, site):
-    site.add_oars([ROIS.brain, ROIS.brainstem, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.eye_l, ROIS.eye_r, ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.optic_chiasm, ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal, ROIS.submand_l, ROIS.submand_r])
 
 
-  # Adds partial brain ROIs to the site object.
-  def add_partial_brain(self, pm, examination, site):
+  def add_common_rois(self, pm, pm_setup):
+    """Adds ROIs for this particular treatment site that are common across all scopes.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
+    pm_setup.add_oars([ROIS.brain, ROIS.brainstem, ROIS.cochlea_l, ROIS.cochlea_r, ROIS.eye_l, ROIS.eye_r,
+      ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.lens_l, ROIS.lens_r, ROIS.optic_chiasm, ROIS.optic_nerve_l,
+      ROIS.optic_nerve_r, ROIS.oral_cavity, ROIS.parotid_l, ROIS.parotid_r, ROIS.pituitary, ROIS.spinal_canal,
+      ROIS.submand_l, ROIS.submand_r
+    ])
+
+
+  def add_partial_brain(self, pm, pm_setup):
+    """Adds ROIs for partial brain cases.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     # Brain-Brainstem (used to aid in CTV definition):
-    brain_brainstem = ROI.ROIAlgebra('Brain-Brainstem', ROIS.brain.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.brainstem], operator = 'Subtraction')
+    brain_brainstem = ROI.ROIAlgebra('Brain-Brainstem', ROIS.brain.type, ROIS.brain.color,
+      sourcesA = [ROIS.brain], sourcesB = [ROIS.brainstem], operator = 'Subtraction'
+    )
     # Targets:
-    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA = [ROIS.gtv], sourcesB = [brain_brainstem], operator = 'Intersection', marginsA = MARGINS.uniform_20mm_expansion, marginsB = MARGINS.zero)
-    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, sourcesA = [ctv], sourcesB = [ROIS.body], operator = 'Intersection', marginsA = MARGINS.uniform_3mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    site.add_targets([ROIS.gtv, ctv, ptv, ROIS.wall_ptv])
+    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, sourcesA = [ROIS.gtv], sourcesB = [brain_brainstem],
+      operator = 'Intersection', marginsA = MARGINS.uniform_20mm_expansion, marginsB = MARGINS.zero
+    )
+    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, sourcesA = [ctv], sourcesB = [ROIS.body],
+      operator = 'Intersection', marginsA = MARGINS.uniform_3mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
+    )
+    pm_setup.add_targets([ROIS.gtv, ctv, ptv, ROIS.wall_ptv])
     # Derived OARs:
-    brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction')
-    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
-    mask = ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_conv_mask_expansion)
+    brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color,
+      sourcesA = [ROIS.brain], sourcesB = [ROIS.gtv], operator = 'Subtraction'
+    )
+    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color,
+      sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction'
+    )
+    mask = ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv,
+      sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_conv_mask_expansion
+    )
     # Non-DL OARs:
-    site.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, mask])
-  
-  
-  # Adds stereotactic brain ROIs to the site object.
-  def add_stereotactic_brain(self, pm, examination, site, nr_targets):
+    pm_setup.add_oars([ROIS.brainstem_core, ROIS.brainstem_surface, ROIS.hippocampus_l,
+      ROIS.hippocampus_r, ROIS.skin_brain_5, brain_brainstem, mask]
+    )
+
+
+  def add_stereotactic_brain(self, pm, pm_setup, nr_targets):
+    """Adds ROIs for stereotactic brain cases.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+      nr_targets (int): The number of targets to setup.
+    """
     gtvs = []
     ptvs = []
     walls = []
@@ -80,16 +122,27 @@ class DefBrain(object):
       gtvs.append(gtv)
       ptvs.append(ptv)
       walls.append(ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
-      masks.append(ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_sbrt_mask_expansion))
+      masks.append(
+        ROI.ROIAlgebra(ROIS.mask_ptv.name, ROIS.mask_ptv.type, COLORS.mask_ptv,
+        sourcesA = [ptv], sourcesB = [ROIS.body], operator='Intersection',
+        marginsA = MARGINS.brain_sbrt_mask_expansion)
+      )
     else:
       # Multiple targets (2, 3 or 4):
       for i in range(0, nr_targets):
         # Targets:
         gtvs.append(ROI.ROI('GTV'+str(i+1), 'Gtv', ROIS.gtv.color))
-        ptvs.append(ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, gtvs[-1], margins = MARGINS.uniform_2mm_expansion))
+        ptvs.append(
+          ROI.ROIExpanded(ROIS.ptv.name+str(i+1), ROIS.ptv.type, COLORS.ptv, gtvs[-1],
+          margins = MARGINS.uniform_2mm_expansion)
+        )
         # OARs:
         walls.append(ROI.ROIWall("zPTV"+str(i+1)+"_Wall", ROIS.z_ptv_wall.type, COLORS.wall, ptvs[-1], 1, 0))
-        masks.append(ROI.ROIAlgebra(ROIS.mask_ptv.name+str(i+1), ROIS.mask_ptv.type, COLORS.mask_ptv, sourcesA = [ptvs[-1]], sourcesB = [ROIS.body], operator='Intersection', marginsA = MARGINS.brain_sbrt_mask_expansion))
+        masks.append(
+          ROI.ROIAlgebra(ROIS.mask_ptv.name+str(i+1), ROIS.mask_ptv.type, COLORS.mask_ptv,
+          sourcesA = [ptvs[-1]], sourcesB = [ROIS.body], operator='Intersection',
+          marginsA = MARGINS.brain_sbrt_mask_expansion)
+        )
       # Union target volumes:
       gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[gtvs[0]], sourcesB=gtvs[1:])
       ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ptvs[0]], sourcesB=ptvs[1:])
@@ -97,24 +150,34 @@ class DefBrain(object):
       ptvs.append(ptv)
     # Common for single or multiple SRT targets:
     # Brain with targets excluded:
-    brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color, sourcesA = [ROIS.brain], sourcesB = [gtv], operator = 'Subtraction')
-    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color, sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction')
-    # Add to site:
-    site.add_targets(gtvs + ptvs)
+    brain_gtv = ROI.ROIAlgebra(ROIS.brain_gtv.name, ROIS.brain_gtv.type, ROIS.brain.color,
+      sourcesA = [ROIS.brain], sourcesB = [gtv], operator = 'Subtraction'
+    )
+    brain_ptv = ROI.ROIAlgebra(ROIS.brain_ptv.name, ROIS.brain_ptv.type, ROIS.brain_ptv.color,
+      sourcesA = [ROIS.brain], sourcesB = [ptv], operator = 'Subtraction'
+    )
+    # Add to pm_setup:
+    pm_setup.add_targets(gtvs + ptvs)
     # Non-DL OARs:
-    site.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls + masks)
-  
-  
-  # Adds whole brain ROIs to the site object.
-  def add_whole_brain(self, pm, examination, site, meninges):
+    pm_setup.add_oars([ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.skin_srt, brain_gtv, brain_ptv] + walls + masks)
+
+
+  def add_whole_brain(self, pm, pm_setup, meninges):
+    """Adds ROIs for whole brain cases.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+      meninges (str): A string indicating whether to include the meninges (if 'yes').
+    """
     # Brain margin:
     if meninges == 'yes':
       brain_margin = MARGINS.uniform_1mm_expansion
     else:
-      brain_margin = MARGINS.zero   
+      brain_margin = MARGINS.zero
     # Targets:
     ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv, ROIS.brain, margins = brain_margin)
     ptv = ROI.ROIExpanded(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv, ctv, margins = MARGINS.uniform_3mm_expansion)
-    site.add_targets([ctv, ptv])
+    pm_setup.add_targets([ctv, ptv])
     # Non-DL OARs:
-    site.add_oars([ROIS.skin_brain, ROIS.nasal_cavity])
+    pm_setup.add_oars([ROIS.skin_brain, ROIS.nasal_cavity])

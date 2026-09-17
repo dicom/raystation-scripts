@@ -1,15 +1,13 @@
-# encoding: utf8
-
 # Import local files:
 import patient_model_functions as PMF
 import rois as ROIS
 
 
 # Site class for ROI definition.
-class DefSite(object):
+class PatientModelSetup(object):
 
-  # Creates a DefSite object.
-  # Sets up objects associated with the DefSite:
+  # Creates a PatientModelSetup object.
+  # Sets up objects associated with the PatientModelSetup:
   # -Patient model
   # -Examination
   # -Structure Set
@@ -62,7 +60,7 @@ class DefSite(object):
       PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
 
 
-  # Adds target ROIs to the DefSite.
+  # Adds target ROIs to the PatientModelSetup.
   def add_targets(self, targets):
     # Verify input:
     assert isinstance(targets, list), "targets is not a list: %r" % targets
@@ -72,7 +70,7 @@ class DefSite(object):
     self.targets.extend(targets)
 
 
-  # Add OARs to the DefSite.
+  # Add OARs to the PatientModelSetup.
   def add_oars(self, oars):
     # Verify input:
     assert isinstance(oars, list), "oars is not a list: %r" % oars
@@ -82,7 +80,7 @@ class DefSite(object):
     self.oars.extend(oars)
 
 
-  # Creates all ROIs that are setup in this DefSite (targets + OARs) in RayStation.
+  # Creates all ROIs that are setup in this PatientModelSetup (targets + OARs) in RayStation.
   def create_rois(self):
     # Do not delete ROIs at this stage any more:
     # Delete pre-existing ROIs (except those which are manually contoured) in sorted order:

@@ -1,5 +1,3 @@
-# encoding: utf8
-
 # Import local files:
 import colors as COLORS
 import def_oars as DEF
@@ -9,27 +7,38 @@ import roi as ROI
 import roi_functions as RF
 import rois as ROIS
 
-# Definitions script for rectum treatments (conventional 50 Gy SIB and hypofractionated 25 Gy).
-class DefRectum(object):
 
-  # Adds target and OAR ROIs to the given site and creates them in RayStation.
-  def __init__(self, patient, pm, examination, ss, choices, site):
+class DefRectum(object):
+  """Configuration of ROIs used for cases of rectal cancer."""
+
+  def __init__(self, patient, pm, ss, choices, pm_setup):
+    """Initializes the rectum case configuration with the relevant RayStation instances and the user's GUI selections.
+
+    Based on the settings given, a set of ROIs (Targets, OARs & Others) are created on the patient case in RayStation.
+
+    Args:
+      patient (PyScriptObject): The RayStation Patient instance.
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      choices (list): The choices made by the user in the definitions script GUI.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     # Add ROIs which are common for all cases:
-    self.add_common_rois(pm, examination, site)
+    self.add_common_rois(pm, pm_setup)
     # Add ROIs based on gender:
-    self.add_gender_based_rois(patient, pm, examination, site)
+    self.add_gender_based_rois(patient, pm, pm_setup)
     # Choice 1: Fractionation - normo or hypofractionated?
     frac = choices[1]
     if frac == 'normo':
       # Choice 2: Groin target volume - included or not?
       groin = choices[2]
       # Conventionally fractionated (2 Gy x 25):
-      self.add_conventional_fx(pm, examination, site, groin)
+      self.add_normo_fx(pm, pm_setup, groin)
     else:
       # Hypofractionated treatment (5 Gy x 5):
-      self.add_hypo_fx(pm, examination, site)
+      self.add_hypo_fx(pm, pm_setup)
     # Create all targets and OARs in RayStation:
-    site.create_rois()
+    pm_setup.create_rois()
     # Change type to "Other":
     RF.set_organ_type(pm.RegionsOfInterest['Bone'], "Other")
     RF.set_organ_type(pm.RegionsOfInterest['BowelBag_Draft'], "Other")
@@ -39,74 +48,148 @@ class DefRectum(object):
       PMF.exclude_roi_from_export(pm, roi_name)
 
 
-  # Adds rois that are common across all cases.
-  def add_common_rois(self, pm, examination, site):
+  def add_common_rois(self, pm, pm_setup):
+    """Adds ROIs for this particular treatment site that are common across all scopes.
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     # Create "Bone" ROI Algebra:
     pelvic_bone_rois = [ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r]
     vertebrae_rois = [ROIS.l5, ROIS.sacrum, ROIS.coccyx]
     bone = ROI.ROIAlgebra("Bone", 'Organ', COLORS.bone_color1, sourcesA = pelvic_bone_rois, sourcesB = vertebrae_rois)
-    site.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina, ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r, ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum])
-  
-  
-  # Adds rois that are based on gender.
-  def add_gender_based_rois(self, patient, pm, examination, site):
+    pm_setup.add_oars([ROIS.bladder, bone, ROIS.bowel_bag_draft, ROIS.bowel_bag, ROIS.cauda_equina,
+      ROIS.coccyx, ROIS.l5, ROIS.femoral_head_l, ROIS.femoral_head_r, ROIS.femur_l, ROIS.femur_r,
+      ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.sacrum
+    ])
+
+
+  def add_gender_based_rois(self, patient, pm, pm_setup):
+    """Adds ROIs for this particular treatment site that are dependent on the patient's gender.
+
+    Args:
+      patient (PyScriptObject): The RayStation Patient instance.
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     if patient.Gender == 'Female':
-      site.add_oars([ROIS.uterus])
+      pm_setup.add_oars([ROIS.uterus])
     elif patient.Gender == 'Male':
-      site.add_oars([ROIS.penile_bulb])
-  
-  
-  # Adds hypo fx (5 Gy x 5) ROIs to the site object.
-  def add_hypo_fx(self, pm, examination, site):
+      pm_setup.add_oars([ROIS.penile_bulb])
+
+
+  def add_hypo_fx(self, pm, pm_setup):
+    """Adds target ROIs for hypo-fractionated treatment (5 Gy x 5 fx).
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+    """
     # Targets:
     gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
     # We will not use the CTVp in ROI algebra from now on, but we'll keep it present for visual aid:
-    z_ctv_p_default = ROI.ROIAlgebra('zCTVp_default', 'Undefined', COLORS.ctv_high, sourcesA = [gtv], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsB = MARGINS.uniform_5mm_contraction)
-    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, z_ctv_p_default, ROIS.ctv_e, ctv, ptv])
+    z_ctv_p_default = ROI.ROIAlgebra('zCTVp_default', 'Undefined', COLORS.ctv_high, sourcesA = [gtv],
+      sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx],
+      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
+    )
+    ctv = ROI.ROIAlgebra(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external],
+      operator = 'Intersection', marginsB = MARGINS.uniform_5mm_contraction
+    )
+    ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, COLORS.ptv_med,
+      sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection',
+      marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction
+    )
+    pm_setup.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv, z_ctv_p_default, ROIS.ctv_e, ctv, ptv])
     # OARs:
     wall_ptv = ROI.ROIWall(ROIS.z_ptv_wall.name, ROIS.z_ptv_wall.type, COLORS.wall, ptv, 0.5, 0)
     # Non-DL OARs:
-    site.add_oars([wall_ptv])
-  
-  
-  # Adds conventional fractionated (2 Gy x 25) ROIs to the site object.
-  def add_conventional_fx(self, pm, examination, site, groin):
+    pm_setup.add_oars([wall_ptv])
+
+
+  def add_normo_fx(self, pm, pm_setup, groin):
+    """Adds target ROIs for normo-fractionated treatment (2 Gy x 25 fx).
+
+    Args:
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      pm_setup (PatientModelSetup): The patient model setup to be used for this case.
+      groin (str): A string indicating inclusion of groin targets ('with').
+    """
     # With our without groin targets?
     if groin == 'with':
       # Groin targets included:
-      gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r])
-      site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r, gtv, ROIS.ctv_groin_l, ROIS.ctv_groin_r])
+      gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p],
+        sourcesB=[ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r]
+      )
+      pm_setup.add_targets([ROIS.gtv_p, ROIS.gtv_n1, ROIS.gtv_groin_l, ROIS.gtv_groin_r, gtv,
+        ROIS.ctv_groin_l, ROIS.ctv_groin_r
+      ])
     else:
       # No groin targets:
-      gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color, sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1])
-      site.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
+      gtv = ROI.ROIAlgebra(ROIS.gtv.name, ROIS.gtv.type, ROIS.gtv.color,
+        sourcesA=[ROIS.gtv_p], sourcesB=[ROIS.gtv_n1]
+      )
+      pm_setup.add_targets([ROIS.gtv_p, ROIS.gtv_n1, gtv])
     # Common for groin included or not:
-    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1], sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero)
-    ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high, sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high, sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-    ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low, sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
+    ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p],
+      sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx],
+      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
+    )
+    ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1],
+      sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx],
+      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
+    )
+    ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high,
+      sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union',
+      marginsA = MARGINS.zero, marginsB = MARGINS.zero
+    )
+    ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high,
+      sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection',
+      marginsA = MARGINS.rectum_ptv_50_expansion, marginsB = MARGINS.uniform_5mm_contraction
+    )
+    ctv_47 = ROI.ROIAlgebra(ROIS.ctv_47.name, ROIS.ctv_47.type, COLORS.ctv_low,
+      sourcesA=[ROIS.ctv_e], sourcesB=[ptv_50], operator = 'Subtraction',
+      marginsA = MARGINS.zero, marginsB = MARGINS.zero
+    )
     if groin == 'with':
       # Specific for groin targets included:
       ctv_47.sourcesA.extend([ROIS.ctv_groin_l, ROIS.ctv_groin_r])
-      ptv_groin_l = ROI.ROIAlgebra(ROIS.ptv_groin_l.name, ROIS.ptv_groin_l.type, COLORS.ptv, sourcesA=[ROIS.ctv_groin_l], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-      ptv_groin_r = ROI.ROIAlgebra(ROIS.ptv_groin_r.name, ROIS.ptv_groin_r.type, COLORS.ptv, sourcesA=[ROIS.ctv_groin_r], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-      ptv_e = ROI.ROIAlgebra(ROIS.ptv_e.name, ROIS.ptv_e.type, COLORS.ptv, sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction)
-      ptv_47_tot = ROI.ROIAlgebra(ROIS.ptv_47_tot.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_e], sourcesB=[ptv_groin_l, ptv_groin_r], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ptv_47_tot], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-      site.add_targets([ptv_groin_l, ptv_groin_r, ptv_e, ptv_47_tot])
+      ptv_groin_l = ROI.ROIAlgebra(ROIS.ptv_groin_l.name, ROIS.ptv_groin_l.type, COLORS.ptv,
+        sourcesA=[ROIS.ctv_groin_l], sourcesB=[ROIS.external], operator = 'Intersection',
+        marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
+      )
+      ptv_groin_r = ROI.ROIAlgebra(ROIS.ptv_groin_r.name, ROIS.ptv_groin_r.type, COLORS.ptv,
+        sourcesA=[ROIS.ctv_groin_r], sourcesB=[ROIS.external], operator = 'Intersection',
+        marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
+      )
+      ptv_e = ROI.ROIAlgebra(ROIS.ptv_e.name, ROIS.ptv_e.type, COLORS.ptv,
+        sourcesA=[ROIS.ctv_e], sourcesB=[ROIS.external], operator = 'Intersection',
+        marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.uniform_5mm_contraction
+      )
+      ptv_47_tot = ROI.ROIAlgebra(ROIS.ptv_47_tot.name, ROIS.ptv_47.type, COLORS.ptv_med,
+        sourcesA=[ptv_e], sourcesB=[ptv_groin_l, ptv_groin_r], operator = 'Union',
+        marginsA = MARGINS.zero, marginsB = MARGINS.zero
+      )
+      ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med,
+        sourcesA=[ptv_47_tot], sourcesB=[ptv_50], operator = 'Subtraction',
+        marginsA = MARGINS.zero, marginsB = MARGINS.zero
+      )
+      pm_setup.add_targets([ptv_groin_l, ptv_groin_r, ptv_e, ptv_47_tot])
     else:
       # Specific for groin targets excluded:
-      ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ctv_47], sourcesB=[ptv_50], operator = 'Subtraction', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.zero)
+      ptv_47 = ROI.ROIAlgebra(ROIS.ptv_47.name, ROIS.ptv_47.type, COLORS.ptv_med, sourcesA=[ctv_47], sourcesB=[ptv_50],
+        operator = 'Subtraction', marginsA = MARGINS.rectum_ctv_primary_risk_expansion, marginsB = MARGINS.zero
+      )
     # Targets:
-    ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, COLORS.ctv_alt, sourcesA = [ctv_47], sourcesB = [ctv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    ptv_47_50 = ROI.ROIAlgebra(ROIS.ptv_47_50.name, ROIS.ptv_47_50.type, COLORS.ptv_low, sourcesA = [ptv_47], sourcesB = [ptv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero)
-    site.add_targets([ROIS.ctv_e, ctv_p, ctv_n, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
+    ctv_47_50 = ROI.ROIAlgebra(ROIS.ctv_47_50.name, ROIS.ctv_47_50.type, COLORS.ctv_alt,
+      sourcesA = [ctv_47], sourcesB = [ctv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero
+    )
+    ptv_47_50 = ROI.ROIAlgebra(ROIS.ptv_47_50.name, ROIS.ptv_47_50.type, COLORS.ptv_low,
+      sourcesA = [ptv_47], sourcesB = [ptv_50], operator = 'Union', marginsA = MARGINS.zero, marginsB = MARGINS.zero
+    )
+    pm_setup.add_targets([ROIS.ctv_e, ctv_p, ctv_n, ctv_50, ctv_47, ctv_47_50, ptv_50, ptv_47, ptv_47_50])
     # OARs:
     wall_ptv_50 = ROI.ROIWall(ROIS.z_ptv_50_wall.name, ROIS.z_ptv_50_wall.type, COLORS.wall, ptv_50, 0.5, 0)
     wall_ptv_47_50 = ROI.ROIWall(ROIS.z_ptv_47_50_wall.name, ROIS.z_ptv_47_50_wall.type, COLORS.wall, ptv_47_50, 0.5, 0)
     # Non-DL OARs:
-    site.add_oars([wall_ptv_50, wall_ptv_47_50])
-  
+    pm_setup.add_oars([wall_ptv_50, wall_ptv_47_50])
