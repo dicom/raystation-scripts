@@ -1,16 +1,9 @@
-# encoding: utf8
-
-# Peforms quality control of the current patient, case and treatment plan (including its beam sets).
-
-
-# System configuration:
+# Import system libraries:
 from connect import *
 import sys
 from tkinter import messagebox
-# GUI framework (debugging only):
 
-
-# Local script imports:
+# Import local files:
 import test_p as TEST
 import raystation_utilities as RSU
 import ts_patient as TS_P
@@ -30,11 +23,32 @@ import ts_optimization as TS_O
 
 
 class QualityControl(object):
+  """A class for performing a quality control of the current treatment plan in RayStation against the
+  clinic's defined best practice.
+
+  Loads the clinic's treatment plan test suite and performs tests on the parameters of the various
+  treatment plan objects such as beam set, beams, segments, structures sets, ROIs, POIs, etc.
+  All discrepancies are registered in a Parameter hiearchy and can e.g. be displayed in a dialogue window.
+
+  Attributes:
+    patient (PyScriptObject): The RayStation Patient instance.
+    case (PyScriptObject): The RayStation Case instance.
+    plan (PyScriptObject): The RayStation Plan instance.
+    result (Parameter): The parameter instance containing the result of the treatment plan QC.
+  """
+
   def __init__(self, patient, case, plan):
+    """Initializes the quality control with the relevant RayStation.
+
+    Args:
+      patient (PyScriptObject): The RayStation Patient instance.
+      case (PyScriptObject): The RayStation Case instance.
+      plan (PyScriptObject): The RayStation Plan instance.
+    """
     self.patient = patient
     self.case = case
     self.plan = plan
-    
+
     # Initialize test suites:
     ts_patient = TS_P.TSPatient(patient)
     ts_case = TS_C.TSCase(case, ts_patient=ts_patient)
@@ -62,7 +76,7 @@ class QualityControl(object):
         ts_beam = TS_B.TSBeam(beam, ts_beam_set=ts_beam_set)
         for segment in beam.Segments:
           ts_segment = TS_S.TSSegment(segment, ts_beam=ts_beam)
-    
+
     # Store the patient test results:
     self.result = ts_patient.param
 
@@ -78,14 +92,15 @@ class QualityControl(object):
     ts_case.ctv_not_contracted_from_external_for_breast_case_with_virtual_bolus_test()
     ts_case.virtual_bolus_without_density_override_test()
     #ts_case.case_has_prosthesis_roi_if_metal_is_present_in_examination_test()
-    
+
     # ROI tests:
     for ts_roi in ts_case.ts_rois:
       ts_roi.exclude_from_export_test()
-    
+
     # Structure set tests:
+    plan_ss_examination_name = ts_case.ts_plan.plan.BeamSets[0].GetStructureSet().OnExamination.Name
     for ts_structure_set in ts_case.ts_structure_sets:
-      if ts_structure_set.structure_set.OnExamination.Name == ts_case.ts_plan.plan.BeamSets[0].GetStructureSet().OnExamination.Name:
+      if ts_structure_set.structure_set.OnExamination.Name == plan_ss_examination_name:
         ts_structure_set.localization_point_test()
         ts_structure_set.external_test()
         ts_structure_set.dose_region_test()
@@ -98,7 +113,7 @@ class QualityControl(object):
         ts_structure_set.breast_seeds_test()
         ts_structure_set.no_empty_slice_between_rectum_and_analcanal_test()
         ts_structure_set.no_geometries_outside_external_test()
-      
+
         # POI geometry tests:
         for ts_poi_geometry in ts_structure_set.ts_poi_geometries:
           ts_poi_geometry.is_defined_test()
@@ -108,12 +123,12 @@ class QualityControl(object):
           ts_roi_geometry.derived_roi_geometry_is_updated_test()
           ts_roi_geometry.gaps_in_definition_test()
           ts_roi_geometry.max_nr_of_islands_in_slice_test()
-    
+
     # Plan tests:
     ts_plan.planned_by_test()
     ts_plan.unique_beam_numbers_test()
     ts_plan.localization_point_not_in_first_or_last_slice_test()
-    
+
     # Beam set tests:
     for ts_beam_set in ts_plan.ts_beam_sets:
       ts_beam_set.unmerged_beams_test()
@@ -143,8 +158,8 @@ class QualityControl(object):
       ts_beam_set.beam_number_test()
       ts_beam_set.target_volume_normalisation_for_sib_test()
       ts_beam_set.existing_plan_in_mosaiq_with_this_beam_set_label_test()
-      
-      
+
+
       # Label tests:
       ts_label = ts_beam_set.ts_label
       ts_label.nr_parts_test()
@@ -162,7 +177,7 @@ class QualityControl(object):
         ts_prescription.prescription_real_dose_test()
         ts_prescription.clinical_max_test()
         ts_prescription.stereotactic_prescription_technique_test()
-        
+
       # Objectives/constraints tests:
       ts_optimization = ts_beam_set.ts_optimization
       if ts_optimization:
@@ -170,7 +185,7 @@ class QualityControl(object):
         ts_optimization.objectives_background_dose_test()
         ts_optimization.objective_for_prescription_roi_test()
         ts_optimization.dose_grid_test()
-        
+
       # Beam tests:
       for ts_beam in ts_beam_set.ts_beams:
         ts_beam.name_test()

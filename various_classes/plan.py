@@ -1,6 +1,3 @@
-# encoding: utf8
-#!/usr/bin/python
-
 # Import system libraries:
 from connect import *
 import clr, sys, os
@@ -32,7 +29,29 @@ import ts_case as TS_C
 
 
 class Plan(object):
+  """A class for setup and optimization of a treatment plan for a given treatment site
+  derived from user input in a GUI.
+
+  After successful plan setup and optimization, the patient/case is saved in RayStation.
+
+  Attributes:
+    patient (PyScriptObject): The RayStation Patient instance.
+    case (PyScriptObject): The RayStation Case instance.
+    mq_patient (Patient): The Mosaiq database Patient instance.
+  """
+
   def __init__(self, patient, case, mq_patient):
+    """Initializes the treatment plan setup and optimization with the relevant RayStation instances.
+
+    Note that the mosaiq patient instance is used to determine the first "available" beam number to be used
+    in the plan setup. E.g. if executed on a patient already containing beams numbered 1, 2 and 3 in Mosaiq,
+    this method will setup a plan containing beam(s) starting with a beam number of 4.
+
+    Args:
+      patient (PyScriptObject): The RayStation Patient instance.
+      case (PyScriptObject): The RayStation Case instance.
+      mq_patient (Patient): The Mosaiq database Patient instance.
+    """
     self.patient = patient
     self.case = case
     self.mq_patient = mq_patient
@@ -61,11 +80,12 @@ class Plan(object):
     my_window = Toplevel()
 
 
-    # Load list of region codes and corresponding region names, and get the region name for our particular region code (raise error if a name is not retrieved):
+    # Load list of region codes and corresponding region names,
+    # and get the region name for our particular region code (raise error if a name is not retrieved):
     regions = REGIONS.RegionList("C:\\temp\\raystation-scripts\\settings\\regions.tsv")
     region_text = regions.get_text(region_code)
     assert region_text != None
-    
+
     # Launch extra dialog window based on region code?
     inferior_robustness_breast = None
     if region_code in RC.breast_codes:
@@ -74,7 +94,7 @@ class Plan(object):
 
     # Establish the number of target volumes:
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
-    
+
     # Create the prescription object:
     prescriptions = []
     prescription = PRES.create_prescription(total_dose, nr_fractions, region_code, ss)
@@ -89,15 +109,16 @@ class Plan(object):
     # where the user can specify the region code(s) of the other target(s).
     target, palliative_choices, region_codes = GUIF.collect_target_strategy_and_region_codes(ss, nr_targets, prescription)
 
-    
-    # Set up plan, making sure the plan name does not already exist. If the plan name exists, (1), (2), (3) etc is added behind the name:
+
+    # Set up plan, making sure the plan name does not already exist.
+    # If the plan name exists, (1), (2), (3) etc is added behind the name:
     plan = CF.create_plan(case, examination, region_text, initials)
 
 
     # For extremeties there a choice will be given between VMAT or 3D-CRT (for all other sites, VMAT is default):
-    # Parameter values: technique ('VMAT' or 'Conformal'), technique name ('VMAT' or '3D-CRT') 
+    # Parameter values: technique ('VMAT' or 'Conformal'), technique name ('VMAT' or '3D-CRT')
     technique, technique_name = GUIF.determine_choices(prescription, my_window)
-    
+
 
     # Determine the prescription target volume:
     if not target:
@@ -111,11 +132,14 @@ class Plan(object):
       GUIF.handle_missing_external()
 
 
-    # Determine the energy quality from the size of the target volume (note that only one target is taken into consideration here).
-    # For those situations where you have two targets and you want to have separate isocenters, then you want to evaluate the targets separately.
+    # Determine the energy quality from the size of the target volume
+    # (note that only one target is taken into consideration here).
+    # For those situations where you have two targets and you want to have separate isocenters,
+    # then you want to evaluate the targets separately.
+    indexed_targets = [ROIS.ctv1.name, ROIS.ctv2.name, ROIS.ctv3.name, ROIS.ctv4.name]
     if prescription.is_stereotactic():
       energy_name = '6 FFF'
-    elif target in [ROIS.ctv1.name, ROIS.ctv2.name, ROIS.ctv3.name, ROIS.ctv4.name] and palliative_choices[0] in ['sep_beamset_sep_iso', 'sep_plan']:
+    elif target in indexed_targets and palliative_choices[0] in ['sep_beamset_sep_iso', 'sep_plan']:
       energy_name = SSF.determine_energy_single_target(ss, target)
     else:
       # Determine the energy quality from the size of the target volume:
@@ -131,7 +155,7 @@ class Plan(object):
     beam_set = PF.create_beam_set(plan, beam_set_name, examination, technique, prescription.nr_fractions)
     beam_sets.append(beam_set)
 
-    
+
     # Add prescription:
     # For breast SIB, set the surgical bed as prescription target (for others leave it as is):
     if prescription.nr_fractions == 15 and prescription.total_dose == 48 and region_code in RC.breast_codes:
@@ -154,45 +178,61 @@ class Plan(object):
     else:
       # Consider all targets when determining isocenter:
       isocenter = SSF.determine_isocenter(examination, ss, region_code, target, external, multiple_targets = True)
-    
-    
-    # Determine if this patient has any previous beams in Mosaiq (which impacts which beam number is to be used with this plan):
+
+
+    # Determine if this patient has any previous beams in Mosaiq
+    # (which impacts which beam number is to be used with this plan):
     beam_nr = 1
     if self.mq_patient:
       beam_nr = self.mq_patient.next_available_field_number()
     # Setup beams:
-    nr_beams = BEAMS.setup_beams(ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, beam_index=beam_nr)
+    nr_beams = BEAMS.setup_beams(
+      ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, beam_index=beam_nr
+    )
     last_beam_index = beam_nr + nr_beams - 1
 
-    
+
     # Determines and sets up isodoses based on region code and fractionation:
     CF.determine_isodoses(case, ss, prescription)
-    
-    # Loads the plan (done after beam set is created, as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
+
+    # Loads the plan (performed after beam set is created,
+    # as this is the only way the CT-images appears in Plan Design and Plan Optimization when the plan is loaded):
     CF.load_plan(case, plan)
-    
-    
+
+
     # Create secondary beam sets (if applicable):
     if nr_targets > 1 and not palliative_choices[0] in ['beamset']:
       if region_code in RC.brain_codes + RC.lung_codes:
         if prescription.is_stereotactic():
-          additional_beam_sets, additional_prescriptions = PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+          additional_beam_sets, additional_prescriptions = PF.create_additional_stereotactic_beamsets_prescriptions_and_beams(
+            plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index
+          )
         else:
           # Conventional cases with multiple targets:
           if palliative_choices[0] == 'sep_beamset_iso':
             # Separate beam sets, but with the same isocenter:
-            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(
+              plan, examination, ss, region_codes, prescription, external, energy_name,
+              nr_existing_beams = last_beam_index, isocenter = isocenter
+            )
           elif palliative_choices[0] == 'sep_beamset_sep_iso':
             # Separate beams sets and separate isocenter:
-            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+            additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(
+              plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index
+            )
       elif region_code in RC.palliative_codes:
         # Palliative cases with multiple targets:
         if palliative_choices[0] == 'sep_beamset_iso':
           # Separate beam sets, but with the same isocenter:
-          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter)
+          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(
+            plan, examination, ss, region_codes, prescription, external,
+            energy_name, nr_existing_beams = last_beam_index, isocenter = isocenter
+          )
         elif palliative_choices[0] == 'sep_beamset_sep_iso':
           # Separate beams sets and separate isocenter:
-          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index)
+          additional_beam_sets, additional_prescriptions = PF.create_additional_palliative_beamsets_prescriptions_and_beams(
+            plan, examination, ss, region_codes, prescription, external, energy_name, nr_existing_beams = last_beam_index
+          )
       beam_sets.extend(additional_beam_sets)
       prescriptions.extend(additional_prescriptions)
 

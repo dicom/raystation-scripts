@@ -1,20 +1,11 @@
-# encoding: utf8
-
-# Peforms a verification of the current treatment plan (including its beam sets) in Mosaiq,
-# testing whether the parameters of the plan has been successfully exported to the Mosaiq database.
-
-# System configuration:
+# Import system libraries:
 from connect import *
 import sys
-# GUI framework (debugging only):
-#from tkinter import *
-#from tkinter import messagebox
 
-# Local script imports:
+# Import local files:
 import beam_set_label as BSL
 import region_list as REGIONS
 import test_p as TEST
-#import raystation_utilities as RSU
 import mqv_plan as MQV_P
 import mqv_beam_set as MQV_BS
 import mqv_beam as MQV_B
@@ -22,15 +13,40 @@ import mqv_segment as MQV_S
 
 
 class MosaiqPlanVerification(object):
+  """A class for performing a comparison and validation of RayStation plan instance
+  against its Mosaiq database equivalent.
+
+  As part of this test, values for all RayStation plan parameters (including beam sets, beams, control points,
+  leaf positions etc will be compared against the values found for the retrieved plan from the Mosaiq database.
+  All discrepancies are registered in a Parameter hiearchy and can e.g. be displayed in a dialogue window.
+
+  Attributes:
+    patient (PyScriptObject): The RayStation Patient instance.
+    case (PyScriptObject): The RayStation Case instance.
+    plan (PyScriptObject): The RayStation Plan instance.
+    mq_patient (Patient): The Mosaiq database Patient instance.
+    regions (RegionList): The Norwegian cancer region codes and labels.
+    result (Parameter): The parameter instance containing the result of the plan verification.
+  """
+
   def __init__(self, patient, case, plan, mq_patient):
+    """Initializes the Mosaiq plan verification with the relevant RayStation and Mosaiq instances.
+
+    Args:
+      patient (PyScriptObject): The RayStation Patient instance.
+      case (PyScriptObject): The RayStation Case instance.
+      plan (PyScriptObject): The RayStation Plan instance.
+      mq_patient (Patient): The Mosaiq database Patient instance.
+    """
     self.patient = patient
     self.case = case
     self.plan = plan
     self.mq_patient = mq_patient
-    # Load list of region codes and corresponding region names, and get the region name for our particular region code (raise error if a name is not retrieved):
+    # Load list of region codes and corresponding region names,
+    # and get the region name for our particular region code (raise error if a name is not retrieved):
     self.regions = REGIONS.RegionList("C:\\temp\\raystation-scripts\\settings\\regions.tsv")
-    
-    # Initialize test suites:
+
+    # Initialize test suite classes:
     mqv_plan = MQV_P.MQVPlan(patient, case, plan, mq_patient)
     for beam_set in plan.BeamSets:
       mqv_beam_set = MQV_BS.MQVBeamSet(beam_set, mqv_plan=mqv_plan)
@@ -38,9 +54,9 @@ class MosaiqPlanVerification(object):
         mqv_beam = MQV_B.MQVBeam(beam, mqv_beam_set=mqv_beam_set)
         for segment in beam.Segments:
           mqv_segment = MQV_S.MQVSegment(segment, mqv_beam=mqv_beam)
-    
+
     if self.mq_patient:
-      # Collect & assign the equivalent Mosaiq objects to the RayStation objects (beam sets, beams & segments):    
+      # Collect & assign the equivalent Mosaiq objects to the RayStation objects (beam sets, beams & segments):
       # Beam sets:
       beam_sets = {}
       # Collect beam sets:
@@ -70,7 +86,7 @@ class MosaiqPlanVerification(object):
               for mqv_segment in mqv_beam.mqv_segments:
                 # Assign segments:
                 mqv_segment.mq_segment = segments[mqv_segment.segment.SegmentNumber]
-    
+
     # Store the plan test results:
     self.result = mqv_plan.param
 
