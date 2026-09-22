@@ -106,5 +106,5 @@ class Location:
     """
     name = self.last_name.rstrip()
     if len(self.first_name) > 0:
-      name = "{}, {} {}".format(name, self.first_name, self.middle_name).rstrip()
+      name = "{}, {} {}".format(name, self.first_name, self.middle_initial).rstrip()
     return name

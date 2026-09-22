@@ -1,5 +1,7 @@
 # Import local files:
 from .database import Database
+from .location import Location
+from .task import Task
 
 class Checklist:
   """A class for reading checklist data from the Mosaiq database."""
@@ -21,21 +23,52 @@ class Checklist:
     return instance
 
   @classmethod
-  def for_patient(cls, patient, task_id=None):
+  def for_patient(cls, patient, task_id=None, complete=None):
     """Extracts all checklist items belonging to the given patient.
 
-    Note that if a task_id is given, only checklists of that type is extracted.
+    Note that if a task_id or completion status is given, only checklists of that type/status is extracted.
 
     Args:
       patient (Patient): The patient instance for which to extract associated checklist rows.
-      task_id (int, optional): A specific task type for which to restrict the query. Defaults to None,
+      task_id (int, optional): A specific task type for which to restrict the query. Defaults to None.
+      complete (int, optional): The completion status of the checklist for which to restrict the query.
+        Set to 0 for uncompleted, and 1 for completed. Defaults to None.
 
     Returns:
       List[Checklist]: A list of checklist items belonging to the given patient.
     """
     query = "SELECT * FROM Chklist WHERE Pat_ID1 = '{}'".format(patient.id)
+    if task_id is not None:
+      query += " AND TSK_ID = '{}'".format(task_id)
+    if complete is not None:
+      query += " AND Complete = '{}'".format(complete)
+    checklists = list()
+    rows = Database.fetch_all(query)
+    for row in rows:
+      checklists.append(cls(row))
+    return checklists
+
+  @classmethod
+  def for_responsible(cls, responsible, task_id=None, complete=None):
+    """Extracts all checklist items belonging to the given staff/location/group.
+
+    Note that if a task_id or completion status is given, only checklists of that type/status is extracted.
+
+    Args:
+      responsible (Location): A location instance for which to extract associated checklist rows
+         matching the responsible staff parameter.
+      task_id (int, optional): A specific task type for which to restrict the query. Defaults to None.
+      complete (int, optional): The completion status of the checklist for which to restrict the query.
+        Set to 0 for uncompleted, and 1 for completed. Defaults to None.
+
+    Returns:
+      List[Checklist]: A list of checklist items belonging to the given patient.
+    """
+    query = "SELECT * FROM Chklist WHERE Rsp_Staff_ID = '{}'".format(responsible.id)
     if task_id:
       query += " AND TSK_ID = '{}'".format(task_id)
+    if complete is not None:
+      query += " AND Complete = '{}'".format(str(complete))
     checklists = list()
     rows = Database.fetch_all(query)
     for row in rows:

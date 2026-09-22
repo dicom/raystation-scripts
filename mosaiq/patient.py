@@ -1,5 +1,6 @@
 # Import local files:
 from .appointment import Appointment
+from .checklist import Checklist
 from .course import Course
 from .database import Database
 from .delivered_dose import DeliveredDose
