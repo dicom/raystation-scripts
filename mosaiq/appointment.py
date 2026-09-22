@@ -1,49 +1,54 @@
-# encoding: utf8
-
-# A class for reading appointment data from the Mosaiq database.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
-# Used for GUI debugging:
-#from tkinter import *
-#from tkinter import messagebox
-
+# Import local files:
 from .database import Database
 
 class Appointment:
-  
-  # Returns a single appointment matching the given database id (Sch_Id) (or None if no match).
+  """A class for reading appointment data from the Mosaiq database."""
+
   @classmethod
   def find(cls, id):
+    """Finds the row in the Schedule table corresponding to the given id.
+
+    Args:
+      id (str or int): The primary database id (Sch_Id) of the row to be extracted.
+
+    Returns:
+      Appointment: A new instance of the Appointment class, or None if no match.
+    """
     instance = None
     row = Database.fetch_one("SELECT * FROM Schedule WHERE Sch_Id = '{}'".format(str(id)))
     if row != None:
       instance = cls(row)
     return instance
-  
-  # Gives all appointments belonging to the given patient.
-  # Excludes deleted appointments (suppressed = true).
-  # Excludes historic appointments (version != 0).
-  # Returns appointments sorted by their start_date parameter.
+
   @classmethod
   def for_patient(cls, patient):
+    """Extracts all appointments belonging to the given patient.
+
+    Note that both deleted appointments (Suppressed = True) and historic appointments (Version != 0) are excluded.
+
+    Args:
+      patient (Patient): The patient instance for which to extract associated appointment rows.
+
+    Returns:
+      List[Appointment]: A list of all appointments belonging to the given patient, sorted by their start_date parameter.
+    """
     appointments = list()
     rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, True))
     for row in rows:
       appointments.append(cls(row))
     return appointments
-  
-  # Creates a Appointment instance from a appointment database row.
+
   def __init__(self, row):
+    """Initializes an instance from a row extracted from the Schedule table.
+
+    Args:
+      row (dict): The row extracted from the database from which to create this instance.
+    """
     # Database attributes:
     self.sch_id = row['Sch_Id']
     self.sch_set_id = row['Sch_Set_Id']
     self.related_appointment_id = row['Sch_Set_Id']
-    self.activity_code = row['Activity'].rstrip() # If this crashes sometimes, we have to test if the string exists.
+    self.activity_code = row['Activity'].rstrip()
     self.start_date = row['App_DtTm']
     self.location_id = row['Location']
     self.staff_id = row['Staff_ID']
@@ -72,68 +77,107 @@ class Appointment:
     self.instance_previous_versions = list()
     self.instance_staff = None
     self.instance_task = None
-    
-  # Gives the status of the appointment, whether it is a boost start or not ("Old Start").
+
   def boost(self):
+    """Interprets the status2 parameter, whether it is a boost ("Old Start") or not.
+
+    Returns:
+      bool: True if status2 contains 'O', False if not.
+    """
     if 'O' in self.status2:
       return True
     else:
       return False
-  
-  # The staff who created the appointment.
+
   def created_by(self):
+    """Gives the staff who created the appointment.
+
+    Returns:
+      Location: The location (staff) who created this appointment.
+    """
     if not self.instance_created_by:
       self.instance_created_by = Location.find(self.created_by_id)
     return self.instance_created_by
-  
-  # The staff who last edited the appointment.
+
   def edited_by(self):
+    """Gives the staff who last edited the appointment.
+
+    Returns:
+      Location: The location (staff) who edited this appointment.
+    """
     if not self.instance_edited_by:
       self.instance_edited_by = Location.find(self.edited_by_id)
     return self.instance_edited_by
-  
-  # The location which the appointment is assigned to.
+
   def location(self):
+    """Gives the location which the appointment is assigned to.
+
+    Returns:
+      Location: The location which the appointment is assigned to.
+    """
     if not self.instance_location:
       self.instance_location = Location.find(self.location_id)
     return self.instance_location
-  
-  # Gives the note (if any) associated with this appointment.
+
   def note(self):
+    """Gives the note (if any) associated with this appointment.
+
+    Returns:
+      Note: The note associated with this appointment, or None.
+    """
     if not self.instance_note:
       self.instance_note = Note.find(self.note_id)
     return self.instance_note
-  
-  # Gives the patient which this appointment belongs to.
+
   def patient(self):
+    """Gives the patient which this appointment belongs to.
+
+    Returns:
+      Patient: The patient which this appointment belongs to.
+    """
     if not self.instance_patient:
       self.instance_patient = Patient.find(self.patient_id)
     return self.instance_patient
-  
-  # Gives the previous (historic) versions (if any) of this appointment.
-    def previous_versions(self):
-      if len(self.instance_previous_versions) == 0:
-        rows = Database.fetch_all("SELECT * FROM Schedule WHERE Sch_Set_Id = '{}' AND Sch_Id != {}".format(self.sch_set_id, self.sch_id))
-        for row in rows:
-          self.instance_previous_versions.append(cls(row))
-      return self.instance_previous_versions
-  
-  # The staff who is associated with the appointment.
+
+  def previous_versions(self):
+    """Gives the previous (historic) versions (if any) of this appointment.
+
+    Returns:
+      List[Appointment]: The note associated with this appointment, or an empty list.
+    """
+    if len(self.instance_previous_versions) == 0:
+      rows = Database.fetch_all("SELECT * FROM Schedule WHERE Sch_Set_Id = '{}' AND Sch_Id != {}".format(self.sch_set_id, self.sch_id))
+      for row in rows:
+        self.instance_previous_versions.append(cls(row))
+    return self.instance_previous_versions
+
   def staff(self):
+    """Gives the staff who is associated with the appointment.
+
+    Returns:
+      Location: The location (staff) who is associated with the appointment.
+    """
     if not self.instance_staff:
       self.instance_staff = Location.find(self.staff_id)
     return self.instance_staff
 
-  # Gives the status of the appointment, whether it is a tretment start or not ("New Start").
   def start(self):
+    """Interprets the status2 parameter, whether it is a treatment start ("New Start") or not.
+
+    Returns:
+      bool: True if status2 contains 'S', False if not.
+    """
     if 'S' in self.status2:
       return True
     else:
       return False
-  
-  # Gives the task item referenced by this appointment.
+
   def task(self):
+    """Gives the task item referenced by this appointment.
+
+    Returns:
+      Task: The task item referenced by this appointment.
+    """
     if not self.instance_task:
       self.instance_task = Task.find(self.task_id)
     return self.instance_task
-  

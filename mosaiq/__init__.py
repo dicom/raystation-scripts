@@ -1,12 +1,9 @@
-# encoding: utf8
-
 # Loads files for the Mosaiq package.
 #
 # Authors:
 # Christoffer Lervåg
 # Helse Møre og Romsdal HF
-#
-# Python 3.6
+
 
 from .activity import Activity
 from .appointment import Appointment

@@ -1,49 +1,55 @@
-# encoding: utf8
-
-# A class for reading control_point data from the Mosaiq database.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
-# Used for GUI debugging:
-#from tkinter import *
-#from tkinter import messagebox
-
+# Import local files:
 from .database import Database
 
 class ControlPoint:
-  
+  """A class for reading control point data from the Mosaiq database."""
+
   # Returns a single control_point matching the given database id (TFP_ID) (or None if no match).
   @classmethod
   def find(cls, id):
+    """Finds the row in the TxFieldPoint table corresponding to the given id.
+
+    Args:
+      id (str or int): The primary database id (TFP_ID) of the row to be extracted.
+
+    Returns:
+      ControlPoint: A new instance of the ControlPoint class, or None if no match.
+    """
     instance = None
     row = Database.fetch_one("SELECT * FROM TxFieldPoint WHERE TFP_ID = '{}'".format(str(id)))
     if row != None:
       instance = cls(row)
     return instance
-  
 
-  # Gives all control_point instances belonging to the given field.
   @classmethod
   def for_field(cls, field):
+    """Extracts all control points belonging to the given field.
+
+    Args:
+      field (Field): The field instance for which to extract associated control point rows.
+
+    Returns:
+      List[ControlPoint]: A list of control points belonging to the given field.
+    """
     control_points = list()
     rows = Database.fetch_all("SELECT * FROM TxFieldPoint WHERE FLD_ID = '{}'".format(field.id))
     for row in rows:
       control_points.append(cls(row))
     return control_points
-  
-  # Creates a ControlPoint instance from a control_point database row.
+
   def __init__(self, row):
+    """Initializes an instance from a row extracted from the TxFieldPoint table.
+
+    Args:
+      row (dict): The row extracted from the database from which to create this instance.
+    """
     # Database attributes:
     self.tfp_id = row['TFP_ID']
     self.field_id = row['FLD_ID']
     self.created_date = row['Create_DtTm']
     self.created_by_id = row['Create_ID']
     self.edited_date = row['Edit_DtTm']
-    self.edited_by_id = row['Edit_ID'] 
+    self.edited_by_id = row['Edit_ID']
     self.number = row['Point']
     self.index = row['Index']
     self.nr_leaves = row['MLC_Leaves']
@@ -79,35 +85,56 @@ class ControlPoint:
     self.instance_edited_by = None
     self.instance_field = None
 
-  # The staff who created the appointment.
   def created_by(self):
+    """Gives the staff who created the control point.
+
+    Returns:
+      Location: The location (staff) who created this control point.
+    """
     if not self.instance_created_by:
       self.instance_created_by = Location.find(self.created_by_id)
     return self.instance_created_by
-  
-  # The staff who last edited the appointment.
+
   def edited_by(self):
+    """Gives the staff who last edited the control point.
+
+    Returns:
+      Location: The location (staff) who edited this control point.
+    """
     if not self.instance_edited_by:
       self.instance_edited_by = Location.find(self.edited_by_id)
     return self.instance_edited_by
-  
+
   # The energy_unit description derived from the energy_unit_id.
   def energy_unit(self):
+    """The energy_unit description derived from the energy_unit_id.
+
+    Returns:
+      str: The energy unit description (e.g. 'MV').
+    """
     values = {
       1 : 'KV',
       2 : 'MV',
       3 : 'MEV'
     }
     return values.get(self.energy_unit_id, 'Unknown energy_unit_id: {}'.format(self.energy_unit_id))
-  
-  # Gives the field which this checklist belongs to.
+
   def field(self):
+    """Gives the field which this control point belongs to.
+
+    Returns:
+      Field: The field which this control point belongs to.
+    """
     if not self.instance_field:
       self.instance_field = Field.find(self.field_id)
     return self.instance_field
-  
-  # The gantry_rotation description derived from the gantry_rotation_id.
+
   def gantry_rotation(self):
+    """The gantry_rotation description derived from the gantry_rotation_id.
+
+    Returns:
+      str: The gantry rotation description (e.g. 'CW').
+    """
     values = {
       0 : 'Unspecified',
       1 : 'CW',
@@ -115,4 +142,3 @@ class ControlPoint:
       3 : 'NONE'
     }
     return values.get(self.gantry_rotation_id, 'Unknown gantry_rotation_id: {}'.format(self.gantry_rotation_id))
-  

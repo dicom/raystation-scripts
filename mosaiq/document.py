@@ -1,41 +1,47 @@
-# encoding: utf8
-
-# A class for reading document data from the Mosaiq database.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
-# Used for GUI debugging:
-#from tkinter import *
-#from tkinter import messagebox
-
+# Import local files:
 from .database import Database
 
 class Document:
-  
-  # Returns a single document matching the given database id (OBJ_ID) (or None if no match).
+  """A class for reading document data from the Mosaiq database."""
+
   @classmethod
   def find(cls, id):
+    """Finds the row in the Object table corresponding to the given id.
+
+    Args:
+      id (str or int): The primary database id (OBJ_ID) of the row to be extracted.
+
+    Returns:
+      Document: A new instance of the Document class, or None if no match.
+    """
     instance = None
     row = Database.fetch_one("SELECT * FROM Object WHERE OBJ_ID = '{}'".format(str(id)))
     if row != None:
       instance = cls(row)
     return instance
-  
-  # Gives all documents belonging to the given patient.
+
   @classmethod
   def for_patient(cls, patient):
+    """Extracts all documents belonging to the given patient.
+
+    Args:
+      patient (Patient): The patient instance for which to extract associated document rows.
+
+    Returns:
+      List[Document]: A list of documents belonging to the given patient.
+    """
     documents = list()
     rows = Database.fetch_all("SELECT * FROM Object WHERE Pat_ID1 = '{}'".format(patient.id))
     for row in rows:
       documents.append(cls(row))
     return documents
-  
-  # Creates a Document instance from a document database row.
+
   def __init__(self, row):
+    """Initializes an instance from a row extracted from the Object table.
+
+    Args:
+      row (dict): The row extracted from the database from which to create this instance.
+    """
     # Database attributes:
     self.obj_id = row['OBJ_ID']
     self.patient_id = row['Pat_ID1']
@@ -63,27 +69,43 @@ class Document:
     self.instance_note = None
     self.instance_nr_pages = None
     self.instance_patient = None
-    
-  # The staff who approved the document.
+
   def approved_by(self):
+    """Gives the staff who approved the document.
+
+    Returns:
+      Location: The location (staff) who approved this document.
+    """
     if not self.instance_approved_by:
       self.instance_approved_by = Location.find(self.approved_by_id)
     return self.instance_approved_by
-  
-  # The staff who created the document.
+
   def created_by(self):
+    """Gives the staff who created the document.
+
+    Returns:
+      Location: The location (staff) who created this document.
+    """
     if not self.instance_created_by:
       self.instance_created_by = Location.find(self.created_by_id)
     return self.instance_created_by
-  
-  # The staff who last edited the document.
+
   def edited_by(self):
+    """Gives the staff who last edited the document.
+
+    Returns:
+      Location: The location (staff) who edited this document.
+    """
     if not self.instance_edited_by:
       self.instance_edited_by = Location.find(self.edited_by_id)
     return self.instance_edited_by
 
-  # The file_format description derived from the file_format_id.
   def file_format(self):
+    """The file_format description as derived from the file_format_id.
+
+    Returns:
+      str: The file_format description (e.g. 'ScanDoc').
+    """
     values = {
       0 : 'Word_Perfect',
       2 : 'PhastNote',
@@ -95,37 +117,57 @@ class Document:
       9 : 'Field_Document'
     }
     return values.get(self.file_format_id, 'Unknown file_format_id: {}'.format(self.file_format_id))
-  
-  # The file name of the document.
+
   def file_name(self):
+    """Gives the file name of the document.
+
+    Returns:
+      str: The file name of the document.
+    """
     if not self.instance_file_name:
       row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(id)))
       if row != None:
         self.instance_file_name = row['eSCANFilename']
     return self.instance_file_name
-  
-  # Gives the note (if any) associated with this document.
+
   def note(self):
+    """Gives the note (if any) associated with this document.
+
+    Returns:
+      Note: The note associated with this document, or None.
+    """
     if not self.instance_note:
       self.instance_note = Note.find(self.note_id)
     return self.instance_note
-  
-  # The number of pages of the document.
+
   def nr_pages(self):
+    """Gives the number of pages of the document.
+
+    Returns:
+      int: The number of pages of the document.
+    """
     if not self.instance_nr_pages:
       row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(id)))
       if row != None:
         self.instance_nr_pages = row['PageNumber']
     return self.instance_nr_pages
-  
-  # Gives the patient which this document belongs to.
+
   def patient(self):
+    """Gives the patient which this document belongs to.
+
+    Returns:
+      Patient: The patient which this document belongs to.
+    """
     if not self.instance_patient:
       self.instance_patient = Patient.find(self.patient_id)
     return self.instance_patient
 
-  # The status of the document.
   def status(self):
+    """The status of the document as derived from the status_id.
+
+    Returns:
+      str: The document status (e.g. 'Approved').
+    """
     values = {
       0 : 'Unknown',
       1 : 'Void',

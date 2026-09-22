@@ -1,33 +1,41 @@
-# encoding: utf8
-
-# A class for reading location data (Staff/Machine) from the Mosaiq database.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
-# Used for GUI debugging:
-#from tkinter import *
-#from tkinter import messagebox
-
+# Import local files:
 from .database import Database
 
 class Location:
-  
-  # Returns a single location (Staff/Machine) matching the given database id (Staff_ID) (or nil if no match).
+  """A class for reading location (staff/machine) data from the Mosaiq database."""
+
   @classmethod
   def find(cls, id):
+    """Finds the row in the Staff table corresponding to the given id.
+
+    Note that the Staff table is also used to store machines/locations.
+
+    Args:
+      id (str or int): The primary database id (Staff_ID) of the row to be extracted.
+
+    Returns:
+      Location: A new instance of the Location class, or None if no match.
+    """
     instance = None
     row = Database.fetch_one("SELECT * FROM Staff WHERE Staff_ID = '{}'".format(str(id)))
     if row != None:
       instance = cls(row)
     return instance
-  
-  # Extracts all locations (Staff/Machine) matching the given name. Note that the match is exact.
+
   @classmethod
   def find_by_name(cls, last_name="", first_name=""):
+    """Finds all locations (Staff/Machine) matching the given name.
+
+    Note that the match is exact.
+    A maximum of 30 matches will be returned.
+
+    Args:
+      last_name (str, optional): The last name of the staff. Defaults to an empty string.
+      first_name (str, optional): The first name of the staff. Defaults to an empty string.
+
+    Returns:
+      List[Location]: A list of locations (staff) matching the given name, or an empty list.
+    """
     # Set the max number of locations allowed to be extracted by this query:
     max_locations = 30
     last_name = str(last_name)
@@ -51,9 +59,13 @@ class Location:
     for row in rows:
       locations.append(cls(row))
     return locations
-  
-  # Creates a Location instance (Staff/Machine) from a location database row.
+
   def __init__(self, row):
+    """Initializes an instance from a row extracted from the Staff table.
+
+    Args:
+      row (dict): The row extracted from the database from which to create this instance.
+    """
     # Database attributes:
     self.staff_id = row['Staff_ID']
     self.created_date = row['Create_DtTm']
@@ -74,18 +86,25 @@ class Location:
     # Cache attributes:
     self.instance_institution_id = None
 
-  # Gives the institution_id of this location (Staff/Machine).
   def institution_id(self):
+    """Gives the institution_id of this location (Staff/Machine)
+
+    Returns:
+      int: The nstitution_id of this location (Staff/Machine).
+    """
     if not self.instance_institution_id:
       row = Database.fetch_one("SELECT * FROM StfDept WHERE Staff_ID = '{}'".format(str(self.staff_id)))
       if row != None:
         self.instance_institution_id = row['Inst_ID']
     return self.instance_institution_id
-    
-  # Returns name formatted as "last_name, first_name middle_name"
+
   def full_name(self):
+    """Gives the full name, formatted as "last_name, first_name middle_name".
+
+    Returns:
+      str: The full name, formatted as "last_name, first_name middle_name".
+    """
     name = self.last_name.rstrip()
     if len(first_name > 0):
       name = "{}, {} {}".format(name, self.first_name, self.middle_name).rstrip()
     return name
-  

@@ -1,41 +1,47 @@
-# encoding: utf8
-
-# A class for reading note data from the Mosaiq database.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
-# Used for GUI debugging:
-#from tkinter import *
-#from tkinter import messagebox
-
+# Import local files:
 from .database import Database
 
 class Note:
-  
-  # Returns a single note matching the given database id (Note_ID) (or None if no match).
+  """A class for reading note data from the Mosaiq database."""
+
   @classmethod
   def find(cls, id):
+    """Finds the row in the Notes table corresponding to the given id.
+
+    Args:
+      id (str or int): The primary database id (Note_ID) of the row to be extracted.
+
+    Returns:
+      Note: A new instance of the Note class, or None if no match.
+    """
     instance = None
     row = Database.fetch_one("SELECT * FROM Notes WHERE Note_ID = '{}'".format(str(id)))
     if row != None:
       instance = cls(row)
     return instance
-  
-  # Gives all notes belonging to the given patient.
+
   @classmethod
   def for_patient(cls, patient):
+    """Extracts all notes belonging to the given patient.
+
+    Args:
+      patient (Patient): The patient instance for which to extract associated note rows.
+
+    Returns:
+      List[Note]: A list of notes belonging to the given patient.
+    """
     notes = list()
     rows = Database.fetch_all("SELECT * FROM Notes WHERE Pat_ID1 = '{}'".format(patient.id))
     for row in rows:
       notes.append(cls(row))
     return notes
-  
-  # Creates a Note instance from a note database row.
+
   def __init__(self, row):
+    """Initializes an instance from a row extracted from the Notes table.
+
+    Args:
+      row (dict): The row extracted from the database from which to create this instance.
+    """
     # Database attributes:
     self.note_id = row['Note_ID']
     self.type_id = row['Note_Type']
@@ -56,33 +62,53 @@ class Note:
     self.instance_edited_by = None
     self.instance_patient = None
     self.instance_type = None
-    
-  # The staff who approved the note.
+
   def approved_by(self):
+    """Gives the staff who approved the note.
+
+    Returns:
+      Location: The location (staff) who approved this note.
+    """
     if not self.instance_approved_by:
       self.instance_approved_by = Location.find(self.approved_by_id)
     return self.instance_approved_by
-  
-  # The staff who created the note.
+
   def created_by(self):
+    """Gives the staff who created the note.
+
+    Returns:
+      Location: The location (staff) who created this note.
+    """
     if not self.instance_created_by:
       self.instance_created_by = Location.find(self.created_by_id)
     return self.instance_created_by
-  
-  # The staff who last edited the note.
+
   def edited_by(self):
+    """Gives the staff who last edited the note.
+
+    Returns:
+      Location: The location (staff) who edited this note.
+    """
     if not self.instance_edited_by:
       self.instance_edited_by = Location.find(self.edited_by_id)
     return self.instance_edited_by
-  
-  # Gives the patient which this note belongs to.
+
   def patient(self):
+    """Gives the patient which this note belongs to.
+
+    Returns:
+      Patient: The patient which this note belongs to.
+    """
     if not self.instance_patient:
       self.instance_patient = Patient.find(self.patient_id)
     return self.instance_patient
-  
-  # Gives the type assigned to this note.
+
   def type(self):
+    """Gives the type assigned to this note.
+
+    Returns:
+      str: The type assigned to this note.
+    """
     if not self.instance_type:
       row = Database.fetch_one("SELECT * FROM Prompt WHERE PGroup = '#NT1' AND Enum = '{}'".format(self.type_id))
       if row != None:
