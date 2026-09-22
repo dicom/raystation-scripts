@@ -64,7 +64,7 @@ class Course:
     # Database attributes:
     self.pcp_id = row['PCP_ID']
     self.number = row['Course']
-    self.intention = row['Tx_Intent'].rstrip() # If this crashes sometimes, we have to test if the string exists.
+    self.intention = row['Tx_Intent'].rstrip()
     self.patient_id = row['Pat_ID1']
     self.diagnosis_id = row['MED_ID']
     self.comment = row['Notes']

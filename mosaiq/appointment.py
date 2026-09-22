@@ -1,5 +1,8 @@
 # Import local files:
 from .database import Database
+from .location import Location
+from .note import Note
+from .task import Task
 
 class Appointment:
   """A class for reading appointment data from the Mosaiq database."""
@@ -24,7 +27,7 @@ class Appointment:
   def for_patient(cls, patient):
     """Extracts all appointments belonging to the given patient.
 
-    Note that both deleted appointments (Suppressed = True) and historic appointments (Version != 0) are excluded.
+    Note that both deleted appointments (Suppressed = 1) and historic appointments (Version != 0) are excluded.
 
     Args:
       patient (Patient): The patient instance for which to extract associated appointment rows.
@@ -33,7 +36,7 @@ class Appointment:
       List[Appointment]: A list of all appointments belonging to the given patient, sorted by their start_date parameter.
     """
     appointments = list()
-    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, True))
+    rows = Database.fetch_all("SELECT * FROM Schedule WHERE Pat_ID1 = '{}' AND Suppressed != {} AND Version = 0".format(patient.id, 1))
     for row in rows:
       appointments.append(cls(row))
     return appointments

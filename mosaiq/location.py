@@ -69,18 +69,18 @@ class Location:
     # Database attributes:
     self.staff_id = row['Staff_ID']
     self.created_date = row['Create_DtTm']
-    self.initials = row['Initials'].rstrip() # If this crashes sometimes, we have to test if the string exists.
-    self.user_name = row['User_Name'].rstrip() # If this crashes sometimes, we have to test if the string exists.
-    self.code = row['Code'].rstrip() # If this crashes sometimes, we have to test if the string exists.
-    self.type = row['Type'].rstrip() # If this crashes sometimes, we have to test if the string exists.
-    self.last_name = row['Last_Name'].rstrip() # If this crashes sometimes, we have to test if the string exists.
+    self.initials = row['Initials'].rstrip()
+    self.user_name = row['User_Name'].rstrip()
+    self.code = row['Code'].rstrip()
+    self.type = row['Type'].rstrip()
+    self.last_name = row['Last_Name'].rstrip()
     self.first_name = row['First_Name']
-    self.middle_initial = row['Mdl_Initial'].rstrip() # If this crashes sometimes, we have to test if the string exists.
+    self.middle_initial = row['Mdl_Initial'].rstrip()
     self.deleted = row['Deleted']
     self.inactive = row['Status_inactive']
     self.login = row['Status_Login']
     self.unapproved = row['Status_Unaprv']
-    self.password = row['PasswordBytes'].rstrip() # If this crashes sometimes, we have to test if the string exists.
+    self.password = row['PasswordBytes'].rstrip()
     # Convenience attributes:
     self.id = self.staff_id
     # Cache attributes:
@@ -105,6 +105,6 @@ class Location:
       str: The full name, formatted as "last_name, first_name middle_name".
     """
     name = self.last_name.rstrip()
-    if len(first_name > 0):
+    if len(self.first_name) > 0:
       name = "{}, {} {}".format(name, self.first_name, self.middle_name).rstrip()
     return name
