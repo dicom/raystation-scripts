@@ -63,7 +63,7 @@ class DeliveredDose:
       List[DeliveredDose]: A list of delivered doses belonging to the given prescription.
     """
     delivered_doses = list()
-    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE SIT_ID = '{}'".format(field.id))
+    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE SIT_ID = '{}'".format(prescription.id))
     for row in rows:
       delivered_doses.append(cls(row))
     return delivered_doses
@@ -79,7 +79,7 @@ class DeliveredDose:
       List[DeliveredDose]: A list of delivered doses belonging to the given scheduled field.
     """
     delivered_doses = list()
-    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE PTC_ID = '{}'".format(field.id))
+    rows = Database.fetch_all("SELECT * FROM Dose_Hst WHERE PTC_ID = '{}'".format(scheduled_field.id))
     for row in rows:
       delivered_doses.append(cls(row))
     return delivered_doses
