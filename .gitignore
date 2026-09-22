@@ -118,6 +118,7 @@ dmypy.json
 # Database configuration:
 mosaiq/database.txt
 mosaiq/password.txt
+mosaiq/server.txt
 mosaiq/user.txt
 # User names:
 settings/users.tsv
