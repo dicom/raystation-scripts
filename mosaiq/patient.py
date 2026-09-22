@@ -224,7 +224,7 @@ class Patient:
   # Gives the full name (formatted by last name, comma first name space middle name).
   def full_name(self):
     name = self.last_name.rstrip()
-    if len(first_name > 0):
+    if len(self.first_name) > 0:
       name = "{}, {} {}".format(name, self.first_name, self.middle_name).rstrip()
     return name
 
