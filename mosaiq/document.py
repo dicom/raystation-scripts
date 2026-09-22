@@ -21,17 +21,21 @@ class Document:
     return instance
 
   @classmethod
-  def for_patient(cls, patient):
+  def for_patient(cls, patient, type_id=None):
     """Extracts all documents belonging to the given patient.
 
     Args:
       patient (Patient): The patient instance for which to extract associated document rows.
+      type_id (int, optional): A specific document type for which to restrict the query. Defaults to None.
 
     Returns:
       List[Document]: A list of documents belonging to the given patient.
     """
+    query = "SELECT * FROM Object WHERE Pat_ID1 = '{}'".format(patient.id)
+    if type_id is not None:
+      query += " AND DocType = '{}'".format(type_id)
     documents = list()
-    rows = Database.fetch_all("SELECT * FROM Object WHERE Pat_ID1 = '{}'".format(patient.id))
+    rows = Database.fetch_all(query)
     for row in rows:
       documents.append(cls(row))
     return documents
@@ -125,7 +129,7 @@ class Document:
       str: The file name of the document.
     """
     if not self.instance_file_name:
-      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(id)))
+      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(self.id)))
       if row != None:
         self.instance_file_name = row['eSCANFilename']
     return self.instance_file_name
