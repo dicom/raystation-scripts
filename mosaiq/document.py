@@ -151,7 +151,7 @@ class Document:
       int: The number of pages of the document.
     """
     if not self.instance_nr_pages:
-      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(id)))
+      row = Database.fetch_one("SELECT * FROM ObjFilenames WHERE OBJ_ID = '{}'".format(str(self.id)))
       if row != None:
         self.instance_nr_pages = row['PageNumber']
     return self.instance_nr_pages
