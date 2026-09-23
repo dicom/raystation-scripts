@@ -14,12 +14,15 @@ from .database import Database
 from .delivered_dose import DeliveredDose
 from .diagnosis import Diagnosis
 from .document import Document
+from .episode import Episode
 from .field import Field
 from .image import Image
 from .location import Location
 from .note import Note
 from .offset import Offset
 from .patient import Patient
+from .patient_payer import PatientPayer
+from .payer import Payer
 from .performed_site_setup import PerformedSiteSetup
 from .prescription import Prescription
 from .scheduled_field import ScheduledField
