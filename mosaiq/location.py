@@ -60,6 +60,23 @@ class Location:
       locations.append(cls(row))
     return locations
 
+  @classmethod
+  def find_by_user_name(cls, user_name):
+    """Finds a location (Staff/Machine) matching the given user name.
+
+    Args:
+      user_name (str): The user name of the staff.
+
+    Returns:
+      Location: A location (staff) matching the given user name, or None.
+    """
+    instance = None
+    row = Database.fetch_one("SELECT * FROM Staff WHERE User_Name = '{}'".format(str(user_name)))
+    #pprint(row)
+    if row != None:
+      instance = cls(row)
+    return instance
+
   def __init__(self, row):
     """Initializes an instance from a row extracted from the Staff table.
 

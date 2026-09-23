@@ -1,5 +1,6 @@
 # Import local files:
 from .control_point import ControlPoint
+from .delivered_dose import DeliveredDose
 from .database import Database
 from .scheduled_field import ScheduledField
 
