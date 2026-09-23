@@ -120,6 +120,8 @@ mosaiq/database.txt
 mosaiq/password.txt
 mosaiq/server.txt
 mosaiq/user.txt
+# File share:
+mosaiq/document_path.txt
 # User names:
 settings/users.tsv
 # Media files:

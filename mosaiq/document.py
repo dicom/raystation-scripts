@@ -1,8 +1,14 @@
+# Import system libraries:
+import os
+
 # Import local files:
 from .database import Database
 
 class Document:
   """A class for reading document data from the Mosaiq database."""
+
+  # The Mosaiq document file share path:
+  path = open(r'C:\temp\raystation-scripts\mosaiq\document_path.txt', "r").read()
 
   @classmethod
   def find(cls, id):
@@ -134,6 +140,33 @@ class Document:
         self.instance_file_name = row['eSCANFilename']
     return self.instance_file_name
 
+  def file_path(self):
+    """Gives the full file path of the document.
+
+    Note that the full file path is constructed from 3 components:
+    The first part is the root path, as defined in document_path.txt and given by the Document.path parameter.
+    The middle part is based on processing parts of the patient's ID and file number.
+    The third part is the file name, as given by the file_name() function.
+    The full path may look something like this:
+    \\FILESHARE\MOSAIQ_DATA\DB\ESCRIBE\19\0000AD0B.003\20260942326297_221.pdf
+
+    Returns:
+      str: The full file path of the document.
+    """
+    # Extract the components used for the middle part:
+    last_digit = str(self.patient().id)[-1]
+    next_last_digit = str(self.patient().id)[-2]
+    binary = str(int(next_last_digit) % 2)
+    id_hex = f"{self.patient().id:X}"
+    id_prefix = "0" * (8 - len(id_hex))
+    file_nr_padding = "0" * (3 - len(str(self.file_number)))
+    # Build the middle part:
+    mid1 = binary + last_digit
+    mid2 = id_prefix + id_hex + "." + file_nr_padding + str(self.file_number)
+    # Build the full path:
+    path = os.path.join(Document.path, mid1, mid2, self.file_name())
+    return path
+
   def note(self):
     """Gives the note (if any) associated with this document.
 
@@ -162,6 +195,7 @@ class Document:
     Returns:
       Patient: The patient which this document belongs to.
     """
+    from .patient import Patient
     if not self.instance_patient:
       self.instance_patient = Patient.find(self.patient_id)
     return self.instance_patient
