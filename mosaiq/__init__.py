@@ -2,7 +2,8 @@
 #
 # Authors:
 # Christoffer Lervåg
-# Helse Møre og Romsdal HF
+#   Helse Møre og Romsdal HF
+# Ben George (bgeorge0)
 
 
 from .activity import Activity
