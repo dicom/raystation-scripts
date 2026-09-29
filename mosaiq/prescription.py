@@ -1,8 +1,5 @@
 # Import local files:
 from .database import Database
-from .field import Field
-from .site_setup import SiteSetup
-from .offset import Offset
 
 class Prescription:
   """A class for reading prescription data from the Mosaiq database."""
@@ -169,6 +166,7 @@ class Prescription:
     Returns:
       Location: The location (staff) who approved this prescription.
     """
+    from .location import Location
     if not self.instance_approved_by:
       self.instance_approved_by = Location.find(self.approved_by_id)
     return self.instance_approved_by
@@ -197,6 +195,7 @@ class Prescription:
     Returns:
       Course: The course which this prescription belongs to.
     """
+    from .course import Course
     if not self.instance_course:
       self.instance_course = Course.find(self.course_id)
     return self.instance_course
@@ -207,6 +206,7 @@ class Prescription:
     Returns:
       Location: The location (staff) who created this prescription.
     """
+    from .location import Location
     if not self.instance_created_by:
       self.instance_created_by = Location.find(self.created_by_id)
     return self.instance_created_by
@@ -220,6 +220,7 @@ class Prescription:
     Returns:
       List[DeliveredDose]: The delivered_doses associated with this prescription, or an empty list.
     """
+    from .delivered_dose import DeliveredDose
     if not self.instance_delivered_doses:
       self.instance_delivered_doses = DeliveredDose.for_prescription(self)
       if len(self.instance_delivered_doses) == 0 and self.original_prescription_id:
@@ -232,6 +233,7 @@ class Prescription:
     Returns:
       Location: The location (staff) who edited this prescription.
     """
+    from .location import Location
     if not self.instance_edited_by:
       self.instance_edited_by = Location.find(self.edited_by_id)
     return self.instance_edited_by
@@ -245,6 +247,7 @@ class Prescription:
     Returns:
       List[Field]: The fields associated with this prescription, or an empty list.
     """
+    from .field import Field
     if not self.instance_fields:
       self.instance_fields = Field.for_prescription(self)
       if len(self.instance_fields) == 0 and self.original_prescription_id:
@@ -257,6 +260,7 @@ class Prescription:
     Returns:
       List[Image]: The images associated with this prescription, or an empty list.
     """
+    from .image import Image
     if not self.instance_images:
       self.instance_images = Image.for_patient(self)
     return self.instance_images
@@ -267,7 +271,8 @@ class Prescription:
     Returns:
       Note: The note associated with this prescription, or None.
     """
-    if not self.instance_note:
+    from .note import Note
+    if self.note_id and not self.instance_note:
       self.instance_note = Note.find(self.note_id)
     return self.instance_note
 
@@ -303,6 +308,7 @@ class Prescription:
     Returns:
       Patient: The patient which this prescription belongs to.
     """
+    from .patient import Patient
     if not self.instance_patient:
       self.instance_patient = Patient.find(self.patient_id)
     return self.instance_patient
@@ -316,6 +322,7 @@ class Prescription:
     Returns:
       List[PerformedSiteSetup]: A list of performed site setups belonging to this prescription, or an empty list.
     """
+    from .performed_site_setup import PerformedSiteSetup
     if not self.instance_performed_site_setups:
       self.instance_performed_site_setups = PerformedSiteSetup.for_prescription(self)
       if len(self.instance_performed_site_setups) == 0 and self.original_prescription_id:
@@ -328,6 +335,7 @@ class Prescription:
     Returns:
       Offset: The offset for this prescription.
     """
+    from .offset import Offset
     if not self.instance_prescribed_offset:
       offsets = Offset.for_prescription(self, type=1)
       if len(offsets) > 0:
@@ -347,6 +355,7 @@ class Prescription:
     Returns:
       SiteSetup: The site_setup belonging to this prescription.
     """
+    from .site_setup import SiteSetup
     if not self.instance_site_setup:
       self.instance_site_setup = SiteSetup.for_prescription(self)
       if not self.instance_site_setup and self.original_prescription_id:
@@ -377,6 +386,7 @@ class Prescription:
     Returns:
       List[Offset]: The offsets associated with this prescription, or an empty list.
     """
+    from .offset import Offset
     if not self.instance_third_party_offsets:
       self.instance_third_party_offsets = Offset.for_prescription(self, type=4)
       if len(self.instance_third_party_offsets) == 0 and self.original_prescription_id:
