@@ -185,7 +185,7 @@ class Prescription:
       if row != None:
         self.instance_child_prescription = cls(row)
       else:
-        if self.original_prescription_id != None:
+        if self.original_prescription_id != self.id:
           self.instance_child_prescription = self.original_prescription().child_prescription()
     return self.instance_child_prescription
 
