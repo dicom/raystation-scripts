@@ -8,6 +8,52 @@ class Prescription:
   """A class for reading prescription data from the Mosaiq database."""
 
   @classmethod
+  def date_range(cls, start_date, end_date, site_name=None, technique=None, pattern=None, comment=None):
+    """Extracts all prescriptions within a give date time range.
+
+    Note that non-current prescriptions are excluded (Version != 0).
+
+    Args:
+      start_date (datetime): The start of the date range from which to extract prescriptions.
+        E.g. start_date = datetime.datetime(2026,1,1).
+      end_date (datetime): The end of the date range from which to extract prescriptions.
+        E.g. end_date = datetime.datetime(2026,12,31).
+      site_name (str): The name/title of the prescription. Matches the start of the string (using LIKE str%),
+        meaning e.g. a query for 'Prost' will match a value of 'Prostate'.
+      technique (str): The technique of the prescription. Matches the start of the string (using LIKE str%),
+        meaning e.g. a query for 'VM' will match a value of 'VMAT'.
+      pattern (str): The pattern of the prescription. Matches the start of the string (using LIKE str%),
+        meaning e.g. a query for 'D' will match a value of 'Daily'.
+      comment (str): The comment of the prescription. Matches the start of the string (using LIKE str%),
+        meaning e.g. a query for 'Soft' will match a value of 'Soft tissue'.
+
+    Returns:
+      List[Prescription]: A list of prescriptions with date matching the given date range,
+        as well as the optiional parameters.
+    """
+    # Convert datetime to string:
+    start_date_str = start_date.strftime("%Y-%m-%d %T")
+    end_date_str = end_date.strftime("%Y-%m-%d %T")
+    # Build query string:
+    query = "SELECT * FROM Site WHERE"
+    query += " Create_DtTm >= '{}' AND Create_DtTm < '{}'".format(start_date_str, end_date_str)
+    if site_name:
+      query += " AND Site_Name LIKE '{}%'".format(site_name)
+    if technique:
+      query += " AND Technique LIKE '{}%'".format(technique)
+    if pattern:
+      query += " AND Frac_Pattern LIKE '{}%'".format(pattern)
+    if comment:
+      query += " AND Notes LIKE '{}%'".format(comment)
+    # Perform query and process results:
+    prescriptions = list()
+    rows = Database.fetch_all(query)
+    for row in rows:
+      if row['Version'] == 0:
+        prescriptions.append(cls(row))
+    return prescriptions
+
+  @classmethod
   def find(cls, id):
     """Finds the row in the Site table corresponding to the given id.
 
