@@ -140,8 +140,8 @@ class DefRectum(object):
       operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
     )
     ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high,
-      sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union',
-      marginsA = MARGINS.zero, marginsB = MARGINS.zero
+      sourcesA=[ctv_p, ctv_n], sourcesB=[ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction',
+      marginsA = MARGINS.zero, marginsB = MARGINS.uniform_3mm_expansion
     )
     ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high,
       sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection',
