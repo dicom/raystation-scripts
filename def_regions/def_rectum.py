@@ -133,15 +133,15 @@ class DefRectum(object):
     # Common for groin included or not:
     ctv_p = ROI.ROIAlgebra(ROIS.ctv_p.name, ROIS.ctv_p.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_p],
       sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx],
-      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
+      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_3mm_expansion
     )
     ctv_n = ROI.ROIAlgebra(ROIS.ctv_n.name, ROIS.ctv_n.type, COLORS.ctv_high, sourcesA = [ROIS.gtv_n1],
       sourcesB=[ROIS.pelvic_girdle_l, ROIS.pelvic_girdle_r, ROIS.femur_l, ROIS.femur_r, ROIS.l5, ROIS.sacrum, ROIS.coccyx],
-      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.zero
+      operator = 'Subtraction', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_3mm_expansion
     )
     ctv_50 = ROI.ROIAlgebra(ROIS.ctv_50.name, ROIS.ctv_50.type, COLORS.ctv_high,
-      sourcesA=[ctv_p, ctv_n], sourcesB=[ROIS.sacrum, ROIS.coccyx], operator = 'Subtraction',
-      marginsA = MARGINS.zero, marginsB = MARGINS.uniform_3mm_expansion
+      sourcesA=[ctv_p], sourcesB=[ctv_n], operator = 'Union',
+      marginsA = MARGINS.zero, marginsB = MARGINS.zero
     )
     ptv_50 = ROI.ROIAlgebra(ROIS.ptv_50.name, ROIS.ptv_50.type, COLORS.ptv_high,
       sourcesA=[ctv_50], sourcesB=[ROIS.external], operator = 'Intersection',
