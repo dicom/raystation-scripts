@@ -1,5 +1,3 @@
-# encoding: utf8
-
 # Import system libraries:
 import csv
 import codecs
@@ -13,8 +11,8 @@ class UserList(object):
     self.filename = filename
     self.users = []
     self.initials = []
+    self.groups = []
     self.read(filename)
-
 
   # Unknown magical function.
   def test_fake_error_class(self):
@@ -36,7 +34,6 @@ class UserList(object):
         with self.assertRaises((TypeError, FakeUnicodeError)):
           handler(FakeUnicodeError())
 
-
   # Import tab separated file to two separate lists.
   def read(self, filename):
     with codecs.open(filename) as tsvfile:
@@ -44,8 +41,15 @@ class UserList(object):
       for row in reader:
         self.users.append(row[0])
         self.initials.append(row[1])
+        self.groups.append(row[2])
 
-
+  # Get the occupational group for a given user name.
+  def get_group(self, user):
+    try:
+      return self.groups[self.users.index(str(user))]
+    except ValueError:
+      return ""
+  
   # Get initials corresponding to a given user name.
   def get_initials(self, user):
     try:
