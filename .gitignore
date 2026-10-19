@@ -115,6 +115,8 @@ dmypy.json
 
 
 # Specific files for the raystation-scripts project:
+# Web server:
+launchers/web_server_url.txt
 # Database configuration:
 mosaiq/database.txt
 mosaiq/password.txt
