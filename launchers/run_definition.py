@@ -1,4 +1,4 @@
-'''Launces the definition script.'''
+'''Launches the definition script.'''
 
 # Import local files:
 sys.path.append("C:\\temp\\raystation-scripts\\launchers")
