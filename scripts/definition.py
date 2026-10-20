@@ -21,7 +21,6 @@ sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
 sys.path.append("C:\\temp\\raystation-scripts\\ts_classes")
-sys.path.append("C:\\temp\\raystation-scripts\\various_classes")
 # Relative paths would be better, but unfortunately doesnt seem to work when imported into the RayStation database, e.q.:
 #sys.path.append(os.path.join(sys.path[0],'def_regions'))
 
