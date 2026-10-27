@@ -126,5 +126,7 @@ mosaiq/user.txt
 mosaiq/document_path.txt
 # User names:
 settings/users.tsv
+# QC log:
+settings/qc_log.txt
 # Media files:
 media/
