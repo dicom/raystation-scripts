@@ -255,11 +255,12 @@ def read_saved_result(file_path, unique_plan_id, modification_time_str):
     return None
 
 
-def write_saved_result(file_path, unique_plan_id, modification_time_str, text):
+def write_saved_result(output_dir, file_path, unique_plan_id, modification_time_str, text):
   """Wites a given result to file.
 
     Args:
-      file_path (str): The path of the log file to be written.
+      output_dir (str): The directory of the log file folder.
+      file_path (str): The full path (including file name) of the log file to be written.
       unique_plan_id (int): A unique plan id.
       modification_time_str (str): A string representation of the patient modification time.
       text (str): The text to be written to the file.
@@ -609,7 +610,7 @@ def main():
         text = str(result.nr_failures()) + " mulige problemer ble funnet:\n\n" + summary
 
       # Write result to file:
-      write_saved_result(file_path, unique_plan_id, modification_time_str, text)
+      write_saved_result(output_dir, file_path, unique_plan_id, modification_time_str, text)
     else:
       # Create title string:
       title = "Plan Quality Control"
