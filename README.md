@@ -22,6 +22,7 @@ run from RayStation's built-in scripting workspace.
 - Python 3.11 (bundled with RayStation)
 - Tkinter (bundled with RayStation)
 - [pymssql](https://pypi.org/project/pymssql/) for Mosaiq database access
+- [requests](https://pypi.org/project/requests/) for script execution logging to a webserver
 - Microsoft SQL Server (Mosaiq) with valid credentials
 
 ## Installation
@@ -43,28 +44,32 @@ run from RayStation's built-in scripting workspace.
    > the RayStation database. The scripts will not run from any other location.
 
 3. Configure the Mosaiq database credentials in the `mosaiq/` folder:
-   - `database.txt` - SQL server address
+   - `database.txt` - SQL database (optional)
+   - `document_path.txt` - Path to the Mosaiq ESCRIBE folder
    - `user.txt` - database user name
    - `password.txt` - database password
+   - `server.txt` - SQL server address
 
 4. Copy the files to the RayStation scripting workspace, or import the scripts
    into the RayStation database so they appear in the scripting workspace GUI.
 
-5. Ensure `pymssql` is available in the RayStation Python environment.
+5. Ensure `pymssql` and `requests` is available in the RayStation Python environment (Use Clinic Settings to install).
 
 ## Usage
 
-All executable scripts are found in the root folder. From the RayStation
-scripting workspace, open a patient and case, then run a script.
+All executable scripts are found in the `scripts` folder. In a transition period,
+some executable scripts will remain in the root folder until they are moved to the
+`scripts` folder as well. From the RayStation scripting workspace, open a patient
+and case, then run a script.
 
 ### Main workflows
 
 | Script | Description |
 | ------ | ----------- |
-| `run_def.py` | ROI definition setup for a specified treatment site |
-| `run_plan.py` | Main treatment planning workflow: sets up all parameters for planning of the current patient |
-| `run_quality_control.py` | Runs the quality control suite on the current plan |
-| `run_mosaiq_plan_verification.py` | Verifies export of the current plan against the Mosaiq database |
+| `definition.py` | ROI definition setup for a specified treatment site |
+| `mosaiq_verification.py` | Verifies export of the current plan against the Mosaiq database |
+| `plan.py` | Main treatment planning workflow: sets up all parameters for planning of the current patient |
+| `quality_control.py` | Runs the quality control suite on the current plan |
 
 ### ROI and structure utilities
 
@@ -128,7 +133,7 @@ Supported treatment sites and their entry points:
 | Prostate | `def_regions/def_prostate.py` |
 | Rectum | `def_regions/def_rectum.py` |
 
-The per-site planner logic is found in `various_classes/plan.py`
+The per-site planner logic is found in `scripts/plan.py`
 with settings and definitions found in `settings/objectives/`,
 `settings/clinical_goals/`, and `rt_classes/optimizers/`.
 
@@ -137,8 +142,9 @@ with settings and definitions found in `settings/objectives/`,
 This project has no test suite and no formal contribution guidelines yet. When
 extending the scripts, follow the existing conventions:
 
-- Executable scripts at the root: thin wrappers that load the current patient
-  and case, then delegate to a class in `various_classes/`.
+- Thin wrapper scripts located in `launchers/` (which are loaded to the
+  RayStation application using Script management).
+- Executable scripts located in `scripts/`.
 - Store site-specific clinical data in `settings/` rather than hardcoding it.
 
 ## License
