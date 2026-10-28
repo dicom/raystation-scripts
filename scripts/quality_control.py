@@ -596,7 +596,7 @@ def main():
     text = read_saved_result(file_path, unique_plan_id, modification_time_str)
 
     if text is None:
-      # Set up and execute the quality control class:
+      # Set up and execute the quality control:
       result = perform_quality_control(patient, case, plan)
 
       # Create title and body strings:
@@ -616,7 +616,7 @@ def main():
       title = "Plan Quality Control"
       Log_file_used = 1
   else:
-    # Set up and execute the quality control class:
+    # Set up and execute the quality control:
     result = perform_quality_control()
 
     # Create title and body strings:
