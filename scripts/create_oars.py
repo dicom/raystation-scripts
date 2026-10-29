@@ -1,24 +1,30 @@
-# Gives a list of OARs in a GUI, and creates those that are selected.
+# Presents a list of OARs in a GUI, and for those that are selected by the user,
+# creates those ROIs for the current case in RayStation.
 #
 # Authors:
+# Christoffer Lervåg
 # Marit Funderud
 # Helse Møre og Romsdal HF
 #
 
 # Import system libraries:
-from connect import *
 import clr, sys, os
 from tkinter import *
 from tkinter import messagebox
 import math
 
-# Add necessary folders to the system path:
+# Import RayStation packages:
+sys.path.append("C:/Program Files/RaySearch Laboratories/RayStation 2024B/ScriptClient/")
+from connect import *
+
+# Add local folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\quality_control")
 sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 sys.path.append("C:\\temp\\raystation-scripts\\settings")
+
 # Import local files:
 import patient_model_functions as PMF
 import roi as ROI
@@ -30,9 +36,9 @@ import structure_set_functions as SSF
 
 # Load case data:
 try:
-    case = get_current("Case")
+  case = get_current("Case")
 except SystemError:
-    raise IOError("No case loaded.")
+  raise IOError("No case loaded.")
 try:
   patient_db = get_current('PatientDB')
 except SystemError:
@@ -43,32 +49,58 @@ pm = case.PatientModel
 examination = get_current("Examination")
 ss = PMF.get_structure_set(pm, examination)
 
-def get_my_key(obj):
-  return obj.name
 
 # OAR choices:
 oar_list = [
-  ROIS.eye_l, ROIS.eye_r, ROIS.lens_l, ROIS.lens_r,
-  ROIS.retina_l, ROIS.retina_r, ROIS.cornea_l, ROIS.cornea_r,
-  ROIS.optic_nerve_l, ROIS.optic_nerve_r, ROIS.optic_chiasm,
-  ROIS.lacrimal_l, ROIS.lacrimal_r, ROIS.cochlea_l, ROIS.cochlea_r,
-  ROIS.hippocampus_l, ROIS.hippocampus_r, ROIS.nasal_cavity, ROIS.oral_cavity,
-  ROIS.brain, ROIS.brainstem, ROIS.spinal_canal, ROIS.spinal_cord,
-  ROIS.parotids, ROIS.submands,
-  ROIS.esophagus, ROIS.breast_l, ROIS.breast_r,
-  ROIS.heart, ROIS.a_lad, ROIS.humeral_head_l, ROIS.humeral_head_r, ROIS.chestwall,
+  ROIS.eye_l, ROIS.eye_r,
+  ROIS.lens_l, ROIS.lens_r,
+  ROIS.retina_l, ROIS.retina_r,
+  ROIS.cornea_l, ROIS.cornea_r,
+  ROIS.optic_nerve_l, ROIS.optic_nerve_r,
+  ROIS.optic_chiasm,
+  ROIS.lacrimal_l, ROIS.lacrimal_r,
+  ROIS.cochlea_l, ROIS.cochlea_r,
+  ROIS.hippocampus_l, ROIS.hippocampus_r,
+  ROIS.nasal_cavity,
+  ROIS.oral_cavity,
+  ROIS.brain,
+  ROIS.brainstem,
+  ROIS.spinal_canal,
+  ROIS.spinal_cord,
+  ROIS.parotids,
+  ROIS.submands,
+  ROIS.esophagus,
+  ROIS.breast_l, ROIS.breast_r,
+  ROIS.heart,
+  ROIS.a_lad,
+  ROIS.humeral_head_l, ROIS.humeral_head_r,
+  ROIS.chestwall,
   ROIS.lungs,
-  ROIS.greatves, ROIS.trachea,
-  ROIS.ribs_r, ROIS.ribs_l,
-  ROIS.bronchus_main_l, ROIS.bronchus_main_r, ROIS.cauda_equina,
+  ROIS.greatves,
+  ROIS.trachea,
+  ROIS.ribs_l, ROIS.ribs_r,
+  ROIS.bronchus_main_l, ROIS.bronchus_main_r,
+  ROIS.cauda_equina,
   ROIS.kidneys,
-  ROIS.stomach, ROIS.liver,  ROIS.bowel_small,
-  ROIS.colon, ROIS.brachial_plexus_l, ROIS.brachial_plexus_r, ROIS.bowel_space, ROIS.rectum, ROIS.anal_canal, ROIS.bladder,
+  ROIS.stomach,
+  ROIS.liver,
+  ROIS.bowel_small,
+  ROIS.colon,
+  ROIS.brachial_plexus_l, ROIS.brachial_plexus_r,
+  ROIS.bowel_space,
+  ROIS.rectum,
+  ROIS.anal_canal,
+  ROIS.bladder,
   ROIS.femoral_head_l, ROIS.femoral_head_r,
-  ROIS.external, ROIS.body,
-  ROIS.markers, ROIS.prosthesis_l, ROIS.prosthesis_r, ROIS.couch,
+  ROIS.external,
+  ROIS.body,
+  ROIS.markers,
+  ROIS.prosthesis_l, ROIS.prosthesis_r,
+  ROIS.couch,
 ]
-oar_list.sort(key=get_my_key)
+
+# Sort by name:
+oar_list.sort(key=lambda roi: roi.name)
 
 # Setup GUI choices:
 oar_property = []
@@ -86,14 +118,14 @@ my_window.mainloop()
 
 # Extract information from the users's selections in the GUI:
 if frame.ok:
-    checkBoxes = frame.checkbuttons
-    variables = frame.variables
+  checkBoxes = frame.checkbuttons
+  variables = frame.variables
 elif not frame.ok:
-    print ("Script execution cancelled by user...")
-    sys.exit(0)
+  print ("Script execution cancelled by user...")
+  sys.exit(0)
 else:
-    messagebox.showinfo("Error.","Unexpected error.")
-    sys.exit(0)
+  messagebox.showinfo("Error.","Unexpected error.")
+  sys.exit(0)
 
 # Determine which OARs have been selected:
 selected_oar_list = {}
@@ -116,11 +148,11 @@ if selected_oar_list.get(ROIS.submands):
   selected_oar_list[ROIS.submand_r] = True
 if selected_oar_list.get(ROIS.lungs):
   selected_oar_list[ROIS.lung_l] = True
-  selected_oar_list[ROIS.lung_r] = True    
+  selected_oar_list[ROIS.lung_r] = True
 if selected_oar_list.get(ROIS.breast_l):
-  selected_oar_list[ROIS.breast_l_draft] =True
+  selected_oar_list[ROIS.breast_l_draft] = True
 if selected_oar_list.get(ROIS.breast_r):
-  selected_oar_list[ROIS.breast_r_draft] =True
+  selected_oar_list[ROIS.breast_r_draft] = True
 if selected_oar_list.get(ROIS.markers)and SSF.has_roi(ss, ROIS.rectum.name):
   del selected_oar_list[ROIS.markers]
   selected_oar_list[ROIS.marker1] = True
