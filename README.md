@@ -101,7 +101,7 @@ and case, then run a script.
 
 ## Project structure
 
-The root folder contains the executable scripts. Sub-folders contain the
+The `scripts` folder contains the executable scripts. Other sub-folders contain the
 libraries and resources they use:
 
 | Folder | Contents |
@@ -110,7 +110,8 @@ libraries and resources they use:
 | `ts_classes/` | Thin wrappers around the RayStation scripting API for test suite (`ts_*` prefix), plus Mosaiq verification wrappers (`mqv_*` prefix) |
 | `rt_classes/` | Radiotherapy domain classes (sites, clinical goals, ROIs, margins, prescriptions, objectives) |
 | `gui_classes/` | Reusable Tkinter GUI widget classes |
-| `various_classes/` | High-level orchestration classes (plan, definition, quality control, Mosaiq verification) |
+| `launchers/` | Thin wrapper scripts used to execute the main scripts |
+| `scripts/` | Main executable scripts |
 | `settings/` | Configuration and clinical protocol data (ROI definitions, beams, prescriptions, region codes, objectives, clinical goals) |
 | `settings/clinical_goals/` | Per-site clinical goal definitions |
 | `settings/objectives/` | Per-site optimization objective definitions |
