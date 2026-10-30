@@ -17,7 +17,7 @@ sys.path.append("C:\\temp\\raystation-scripts\\rt_classes")
 import user_list as USERS
 
 # Configuration:
-WEB_SERVER_URL = open(r'C:\temp\raystation-scripts\launchers\web_server_url.txt', "r").read()
+WEB_SERVER_URL = open(r'C:\temp\raystation-scripts\config\web_server_url.txt', "r").read()
 
 def run_and_register(target_script):
   """Executes a target script and registers information about the execution with a web server.
@@ -29,19 +29,19 @@ def run_and_register(target_script):
   command = [sys.executable, target_script]
   # Extract file name from full path:
   path, file_name = os.path.split(target_script)
-  
+
   start_time = time.time()
   status = "success"
   exit_code = 0
   error_message = ""
-  
+
   # Get user information:
   user_name = os.getlogin() if hasattr(os, 'getlogin') else "unknown"
   users = USERS.UserList("C:\\temp\\raystation-scripts\\settings\\users.tsv")
   group = users.get_group(user_name)
 
   print(f"[Launcher] Starting script: {target_script}...")
-    
+
   env = os.environ.copy()
   launcher_dir = os.path.dirname(os.path.abspath(__file__))
   env["PYTHONPATH"] = (
@@ -49,7 +49,7 @@ def run_and_register(target_script):
     if os.name == "nt"
     else f"{launcher_dir}:{env.get('PYTHONPATH', '')}"
   )
-    
+
   try:
     # Executes the script while streaming its output straight to the console
     result = subprocess.run(command, check=True, cwd="c:/temp", env=env)
@@ -64,10 +64,10 @@ def run_and_register(target_script):
     exit_code = -1
     error_message = str(e)
     print(f"[Launcher] Failed to launch script: {error_message}")
-        
+
   end_time = time.time()
   duration = round(end_time - start_time, 3)
-    
+
   # Build metadata payload:
   payload = {
     "name": file_name,
@@ -78,13 +78,13 @@ def run_and_register(target_script):
     "group": group,
     "user": user_name
   }
-    
+
   # Post telemetry data to the web server:
   print(f"[Launcher] Registering execution details with web server...")
   headers = {
     "Content-Type": "application/json"
   }
-    
+
   try:
     response = requests.post(WEB_SERVER_URL, json=payload, headers=headers, timeout=10)
     if response.status_code in [200, 201]:
