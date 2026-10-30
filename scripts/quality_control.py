@@ -571,7 +571,7 @@ def main():
 
   # Settings:
   # Log file path:
-  output_dir = open(r'C:\temp\raystation-scripts\settings\qc_log.txt', "r", encoding='utf-8').read()
+  output_dir = open(r'C:\temp\raystation-scripts\config\qc_log.txt', "r", encoding='utf-8').read()
   # Apply log file workflow?
   run_log = 1
   # File prefix and suffix:

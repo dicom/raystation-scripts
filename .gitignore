@@ -115,8 +115,6 @@ dmypy.json
 
 
 # Specific files for the raystation-scripts project:
-# Web server:
-launchers/web_server_url.txt
 # Database configuration:
 mosaiq/database.txt
 mosaiq/password.txt
@@ -126,8 +124,6 @@ mosaiq/user.txt
 mosaiq/document_path.txt
 # User names:
 settings/users.tsv
-# QC log:
-settings/qc_log.txt
 # Media files:
 media/
 # Configuration files:
