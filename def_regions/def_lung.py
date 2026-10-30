@@ -112,7 +112,7 @@ class DefLung(object):
       sourcesA = [ictv], sourcesB = [ROIS.external], operator = 'Intersection',
       marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
     )
-    pm_setup.add_targets([ROIS.igtv_p, ROIS.igtv_n, igtv, ictv_p, ictv_n, ictv, ptv])
+    pm_setup.add_targets([ROIS.igtv_p, ROIS.igtv_n, igtv, ictv_p, ictv_n, ictv, ptv, ROIS.wall_ptv])
     # Other derived ROIs:
     lungs_igtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs,
       sourcesA = [ROIS.lungs], sourcesB = [igtv], operator='Subtraction'
@@ -146,7 +146,7 @@ class DefLung(object):
       sourcesA = [ctv], sourcesB = [ROIS.external], operator = 'Intersection',
       marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
     )
-    pm_setup.add_targets([ROIS.gtv_p, ROIS.gtv_n, gtv, ctv_p, ctv_n, ctv, ptv])
+    pm_setup.add_targets([ROIS.gtv_p, ROIS.gtv_n, gtv, ctv_p, ctv_n, ctv, ptv, ROIS.wall_ptv])
     # Other derived ROIs:
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_gtv.name, ROIS.lungs_gtv.type, COLORS.lungs,
       sourcesA = [ROIS.lungs], sourcesB = [gtv], operator='Subtraction'
@@ -169,7 +169,7 @@ class DefLung(object):
     ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ctv], sourcesB = [ROIS.external],
       operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
     )
-    pm_setup.add_targets([ctv, ptv])
+    pm_setup.add_targets([ctv, ptv, ROIS.wall_ptv])
     # Other derived ROIs:
     water = ROI.ROIAlgebra(ROIS.z_water.name, ROIS.z_water.type, COLORS.other_ptv,
       sourcesA=[ROIS.lungs, ptv], sourcesB=[ctv], operator='Subtraction', operatorA = 'Intersection'
@@ -193,7 +193,7 @@ class DefLung(object):
       sourcesA=[ictv], sourcesB = [ROIS.external], operator = 'Intersection',
       marginsA = MARGINS.uniform_5mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
     )
-    pm_setup.add_targets([ROIS.igtv, ictv, ptv])
+    pm_setup.add_targets([ROIS.igtv, ictv, ptv, ROIS.wall_ptv])
     # Other derived ROIs:
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_igtv.name, ROIS.lungs_igtv.type, COLORS.lungs,
       sourcesA = [ROIS.lungs], sourcesB = [ROIS.igtv], operator='Subtraction'
@@ -218,7 +218,7 @@ class DefLung(object):
     ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ctv], sourcesB = [ROIS.external],
       operator = 'Intersection', marginsA = MARGINS.uniform_10mm_expansion, marginsB = MARGINS.uniform_5mm_contraction
     )
-    pm_setup.add_targets([ROIS.gtv, ctv, ptv])
+    pm_setup.add_targets([ROIS.gtv, ctv, ptv, ROIS.wall_ptv])
     # Other derived ROIs:
     lungs_gtv = ROI.ROIAlgebra(ROIS.lungs_gtv.name, ROIS.lungs_gtv.type, COLORS.lungs,
       sourcesA = [ROIS.lungs], sourcesB = [ROIS.gtv], operator='Subtraction'
