@@ -130,3 +130,5 @@ settings/users.tsv
 settings/qc_log.txt
 # Media files:
 media/
+# Configuration files:
+config/
