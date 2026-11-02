@@ -8,7 +8,7 @@ class Document:
   """A class for reading document data from the Mosaiq database."""
 
   # The Mosaiq document file share path:
-  path = open(r'C:\temp\raystation-scripts\mosaiq\document_path.txt', "r").read()
+  path = open(r'C:\temp\raystation-scripts\config\mq_document_path.txt', "r").read()
 
   @classmethod
   def find(cls, id):

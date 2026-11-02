@@ -5,13 +5,13 @@ class Database:
   """A class for interacting with the Mosaiq database."""
 
   # The Mosaiq SQL server address:
-  server = open(r'C:\temp\raystation-scripts\mosaiq\server.txt', "r").read()
+  server = open(r'C:\temp\raystation-scripts\config\mq_server.txt', "r").read()
   # The username to be used for access to the Mosaiq database:
-  user = open(r'C:\temp\raystation-scripts\mosaiq\user.txt', "r").read()
+  user = open(r'C:\temp\raystation-scripts\config\mq_user.txt', "r").read()
   # The password to be used for access to the Mosaiq database:
-  password = open(r'C:\temp\raystation-scripts\mosaiq\password.txt', "r").read()
+  password = open(r'C:\temp\raystation-scripts\config\mq_password.txt', "r").read()
   # The name of the database to access:
-  database = open(r'C:\temp\raystation-scripts\mosaiq\database.txt', "r").read()
+  database = open(r'C:\temp\raystation-scripts\config\mq_database.txt', "r").read()
 
   @staticmethod
   def fetch_all(text):

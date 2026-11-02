@@ -43,12 +43,12 @@ run from RayStation's built-in scripting workspace.
    > deployment path. Relative paths will not work when these scripts are imported into
    > the RayStation database. The scripts will not run from any other location.
 
-3. Configure the Mosaiq database credentials in the `mosaiq/` folder:
-   - `database.txt` - SQL database (optional)
-   - `document_path.txt` - Path to the Mosaiq ESCRIBE folder
-   - `user.txt` - database user name
-   - `password.txt` - database password
-   - `server.txt` - SQL server address
+3. Configure the Mosaiq database credentials in the `config/` folder:
+   - `mq_database.txt` - SQL database (optional)
+   - `mq_document_path.txt` - Path to the Mosaiq ESCRIBE folder
+   - `mq_user.txt` - database user name
+   - `mq_password.txt` - database password
+   - `mq_server.txt` - SQL server address
 
 4. Copy the files to the RayStation scripting workspace, or import the scripts
    into the RayStation database so they appear in the scripting workspace GUI.
