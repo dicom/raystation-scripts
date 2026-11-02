@@ -37,7 +37,7 @@ def run_and_register(target_script):
 
   # Get user information:
   user_name = os.getlogin() if hasattr(os, 'getlogin') else "unknown"
-  users = USERS.UserList("C:\\temp\\raystation-scripts\\settings\\users.tsv")
+  users = USERS.UserList("C:\\temp\\raystation-scripts\\config\\users.tsv")
   group = users.get_group(user_name)
 
   print(f"[Launcher] Starting script: {target_script}...")

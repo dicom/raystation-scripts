@@ -97,7 +97,7 @@ class FractionationFrame(Frame):
     # Collect fraction dose:
     # (Floats expect . so for more flexibility we will replace , with . as , is commonly used in Norway for floats)
     fraction_dose = float(self.fraction_dose_entry.get().replace(',', '.'))
-    if not 0 < fraction_dose < 26: 
+    if not 0 < fraction_dose < 26:
       messagebox.showinfo("Ugyldig fraksjonsdose.","Ugyldig fraksjonsdose." )
       sys.exit(0)
     # Collect number of fractions:
@@ -126,6 +126,6 @@ class FractionationFrame(Frame):
   # Returns initials derived from the windows user name.
   def user_initials(self):
     user_name = os.getlogin()
-    users = USERS.UserList("C:\\temp\\raystation-scripts\\settings\\users.tsv")
+    users = USERS.UserList("C:\\temp\\raystation-scripts\\config\\users.tsv")
     initials = users.get_initials(user_name)
     return initials
