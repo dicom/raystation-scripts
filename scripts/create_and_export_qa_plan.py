@@ -1,18 +1,21 @@
-# Creates a QA plan with standard settings and exports it to specified folder.
-#
-# Authors:
-# Christoffer Lervåg & Marit Funderud
-# Helse Møre og Romsdal HF
-#
+'''Creates a QA plan with standard settings and exports DICOM files to the specified folder.
+
+Authors:
+Christoffer Lervåg & Marit Funderud
+Helse Møre og Romsdal HF
+'''
 
 # Import system libraries:
-from connect import *
 import clr, sys, os
 import math
 from tkinter import *
 from tkinter import messagebox
 
-# Add necessary folders to the system path:
+# Import RayStation packages:
+sys.path.append("C:/Program Files/RaySearch Laboratories/RayStation 2024B/ScriptClient/")
+from connect import *
+
+# Add local folders to the system path:
 sys.path.append("C:\\temp\\raystation-scripts\\def_regions")
 sys.path.append("C:\\temp\\raystation-scripts\\functions")
 sys.path.append("C:\\temp\\raystation-scripts\\gui_classes")
@@ -25,19 +28,22 @@ import gui_functions as GUIF
 import property as P
 import radio_button as RB
 
-# Load patient and case data:
+# Load patient, plan and beam set:
 try:
-    patient = get_current("Patient")
+  patient = get_current("Patient")
 except SystemError:
-    raise IOError("No plan loaded.")
+  raise IOError("No plan loaded.")
 try:
-    plan = get_current("Plan")
+  plan = get_current("Plan")
 except SystemError:
-    raise IOError("No plan loaded.")
+  raise IOError("No plan loaded.")
 try:
-    beam_set = get_current("BeamSet")
+  beam_set = get_current("BeamSet")
 except SystemError:
-    raise IOError("No beam set loaded.")
+  raise IOError("No beam set loaded.")
+
+# DICOM export path:
+export_path = open(r'C:\temp\raystation-scripts\config\dicom_qa_path.txt', "r", encoding='utf-8').read()
 
 # Determine (unique) name of QA plan:
 name = 'QA'
@@ -61,27 +67,27 @@ if len(list(plan.VerificationPlans)) > 0:
 
 # Radiobutton choices for dose grid:
 c2mm = P.Property('Konvensjonell VMAT (2 mm)', '0.2', default = True)
-c1mm = P.Property('Stereotaksi (1 mm)','0.1')
+c1mm = P.Property('Stereotaksi (1 mm)', '0.1')
 choices = [c2mm, c1mm]
 
 # Create radio button object
-options = RB.RadioButton('VMAT QA','Velg dosematrise:', choices)
+options = RB.RadioButton('VMAT QA', 'Velg dosematrise:', choices)
 
 # Setup and run GUI:
 my_window = Tk()
 frame = FRAME.RadioButtonFrame(my_window, options)
-frame.grid(row = 0,column = 0)
+frame.grid(row = 0, column = 0)
 my_window.mainloop()
 
 # Extract information from the users's selections in the GUI:
 if frame.ok:
-    (selection,value) = frame.get_results()
+  (selection, value) = frame.get_results()
 elif not frame.ok:
-    print ("Script execution cancelled by user...")
-    sys.exit(0)
+  print ("Script execution cancelled by user...")
+  sys.exit(0)
 else:
-    messagebox.showinfo("Error.","Unexpected error.")
-    sys.exit(0)
+  messagebox.showinfo("Error.","Unexpected error.")
+  sys.exit(0)
 
 # Convert the selected value to a float:
 resolution = float(value)
@@ -90,9 +96,9 @@ resolution = float(value)
 beam_set.CreateQAPlan(
 	PhantomName = 'ArcCheck (Heterogen bordtopp)',
 	PhantomId = 'AC_plug_test',
-	QAPlanName = name, 
-	IsoCenter = { 'x': -0.0, 'y': 0.0, 'z': 0 }, 
-	DoseGrid = { 'x': resolution, 'y': resolution, 'z': resolution }, 
+	QAPlanName = name,
+	IsoCenter = { 'x': -0.0, 'y': 0.0, 'z': 0 },
+	DoseGrid = { 'x': resolution, 'y': resolution, 'z': resolution },
 	ComputeDoseWhenPlanIsCreated = True
 )
 
@@ -102,7 +108,7 @@ last_plan = len(list(plan.VerificationPlans))-1
 
 # DICOM export:
 plan.VerificationPlans[last_plan].ScriptableQADicomExport(
-	ExportFolderPath = "I:\\HMR - Begrenset\\Klinikk for kreftbehandling og rehabilitering - Stråleterapi-kontor - Doseplanlegging\\VMAT-QA",
+	ExportFolderPath = export_path,
 	QaPlanIdentity = 'Patient',
 	ExportExamination = False,
 	ExportExaminationStructureSet = False,
