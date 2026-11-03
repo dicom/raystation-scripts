@@ -117,7 +117,7 @@ libraries and resources they use:
 | `settings/objectives/` | Per-site optimization objective definitions |
 | `def_regions/` | Per-site ROI definition scripts |
 | `mosaiq/` | Mosaiq database integration layer (connection + domain model classes) |
-| `single_use_scripts/` | One-off or site-specific batch scripts |
+| `legacy/` | Outdated, one-off or site-specific batch scripts |
 | `media/icons/` | GUI icons |
 
 ### Treatment sites
