@@ -1,5 +1,5 @@
-# Export DICOM files for the current patient.
-#
+'''Exports DICOM files for the current patient.
+'''
 
 # System files:
 from connect import get_current
@@ -11,13 +11,13 @@ export_folder = r'C:\temp\DICOM'
 
 # Load patient and case data:
 try:
-    patient = get_current("Patient")
+  patient = get_current("Patient")
 except SystemError:
-    raise IOError("No patient loaded.")
+  raise IOError("No patient loaded.")
 try:
-    case = get_current("Case")
+  case = get_current("Case")
 except SystemError:
-    raise IOError("No case loaded.")
+  raise IOError("No case loaded.")
 
 
 # Prepare folder:
@@ -26,7 +26,7 @@ if path.isdir(export_folder):
 else:
   mkdir(export_folder)
   chdir(export_folder)
-  
+
 
 # Function for exporting a patient case (specified by study nr):
 def export(patient, case):
