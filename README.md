@@ -84,18 +84,13 @@ and case, then run a script.
 
 | Script | Description |
 | ------ | ----------- |
-| `create_perturbed_dose.py` | Computes perturbed doses for robustness analysis |
 | `create_and_export_qa_plan.py` | Creates and exports a QA plan |
-| `calculate_edric.py` | Calculates the EDRIC metric |
-| `calculate_paddick_index.py` | Calculates the Paddick conformity index |
-| `clinical_goal_plan_association.py` | Associates clinical goals with plans |
+| `associate_clinical_goals_with_plan.py` | Associates clinical goals with plans |
 
 ### Export and diagnostics
 
 | Script | Description |
 | ------ | ----------- |
-| `export_dicom_current_patient.py` | Exports DICOM data for the current patient |
-| `export_statistics_to_excel.py` | Exports statistics to Excel |
 | `run_console_and_statetree.py` | Console and state tree utilities |
 | `copy_files.py` | File copy utility |
 
