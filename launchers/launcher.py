@@ -8,6 +8,8 @@ import sys
 import os
 import subprocess
 import time
+from tkinter import *
+from tkinter import messagebox
 
 # Import packages:
 import requests
@@ -93,3 +95,12 @@ def run_and_register(target_script):
       print(f"[Launcher] Server warning: Received status code {response.status_code}")
   except requests.exceptions.RequestException as req_err:
     print(f"[Launcher] Critical Error: Failed to contact the web server. Details: {req_err}")
+
+  # If unsuccessful execution, warn user with a GUI dialogue window:
+  if status != "success":
+    root = Tk()
+    root.withdraw()
+    title = "SKRIPT KRASJ!!"
+    text = file_name + " har krasjet med følgende melding:\n\n" + error_message
+    messagebox.showinfo(title, text)
+    root.destroy()
