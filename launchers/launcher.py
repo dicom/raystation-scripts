@@ -52,12 +52,12 @@ def run_and_register(target_script):
 
   try:
     # Executes the script while streaming its output straight to the console
-    result = subprocess.run(command, check=True, cwd="c:/temp", env=env)
+    result = subprocess.run(command, capture_output=True, text=True, check=True, cwd="c:/temp", env=env)
     exit_code = result.returncode
   except subprocess.CalledProcessError as e:
     status = "failed"
     exit_code = e.returncode
-    error_message = f"Script exited with error code {e.returncode}"
+    error_message = e.stderr
     print(f"[Launcher] Error encountered: {error_message}")
   except Exception as e:
     status = "error"
