@@ -286,7 +286,7 @@ class DefPalliative(object):
       if region in ['col cervical', 'col thorax', 'col pelvis']:
         # Targets:
         ctv = ROI.ROIExpanded(ROIS.ctv.name, ROIS.ctv.type, COLORS.ctv_med, ROIS.gtv,
-          margins = MARGINS.uniform_3mm_expansion
+          margins = MARGINS.uniform_5mm_expansion
         )
         ptv = ROI.ROIAlgebra(ROIS.ptv.name, ROIS.ptv.type, ROIS.ptv.color, sourcesA=[ctv], sourcesB=[ROIS.vb],
           operator='Union', marginsA = ptv_margin, marginsB = ptv_margin
