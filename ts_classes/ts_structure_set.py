@@ -120,12 +120,12 @@ class TSStructureSet(object):
     if not SSF.has_named_roi_with_contours(self.structure_set, ROIS.couch.name):
       return
     couch_rg = self.structure_set.RoiGeometries[ROIS.couch.name]
-    # Max-density point in couch ROI 
+    # Max-density point in couch ROI
     try:
       cz = float(couch_rg.GetCoordinateForMaxGrayLevel()['z'])
     except Exception:
       return
-    # HU statistics in couch ROI 
+    # HU statistics in couch ROI
     try:
       stats = self.structure_set.OnExamination.Series[0].ImageStack.GetIntensityStatistics(RoiName=ROIS.couch.name)
       avg_hu = float(next(iter(stats['Average'])))
@@ -142,7 +142,7 @@ class TSStructureSet(object):
     for rg in self.structure_set.RoiGeometries:
       try:
         if rg.OfRoi.Type == 'Ptv' and rg.HasContours():
-          box = rg.GetBoundingBox()  
+          box = rg.GetBoundingBox()
           z0 = float(box[0]['z'])
           z1 = float(box[1]['z'])
           zmins.append(min(z0, z1))
@@ -157,7 +157,7 @@ class TSStructureSet(object):
     # Determine if joint and ptv are close:
     z_close = (ptv_min_z - margin_cm) <= cz <= (ptv_max_z + margin_cm)
     return t.fail() if z_close else t.succeed()
-  
+
   # Tests for presence of an external.
   def external_test(self):
     t = TEST.Test("Struktursettet må ha definert en ytterkontur (navn og type skal være: External)", True, self.external)
@@ -315,7 +315,7 @@ class TSStructureSet(object):
   def no_geometries_outside_external_test(self):
     t = TEST.Test("Geometri forventes å ikke være definert utenfor 'External' for noen ROI", None, self.geometry)
     # Known ROIs which are expected to exceed the External ROI:
-    excluded_roi_names = ['Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall']
+    excluded_roi_names = ['Bolus', 'Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall']
     external = None
     geometries = []
     failed_geometries = []
