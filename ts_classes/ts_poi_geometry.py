@@ -1,23 +1,23 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
-import raystation_utilities as RSU
-from tkinter import messagebox
-# This class contains tests for the RayStation Poi Geometry object:
+
+
 class TSPOIGeometry(object):
+  '''This class contains tests for the RayStation PoiGeometry object.'''
+
   def __init__(self, poi_geometry, ts_structure_set=None):
+    '''Initializes the PoiGeometry test suite with the relevant RayStation instance.
+
+    Args:
+      poi_geometry (PyScriptObject): The RayStation PoiGeometry instance.
+      ts_structure_set (TSStructureSet): The parent structure set test suite instance.
+    '''
     # RayStation object:
     self.poi_geometry = poi_geometry
     # Related test suite objects:
@@ -31,8 +31,8 @@ class TSPOIGeometry(object):
     self.param = TEST.Parameter('POI Geometri', self.poi_geometry.OfPoi.Name, self.parent_param)
     self.coordinates = TEST.Parameter('Koordinater', '', self.param)
 
-  # Tests for coordinate definition.
   def is_defined_test(self):
+    '''Tests for coordinate definition.'''
     t = TEST.Test("Skal ha definerte koordinater", True, self.coordinates)
     if self.poi_geometry.Point:
       # When the poi geometry is undefined, RayStation seems to represent this with the min float value:
@@ -43,8 +43,8 @@ class TSPOIGeometry(object):
     else:
       return t.fail()
 
-  # Tests for coordinate definition.
   def is_not_zero_test(self):
+    '''Tests for coordinate definition.'''
     t = TEST.Test("Skal ikke ha koordinater i punktet: 0,0,0", True, self.coordinates)
     if self.poi_geometry.Point:
       # When the poi geometry is undefined, RayStation seems to represent this with the min float value:

@@ -1,23 +1,23 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
-import raystation_utilities as RSU
 
-# This class contains tests for the RayStation POI object:
+
 class TSPOI(object):
+  '''This class contains tests for the RayStation POI object.'''
+
   def __init__(self, poi, ts_case=None):
+    '''Initializes the POI test suite with the relevant RayStation instance.
+
+    Args:
+      poi (PyScriptObject): The RayStation POI instance.
+      ts_case (TSCase): The parent case test suite instance.
+    '''
     # RayStation object:
     self.poi = poi
     # Related test suite objects:
@@ -29,4 +29,3 @@ class TSPOI(object):
       self.parent_param = None
     # Parameters:
     self.param = TEST.Parameter('POI', self.poi.Name, self.parent_param) # (poi parameter)
-

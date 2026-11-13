@@ -1,24 +1,23 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual segments.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
-import itertools as it
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
-import raystation_utilities as RSU
 
-# This class contains tests for the RayStation Segment object:
+
 class TSSegment(object):
+  '''This class contains tests for the RayStation Segment object.'''
+
   def __init__(self, segment, ts_beam=None):
+    '''Initializes the Segment test suite with the relevant RayStation instance.
+
+    Args:
+      segment (PyScriptObject): The RayStation Segment instance.
+      ts_beam (TSBeam): The parent beam test suite instance.
+    '''
     # RayStation objects:
     self.segment = segment
     # Related test suite objects:

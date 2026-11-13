@@ -1,26 +1,26 @@
-# encoding: utf8
-
-# Contains tests for the case object.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 import math
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
-import test_p as TEST
+# Import local files:
 import region_codes as RC
 import rois as ROIS
-#import raystation_utilities as RSU
+import test_p as TEST
 
-# This class contains tests for the RayStation Case object:
+
 class TSCase(object):
+  '''This class contains tests for the RayStation Case object.'''
+
   def __init__(self, case, ts_patient=None):
+    '''Initializes the case test suite with the relevant RayStation instance.
+
+    Args:
+      case (PyScriptObject): The RayStation Case instance.
+      ts_patient (TSPatient): The parent patient test suite instance.
+    '''
     # RayStation object:
     self.case = case
     # Related test suite objects:
@@ -38,24 +38,23 @@ class TSCase(object):
     self.param = TEST.Parameter('Case', self.case.CaseName, self.parent_param)
     self.localization_point = TEST.Parameter('REF', '', self.param)
     self.examination = TEST.Parameter('Examination', '', self.param)
-
     # Attributes:
     self.has_target_volume = self.target_volume()
 
-
-
-
-  # Determines if a target volume is defined in the case.
   def target_volume(self):
+    '''Gives true/false if the case has has a target volume or not.
+
+    Returns:
+      bool: True if case has any target volumes, False if not.
+    '''
     match = False
     for roi in self.case.PatientModel.RegionsOfInterest:
       if roi.Type in ('Gtv', 'Ctv', 'Ptv'):
        match = True
     return match
 
-  
-  # Tests if a POI exists for specifying where the breath measurement point is.
   def breath_measurement_point_for_lung_sbrt_test(self):
+    '''Tests if a POI exists for specifying where the breath measurement point is.'''
     t = TEST.Test("For lunge stereotaksi (som behandles i DIBH) skal det finnes en 'Pust' POI for markering av målepunkt for pustebevegelse", True, self.param)
     # Only relevant to run this test for lung region and stereotactic treatment:
     if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
@@ -67,10 +66,11 @@ class TSCase(object):
         return t.succeed()
       else:
         return t.fail()
-  
-  # Tests if the breath measurement point is not too far offset from the isocenter.
-  # (such that it falls in the shadow of the gantry from the Catalyst camera's point of view)
+
   def breath_measurement_point_not_in_gantry_shadow_for_lung_sbrt_test(self):
+    '''Tests if the breath measurement point is not too far offset from the isocenter
+    (such that it falls in the shadow of the gantry from the Catalyst camera's point of view).
+    '''
     t = TEST.Test("For lunge stereotaksi (som behandles i DIBH) bør avstanden mellom isocenter og 'Pust' POIen ikke være såpass stor at pustepunktet kommer i skyggen av gantry (fra Catalyst kameraet sitt synspunkt)", True, self.param)
     # Only relevant to run this test for lung region and stereotactic treatment:
     if self.ts_plan.ts_beam_sets[0].ts_prescription.is_stereotactic() and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.lung_codes:
@@ -96,7 +96,7 @@ class TSCase(object):
             # Calculate difference in the height and long directions:
             delta_height = abs(iso.y - poi.Point.y)
             delta_long = poi.Point.z - iso.z
-            # Catalyst realistic field of view at breath measurement point: 
+            # Catalyst realistic field of view at breath measurement point:
             breath_real_fov = (iso_real_fov - delta_long) / math.tan(math.radians(angle))
             delta_height_dibh = delta_height + amplitude
             if delta_height_dibh > breath_real_fov:
@@ -104,9 +104,9 @@ class TSCase(object):
               return t.fail(round(delta_height_dibh, 1))
             else:
               return t.succeed()
-  
-  # For DIBH cases, tests that there are at least 2 DIBH control examinations present.
+
   def dibh_control_examinations_present_on_dibh_case_test(self):
+    '''For DIBH cases, tests that there are at least 2 DIBH control examinations present.'''
     t = TEST.Test("DIBH-planer skal ha minst to 'DIBH Kontroll' serier til stede i casen", ">=2", self.param)
     # Only relevant to run this test if the planning CT name includes 'DIBH':
     ce = get_current("Examination")
@@ -123,11 +123,15 @@ class TSCase(object):
           return t.succeed()
         else:
           return t.fail(dibh_controls)
-  
-  # Tests if the CT image series used for treatment planning is the most recent CT image series in this case.
-  # While evaluating against other image series, non-CT modalities, CBCT series and CT image series
-  # having the same frame of reference UID as the primary image series are filtered out.
+
   def last_examination_used_test(self):
+    '''Tests if the CT image series used for treatment planning is the most recent
+    CT image series in this case.
+
+    Note that while evaluating against other image series,
+    non-CT modalities, CBCT series and CT image series having the same frame of
+    reference UID as the primary image series are filtered out.
+    '''
     t = TEST.Test("Den siste CT-serien som er tatt skal i utgangspunktet brukes til planlegging ", True, self.examination)
     # Pass this test for some known patients used for script development (typicall patients having multiple CT examinations):
     white_list_case_ids = [
@@ -150,8 +154,8 @@ class TSCase(object):
     else:
       return t.succeed()
 
-  # Tests if the same localization point is set in the free breathing CT and DIBH CT.
   def localization_points_for_gating_test(self):
+    '''Tests if the same localization point is set in the free breathing CT and DIBH CT.'''
     t = TEST.Test("Skal være samme referansepunkt i både fripust CT og dyp innpust CT for planer som har gating-regionkode", True, self.localization_point)
     points = []
     if self.ts_plan.ts_beam_sets[0].ts_label.label.region and self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
@@ -164,9 +168,11 @@ class TSCase(object):
         else:
           return t.succeed()
 
-  # Tests that the CTV is not contracted (e.q. 5 mm) beneath the external contour for breast cases with virtual bolus.
-  # (In these cases, the CTV should go all they way out to the external contour)
   def ctv_not_contracted_from_external_for_breast_case_with_virtual_bolus_test(self):
+    '''Tests that the CTV is not contracted (e.q. 5 mm) beneath the external contour
+    for breast cases with virtual bolus (in these cases, the CTV should go all the
+    way out to the external contour).
+    '''
     t = TEST.Test("CTV skal ha 0 mm contraction i forhold til External for bryst caser som har virtuell bolus (bolus definert i RayStation)", 0, self.param)
     # Is this a Breast case?
     if self.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
@@ -183,8 +189,8 @@ class TSCase(object):
         else:
           return t.succeed()
 
-  # Tests if there exists a virtual Bolus ROI in the case without a density override.
   def virtual_bolus_without_density_override_test(self):
+    '''Tests if there exists a virtual Bolus ROI in the case without a density override.'''
     t = TEST.Test("Når en case har virtuell bolus (bolus definert i RayStation), skal denne være definert med et Material (density override).", True, self.param)
     # Do we have a virtual bolus present?
     bolus = None
@@ -197,9 +203,12 @@ class TSCase(object):
       else:
         return t.succeed()
 
-  # Tests that the case has a "Prosthesis" ROI if the examination contains metal (has a max HU of 3000 or more).
-  # FIXME: This test has been deactivated as it gave too many false positives.
   def case_has_prosthesis_roi_if_metal_is_present_in_examination_test(self):
+    '''Tests that the case has a "Prosthesis" ROI if the examination contains metal
+    (has a max HU of 3000 or more).
+
+    FIXME: This test has been deactivated as it gave too many false positives.
+    '''
     t = TEST.Test("Case skal inneholde en protese ROI med tetthet titan hvis ytterkonturen inneholder metall (indikert ved HU over 3000)", 'Prosthesis', self.examination)
     ce = get_current("Examination")
     # Determine max Hounsfield unit in examination:

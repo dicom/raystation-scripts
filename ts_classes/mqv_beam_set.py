@@ -1,25 +1,26 @@
-# encoding: utf8
-
-# Contains tests for individual beam sets.
-#
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 import math
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import beam_set_label as BSL
 import region_list as REGIONS
 import test_p as TEST
 
 
-# This class contains tests for the RayStation BeamSet object:
 class MQVBeamSet(object):
+  '''This class contains tests for the RayStation BeamSet object.'''
+
   def __init__(self, beam_set, mqv_plan=None):
+    '''Initializes the beam_set verification with the relevant RayStation instance.
+
+    Args:
+      beam_set (PyScriptObject): The RayStation BeamSet instance.
+      mqv_plan (MQVPlan): The parent instance in the verification hierarchy. Defaults to None.
+    '''
     # RayStation object:
     self.beam_set = beam_set
     # Mosaiq object:
@@ -46,8 +47,15 @@ class MQVBeamSet(object):
     self.orientation = TEST.Parameter('Pasientleie', self.beam_set.PatientPosition, self.param)
     self.setup_offsets = TEST.Parameter('Bord-forflytninger', '', self.param)
 
-  # Translates a RayStation (code format) beam set label to the Mosaiq (readable) version.
   def translate(self, bs_label):
+    '''Translates a RayStation (code format) beam set label (in code format) to the Mosaiq (readable) version.
+
+    Args:
+      bs_label (str): The beam set label from RayStation (e.q. '341V:0-64:32').
+
+    Returns:
+      str: A human readable beam set string (e.q. 'Vesica 0-64').
+    '''
     assert type(bs_label) is BSL.BeamSetLabel, "bs_label is not a BeamSetLabel: %r" % bs_label
     # Get the region text part of the label:
     region_text = self.regions.get_text(bs_label.region)
@@ -69,17 +77,16 @@ class MQVBeamSet(object):
       mq_label = mq_label[0:20]
     return mq_label
 
-
-  # Checks that there is a beam set in Mosaiq with a name corresponding to the decoded beam set label.
   def test_matching_beam_set_name(self):
+    '''Checks that there is a beam set in Mosaiq with a name corresponding to the decoded beam set label.'''
     t = TEST.Test("Skal finnes et beam set (RadRx) i Mosaiq med forventet navn.", self.expected_mosaiq_label, self.label)
     if self.mq_beam_set:
       return t.succeed()
     else:
       return t.fail()
-  
-  # Comparison of technique.
+
   def test_technique(self):
+    '''Comparison of technique.'''
     t = TEST.Test("DeliveryTechnique", self.technique.value, self.technique)
     # Proceed only on matching beam set:
     if self.mq_beam_set:
@@ -95,9 +102,9 @@ class MQVBeamSet(object):
           return t.fail(self.mq_beam_set.technique)
       else:
         return t.fail("Ukjent technique! (oppdater skript)")
-  
-  # Comparison of modality.
+
   def test_modality(self):
+    '''Comparison of modality.'''
     t = TEST.Test("Modality", self.beam_set.Modality, self.modality)
     # Proceed only on matching beam set:
     if self.mq_beam_set:
@@ -114,8 +121,8 @@ class MQVBeamSet(object):
       else:
         return t.fail("Ukjent modalitet! (oppdater skript)")
 
-  # Comparison of patient orientation.
   def test_patient_orientation(self):
+    '''Comparison of patient orientation.'''
     t = TEST.Test("Patient Orientation", self.beam_set.PatientPosition, self.orientation)
     # Proceed only on matching beam set:
     if self.mq_beam_set:
@@ -141,9 +148,9 @@ class MQVBeamSet(object):
           return t.fail(self.mq_beam_set.site_setup().patient_orientation_id)
       else:
         return t.fail("Ukjent orientering! (oppdater skript) (ID: " + str(self.mq_beam_set.site_setup().patient_orientation_id) + ")")
-  
-  # Comparison of setup offsets (table top displacement from localization point to isocenter).
+
   def test_setup_offsets(self):
+    '''Comparison of setup offsets (table top displacement from localization point to isocenter).'''
     # Get RayStation displacement values:
     displacement = self.beam_set.PatientSetup.TreatmentSetupPositions[0].TableTopDisplacement
     rs_displacements = []
@@ -180,5 +187,5 @@ class MQVBeamSet(object):
       # We will therefore use a threshold of 0.6 mm (0.006 cm) when testing for equality:
       if max(difference) < 0.06:
         return t.succeed()
-      else:  
+      else:
         return t.fail(mq_displacements)

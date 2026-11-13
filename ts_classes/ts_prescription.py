@@ -1,26 +1,27 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual beams.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import raystation_utilities as RSU
 import region_codes as RC
 import rois as ROIS
 import structure_set_functions as SSF
 import test_p as TEST
 
-# This class contains tests for the RayStation Prescription object:
+
 class TSPrescription(object):
+  '''This class contains tests for the RayStation Prescription object.'''
+
   def __init__(self, prescription, ts_beam_set=None):
+    '''Initializes the Prescription test suite with the relevant RayStation instance.
+
+    Args:
+      prescription (PyScriptObject): The RayStation Prescription instance.
+      ts_beam_set (TSBeamSet): The parent beam set test suite instance.
+    '''
     # RayStation object:
     self.prescription = prescription
     # Related test suite objects:
@@ -44,18 +45,21 @@ class TSPrescription(object):
     self.mu = TEST.Parameter('MU', '', self.param)
     self.max = TEST.Parameter('Klinisk maksdose', '', self.param)
 
-
-  # Gives true/false if the prescription is stereotactic or not.
   def is_stereotactic(self):
+    '''Gives true/false if the prescription is stereotactic or not.
+
+    Returns:
+      bool: True if prescription is stereotactic, False if not.
+    '''
     match = False
     if self.ts_beam_set.ts_label:
       if self.ts_beam_set.ts_label.label.valid:
         if self.ts_beam_set.ts_label.label.technique.upper() == 'S':
           match = True
     return match
-  
-  # Tests if the clinical max dose is higher than the set limit.
+
   def clinical_max_test(self):
+    '''Tests if the clinical max dose is higher than the set limit.'''
     ss = self.ts_beam_set.ts_structure_set().structure_set
     if SSF.has_named_roi_with_contours(ss, ROIS.external.name):
       # Get the external ROI and its volume:
@@ -89,10 +93,9 @@ class TSPrescription(object):
         return t.fail(round(clinical_max_dose, 2))
       else:
         return t.succeed()
-        
 
-  # Tests if the prescription volume type is as expected.
   def ctv_prescription_test(self):
+    '''Tests if the prescription volume type is as expected.'''
     t = TEST.Test("Skal i utgangspunktet benytte CTV til normalisering.", True, self.roi)
     ts = TEST.Test("Skal i utgangspunktet benytte PTV til normalisering.", True, self.roi)
     if self.ts_beam_set.ts_label.label.technique:
@@ -114,8 +117,8 @@ class TSPrescription(object):
         else:
           return t.fail(type)
 
-  # Tests that the prescription type (MedianDose/DoseAtVolume) is as expected.
   def prescription_type_test(self):
+    '''Tests that the prescription type (MedianDose/DoseAtVolume) is as expected.'''
     t = TEST.Test("Skal være en av disse", ['MedianDose'], self.type)
     expected = 'MedianDose'
     if self.is_stereotactic():
@@ -127,8 +130,8 @@ class TSPrescription(object):
     else:
       return t.fail(found)
 
-  # Tests if the prescription dose is equal to the dose given in the DICOM plan label.
   def prescription_dose_test(self):
+    '''Tests if the prescription dose is equal to the dose given in the DICOM plan label.'''
     t = TEST.Test("Skal stemme overens med totaldose indikert av beam set label.", True, self.dose)
     cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
     diff_pr_dose = RSU.differential_prescription_dose(self.ts_beam_set.ts_plan.plan, self.ts_beam_set.beam_set)
@@ -140,8 +143,8 @@ class TSPrescription(object):
       else:
         return t.succeed()
 
-  # Tests if the dose in the prescription volume is within 0.5 % of the set prescription dose.
   def prescription_real_dose_test(self):
+    '''Tests if the dose in the prescription volume is within 0.5 % of the set prescription dose.'''
     t = TEST.Test("Skal stemme overens (innenfor 0.5%) med aktuell dose for nomeringsvolum (eller punkt)", True, self.dose)
     if self.ts_beam_set.beam_set.Modality == 'Photons':
       cum_pr_dose = RSU.prescription_dose(self.ts_beam_set.beam_set)
@@ -177,8 +180,8 @@ class TSPrescription(object):
           else:
             return t.succeed()
 
-  # Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.
   def stereotactic_prescription_technique_test(self):
+    '''Tests if beam set label code 'S' is used when a stereotactic prescription (DoseAtVolume 99 %) is given.'''
     t = TEST.Test("Ved stereotaksi skal prescription være: DoseAtVolume 99 %. Planteknikk skal være S.", True, self.type)
     if self.prescription.PrimaryPrescriptionDoseReference.PrescriptionType == 'DoseAtVolume' and self.prescription.PrimaryPrescriptionDoseReference.DoseVolume in [98, 99] and self.ts_beam_set.beam_set.DeliveryTechnique == 'Arc':
       if self.ts_beam_set.ts_label.label.technique:

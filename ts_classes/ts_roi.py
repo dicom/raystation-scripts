@@ -1,23 +1,23 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
-import raystation_utilities as RSU
 
-# This class contains tests for the RayStation ROI object:
+
 class TSROI(object):
+  '''This class contains tests for the RayStation ROI object.'''
+
   def __init__(self, roi, ts_case=None):
+    '''Initializes the ROI test suite with the relevant RayStation instance.
+
+    Args:
+      roi (PyScriptObject): The RayStation ROI instance.
+      ts_case (TSCase): The parent case test suite instance.
+    '''
     # RayStation objects:
     self.roi = roi
     # Related test suite objects:
@@ -31,9 +31,8 @@ class TSROI(object):
     self.param = TEST.Parameter('ROI', self.roi.Name, self.parent_param) # (roi parameter)
     self.exclude_from_export = TEST.Parameter('Exclude from export', str(roi.ExcludeFromExport), self.param)
 
-
-  # Tests if ROIs of type "Unknown" are excluded from export.
   def exclude_from_export_test(self):
+    '''Tests if ROIs of type "Unknown" are excluded from export.'''
     t = TEST.Test("Hjepestrukturer (ROIer med Organ type 'Unknown') skal være ekskludert fra eksport", True, self.exclude_from_export)
     # Perform test for ROIs of type Unknown:
     if self.roi.OrganData.OrganType == 'Unknown':

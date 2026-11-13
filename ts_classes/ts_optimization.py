@@ -1,24 +1,25 @@
-# encoding: utf8
-
-# Contains treatment plan tests for the optimization settings.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import raystation_utilities as RSU
 import region_codes as RC
 import test_p as TEST
 
-# This class contains tests for the RayStation Optimization object:
+
 class TSOptimization(object):
+  '''This class contains tests for the RayStation PlanOptimization object.'''
+
   def __init__(self, optimization, ts_beam_set=None):
+    '''Initializes the case test suite with the relevant RayStation instance.
+
+    Args:
+      optimization (PyScriptObject): The RayStation PlanOptimization instance.
+      ts_beam_set (TSBeamSet): The parent beam set test suite instance.
+    '''
     # RayStation object:
     self.optimization = optimization
     # Related test suite objects:
@@ -36,9 +37,12 @@ class TSOptimization(object):
     self.grid = TEST.Parameter('Beregningsmatrise', '', self.param)
     self.prescription = TEST.Parameter('Normeringsvolum', '', self.param)
 
-
-  # Gives true/false if this optimization is in a stereotactic beam_set or not.
   def is_stereotactic(self):
+    '''Gives true/false if the plan optimization is stereotactic or not.
+
+    Returns:
+      bool: True if plan is stereotactic, False if not.
+    '''
     match = False
     if self.ts_beam_set.ts_label:
       if self.ts_beam_set.ts_label.label.valid:
@@ -46,8 +50,8 @@ class TSOptimization(object):
           match = True
     return match
 
-  # Tests for presence of constraints.
   def constraints_test(self):
+    '''Tests for presence of constraints.'''
     t = TEST.Test("Det skal i utgangspunktet ikke brukes constraints (det er mer effektivt og presist å bruke objectives - eventuelt med høy vekt for å simulere en constraint)", None, self.param)
     # Check for presence of constraints:
     constraints = []
@@ -58,8 +62,8 @@ class TSOptimization(object):
     else:
       return t.succeed()
 
-  # Tests the resolution used in the dose grid.
   def dose_grid_test(self):
+    '''Tests the resolution used in the dose grid.'''
     # Default voxel size:
     max_voxel_size = 0.3
     # Expected dose grid resolution depends on whether the beam set is stereotactic or not and which region is treated:
@@ -88,12 +92,14 @@ class TSOptimization(object):
     else:
       return t.fail(grid_max)
 
-  # Tests for proper usage of background dose for three kinds of ROIs: Target volume, external and organ.
-  # Our expectation is that background dose is used on OARs, but not on targets or external volumes.
-  # NOTE: In RayStation 12A, ConstituentFunctions (objectives) apparently may have multiple dose distributions
-  # (before they had just a single one). We choose to extract the first dose distribution, but there may
-  # occurs cases where this is wrong!
   def objectives_background_dose_test(self):
+    '''Tests for proper usage of background dose for three kinds of ROIs: Target volume, external and organ.
+    Our expectation is that background dose is used on OARs, but not on targets or external volumes.
+    
+    NOTE: From RayStation 12A, ConstituentFunctions (objectives) apparently may have multiple dose distributions
+    (before they had just a single one). We choose to extract the first dose distribution, but there may
+    possibly occur cases where this is wrong!
+    '''
     et = TEST.Test("Det skal normalt ikke brukes 'Beam Set + Background' på external-objectives for beam sets basert på background dose.", 0, self.background_dose)
     ot = TEST.Test("Det skal normalt brukes 'Beam Set + Background' på alle risikorgan-objectives for beam sets som basert på background dose.", 0, self.background_dose)
     tt = TEST.Test("Det skal normalt ikke brukes 'Beam Set + Background' på målvolum-objectives for beam sets basert på background dose.", 0, self.background_dose)
@@ -128,8 +134,8 @@ class TSOptimization(object):
         else:
           return tt.succeed()
 
-  # Tests that an objective exists for the prescription ROI.
   def objective_for_prescription_roi_test(self):
+    '''Tests that an objective exists for the prescription ROI.'''
     roi_name = self.optimization.OptimizationParameters.TreatmentSetupSettings[0].ForTreatmentSetup.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
     t = TEST.Test("Det forventes å eksistere minst ett objective for normeringsvolumet", roi_name, self.prescription)
     match = False

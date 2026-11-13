@@ -1,22 +1,23 @@
-# encoding: utf8
-
-# Contains tests for individual beams.
-#
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
 
 
-# This class contains tests for the RayStation Beam object:
 class MQVBeam(object):
+  '''This class contains tests for the RayStation Beam object.'''
+
   def __init__(self, beam, mqv_beam_set=None):
+    '''Initializes the beam verification with the relevant RayStation instance.
+
+    Args:
+      beam (PyScriptObject): The RayStation Beam instance.
+      mqv_beam_set (MQVBeamSet): The parent instance in the verification hierarchy. Defaults to None.
+    '''
     # RayStation object:
     self.beam = beam
     # Mosaiq object:
@@ -36,16 +37,16 @@ class MQVBeam(object):
     self.mu = TEST.Parameter('MU', round(self.beam.BeamMU, 1), self.param)
     self.energy = TEST.Parameter('Energi', self.beam.BeamQualityId, self.param)
 
-  # Checks that there is a beam in Mosaiq with a number corresponding to this RayStation beam's number.
   def test_matching_beam_number(self):
+    '''Checks that there is a beam in Mosaiq with a number corresponding to this RayStation beam's number.'''
     t = TEST.Test("Skal finnes en beam i dette beam-settet med forventet nr.", self.beam.Number, self.nr)
     if self.mq_beam:
       return t.succeed()
     else:
       return t.fail()
-  
-  # Comparison of meterset (MU).
+
   def test_mu(self):
+    '''Comparison of meterset (MU).'''
     t = TEST.Test("Meterset", round(self.beam.BeamMU, 1), self.mu)
     # Proceed only on matching beam:
     if self.mq_beam:
@@ -53,9 +54,9 @@ class MQVBeam(object):
         return t.succeed()
       else:
         return t.fail(self.mq_beam.meterset)
-  
-  # Comparison of name.
+
   def test_name(self):
+    '''Comparison of name.'''
     t = TEST.Test("Name", self.beam.Name, self.name)
     # Proceed only on matching beam:
     if self.mq_beam:
@@ -63,9 +64,9 @@ class MQVBeam(object):
         return t.succeed()
       else:
         return t.fail(self.mq_beam.name)
-  
-  # Comparison of energy (e.g. 6 or 10 MV).
+
   def test_energy(self):
+    '''Comparison of energy (e.g. 6 or 10 MV).'''
     t = TEST.Test("Energy", self.beam.BeamQualityId, self.energy)
     # Proceed only on matching beam:
     if self.mq_beam:
@@ -75,9 +76,9 @@ class MQVBeam(object):
         return t.succeed()
       else:
         return t.fail(self.mq_beam.control_points()[0].energy)
-  
-  # Comparison of FFF (flattening filter free).
+
   def test_fff(self):
+    '''Comparison of FFF (flattening filter free).'''
     t = TEST.Test("FFF", self.beam.BeamQualityId, self.energy)
     # Proceed only on matching beam:
     if self.mq_beam:
@@ -88,4 +89,3 @@ class MQVBeam(object):
         return t.succeed()
       else:
         return t.fail(self.mq_beam.is_fff)
-

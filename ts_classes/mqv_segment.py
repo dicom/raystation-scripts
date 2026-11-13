@@ -1,23 +1,24 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual segments.
-#
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 from struct import *
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import test_p as TEST
 
 
-# This class contains tests for the RayStation Segment object:
 class MQVSegment(object):
+  '''This class contains tests for the RayStation Segment object.'''
+
   def __init__(self, segment, mqv_beam=None):
+    '''Initializes the segment verification with the relevant RayStation instance.
+
+    Args:
+      segment (PyScriptObject): The RayStation Segment instance.
+      mqv_beam (MQVBeam): The parent instance in the verification hierarchy. Defaults to None.
+    '''
     # RayStation objects:
     self.segment = segment
     # Mosaiq object:
@@ -43,8 +44,15 @@ class MQVSegment(object):
     self.leaf_bank1 = TEST.Parameter('Leaf Bank 1', "", self.param)
     self.leaf_bank2 = TEST.Parameter('Leaf Bank 1', "", self.param)
 
-  # Formats the angle value between 0 and 360:
   def format_angle(self, angle):
+    '''Formats the angle's value to be between 0 and 360.
+
+    Args:
+      angle (int, float): An angle having any value (meaning it could be less than 0, or above 360).
+
+    Returns:
+      float: The input anngle formatted to be in the range 0-360 degrees.
+    '''
     if angle > 360:
       return round(angle - 360, 1)
     elif angle < 0:
@@ -53,17 +61,17 @@ class MQVSegment(object):
       return 0
     else:
       return round(angle, 1)
-  
-  # Checks that there is a segment in Mosaiq with a number corresponding to this RayStation segment's number.
+
   def test_matching_segment_number(self):
+    '''Checks that there is a segment in Mosaiq with a number corresponding to this RayStation segment's number.'''
     t = TEST.Test("Skal finnes et segment i dette feltet med forventet nr.", self.segment.SegmentNumber, self.nr)
     if self.mq_segment:
       return t.succeed()
     else:
       return t.fail()
 
-  # Comparison of collimator angle.
   def test_collimator_angle(self):
+    '''Comparison of collimator angle.'''
     t = TEST.Test("Collimator angle", round(self.segment.CollimatorAngle, 1), self.collimator_angle)
     # Proceed only on matching segment:
     if self.mq_segment:
@@ -71,11 +79,13 @@ class MQVSegment(object):
         return t.succeed()
       else:
         return t.fail(self.mq_segment.collimator_angle)
-  
-  # Comparison of jaw positions.
-  # Note that for electron modalities we will use jaw positions derived from the applicator size
-  # (rather than the actual jaw positions extracted from RayStation).
+
   def test_jaw_positions(self):
+    '''Comparison of jaw positions.
+
+    Note that for electron modalities we will use jaw positions derived from the applicator size
+    (rather than the actual jaw positions extracted from RayStation).
+    '''
     t = TEST.Test("Jaw positions", None, self.jaw_positions)
     # Proceed only on matching segment:
     if self.mq_segment:
@@ -97,9 +107,9 @@ class MQVSegment(object):
         return t.succeed()
       else:
         return t.fail(mq_jp)
-  
-  # Comparison of gantry angle.
+
   def test_gantry_angle(self):
+    '''Comparison of gantry angle.'''
     t = TEST.Test("Gantry angle", self.gantry_angle.value, self.gantry_angle)
     # Proceed only on matching segment:
     if self.mq_segment:
@@ -109,9 +119,9 @@ class MQVSegment(object):
         return t.succeed()
       else:
         return t.fail(mq_gantry_angle)
-  
-  # Comparison of relative weight (MU).
+
   def test_relative_weight(self):
+    '''Comparison of relative weight (MU).'''
     t = TEST.Test("Relative weight", self.relative_weight.value, self.relative_weight)
     # Proceed only on matching segment:
     if self.mq_segment:
@@ -129,14 +139,14 @@ class MQVSegment(object):
             return t.succeed()
           else:
             return t.fail(mq_relative_weight)
-  
-  # Comparison of leaf positions in leaf bank 1.
+
   def test_positions_leaf_bank1(self):
+    '''Comparison of leaf positions in leaf bank 1.'''
     t = TEST.Test("Leaf bank 1", None, self.leaf_bank1)
     # Proceed only on matching segment:
     if self.mq_segment:
       # RayStation leaf bank positions:
-      rs_lp1 = [round(element, 2) for element in self.segment.LeafPositions[0]] 
+      rs_lp1 = [round(element, 2) for element in self.segment.LeafPositions[0]]
       # Mosaiq leaf bank position binary strings:
       mq_lp1_str = self.mq_segment.leaf_bank1 # (A binary string consisting of 100 signed short integers, where the first 80 are actual leaf values.)
       # Mosaiq leaf bank positions (integers multiplied by 100):
@@ -158,14 +168,14 @@ class MQVSegment(object):
         return t.succeed()
       else:
         return t.fail(str(mq_lp1))
-  
-# Comparison of leaf positions in leaf bank 2.
+
   def test_positions_leaf_bank2(self):
+    '''Comparison of leaf positions in leaf bank 2.'''
     t = TEST.Test("Leaf bank 2", None, self.leaf_bank2)
     # Proceed only on matching segment:
     if self.mq_segment:
       # RayStation leaf bank positions:
-      rs_lp2 = [round(element, 2) for element in self.segment.LeafPositions[1]] 
+      rs_lp2 = [round(element, 2) for element in self.segment.LeafPositions[1]]
       # Mosaiq leaf bank position binary strings:
       mq_lp2_str = self.mq_segment.leaf_bank2 # (A binary string consisting of 100 signed short integers, where the first 80 are actual leaf values.)
       # Mosaiq leaf bank positions (integers multiplied by 100):
@@ -186,5 +196,4 @@ class MQVSegment(object):
       if succeed:
         return t.succeed()
       else:
-        return t.fail(str(mq_lp2))  
-  
+        return t.fail(str(mq_lp2))

@@ -1,25 +1,24 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 10B.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import *
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
-import test_p as TEST
-import raystation_utilities as RSU
+# Import local files:
 import ts_structure_set as SS
+import test_p as TEST
 
-# This class contains tests for the RayStation Roi Geometry object:
+
 class TSROIGeometry(object):
+  '''This class contains tests for the RayStation RoiGeometry object.'''
+
   def __init__(self, roi_geometry, ts_structure_set=None):
+    '''Initializes the RoiGeometry test suite with the relevant RayStation instance.
+
+    Args:
+      roi_geometry (PyScriptObject): The RayStation RoiGeometry instance.
+      ts_structure_set (TSStructureSet): The parent structure set test suite instance.
+    '''
     # RayStation object:
     self.roi_geometry = roi_geometry
     # Related test suite objects:
@@ -39,47 +38,62 @@ class TSROIGeometry(object):
     self.defined_roi = TEST.Parameter('Geometri', self.roi().Name, self.param)
     self.updated_roi = TEST.Parameter('Geometri', self.roi().Name, self.param)
 
-
-  # Gives the cached bounding box of the ROI geometry.
   def bounding_box(self):
+    '''Gives the cached bounding box of the ROI geometry.
+
+    Returns:
+      list[float]: A list of boundary coordinates.
+    '''
     if not self._bounding_box:
      try:
        self._bounding_box = self.roi_geometry.GetBoundingBox()
      except Exception:
         pass
     return self._bounding_box
-  
-  # Gives the cached primary shape of the ROI geometry.
+
   def contours(self):
+    '''Gives the cached contours of the ROI geometry.
+
+    Returns:
+      list[dict]: A list of dicts containing x,y,z coordinates.
+    '''
     if not self._contours:
       try:
         self._contours = self.primary_shape().Contours
       except Exception:
         pass
     return self._contours
-  
-  # Gives the cached primary shape of the ROI geometry.
+
   def primary_shape(self):
+    '''Gives the cached primary shape of the ROI geometry.
+
+    Returns:
+      PyScriptObject: The PrimaryShape of the RoiGeometry.
+    '''
     if not self._primary_shape:
      self._primary_shape = self.roi_geometry.PrimaryShape
     return self._primary_shape
-  
-  # Gives the cached ROI of the ROI geometry.
+
   def roi(self):
+    '''Gives the cached ROI of the ROI geometry.
+
+    Returns:
+      PyScriptObject: The ROI of the RoiGeometry.
+    '''
     if not self._roi:
      self._roi = self.roi_geometry.OfRoi
     return self._roi
-  
-  # Tests if all ROIs are defined.
+
   def defined_volume_test(self):
+    '''Tests if the ROIGeometry has a contour.'''
     t = TEST.Test("Regionen må ha definert volum", True, self.defined_roi)
     if self.roi_geometry.HasContours():
       return t.succeed()
     else:
       return t.fail()
 
-  # Tests if a ROI is updated when it is derived.
   def derived_roi_geometry_is_updated_test(self):
+    '''Tests if a ROIGeometry is updated when it is derived.'''
     t = TEST.Test("Regionen må være oppdatert når den er avledet", True, self.updated_roi)
     # Does the RoiGeometry have a shape?
     if self.primary_shape():
@@ -93,9 +107,9 @@ class TSROIGeometry(object):
         else:
           return t.succeed()
 
-  # Tests if there are any gaps (i.e. definition missing in one or more slices) in the geometry of a given ROI.
   def gaps_in_definition_test(self):
-    t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)    
+    '''Tests if there are any gaps (i.e. contour missing in one or more slices) in the ROIGeometry.'''
+    t = TEST.Test("ROI-geometrien forventes å være sammenhengende definert (at den ikke inneholder tomme snitt innimellom definerte snitt)", None, self.defined_roi)
     # For performance reasons, we choose to skip this test for External and Couch ROIs.
     # We also skip it for ROIs which are known to not be continuous (e.q. Clips).
     if self.roi().Name not in ["External", "Couch", "Clips_L", "Clips_R"]:
@@ -121,8 +135,8 @@ class TSROIGeometry(object):
         else:
           return t.succeed()
 
-  # Tests if a ROI geometry contains more than an expected nr of "islands" in any given axial slice of its contour.
   def max_nr_of_islands_in_slice_test(self):
+    '''Tests if a ROIGeometry contains more than an expected nr of "islands" in any given axial slice of its contour.'''
     # ROIs which are to be tested, and their respective limit of nr of islands:
     limits = {
       "LN_Iliac": 2,

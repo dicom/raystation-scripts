@@ -1,19 +1,11 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual beam sets.
-#
-# Verified for RayStation 9.A
-# Python 3.6
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 import math
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
+# Import local files:
 import mosaiq
 import mqv_beam_set as MQV_BS
 import test_p as TEST
@@ -22,9 +14,17 @@ import rois as ROIS
 import region_codes as RC
 import structure_set_functions as SSF
 
-# This class contains tests for the RayStation BeamSet object:
+
 class TSBeamSet(object):
+  '''This class contains tests for the RayStation BeamSet object.'''
+
   def __init__(self, beam_set, ts_plan=None):
+    '''Initializes the beam_set test suite with the relevant RayStation instance.
+
+    Args:
+      beam_set (PyScriptObject): The RayStation BeamSet instance.
+      ts_plan (TSPlan): The parent plan test suite instance.
+    '''
     # RayStation object:
     self.beam_set = beam_set
     # Related test suite objects:
@@ -57,53 +57,84 @@ class TSBeamSet(object):
     self.name = TEST.Parameter('Navn', '', self.param)
     self.number = TEST.Parameter('Feltnummer','', self.param)
 
-
-  # Gives true/false if the beam set has beams of not.
   def has_beam(self):
+    '''Gives true/false if the beam_set has beam(s) or not.
+
+    Returns:
+      bool: True if beam_set has any beams, False if not.
+    '''
     if len(list(self.beam_set.Beams)) > 0:
       return True
     else:
       return False
 
-  # Gives true/false if the beam set has dose or not.
   def has_dose(self):
+    '''Gives true/false if the beam_set has dose or not.
+
+    Returns:
+      bool: True if beam_set has dose, False if not.
+    '''
     if self.beam_set.FractionDose.DoseValues:
       return True
     else:
       return False
 
-  # Gives true/false if the beam set has a prescription defined.
   def has_prescription(self):
+    '''Gives true/false if the beam_set has a prescription defined or not.
+
+    Returns:
+      bool: True if beam_set has a prescription, False if not.
+    '''
     if self.beam_set.Prescription.PrimaryPrescriptionDoseReference:
       return True
     else:
       return False
 
-  # Gives true/false if the delivery technique is VMAT or not.
   def is_vmat(self):
+    '''Gives true/false if the beam_set's delivery technique is VMAT or not.
+
+    Returns:
+      bool: True if the delivery technique is VMAT, False if not.
+    '''
     if self.beam_set.DeliveryTechnique in ['Arc','DynamicArc'] and self.beam_set.Modality == 'Photons':
       return True
     else:
       return False
 
-  # Gives the fraction dose (in Gy).
   def fraction_dose(self):
+    '''Gives the fraction dose (in Gy).
+
+    Returns:
+      float: The fraction dose (in Gy).
+    '''
     return (self.beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue / 100.0) / self.beam_set.FractionationPattern.NumberOfFractions
 
-  # Gives the cached precription ROI name.
   def prescription_roi_name(self):
+    '''Gives the cached precription ROI name.
+
+    Returns:
+      str: The prescription ROI name.
+    '''
     if not self._prescription_roi_name:
      self._prescription_roi_name = self.beam_set.Prescription.PrimaryPrescriptionDoseReference.OnStructure.Name
     return self._prescription_roi_name
-  
-  # Gives the ts_structure_set which corresponds with this beam set:
+
   def ts_structure_set(self):
+    '''Gives the ts_structure_set which corresponds with this beam set.
+
+    Correspondence is determined by identifying a reference to the same Examination.
+
+    Returns:
+      TSStructureSet: The structure set test suite which corresponds to this beam set.
+    '''
     for ts_struct in self.ts_plan.ts_case.ts_structure_sets:
       if ts_struct.structure_set.OnExamination.Name == self.beam_set.GetPlanningExamination().Name:
         return ts_struct
 
-  # Tests if the isocenter is assymmetric in the longitudinal direction, in such a way that it could pose a problem for measuring the plan by VMAT QA.
   def asymmetric_jaw_opening_long_test(self):
+    '''Tests if the isocenter is assymmetric in the longitudinal direction,
+    in such a way that it could pose a problem for measuring the plan by VMAT QA.
+    '''
     t = TEST.Test("Isosenter ser ut til å være asymmetrisk, det bør vurderes å flytte isosenter. Dette for å få målt hele målvolumet med ArcCheck-fantomet", '<10.5 cm', self.isocenter)
     ss = self.ts_structure_set().structure_set
     isocenter = None
@@ -128,8 +159,8 @@ class TSBeamSet(object):
           else:
             return t.succeed()
 
-  # Tests if the energies of the beams in the beam set are the same.
   def beam_energy_equality_test(self):
+    '''Tests if the energies of the beams in the beam set are the same.'''
     wanted_energy = '6'
     t = TEST.Test("Det skal i utgangspunktet benyttes samme energi for alle felt i et beam set. Kun ved særskilte kliniske begrunnelser skal dette avvikes.", wanted_energy, self.energies)
     energies = []
@@ -140,8 +171,8 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests that the beam numbering in the beam set is correct (that subsequent beam numbers are used, i.e. no gaps).
   def beam_number_test(self):
+    '''Tests that the beam numbering in the beam set is correct (that subsequent beam numbers are used, i.e. no gaps).'''
     numbers = []
     order = True
     t = TEST.Test("Feltnummereringen ser ikke ut til å være riktig.", True, self.number)
@@ -157,24 +188,24 @@ class TSBeamSet(object):
     else:
       return t.fail()
 
-  # Tests if a prescription is defined.
   def defined_prescription_test(self):
+    '''Tests if a prescription is defined.'''
     t = TEST.Test("Skal være definert.", True, self.defined_prescription)
     if self.has_prescription():
       return t.succeed()
     else:
       return t.fail()
 
-  # Tests the presence of a dose calculation.
   def dose_test(self):
+    '''Tests the presence of a dose calculation.'''
     t = TEST.Test("Skal være definert", True, self.dose)
     if not self.has_dose():
       return t.fail()
     else:
       return t.succeed()
 
-  # Tests that the dose status is 'clinical'.
   def dose_is_clinical_test(self):
+    '''Tests that the dose status is "clinical".'''
     t = TEST.Test("Doseberegning skal være markert som 'Accurate'", True, self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.IsAccurate:
@@ -182,8 +213,8 @@ class TSBeamSet(object):
       else:
         return t.fail()
 
-  # Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo.
   def dose_algorithm_test(self):
+    '''Tests that the dose algorithm is among the 2 white listed: CCDose & ElectronMonteCarlo.'''
     t = TEST.Test("Algoritme skal være en av disse", ['CCDose', 'ElectronMonteCarlo'], self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm in ['CCDose', 'ElectronMonteCarlo']: # other plausible value: 'Mixed'
@@ -191,8 +222,10 @@ class TSBeamSet(object):
       else:
         return t.fail(self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm)
 
- # Tests that, for conventional plans, the first MLC leaf behind the collimator is at the same posiition as the first MLC leaf inside the field.
   def guard_leaf_test(self):
+    '''Tests that, for conventional plans, the first MLC leaf behind the collimator
+    is at the same posiition as the first MLC leaf inside the field.
+    '''
     failed_beams = []
     t = TEST.Test("Første MLC blad utenfor blender skal være på samme posisjon som første MLC blad innenfor blender", None, self.mlc)
     if not self.is_vmat():
@@ -223,8 +256,8 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests that the isocenter coordinate is reasonably centered in the patient (in the axial slice).
   def isocenter_centered_test(self):
+    '''Tests that the isocenter coordinate is reasonably centered in the patient (in the axial slice).'''
     t = TEST.Test("Skal i utgangspunktet være mest mulig sentrert i pasientens aksial-snitt", '<= 12 cm', self.isocenter)
     photon_iso = None
     if self.beam_set.Modality == 'Photons':
@@ -248,8 +281,10 @@ class TSBeamSet(object):
             else:
               return t.succeed()
 
-  # Tests that the isocenter coordinate is reasonably centered in the normalisation volume (in the longitudinal direction).
   def isocenter_centered_long_test(self):
+    '''Tests that the isocenter coordinate is reasonably centered compared to the
+    prescription volume (in the longitudinal direction).
+    '''
     t = TEST.Test("Isosenter skal i utgangspunktet være mest mulig sentrert i long-retning (avstand mellom isosenter og senter av normeringsvolumet bør være mindre enn 1 cm)", '<1 cm', self.isocenter)
     if self.beam_set.Modality == 'Photons':
       diff = 0
@@ -275,8 +310,10 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests if the plan has a target volume if the beam set label is U for 'Uten MV' and if the plan does not have a target volume and beam set label is M for 'Med MV'
   def label_target_volume_test(self):
+    '''Tests if the plan has a target volume if the beam set label is U for "Uten MV"
+    and if the plan does not have a target volume and beam set label is M for "Med MV"
+    '''
     t = TEST.Test("Plan-teknikk og tilstedeværelse av målvolum bør stemme overens", True, self.label)
     if self.ts_plan.ts_case.has_target_volume and self.ts_label.label.technique in ('U', 'u'):
       return t.fail()
@@ -285,8 +322,8 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests if the label usage of V for VMAT seems to make sense.
   def label_vmat_test(self):
+    '''Tests if the label usage of V for VMAT seems to make sense.'''
     t = TEST.Test("Plan-teknikk for 'VMAT' og bruk av VMAT-teknikk skal stemme overens", False, self.label)
     if not self.ts_label.label.technique in ('S', 's'):
       if self.is_vmat() and not self.ts_label.label.technique in ('V', 'v'):
@@ -298,16 +335,16 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests that the machine name is the one that is clinically validated (ALVersa).
   def machine_test(self):
+    '''Tests that the machine name is the one that is clinically validated (ALVersa).'''
     t = TEST.Test("Behandlingsapparat skal være:", 'ALVersa', self.machine)
     if not self.beam_set.MachineReference.MachineName == 'ALVersa':
       return t.fail(self.beam_set.MachineReference.MachineName)
     else:
       return t.succeed()
 
-  # Tests if the isocentet name of the beams are 'Iso','ISO' or 'Iso1', 'ISO2' etc.
   def name_of_beam_iso_test(self):
+    '''Tests if the isocenter name of the beams are 'Iso','ISO' or 'Iso1', 'ISO2' etc.'''
     t = TEST.Test("Isosenter-navn på felt/buer skal være 'Iso' eller 'Iso1', 'Iso2' osv", True, self.name)
     match = False
     expected1 = 'Iso'
@@ -318,8 +355,8 @@ class TSBeamSet(object):
       else:
         return t.fail(beam.Isocenter.Annotation.Name)
 
-  # Tests correspondence of nr fractions in beam set with external value (from label).
   def nr_fractions_test(self):
+    '''Tests correspondence of nr fractions in beam set with external value (from label).'''
     if self.ts_label.label.nr_fractions:
       expected = self.ts_label.label.nr_fractions
       t = TEST.Test("Antall fraksjoner i beam set skal stemme med antall fraksjoner i beam set label", expected, self.fractions)
@@ -328,8 +365,10 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests that a sufficient low statistical uncertainty has been set (in the case of Electron Monte Carlo dose calculations).
   def electron_mc_uncertainty_test(self):
+    '''Tests that a sufficient low statistical uncertainty has been set
+    (in the case of Electron Monte Carlo dose calculations).
+    '''
     t = TEST.Test("Statistisk usikkerhet for Monte Carlo doseberegning for elektroner skal være <= 0.1 %", '<=0.001', self.dose)
     if self.has_dose():
       if self.beam_set.FractionDose.DoseValues.AlgorithmProperties.DoseAlgorithm == 'ElectronMonteCarlo':
@@ -339,22 +378,25 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests what photon energy is used for beam sets which are interpreted as being curative (would like to avoid 15 MV due to neutron production in these cases).
   def photon_energy_for_curative_fractionations_test(self):
+    '''Tests what photon energy is used for beam sets which are interpreted as being curative
+    (would like to avoid 15 MV due to neutron production in these cases).
+    '''
     t = TEST.Test("Skal normalt ikke bruke 15MV.", '6 eller 10', self.energies)
     # The test can only be performed if a prescription is defined, and if the modality is photons:
     if self.has_prescription() and self.beam_set.Modality == 'Photons':
       energies = []
       for beam in self.beam_set.Beams:
         energies.append(beam.BeamQualityId)
-
       if '15' in energies:
         return t.fail('15')
       else:
         return t.succeed()
 
-  # Tests that number of monitor units corresponds to fraction dose (within 15 %) for conventional plans (non-VMAT) that is not locoregional breast.
   def prescription_mu_test(self):
+    '''Tests that number of monitor units corresponds to fraction dose (within 15 %)
+    for conventional plans (non-VMAT) that is not locoregional breast.
+    '''
     t = TEST.Test("Skal stå i forhold til fraksjonsdosen for beam-settet, bør som hovedregel være innenfor +/- 15% av fraksjonsdosen (cGy)", True, self.mu)
     mu_total = 0
     for beam in self.beam_set.Beams:
@@ -370,9 +412,11 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests if the sequence of beam collimator angles are reasonable.
-  # Note that this test only returns one beam in case of several beams with unreasonable values.
   def reasonable_collimator_angles_test(self):
+    '''Tests if the sequence of beam collimator angles are reasonable.
+
+    Note that this test only specifies one beam in case of several beams with unreasonable values.
+    '''
     t = TEST.Test("Tilsynelatende upraktisk stort hopp i kollimatorvinkel brukt på dette feltet i forhold til det forrige. Samme feltform kan oppnås i et mer optimalt oppsett med kollimatorvinkel rotert 180 grader i forhold til gjeldende vinkel.", '', self.collimator_angles)
     previous_beam_collimator_angle = 0
     unreasonable_beam = None
@@ -390,24 +434,24 @@ class TSBeamSet(object):
     else:
       return t.succeed()
 
-  # Tests the presence of "Create setup beams" (it should be deactivated).
   def setup_beams_test(self):
+    '''Tests the presence of "Create setup beams" (it should be deactivated).'''
     t = TEST.Test("'Create setup beams' skal ikke være aktivert", False, self.param)
     if self.beam_set.PatientSetup.UseSetupBeams:
       return t.fail(True)
     else:
       return t.succeed()
 
-  # Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC).
   def technique_test(self):
+    '''Tests that delivery technique is among the 3 white listed: VMAT (Arc), 3DCRT or IMRT (SMLC).'''
     t = TEST.Test("Plan-teknikk skal være en av disse", ['3D-CRT', 'SMLC', 'VMAT'], self.technique)
     if not self.beam_set.DeliveryTechnique in ('Arc', 'SMLC', '3DCRT','DynamicArc'):
       return t.fail(self.beam_set.DeliveryTechnique)
     else:
       return t.succeed()
 
-  # Tests presence of unmerged (static) beams.
   def unmerged_beams_test(self):
+    '''Tests presence of unmerged (static) beams.'''
     t = TEST.Test('Når Beam-settet inneholder felt som har identisk gantry- og kollimator-vinkel, skal i utgangspunktet disse være sammeslått (merge).', True, self.param)
     # It doesn't make sense to run this test on VMAT plans (since we don't merge arcs):
     if self.beam_set.DeliveryTechnique != 'DynamicArc':
@@ -424,8 +468,10 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests that in cases of full arcs, if the last arc of the beam set is clockwise, which gives a more efficient patient takedown.
   def vmat_full_arc_rotation_of_last_beam_test(self):
+    '''Tests that in cases of full arcs, that the last arc of the beam set is clockwise.
+    This apparently gives a more efficient patient takedown after treatment.
+    '''
     t = TEST.Test("Siste bue i en VMAT plan skal som hovedregel være med klokken når det er en full bue", 'Clockwise', self.vmat)
     # Get the last beam:
     if self.has_beam():
@@ -436,9 +482,10 @@ class TSBeamSet(object):
         else:
           return t.succeed()
 
-  # Tests for optimal arc sequencing
-  # (that the start angle of following arcs are equal to the stop angle of the previous arc).
   def vmat_arc_sequence_test(self):
+    '''Tests for optimal arc sequencing (that the start angle of following
+    arcs are equal to the stop angle of the previous arc).
+    '''
     t = TEST.Test("Ved flerbue-oppsett bør påfølgende buer ha startvinkel lik stoppvinkel til forrige bue", None, self.vmat)
     if self.is_vmat():
       previous_gantry_stop_angle = None
@@ -453,9 +500,10 @@ class TSBeamSet(object):
       else:
         return t.succeed()
 
-  # Tests if the total number of MUs is below a given factor of the fraction dose (cGy).
-  # (plus a margin of some MU to avoid getting a lot of marginally positive outcomes on this test)
   def vmat_mu_test(self):
+    '''Tests if the total number of MUs is below a given factor of the fraction dose (cGy)
+    (plus a margin of some MU to avoid getting a lot of marginally positive outcomes on this test).
+    '''
     t = TEST.Test("Bør som hovedregel være innenfor 3*fraksjonsdose (cGy) (+/- 10 MU)", True, self.mu)
     mu_total = 0
     if self.has_prescription():
@@ -470,8 +518,8 @@ class TSBeamSet(object):
           else:
             return t.succeed()
 
-  # Tests for SIB plans, if the lower dose volumes is normalised to the correct value (within 0.5 %).
   def target_volume_normalisation_for_sib_test(self):
+    '''Tests for SIB plans, if the lower dose volumes is normalised to the correct value (within 0.5 %).'''
     if self.ts_label.label.region in RC.prostate_codes + RC.breast_codes + RC.rectum_codes:
       ss = self.ts_structure_set().structure_set
       roi_dict = SSF.create_roi_dict(ss)
@@ -502,9 +550,10 @@ class TSBeamSet(object):
               else:
                 t.succeed()
 
-  # Tests if there already is a RadRx in Mosaiq which has the same name (properly translated)
-  # as this beam set's label. If such a match exists, a beam set label may be warranted.
   def existing_plan_in_mosaiq_with_this_beam_set_label_test(self):
+    '''Tests if there already is a RadRx in Mosaiq which has the same name (properly translated)
+    as this beam set's label. If such a match exists, another beam set label may be warranted.
+    '''
     t = TEST.Test("Normalt bør det ikke eksistere en navne-konflikt med plan i Mosaiq som har samme navn som en ny doseplan i RayStation.", None, self.label)
     # Only care to check if there is a valid beam set label format:
     if self.has_prescription():

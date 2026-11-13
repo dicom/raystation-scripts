@@ -1,27 +1,27 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 6.0.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
-import test_p as TEST
+# Import local files:
 import raystation_utilities as RSU
-import rois as ROIS
 import region_codes as RC
+import rois as ROIS
 import structure_set_functions as SSF
+import test_p as TEST
 
 
-# This class contains tests for the RayStation Structure Set object:
 class TSStructureSet(object):
+  '''This class contains tests for the RayStation StructureSet object.'''
+
   def __init__(self, structure_set, ts_case=None):
+    '''Initializes the StructureSet test suite with the relevant RayStation instance.
+
+    Args:
+      structure_set (PyScriptObject): The RayStation StructureSet instance.
+      ts_case (TSCase): The parent case test suite instance.
+    '''
     # RayStation object:
     self.structure_set = structure_set
     # Related test suite objects:
@@ -41,18 +41,11 @@ class TSStructureSet(object):
     self.external_bounding = TEST.Parameter('External', '', self.param)
     self.geometry = TEST.Parameter('Geometri', '', self.param)
     self.name = TEST.Parameter('Navn', '', self.param)
-    #self.dose_region = TEST.Parameter('Geometri', '', self.param)
-    #self.target_volume_test = TEST.Parameter('Geometri', '', self.param)
-    #self.ptv_derived = TEST.Parameter('Geometri', '', self.param)
-    #self.prosthesis = TEST.Parameter('Geometri', '', self.param)
-    #self.dsc = TEST.Parameter('Geometri', '', self.param)
-    #self.breast = TEST.Parameter('Geometri', '', self.param)
     # Determine the slice thickness for the examination associated with this structure set:
     self.slice_thickness = round(abs(self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[1] - self.structure_set.OnExamination.Series[0].ImageStack.SlicePositions[0]), 2)
 
-
-  # Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined.
   def breast_seeds_test(self):
+    '''Tests if breast patients having a boost of 2 Gy x 8 has Clips/Markers defined.'''
     t = TEST.Test("Bryst-pasienter som skal ha ungdomsboost skal ha Clips_L eller Clips_R definert.", True, self.geometry)
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region:
       if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region in RC.breast_codes:
@@ -68,9 +61,11 @@ class TSStructureSet(object):
             else:
               return t.fail()
 
-  # Test for presence of couch for photon plans.
-  # Skips the test for stereotactic brain plans, where external is used to define the couch instead.
   def couch_test(self):
+    '''Test for presence of couch for photon plans.
+
+    Note that we skip the test for stereotactic brain plans, where external is used to define the couch instead.
+    '''
     t = TEST.Test("Struktursettet må ha definert en bordtopp-ROI (Couch) med tetthet 0.121 g/cm^3", True, self.couch)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
     match = False
@@ -86,8 +81,8 @@ class TSStructureSet(object):
         else:
           return t.fail()
 
-  # Tests if the couch top is placed close to the patient.
   def couch_close_to_patient_test(self):
+    '''Tests if the couch top is placed close to the patient.'''
     t = TEST.Test("Bordtopp-ROI (Couch) skal ligge inntil external", True, self.couch)
     if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique:
       if self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.technique.upper() != 'S' and self.ts_case.ts_plan.ts_beam_sets[0].ts_label.label.region not in RC.brain_codes:
@@ -102,9 +97,11 @@ class TSStructureSet(object):
                 else:
                   return t.succeed()
 
-  # Tests if a couch joint (high-density insert in the couch ROI) is close to the PTV in longitudinal direction.
-  # Heuristic based on HU statistics in the Couch ROI. Default thresholds: mean > -870 HU OR max > 400 HU, margin 5 cm
   def couch_joint_close_to_ptv_test(self, avg_hu_threshold=-870.0, max_hu_threshold=400.0, margin_cm=5.0):
+    '''Tests if a couch joint (high-density insert in the couch ROI) is close to the PTV in longitudinal direction.
+    Heuristic based on HU statistics in the Couch ROI.
+    Default thresholds: mean > -870 HU OR max > 400 HU, margin = 5 cm
+    '''
     t = TEST.Test("OBS! Bordskjøt nær PTV.", True, self.couch)
     # Only relevant for photon plans.
     try:
@@ -158,8 +155,8 @@ class TSStructureSet(object):
     z_close = (ptv_min_z - margin_cm) <= cz <= (ptv_max_z + margin_cm)
     return t.fail() if z_close else t.succeed()
 
-  # Tests for presence of an external.
   def external_test(self):
+    '''Tests for presence of an external.'''
     t = TEST.Test("Struktursettet må ha definert en ytterkontur (navn og type skal være: External)", True, self.external)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
     match = False
@@ -171,8 +168,8 @@ class TSStructureSet(object):
     else:
       return t.fail()
 
-  # Tests if the CT-images are cropped close to external.
   def external_bounding_test(self):
+    '''Tests if the CT-images are cropped close to external.'''
     t = TEST.Test("External ligger helt på yttergrensen av bildeopptaket. Dette kan tyde på at CT-bildene er beskjært uheldig, og at deler av pasienten mangler. Dersom denne beskjæringen forekommer i nærheten av målvolumet, vil det resultere i feil doseberegning.", True, self.external_bounding)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
     has_external_at_bounding_box = False
@@ -198,8 +195,8 @@ class TSStructureSet(object):
         else:
           return t.succeed()
 
-  # Tests if the CT-images are cropped close to external, in the same area as there is a target volume.
   def external_ptv_bounding_test(self):
+    '''Tests if the CT-images are cropped close to external, in the same area as there is a target volume.'''
     t = TEST.Test("External ligger helt på yttergrensen av bildeopptaket. Dette kan tyde på at CT-bildene er beskjært uheldig, og at deler av pasienten mangler. Dersom denne beskjæringen forekommer i nærheten av målvolumet, vil det resultere i feil doseberegning.", True, self.external_bounding)
     match = False
     # Run test if this structure set corresponds to the examination used for the treatment plan:
@@ -227,8 +224,8 @@ class TSStructureSet(object):
     else:
       return t.succeed()
 
-  # Tests for presence of localization point POI geometry.
   def localization_point_test(self):
+    '''Tests for presence of localization point POIGeometry.'''
     t = TEST.Test("Skal inneholde et referansepunkt (Localization Point)", True, self.localization_point)
     match = False
     for pg in self.structure_set.PoiGeometries:
@@ -239,8 +236,8 @@ class TSStructureSet(object):
     else:
       return t.fail()
 
-  # Tests if there is a ROI called 'Prosthesis' and if the material is 'Titanium [Ti]'.
   def prosthesis_titanium_test(self):
+    '''Tests if there is a ROI called "Prosthesis" and if the material is "Titanium [Ti]" or "Lead [Pb]".'''
     t = TEST.Test("Hvis proteser er til stede, skal disse hete " + ROIS.prosthesis.name + ", " + ROIS.prosthesis_r.name + " eller " + ROIS.prosthesis_l.name + " og material skal være satt til 'Titanium [Ti]' eller 'Lead [Pb]'", None, self.param)
     invalid = []
     # Test for properly named ROI with invalid material:
@@ -258,8 +255,8 @@ class TSStructureSet(object):
     else:
       return t.fail(str(invalid))
 
-  # Tests if the structure set has a dose region or a target volume
   def dose_region_test(self):
+    '''Tests if the StructureSet has a dose region or a target volume.'''
     t = TEST.Test("Struktursett som mangler målvolum skal ha en 'Dose region' ROI, som brukes til volum-normering, eller hvis punkt-normert, som veiledningsvolum til XVI (90% isodose).", True, self.geometry)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
     match = False
@@ -271,8 +268,8 @@ class TSStructureSet(object):
     else:
       return t.fail()
 
-  # Tests if PTV's are derived
   def ptv_derived_test(self):
+    '''Tests if all PTV's are derived.'''
     t = TEST.Test("Alle PTV skal i utgangspunktet være 'derived'", True, self.geometry)
     # Run test if this structure set corresponds to the examination used for the treatment plan:
     for rg in self.structure_set.RoiGeometries:
@@ -282,9 +279,10 @@ class TSStructureSet(object):
         else:
           return t.fail()
 
-  # Tests that there is no empty slice between the rectum and the anal canal ROI geometries.
-  # (which is a known bug/weakness in the current DL segmentation model)
   def no_empty_slice_between_rectum_and_analcanal_test(self):
+    '''Tests that there is no empty slice between the rectum and the anal canal ROI geometries
+    (which has been a known bug/weakness in the DL segmentation model).
+    '''
     t = TEST.Test("Pasienter som har Rectum og AnalCanal definert, skal ikke ha et tomt snitt mellom disse ROI geometriene.", None, self.geometry)
     rectum = None
     anal_canal = None
@@ -310,9 +308,11 @@ class TSStructureSet(object):
       else:
         return t.succeed()
 
-  # Tests if any ROI geometry seems to be outside the External contour.
-  # (Test is performed left-right and anterior-posterior, not in longitudinal direction)
   def no_geometries_outside_external_test(self):
+    '''Tests if any ROI geometry seems to be outside the External contour.
+
+    Note that the test is performed in left-right and anterior-posterior direction, not in longitudinal direction.
+    '''
     t = TEST.Test("Geometri forventes å ikke være definert utenfor 'External' for noen ROI", None, self.geometry)
     # Known ROIs which are expected to exceed the External ROI:
     excluded_roi_names = ['Bolus', 'Breast_L_Draft', 'Breast_R_Draft','Clips_L', 'Clips_R', 'zPTV_Wall', 'zPTV1_Wall', 'zPTV2_Wall', 'zPTV3_Wall', 'zCTV_L_Wall_Draft', 'zCTV_L_Wall', 'zCTV_R_Wall_Draft', 'zCTV_R_Wall']

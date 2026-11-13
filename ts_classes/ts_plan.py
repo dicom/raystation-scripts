@@ -1,26 +1,27 @@
-# encoding: utf8
-
-# Contains treatment plan tests for individual treatment plans.
-#
-# Verified for RayStation 10B.
-
-# System configuration:
-from connect import *
+# Import system libraries:
 import sys
 
-# GUI framework (debugging only):
-#from tkinter import messagebox
+# Import RayStation packages:
+from connect import *
 
-# Local script imports:
-import test_p as TEST
+# Import local files:
 import raystation_utilities as RSU
-import structure_set_functions as SSF
-import rois as ROIS
 import region_codes as RC
+import rois as ROIS
+import structure_set_functions as SSF
+import test_p as TEST
 
-# This class contains tests for the RayStation TreatmentPlan object:
+
 class TSPlan(object):
+  '''This class contains tests for the RayStation TreatmentPlan object.'''
+
   def __init__(self, plan, ts_case=None):
+    '''Initializes the plan test suite with the relevant RayStation instance.
+
+    Args:
+      plan (PyScriptObject): The RayStation TreatmentPlan instance.
+      ts_case (TSCase): The parent case test suite instance.
+    '''
     # RayStation objects:
     self.plan = plan
     # Related test suite objects:
@@ -39,9 +40,8 @@ class TSPlan(object):
     self.defined_roi = TEST.Parameter('Geometri','', self.param)
     self.localization_point = TEST.Parameter('REF', '', self.param)
 
-
-  # Tests if the same localization point is not placed in the first or last CT slice of the examination.
   def localization_point_not_in_first_or_last_slice_test(self):
+    '''Tests if the localization point is not placed in the first or last CT slice of the examination.'''
     t = TEST.Test("Referansepunkt skal (normalt) ikke være plassert i første eller siste snitt (dette er gjerne en indikasjon på at det kan være satt feil)", True, self.localization_point)
     points = []
     bs = self.plan.BeamSets[0]
@@ -60,18 +60,16 @@ class TSPlan(object):
             else:
               return t.succeed()
 
-
-  # Tests the presence of a planned by label.
   def planned_by_test(self):
+    '''Tests the presence of a "planned by" label.'''
     t = TEST.Test('Doseplanleggerens initialer bør være fylt inn her (Planned by)', True, self.planned_by)
     if self.plan.PlannedBy:
       return t.succeed()
     else:
       return t.fail()
 
-
-  # Tests that beam numbers are not repeated among beam sets in the treatment plan.
   def unique_beam_numbers_test(self):
+    '''Tests that beam numbers are not repeated among beam sets in the treatment plan.'''
     t = TEST.Test("Skal være unik for alle felt i planen", True, self.numbers)
     beam_numbers = set([])
     has_duplicate_beam_nr = False
