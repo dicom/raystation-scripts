@@ -1,47 +1,53 @@
-# encoding: utf8
+# Import system files:
+import datetime
 
 # Import local files:
 import gui_functions as GUIF
 import objective_functions as OBJF
 import optimization as OPT
 
-# Import system files:
-import datetime
 
-
-# Optimizer class for Brain cases.
 class Brain(object):
+  '''An optimizer class for brain cases.'''
 
-  # Creates a Brain optimizer object.
-  # Sets up objects associated with the optimizer:
-  # -Structure set
-  # -Plan
-  # -Site
-  # -Region code
   def __init__(self, ss, plan, site, prescription):
-    # Verify input:
-    #assert isinstance(choices, list), "choices is not a list: %r" % choices
+    '''Initializes the brain optimizer with the relevant treatment planning instances.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      plan (PyScriptObject): The RayStation TreatmentPlan instance.
+      site (Site): A Site instance containing region codes, objectives and clinical goals.
+      prescription (Prescription): A prescription instance containing dose information.
+    '''
     # Assign parameters:
     self.ss = ss
     self.plan = plan
     self.site = site
     self.prescription = prescription
-  
 
-  # Configures the optimization setings.
   def configure_optimization(self, po):
+    '''Configures the optimization setings.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+    '''
     # Optimization parameters:
     optimization_parameters = OPT.optimization_parameters(self.prescription)
     optimization_parameters.apply_to(po)
-  
-  # Performs plan optimization.
+
   def optimize(self):
+    '''Performs plan optimization.'''
     # Iterate plan optimization(s):
     for po in self.plan.PlanOptimizations:
       self.optimize_beam_set(po)
 
-  # Logs execution information.
   def log_information(self, po, time_start):
+    '''Logs execution information.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+      time_start (datetime): The time when we started the optimization.
+    '''
     time_end = datetime.datetime.now()
     elapsed_time = time_end - time_start
     if elapsed_time.seconds > 3600:
@@ -58,10 +64,14 @@ class Brain(object):
       optimization_comment = "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
     po.OptimizedBeamSets[0].Comment = optimization_comment
 
-  # Performs beam set optimization.
   def optimize_beam_set(self, po):
+    '''Performs beam set optimization.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+    '''
     # Log start time:
-    time_start = datetime.datetime.now() 
+    time_start = datetime.datetime.now()
     # Configure optimization settings:
     self.configure_optimization(po)
     # Perform a single optimization:
@@ -71,10 +81,15 @@ class Brain(object):
     # Log execution information:
     self.log_information(po, time_start)
 
-  # Performs initial optimization.
   def run_first_optimization(self, po):
-    # Perform first optimization phase (initial optimization):
-    # (Optimization may crash if e.g. GPU for computation is not available, or if max arc delivery time is too low for this target volume)
+    '''Performs initial optimization (first optimization phase).
+
+    Note that optimization may crash if e.g. GPU for computation is not available,
+    or if max arc delivery time is too low for this target volume.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+    '''
     # Assume we may have a beam delivery time error:
     possible_beam_delivery_time_error = True
     while possible_beam_delivery_time_error:

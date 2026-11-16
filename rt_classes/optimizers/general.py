@@ -1,4 +1,5 @@
-# encoding: utf8
+# Import system files:
+import datetime
 
 # Import local files:
 import gui_functions as GUIF
@@ -6,33 +7,30 @@ import objective_functions as OBJF
 import optimization as OPT
 import region_codes as RC
 
-# Import system files:
-import datetime
 
-
-# Optimizer class for general cases (e.g. can handle a variety of palliative sites).
 class General(object):
+  '''Optimizer class for general cases (e.g. it can handle a variety of palliative sites).'''
 
-  # Creates a General optimizer object.
-  # Sets up objects associated with the optimizer:
-  # -Structure set
-  # -Plan
-  # -Site
-  # -Prescription
-  # -adaptive_optimization (True/False)
   def __init__(self, ss, plan, site, prescription, adaptive_optimization=False):
-    # Verify input:
-    #assert isinstance(choices, list), "choices is not a list: %r" % choices
+    '''Initializes the general optimizer with the relevant treatment planning instances.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      plan (PyScriptObject): The RayStation TreatmentPlan instance.
+      site (Site): A Site instance containing region codes, objectives and clinical goals.
+      prescription (Prescription): A prescription instance containing dose information.
+      adaptive_optimization (bool): If true performs adaptive optimization
+        (automatically adjust objectives towards a specific function value).
+    '''
     # Assign parameters:
     self.ss = ss
     self.plan = plan
     self.site = site
     self.prescription = prescription
     self.adaptive_optimization = adaptive_optimization
-  
 
-  # Executes the optimization.
   def optimize(self):
+    '''Performs plan optimization.'''
     # Run first optimization on each beam set:
     for plan_optimization in self.plan.PlanOptimizations:
       plan_optimization.OptimizationParameters.DoseCalculation.ComputeFinalDose = True

@@ -1,8 +1,4 @@
-# encoding: utf8
-
-# Loads clinical goal classes.
-#
-
+# Loads optimizer classes:
 from .bladder import Bladder
 from .brain import Brain
 from .breast import Breast

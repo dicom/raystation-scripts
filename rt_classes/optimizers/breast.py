@@ -1,4 +1,5 @@
-# encoding: utf8
+# Import system files:
+import datetime
 
 # Import local files:
 import gui_functions as GUIF
@@ -11,22 +12,22 @@ import roi as ROI
 import rois as ROIS
 import ts_beam as TS_B
 
-# Import system files:
-import datetime
 
-
-# Optimizer class for Breast cases.
 class Breast(object):
+  '''An optimizer class for breast cases.'''
 
-  # Creates a Breast optimizer object.
-  # Sets up objects associated with the optimizer:
-  # -Structure set
-  # -Plan
-  # -Site
-  # -Region code
   def __init__(self, case, ss, plan, site, prescription, inferior_robustness_breast):
-    # Verify input:
-    #assert isinstance(choices, list), "choices is not a list: %r" % choices
+    '''Initializes the breast optimizer with the relevant treatment planning instances.
+
+    Args:
+      case (PyScriptObject): The RayStation Case instance.
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      plan (PyScriptObject): The RayStation TreatmentPlan instance.
+      site (Site): A Site instance containing region codes, objectives and clinical goals.
+      prescription (Prescription): A prescription instance containing dose information.
+      inferior_robustness_breast (bool): A boolean informing whether or not to use
+        inferior robustness on the breast target volume.
+    '''
     # Assign parameters:
     self.case = case
     self.ss = ss
@@ -34,10 +35,9 @@ class Breast(object):
     self.site = site
     self.prescription = prescription
     self.inferior_robustness_breast = inferior_robustness_breast
-  
 
-  # Executes the optimization.
   def optimize(self):
+    '''Performs plan optimization.'''
     # Iterate plan optimization(s):
     for po in self.plan.PlanOptimizations:
       # Log start time:
@@ -159,11 +159,17 @@ class Breast(object):
       else:
         optimization_comment += "Tidsbruk: " + str(minutes) + " min " + str(seconds) + " sek"
       po.OptimizedBeamSets[0].Comment = optimization_comment
-  
-  # Simulate organ motion - create ROIs needed for the SOM workflow.
-  # (These are ROIs which are dependent on the breast ROI, which must therefore be created after the
-  # breast ROI has been corrected manually - e.g. they cannot be created in the DEF script)
+
   def create_som_rois(self, examination, prefix):
+    '''Creates ROIs needed for the simulate organ motion workflow.
+
+    Note that these are ROIs which are dependent on the breast ROI, which must therefore be created
+    after the breast ROI has been corrected manually - e.g. they cannot be created in the DEF script.
+
+    Args:
+      examination (PyScriptObject): The RayStation Examination instance.
+      prefix (str): Prefix used for naming simulate organ motion ROIs.
+    '''
     pm = self.case.PatientModel
     # Determine distance from lung to external by iterative expansion:
     # (using a temporary ROI)
@@ -276,11 +282,20 @@ class Breast(object):
     for name in ['CTV', 'CTV_L', 'CTV_R', 'CTVsb_L', 'CTVsb_R', 'CTV-CTVsb', 'CTV-PTVsbc', 'PTVc', 'PTVc_L', 'PTVc_R', 'PTVsbc_L', 'PTVsbc_R', 'PTVc-PTVsbc', 'zCTV_L_Wall', 'zCTV_R_Wall', 'zCTV-PTVsbc', 'zPTVc-PTVsbc']:
       if PMF.has_roi(pm, name):
         pm.RegionsOfInterest[name].UpdateDerivedGeometry(Examination=examination, Algorithm="Auto")
-  
-  # Simulate organ motion - Generate CT-series for deformed (expanded) breast.
-  # Note that if a SOM series already exists which is based on the given examination,
-  # we will not create a new SOM series (as we assume that in this case the new plan will use the existing SOM series).
+
   def create_som_series(self, examination, prefix):
+    '''Generates CT-series for deformed (expanded) breast by using the simulate organ motion feature.
+
+    Note that if a SOM series already exists which is based on the given examination, we will not
+    create a new SOM series (as we assume that in this case the new plan will use the existing SOM series).
+
+    Args:
+      examination (PyScriptObject): The RayStation Examnination instance.
+      prefix (str): Prefix used for naming simulate organ motion ROIs.
+
+    Returns:
+      list: A list of simulate organ motion examination groups.
+    '''
     pm = self.case.PatientModel
     # Test if an existing SOM series exists for the given examination:
     existing_som_groups = []
@@ -324,11 +339,12 @@ class Breast(object):
     else:
       som_groups = new_som_groups
     return som_groups
-  
-  # Ensures that a proper energy is set up for the geometry of this case.
-  # If the max field radius is larger than 12.5 cm, we want the 6 MV energy to be used.
-  # If the max field radius is below 12.5 cm, we want the 6FFF energy to be used.
+
   def ensure_proper_energy_used(self):
+    '''Ensures that a proper energy is set up according to the geometry of this case.
+    If the max field radius is larger than 12.5 cm, we want the 6 MV energy to be used.
+    If the max field radius is below 12.5 cm, we want the 6FFF energy to be used.
+    '''
     # Set up a test suite Beam instance for handling field sizes:
     beam = self.plan.BeamSets[0].Beams[0]
     ts_beam = TS_B.TSBeam(beam)
@@ -348,11 +364,21 @@ class Breast(object):
       # Iterate plan optimization(s):
       for po in self.plan.PlanOptimizations:
         po.RunOptimization()
-  
-  # Calculates the coverage of the objective, and determines if the coverage is fulfilled or not (based on criteria for CTV/PTV).
-  # Returns True if coverage is fulfilled, False if not.
-  # Note that for objectives which are not evaluated (e.q. Dose fall-off), True is returned.
+
   def fulfilled_coverage(self, beam_set, objective, high_ptv_coverage):
+    '''Calculates the coverage of the objective, and determines if the coverage
+    is fulfilled or not (based on criteria for CTV/PTV).
+
+    Note that for objectives which are not evaluated (e.q. Dose fall-off), True is returned.
+
+    Args:
+      beam_set (PyScriptObject): The RayStation BeamSet instance.
+      objective (PyScriptObject): A RayStation objective (ConstituentFunction).
+      high_ptv_coverage (bool): A boolean indicating whether to require higher coverage (95 %) than standard (90 %).
+
+    Returns:
+      bool: True if target coverage is fulfilled (False if not).
+    '''
     prescription = beam_set.Prescription.PrimaryPrescriptionDoseReference.DoseValue
     result = False
     # For SIB (40.05/48 Gy), use a modifier for the low dose relative to the thigh dose prescription:
@@ -393,20 +419,32 @@ class Breast(object):
       # Objective not evaluated (e.g. Dose Fall-off). Set result as True for this scenario.
       result = True
     return result
-  
-  # Checks if there is at least one target with a unfulfilled target coverage.
-  # Returns True if at least one is unfulfilled, False if all are fulfilled.
+
   def has_target_with_unfulfilled_coverage(self, beam_set, objectives):
+    '''Checks if there is at least one target with an unfulfilled target coverage.
+
+    Args:
+      objectives (list): A list of target objectives.
+
+    Returns:
+      bool: True if at least one target has unfulfilled coverage (False if not).
+    '''
     result = False
     for obj in objectives:
       if not self.fulfilled_coverage(beam_set, obj, high_ptv_coverage=True):
         result = True
     return result
-  
-  # Checks if the given list of objectives contains at least one objective
-  # with function value which is less than the predefined threshold of "resistance".
-  # Returns True if so, False if not.
+
   def has_objective_with_positive_dose_and_further_dose_reduction_potential(self, objectives):
+    '''Checks if the given list of objectives contains at least one objective
+    with function value which is less than the predefined threshold of "resistance".
+
+    Args:
+      objectives (list): A list of objectives.
+
+    Returns:
+      bool: True if at least one objective with dose has a function value below threshold (False if not).
+    '''
     threshold = 0.0001
     result = False
     for obj in objectives:
@@ -416,11 +454,18 @@ class Breast(object):
           if obj.FunctionValue.FunctionValue < threshold:
             result = True
     return result
-  
-  # Checks if the given list of objectives contains at least one objective with a zero function value.
-  # Note that objectives are only evaluated if they contain a meaningful positive set dose (i.e. >= 0.01 Gy).
-  # Returns True if so, False if all are positive.
+
   def has_objective_with_positive_dose_and_zero_function_value(self, objectives):
+    '''Checks if the given list of objectives contains at least one objective with a zero function value.
+
+    Note that objectives are only evaluated if they contain a meaningful positive set dose (i.e. >= 0.01 Gy).
+
+    Args:
+      objectives (list): A list of objectives.
+
+    Returns:
+      bool: True if at least one objective with dose has a zero function value (False if not).
+    '''
     result = False
     for obj in objectives:
       if hasattr(obj.DoseFunctionParameters, 'DoseLevel'):
@@ -429,10 +474,20 @@ class Breast(object):
           if obj.FunctionValue.FunctionValue == 0:
             result = True
     return result
-  
-  # Improves target doses (min, max and uniform dose) by increasing target objective weights.
-  # Runs recursively until all target dose clinical goals are fullfilled.
+
   def improve_target_doses(self, po, target_objectives, external_objectives, counter):
+    '''Improves target doses (min, max and uniform dose) by increasing target objective weights.
+    Runs recursively until all target dose clinical goals are fullfilled.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+      organ_objectives (list): A list of organ objectives.
+      external_objectives (list): A list of external (body) objectives.
+      counter (int): A counter keeping track of the number of recursions.
+
+    Returns:
+      int: A counter keeping track of the number of recursions.
+    '''
     # Weight max limit (signed int):
     weight_limit = 2147483647
     limit_exceeded = False
@@ -496,10 +551,19 @@ class Breast(object):
       counter = self.improve_target_doses(po, target_objectives, external_objectives, counter)
     return counter
 
-  # Reduces organ doses by making OAR objectives more strict.
-  # Runs recursively until all target min dose clinical goals are violated.
-  #def reduce_organ_doses(self, po, organ_objectives, target_min_clinical_goals):
   def reduce_organ_doses(self, po, organ_objectives, target_objectives, counter):
+    '''Reduces organ doses by making OAR objectives more strict.
+    Runs recursively until all target min dose clinical goals are violated.
+
+    Args:
+      po (PyScriptObject): The RayStation PlanOptimization instance.
+      organ_objectives (list): A list of organ objectives.
+      target_objectives (list): A list of target objectives.
+      counter (int): A counter keeping track of the number of recursions.
+
+    Returns:
+      int: A counter keeping track of the number of recursions.
+    '''
     # Adjustment settings:
     set_dose_factor_for_zero_f_value = 0.6
     set_dose_factor_for_positive_f_value = 0.7
@@ -526,4 +590,3 @@ class Breast(object):
       counter += 1
       counter = self.reduce_organ_doses(po, organ_objectives, target_objectives, counter)
     return counter
- 
