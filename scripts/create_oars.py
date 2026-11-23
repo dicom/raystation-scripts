@@ -175,12 +175,12 @@ for roi in reversed(list(selected_oar_list)):
   # Only create ROI if it doesn't already exist:
   if not PMF.has_roi(pm, roi.name):
     if roi.__class__.__name__ == 'ROI':
-      if roi.dlsm:
-        examination.RunDeepLearningSegmentationComposite(ModelNamesAndRoisToInclude={ roi.dlsm: [roi.name] })
-      elif roi.model:
+      if roi.model:
         PMF.create_model_roi(pm, examination, roi)
       else:
         PMF.create_empty_roi(pm, roi)
+    elif roi.__class__.__name__ == 'ROIDLS':
+      examination.RunDeepLearningSegmentationComposite(ModelNamesAndRoisToInclude={ roi.model: [roi.lib_name] })
     elif roi.__class__.__name__ == 'ROIExpanded':
       PMF.create_expanded_roi(pm, examination, ss, roi)
     elif roi.__class__.__name__ == 'ROIAlgebra':
