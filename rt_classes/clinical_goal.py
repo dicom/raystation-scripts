@@ -1,30 +1,44 @@
-# encoding: utf8
-
+'''Contains both the ClinicalGoal class as well as a couple of functions for setting up clinical goals.'''
 
 # Import local files:
-import rois as ROIS
 import gui_functions as GUIF
+import rois as ROIS
 import structure_set_functions as SSF
-from tkinter import messagebox
 
 
-# Clinical Goal class
 class ClinicalGoal(object):
+  '''Class for creating a Clinical Goal in RayStation based on given input parameters.'''
 
   def __init__(self, name, criteria, type, tolerance, value, priority):
+    '''Initializes the clinical goal with the relevant parameters.
+
+    Args:
+      name (str): Name of ROI (e.g. "Prostate").
+      criteria (str): Planning goal criteria (e.g. "AtMost").
+      type (str): goal type (e.g. "DoseAtVolume").
+      tolerance (Tolerance, float): Primary acceptance level - the level at which a clinical goal is considered fulfilled (e.g. 6.5).
+      value (Tolerance, float): The parameter value (goal type specific parameter) (e.g. 3.5).
+      priority (int): The priority of the clinical goal (1-n).
+    '''
     self.name = name
     self.criteria = criteria
     self.type = type
     self.tolerance = tolerance
     self.value = value
     self.priority = priority
-  
-  # Applies the clinical goal object to a given EvaluationSetup.
-  # Parameters:
-  # es - A RayStation EvaluationSetup instance, in which the clinical goal is to be created
-  # normalized_tolerance - an alternative to the original tolerance (PrimaryAcceptanceLevel), e.q. recalculated as a percentage value of the prescription dose.
-  # normalized_value - an alternative to the original dose value (ParameterValue), e.q. recalculated as a percentage value of the prescription dose.
+
   def apply_to(self, es, normalized_tolerance = None, normalized_value = None, ignore_identical = False):
+    '''Applies the clinical goal instance to a given EvaluationSetup.
+
+    Args:
+      es (PyScriptObject): The RayStation EvaluationSetup instance (in which the clinical goal is to be created).
+      normalized_tolerance (float): An alternative to the original tolerance (PrimaryAcceptanceLevel),
+        e.q. recalculated as a percentage value of the prescription dose. Defaults to None.
+      normalized_value (float): An alternative to the original dose value (ParameterValue),
+        e.q. recalculated as a percentage value of the prescription dose. Defaults to None.
+      ignore_identical (bool): If True, the function will not display a warning if an
+        identical clinical goal already exists. Defaults to False.
+    '''
     # Use preset values if normalized arguments are not given:
     if normalized_tolerance is None:
       normalized_tolerance = self.tolerance
@@ -42,10 +56,14 @@ class ClinicalGoal(object):
       # Otherwise error will be shown.
       if not ignore_identical or 'identical' not in str(e.args[0]):
         GUIF.handle_error_on_clinical_goal_creation(self, normalized_tolerance, normalized_value, e)
-  
-  # Gives a text representation of the clinical goal object.
+
   def text(self):
-   return f"Name: {self.name}\nCriteria: {self.criteria}\nType: {self.type}\nTolerance: {self.tolerance}\nValue: {self.value}\nPriority: {self.priority}"
+    '''Gives a text representation of the clinical goal instance.
+
+    Returns:
+      str: A text representation of the clinical goal instance.
+    '''
+    return f"Name: {self.name}\nCriteria: {self.criteria}\nType: {self.type}\nTolerance: {self.tolerance}\nValue: {self.value}\nPriority: {self.priority}"
 
 # Limits:
 at_most = 'AtMost'
@@ -61,15 +79,23 @@ homogeneity_index = 'HomogeneityIndex'
 conformity_index = 'ConformityIndex'
 
 
-# Sets up clinical goals.
-# Creates clinical goals in RayStation from clinical goal objects from the given Site,
-# using the given prescription to determine target clinical goals as well as doing EQD2 conversion on OAR clinical goals.
 def setup_clinical_goals(ss, es, site, prescription, target, ignore_identical = False):
+  '''Creates clinical goals in RayStation based on clinical goal objects from the given Site, using the given
+  prescription to determine target clinical goals as well as doing EQD2 conversion on OAR clinical goals.
+
+  Args:
+    es (PyScriptObject): The RayStation EvaluationSetup instance (in which the clinical goal is to be created).
+    site (Site): The Site instance containing lists of clinical goals to set up.
+    prescription (Prescription): The Prescription instance for this beam set.
+    target (ROI): The target ROI for this beam set.
+    ignore_identical (bool): If True, the function will not display a warning if an
+      identical clinical goal already exists. Defaults to False.
+  '''
   for cg in site.target_clinical_goals:
     setup_target(ss, es, prescription, cg)
   for cg in site.oar_clinical_goals:
     # Make sure corresponding ROI exists before trying to create clinical goal:
-    if SSF.has_roi(ss, cg.name):      
+    if SSF.has_roi(ss, cg.name):
       if cg.type in [dose_at_volume, dose_at_abs_volume, average_dose]:
         cg.apply_to(es, normalized_tolerance = round(cg.tolerance.equivalent(prescription.nr_fractions)*100,0), ignore_identical=ignore_identical)
       else:
@@ -79,8 +105,14 @@ def setup_clinical_goals(ss, es, site, prescription, target, ignore_identical = 
       GUIF.handle_missing_roi_for_clinical_goal(cg.name)
 
 
-# Sets up a target clinical goal before it is handed to an EvaluationSetup instance.
 def setup_target(ss, es, prescription, cg):
+  '''Sets up a target clinical goal before it is applied to an EvaluationSetup instance.
+
+  Args:
+    es (PyScriptObject): The RayStation EvaluationSetup instance (in which the clinical goal is to be created).
+    prescription (Prescription): The Prescription instance for this beam set.
+    cg (ClinicalGoal): The target clinical goal to be set up.
+  '''
   # Make sure corresponding ROI exists before trying to create clinical goal:
   if SSF.has_roi(ss, cg.name):
     if cg.name in [ROIS.external.name, ROIS.igtv.name, ROIS.gtv.name] and cg.criteria == 'AtMost' and cg.tolerance != 5000:

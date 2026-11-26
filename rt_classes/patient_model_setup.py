@@ -3,22 +3,24 @@ import patient_model_functions as PMF
 import rois as ROIS
 
 
-# Site class for ROI definition.
 class PatientModelSetup(object):
+  '''Class for setting up ROIs and POIs in a patient model.'''
 
-  # Creates a PatientModelSetup object.
-  # Sets up objects associated with the PatientModelSetup:
-  # -Patient model
-  # -Examination
-  # -Structure Set
-  # -GUI choices from the Def script
-  # -Target ROIs
-  # -OARs
-  # Additionally creates the following structures:
-  # -Localization point
-  # -External ROI (and Body ROI for brain treatments)
-  # -Couch ROI and positions it in the lateral and AP directions (not long direction as we dont know target volume position yet).
   def __init__(self, patient_db, pm, examination, ss, choices, targets, oars):
+    '''Configures a patient model in RayStation based on the given RayStation objects and settings.
+
+    In addition to creating OAR and target ROIS, also sets up things like localization point,
+    external, body (where needed) and couch.
+
+    Args:
+      patient_db (PyScriptObject): The RayStation patient database (PatientDB).
+      pm (PyScriptObject): The RayStation PatientModel instance.
+      examination (PyScriptObject): The RayStation Examination instance.
+      ss (PyScriptObject): The RayStation StructureSet instance.
+      choices (list[str]): A list of string choices from a GUI dialogue window.
+      targets (list[ROI]): A list of target ROIs to be created in the patient model.
+      oars (list[ROI]): A list of OAR ROIs to be created in the patient model.
+    '''
     # Verify input:
     assert isinstance(choices, list), "choices is not a list: %r" % choices
     assert isinstance(targets, list), "targets is not a list: %r" % targets
@@ -59,9 +61,12 @@ class PatientModelSetup(object):
       PMF.create_couch(self.patient_db, self.pm, self.ss, self.examination)
       PMF.translate_couch(self.pm, self.ss, self.examination, ROIS.external.name)
 
-
-  # Adds target ROIs to the PatientModelSetup.
   def add_targets(self, targets):
+    '''Adds target ROIs to the PatientModelSetup.
+
+    Args:
+      targets (list[ROI]): A list of target ROIs to be added to the patient model.
+    '''
     # Verify input:
     assert isinstance(targets, list), "targets is not a list: %r" % targets
     for target in targets:
@@ -69,9 +74,12 @@ class PatientModelSetup(object):
     # Assign targets:
     self.targets.extend(targets)
 
-
-  # Add OARs to the PatientModelSetup.
   def add_oars(self, oars):
+    '''Adds OAR ROIs to the PatientModelSetup.
+
+    Args:
+      oars (list[ROI]): A list of OAR ROIs to be added to the patient model.
+    '''
     # Verify input:
     assert isinstance(oars, list), "oars is not a list: %r" % oars
     for oar in oars:
@@ -79,15 +87,8 @@ class PatientModelSetup(object):
     # Assign oars:
     self.oars.extend(oars)
 
-
-  # Creates all ROIs that are setup in this PatientModelSetup (targets + OARs) in RayStation.
   def create_rois(self):
-    # Do not delete ROIs at this stage any more:
-    # Delete pre-existing ROIs (except those which are manually contoured) in sorted order:
-    #group = self.grouped_rois()
-    #for key in sorted(iter(group)):
-    #  for roi in group[key]:
-    #    PMF.delete_derived_or_empty_contoured_roi(self.pm, roi)
+    '''For all ROIs that are setup in this PatientModelSetup (targets + OARs), creates them in RayStation.'''
     group = self.grouped_rois()
     # Collect DLS ROIs in a list for group creation (because it is much faster than creating DLS ROIs one at a time):
     dls_rois = []
@@ -117,10 +118,13 @@ class PatientModelSetup(object):
           elif roi.__class__.__name__ == 'ROIWall':
             PMF.create_wall_roi(self.pm, self.examination, self.ss, roi)
 
-
-  # Returns a dictionary where the site's ROIs (targets and OARs) are sorted
-  # by derived/underived and source_level (for derived ROIs):
   def grouped_rois(self):
+    '''Gives a dictionary where the ROIs (targets and OARs) are sorted
+    by derived/underived and source_level (for derived ROIs).
+
+    Returns:
+      dict: A Dictionary containing ROIs sorted by source level (ROI algebra dependencies).
+    '''
     rois = self.oars + self.targets
     # Establish source levels:
     for roi in rois:
@@ -133,15 +137,23 @@ class PatientModelSetup(object):
         grouped[roi.source_level] = [roi]
     return grouped
 
-
-  # Sets a source level for the given ROI.
-  # This is used to describe how the ROI depends on other ROIs. A non-derived ROI will have source level 0.
-  # A ROI which depends on another (underived) ROI (e.g. a ROIAlgebra or ROIExpanded/ROIWall) will have source level 1.
-  # ROIs which depends on other derived ROIS (which may in turn depend on other derived ROIs), may have higher
-  # source levels, like 2, 3, 4, etc.
-  # The source level is ultimately used to determine in which order ROIs are created in RayStation. I.e. ROIs need to
-  # be created in opposite source level order (0 first, highest number last) in order to avoid dependence errors when creating ROIs.
   def set_source_level(self, roi, level):
+    '''Sets a source level for the given ROI.
+
+    This is used to describe how the ROI depends on other ROIs. A non-derived ROI will have source level 0.
+    A ROI which depends on another (underived) ROI (e.g. a ROIAlgebra or ROIExpanded/ROIWall) will have source level 1.
+
+    ROIs which depends on other derived ROIS (which may in turn depend on other derived ROIs), may have higher
+    source levels, like 2, 3, 4, etc.
+
+    The source level is ultimately used to determine in which order ROIs are created in RayStation.
+    I.e. ROIs need to be created in opposite source level order (0 first, highest number last)
+    in order to avoid dependence errors when creating ROIs.
+
+    Args:
+      roi (ROI, ROIAlgebra, ROIDLS, ROIExpanded, ROIWall): The ROI for which to determine and set level.
+      level (int): The level to set for the ROI.
+    '''
     # Verify input:
     assert roi.__class__.__name__ in ['ROI', 'ROIDLS', 'ROIAlgebra', 'ROIExpanded', 'ROIWall'], "roi is not a ROI (or ROIDLS, ROIAlgebra, ROIExpanded, ROIWall): %r" % roi
     assert isinstance(level, int), "level is not a int: %r" % level

@@ -1,15 +1,20 @@
-# encoding: utf8
-
-
 # Import local files:
 import region_codes as RC
 import structure_set_functions as SSF
 
 
-# A class which tries to determine a prescription from a given structure set.
 class PrescriptionInterpreter(object):
+  '''Determines a prescription based on a given structure set.
+
+  Note that in many cases it is not possible to determine the prescription.
+  '''
 
   def __init__(self, ss):
+    '''Initializes the prescription interpreter with a structure set.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
     self.ss = ss
     self.region_code = ''
     self.fraction_dose = ''
@@ -25,17 +30,23 @@ class PrescriptionInterpreter(object):
     elif SSF.has_roi(ss, 'GTVp') and self.is_expansion_of('CTVe', 'Bladder'):
       self.interpret_bladder(ss)
 
-  
-  # Tries to determine prescription values for a structure set which indicates that we have a bladder case.
   def interpret_bladder(self, ss):
-    # For now we just have one default prescription for bladder:    
+    '''Tries to determine prescription for a structure set which indicates a bladder case.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
+    # For now we just have one default prescription for bladder:
     self.region_code = 341
     self.fraction_dose = 2
     self.nr_fractions = 32
-  
-  
-  # Tries to determine prescription values for a structure set which indicates that we have a breast case.
+
   def interpret_breast(self, ss):
+    '''Tries to determine prescription for a structure set which indicates a breast case.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
     sib = False
     # Determine category of breast treatment:
     if SSF.has_roi(ss, 'CTVp_L') or SSF.has_roi(ss, 'CTVp_R'):
@@ -97,9 +108,12 @@ class PrescriptionInterpreter(object):
         else:
           self.fraction_dose = 2.67
 
-
-  # Tries to determine prescription values for a structure set which indicates that we have a prostate case.
   def interpret_prostate(self, ss):
+    '''Tries to determine prescription for a structure set which indicates a prostate case.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
     # Determine category of prostate treatment:
     if SSF.has_roi(ss, 'CTV_40'):
       # Prostate and vesicles:
@@ -127,10 +141,13 @@ class PrescriptionInterpreter(object):
       self.region_code = 342
       self.fraction_dose = 2.75
       self.nr_fractions = 20
-  
-  
-  # Tries to determine prescription values for a structure set which indicates that we have a prostate bed case.
+
   def interpret_prostate_bed(self, ss):
+    '''Tries to determine prescription for a structure set which indicates a prostate bed case.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
     # Determine category of prostate bed treatment:
     if SSF.has_roi(ss, 'CTV!_56'):
       # Prostate bed and lymph nodes:
@@ -142,10 +159,13 @@ class PrescriptionInterpreter(object):
       self.region_code = 348
       self.fraction_dose = 2
       self.nr_fractions = 35
-  
-  
-  # Tries to determine prescription values for a structure set which indicates that we have a rectum case.
+
   def interpret_rectum(self, ss):
+    '''Tries to determine prescription for a structure set which indicates a rectum case.
+
+    Args:
+      ss (PyScriptObject): The RayStation StructureSet instance.
+    '''
     # Determine category of rectum treatment:
     if SSF.has_roi(ss, 'CTV_50'):
       # Conventional fx:
@@ -157,10 +177,17 @@ class PrescriptionInterpreter(object):
       self.region_code = 340
       self.fraction_dose = 5
       self.nr_fractions = 5
-  
-  
-  # Checks if a derived ROI has a given child ROI in its Expression A.
+
   def has_roi_in_expression_a(self, parent_name, child_name):
+    '''Checks if a derived ROI (parent) has a given child ROI in its Expression A.
+
+    Args:
+      parent_name (str): The name of the parent ROI.
+      child_name (str): The name of the child ROI.
+
+    Returns:
+      bool: True if child is present in Expression A. False if not.
+    '''
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
     if parent_rg and parent_rg.PrimaryShape.DerivedRoiStatus:
@@ -169,9 +196,16 @@ class PrescriptionInterpreter(object):
         match = self.has_roi_in_expression(expression_a, child_name)
     return match
 
-
-  # Checks if a derived ROI has a given child ROI in its Expression B.
   def has_roi_in_expression_b(self, parent_name, child_name):
+    '''Checks if a derived ROI (parent) has a given child ROI in its Expression B.
+
+    Args:
+      parent_name (str): The name of the parent ROI.
+      child_name (str): The name of the child ROI.
+
+    Returns:
+      bool: True if child is present in Expression B. False if not.
+    '''
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
     if parent_rg and parent_rg.PrimaryShape.DerivedRoiStatus:
@@ -180,19 +214,33 @@ class PrescriptionInterpreter(object):
         match = self.has_roi_in_expression(expression_b, child_name)
     return match
 
-
-  # Checks if a given child ROI exists in the given expression.
   def has_roi_in_expression(self, expression, child_name):
+    '''Checks if a given child ROI exists in the given Expression.
+
+    Args:
+      expression (PyScriptObject): The expression in which to test presence of a given ROI.
+      child_name (str): The name of the child ROI.
+
+    Returns:
+      bool: True if child is present in Expression. False if not.
+    '''
     match = False
     for child in expression.Children[0].Children:
       if child.RegionOfInterest.Name == child_name:
         match = True
         break
     return match
-  
-  
-  # Checks if the given parent roi is an expanded/contracted ROI of the given child roi.
+
   def is_expansion_of(self, parent_name, child_name):
+    '''Checks if the given parent ROI is an expanded/contracted ROI of the given child ROI.
+
+    Args:
+      parent_name (str): The name of the parent ROI.
+      child_name (str): The name of the child ROI.
+
+    Returns:
+      bool: True if parent ROI is an expansion/contraction of the child ROI. False if not.
+    '''
     match = False
     parent_rg = self.ss.RoiGeometries[parent_name]
     if parent_rg and parent_rg.OfRoi.DerivedRoiExpression:

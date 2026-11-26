@@ -1,53 +1,43 @@
-# encoding: utf8
-
 # Import system libraries:
 import csv
 import codecs
 
-# Imports region codes and descriptions from a tab separated text file and allows
-# to retrieve a region text from a given region code.
+
 class RegionList(object):
+  '''Imports region codes and their titles/descriptions from a tab separated text file
+  and facilitates query of region text for a given region code.
+  '''
 
-    def __init__(self, filename):
-      self.filename = filename
-      self.codes = []
-      self.labels = []
-      self.read(filename)
+  def __init__(self, filename):
+    '''Initializes the RegionList class with a given file name.
 
+    Args:
+      filename (str): The path & filename of a region code file to be loaded.
+    '''
+    self.filename = filename
+    self.codes = []
+    self.labels = []
+    self.read(filename)
 
-    # Unknown magical function.
-    def test_fake_error_class(self):
-      handlers = [
-          codecs.strict_errors,
-          codecs.ignore_errors,
-          codecs.replace_errors,
-          codecs.backslashreplace_errors,
-          codecs.xmlcharrefreplace_errors,
-      ]
-      for cls in UnicodeEncodeError, UnicodeDecodeError, UnicodeTranslateError:
-          class FakeUnicodeError(str):
-              __class__ = cls
-          for handler in handlers:
-              self.assertRaises(TypeError, handler, FakeUnicodeError())
-          class FakeUnicodeError(Exception):
-              __class__ = cls
-          for handler in handlers:
-              with self.assertRaises((TypeError, FakeUnicodeError)):
-                  handler(FakeUnicodeError())
+  def read(self, filename):
+    '''Read and import a tab separated file containing region codes and labels.
 
+    Args:
+      filename (str): The path & filename of a region code file to be loaded.
+    '''
+    with codecs.open(filename) as tsvfile:
+      reader = csv.reader(tsvfile, delimiter='\t')
+      for row in reader:
+        self.codes.append(row[0])
+        self.labels.append(row[4])
 
-    # Import tab separated file to two separate lists.
-    def read(self, filename):
-      with codecs.open(filename) as tsvfile:
-        reader = csv.reader(tsvfile, delimiter='\t')
-        for row in reader:
-          self.codes.append(row[0])
-          self.labels.append(row[4])
+  def get_text(self, code):
+    '''Get a text label corresponding to a given region code.
 
-
-    # Get a text corresponding to a given region code.
-    def get_text(self, code):
-      try:
-        return self.labels[self.codes.index(str(code))]
-      except ValueError:
-        return None
+    Args:
+      code (int, str): A region code (e.g. 343).
+    '''
+    try:
+      return self.labels[self.codes.index(str(code))]
+    except ValueError:
+      return None

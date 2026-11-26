@@ -2,40 +2,31 @@
 import csv
 import codecs
 
-# Imports user names and initials from a tab separated text file and allows
-# to retrieve initials from a given user name.
-class UserList(object):
 
-  # Creates the UserList instance.
+class UserList(object):
+  '''Handles import of user names and initials from a tab separated text file
+  and allows to query initials for a given user name.
+  '''
+
   def __init__(self, filename):
+    '''Initializes the UserList instance with the relevant parameters.
+
+    Args:
+      filename (str): The path & filename of a users file to be loaded.
+    '''
     self.filename = filename
     self.users = []
     self.initials = []
     self.groups = []
     self.read(filename)
 
-  # Unknown magical function.
-  def test_fake_error_class(self):
-    handlers = [
-      codecs.strict_errors,
-      codecs.ignore_errors,
-      codecs.replace_errors,
-      codecs.backslashreplace_errors,
-      codecs.xmlcharrefreplace_errors,
-    ]
-    for cls in UnicodeEncodeError, UnicodeDecodeError, UnicodeTranslateError:
-      class FakeUnicodeError(str):
-        __class__ = cls
-      for handler in handlers:
-        self.assertRaises(TypeError, handler, FakeUnicodeError())
-      class FakeUnicodeError(Exception):
-        __class__ = cls
-      for handler in handlers:
-        with self.assertRaises((TypeError, FakeUnicodeError)):
-          handler(FakeUnicodeError())
-
-  # Import tab separated file to two separate lists.
   def read(self, filename):
+    '''Reads attributes from a a tab separated file containing user information
+    (user name, initials and occupational group).
+
+    Args:
+      filename (str): The path & filename of a users file to be loaded.
+    '''
     with codecs.open(filename) as tsvfile:
       reader = csv.reader(tsvfile, delimiter='\t')
       for row in reader:
@@ -43,15 +34,29 @@ class UserList(object):
         self.initials.append(row[1])
         self.groups.append(row[2])
 
-  # Get the occupational group for a given user name.
   def get_group(self, user):
+    '''Gives the occupational group for a given user name.
+
+    Args:
+      user (str): A user name.
+
+    Returns:
+      str: The occupational group for the given user (or an empty string if there is no match).
+    '''
     try:
       return self.groups[self.users.index(str(user))]
     except ValueError:
       return ""
-  
-  # Get initials corresponding to a given user name.
+
   def get_initials(self, user):
+    '''Gives the initials  corresponding to a given user name.
+
+    Args:
+      user (str): A user name.
+
+    Returns:
+      str: The initials for the given user (or an empty string if there is no match).
+    '''
     try:
       return self.initials[self.users.index(str(user))]
     except ValueError:
