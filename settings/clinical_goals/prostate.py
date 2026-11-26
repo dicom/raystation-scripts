@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Prostate.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
@@ -16,9 +7,16 @@ import tolerance_doses as TOL
 
 
 class Prostate:
+  '''Handles the configuration of clinical goals for Prostate cases.'''
 
-  # Creates a Prostate clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the Prostate clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -26,9 +24,17 @@ class Prostate:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     if prescription.total_dose == 36.25:
       # Bladder:
@@ -90,9 +96,17 @@ class Prostate:
         oars.append(CG.ClinicalGoal(ROIS.cauda_equina.name, CG.at_most, CG.dose_at_abs_volume, TOL.spinalcanal_v2_adx, 0.03, 2))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     if not prescription.is_stereotactic():
       targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
@@ -195,4 +209,3 @@ class Prostate:
           targets.append(CG.ClinicalGoal('CTV!_66', CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
           targets.append(CG.ClinicalGoal('PTV!_66', CG.at_most, CG.dose_at_volume, 0.99, 0.1, 5))
     return targets
-  

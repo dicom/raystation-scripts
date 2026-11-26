@@ -1,7 +1,4 @@
-# encoding: utf8
-
-# Loads clinical goal classes.
-#
+'''Loads the clinical goal configuration classes.'''
 
 from .bladder import Bladder
 from .brain import Brain

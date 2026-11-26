@@ -1,22 +1,20 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Bladder.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import rois as ROIS
 import tolerance_doses as TOL
 
 
 class Bladder:
+  '''Handles the configuration of clinical goals for Bladder cases.'''
 
-  # Creates a Bladder clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the Bladder clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -24,9 +22,17 @@ class Bladder:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     oars.append(CG.ClinicalGoal(ROIS.bowel_space.name, CG.at_most, CG.abs_volume_at_dose, 195.0, TOL.bowel_bag_v195cc, 3))
     oars.append(CG.ClinicalGoal(ROIS.rectum.name, CG.at_most, CG.volume_at_dose, 0.22, TOL.rectum_v22pc, 3))
@@ -46,9 +52,17 @@ class Bladder:
     oars.append(CG.ClinicalGoal(ROIS.femoral_head_r.name, CG.at_most, CG.dose_at_volume, TOL.femoral_d02pc, 0.02, 6))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.dose_at_volume, 0.995, 0.5, 1))
     targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_most, CG.dose_at_volume, 1.005, 0.5, 1))
@@ -58,4 +72,3 @@ class Bladder:
     targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
     targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     return targets
-  

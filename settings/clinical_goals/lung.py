@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Lung.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import rois as ROIS
 import tolerance as EQD
@@ -16,9 +7,16 @@ import structure_set_functions as SSF
 
 
 class Lung:
+  '''Handles the configuration of clinical goals for Lung cases.'''
 
-  # Creates a Lung clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the Lung clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -26,9 +24,17 @@ class Lung:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     if prescription.is_stereotactic():
       # SBRT:
@@ -130,7 +136,7 @@ class Lung:
         oars.append(CG.ClinicalGoal(ROIS.stomach.name, CG.at_most, CG.abs_volume_at_dose, 0.1, TOL.stomach_sbrt_8fx_cc01, 6))
         if prescription.region_code in [248, 250]:
           # Right:
-          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))          
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))
           oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.lung_l.name, CG.at_most, CG.average_dose, TOL.lung_sbrt_contralat_mean, None, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
@@ -143,7 +149,7 @@ class Lung:
         else:
           # Include OARs for both sides:
           oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))
-          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))          
+          oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx, 0.1, 3))
           oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_l.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.brachial_plexus_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.brachial_sbrt_8fx_secondary, 0.1, 6))
           oars.append(CG.ClinicalGoal(ROIS.ribs_r.name, CG.at_most, CG.dose_at_abs_volume, TOL.ribs_sbrt_8fx, 0, 6))
@@ -225,9 +231,17 @@ class Lung:
       oars.append(CG.ClinicalGoal(ROIS.thyroid.name, CG.at_most, CG.average_dose, TOL.thyroid_mean_brt, None, 7))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     if prescription.is_stereotactic():
       # SBRT:
@@ -269,4 +283,3 @@ class Lung:
         if SSF.has_roi_with_shape(ss, ROIS.gtv.name):
           targets.append(CG.ClinicalGoal(ROIS.gtv.name, CG.at_least, CG.dose_at_volume, 0.98, 0.98, 2))
     return targets
-  

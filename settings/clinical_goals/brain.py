@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Brain.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
@@ -16,9 +7,16 @@ import tolerance_doses as TOL
 
 
 class Brain:
+  '''Handles the configuration of clinical goals for Brain cases.'''
 
-  # Creates a Brain clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the Brain clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -26,9 +24,17 @@ class Brain:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     if prescription.region_code in RC.brain_whole_codes:
       # Whole brain:
@@ -135,9 +141,17 @@ class Brain:
         oars.append(CG.ClinicalGoal(ROIS.skin.name, CG.at_most, CG.abs_volume_at_dose, 5.2, TOL.skin_alopecia_acute, 8))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     if prescription.is_stereotactic():
       # SRT:
@@ -164,4 +178,3 @@ class Brain:
       targets.append(CG.ClinicalGoal(ROIS.ctv.name, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
       targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.conformity_index, 0.95, 0.95, 5))
     return targets
-  

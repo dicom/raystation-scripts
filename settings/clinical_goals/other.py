@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Other (palliative) treatments.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
@@ -16,9 +7,18 @@ import tolerance_doses as TOL
 
 
 class Other:
+  '''Handles the configuration of clinical goals for miscellaneous palliative cases.'''
 
   # Creates a Other clinical goals instance.
   def __init__(self, ss, plan, prescription, target_nr = None):
+    '''Initializes the miscellaneous palliative clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      target_nr (int): An optional index for the target volume. Defaults to None.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -27,9 +27,17 @@ class Other:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription, target_nr)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     if prescription.region_code in RC.palliative_head_codes:
       oars.append(CG.ClinicalGoal(ROIS.spinal_canal.name, CG.at_most, CG.dose_at_volume, TOL.spinalcord_v2_adx, 0.02, 2))
@@ -114,9 +122,18 @@ class Other:
       oars.append(CG.ClinicalGoal(ROIS.bladder.name, CG.at_most, CG.volume_at_dose, 0.5, TOL.bladder_v50_quantec, 4))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription, target_nr):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      target_nr (int): An optional index for the target volume.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if target_nr:
@@ -145,11 +162,20 @@ class Other:
         targets.append(CG.ClinicalGoal(prescription.target, CG.at_least, CG.homogeneity_index, 0.95, 0.98, 5))
         targets.append(CG.ClinicalGoal(ptv, CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     return targets
-  
-  
+
+
   # Determine the ptv name, based on the prescription target.
-  def ptv(self, ss, target):
-    ptv = target.replace("C", "P")
+  def ptv(self, ss, target_name):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      target_name (str): The name of the prescription target volume (e.g. "CTV").
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
+    ptv = target_name.replace("C", "P")
     if not SSF.has_roi(ss, ptv):
       # Assume cropped volume (PTVc):
       ptv = ptv + "c"

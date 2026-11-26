@@ -1,12 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for Breast.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-
+# Import local files:
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
@@ -15,9 +7,16 @@ import structure_set_functions as SSF
 
 
 class Breast:
+  '''Handles the configuration of clinical goals for Breast cases.'''
 
-  # Creates a Breast clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the Breast clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -25,9 +24,17 @@ class Breast:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     # Common for all breast variants:
     oars.append(CG.ClinicalGoal(ROIS.heart.name, CG.at_most, CG.average_dose, TOL.heart_mean_breast, None, 3))
@@ -142,9 +149,17 @@ class Breast:
         oars.append(CG.ClinicalGoal(ROIS.lung_r.name, CG.at_most, CG.volume_at_dose, 0.15, TOL.lung_v15_adx, 4))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.05, 2.0, 4))
     # Set a modifier to use with nominal target dose for SIB/no-SIB:
@@ -281,4 +296,3 @@ class Breast:
       targets.append(CG.ClinicalGoal(ROIS.ctv_ctv_sb.name, CG.at_most, CG.volume_at_dose, 0.40, 43.46*100, 5))
       targets.append(CG.ClinicalGoal('z'+ROIS.ptv_c_ptv_sbc.name, CG.at_most, CG.dose_at_volume, 1.05*mod,  0.02, 8))
     return targets
-  

@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with clinical goal settings for OtherSBRT treatments.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import clinical_goal as CG
 import region_codes as RC
 import rois as ROIS
@@ -15,9 +6,16 @@ import tolerance_doses as TOL
 
 
 class OtherSBRT:
+  '''Handles the configuration of clinical goals for miscellaneous SBRT cases.'''
 
-  # Creates a OtherSBRT clinical goals instance.
   def __init__(self, ss, plan, prescription):
+    '''Initializes the miscellaneous SBRT clinical goal configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+    '''
     # Database attributes:
     self.ss = ss
     self.plan = plan
@@ -25,9 +23,17 @@ class OtherSBRT:
     self.targets = self.create_target_clinical_goals(ss, plan, prescription)
     self.oars = self.create_oar_clinical_goals(ss, plan, prescription)
 
-
-  # Create OAR clinical goals.
   def create_oar_clinical_goals(self, ss, plan, prescription):
+    '''Creates organ at risk clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of organ at risk clinical goals.
+    '''
     oars = []
     if prescription.nr_fractions == 1:
       # Common for all single fx bone SBRT:
@@ -108,13 +114,20 @@ class OtherSBRT:
           oars.append(CG.ClinicalGoal(ROIS.kidneys.name, CG.at_most, CG.dose_at_abs_volume, TOL.kidneys_col_3fx_v200, 200, 3))
     return oars
 
-
-  # Create target (and External) clinical goals.
   def create_target_clinical_goals(self, ss, plan, prescription):
+    '''Creates target (and external) clinical goals.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+
+    Returns:
+      list[ClinicalGoal]: A list of target and external clinical goals.
+    '''
     targets = []
     targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.dose_at_volume, 1.0, 0.99, 1))
     targets.append(CG.ClinicalGoal(ROIS.external.name, CG.at_most, CG.dose_at_abs_volume, 1.4, 2.0, 4))
     targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_most, CG.dose_at_volume, 1.4, 0.02, 4))
     targets.append(CG.ClinicalGoal(ROIS.ptv.name, CG.at_least, CG.conformity_index, 0.9, 1.0, 5))
     return targets
-  
