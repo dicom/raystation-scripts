@@ -1,12 +1,4 @@
-# encoding: utf8
-
-# Loads objectives classes.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
+'''Loads optimization objective configuration classes.'''
 
 from .bladder import Bladder
 from .brain import Brain

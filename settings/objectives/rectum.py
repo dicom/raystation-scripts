@@ -1,23 +1,22 @@
-# encoding: utf8
-
-# A class with objective settings for Rectum.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
 
 
 class Rectum:
+  '''Handles the configuration of optimization objectives for Rectum cases.'''
 
-  # Creates a Rectum objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the Prostate optimization objective configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -26,9 +25,18 @@ class Rectum:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.total_dose == 50:
       oars.append(OF.max_eud(ss, plan, ROIS.bladder.name, 10*100, 1, 2, beam_set_index=i))
@@ -45,9 +53,18 @@ class Rectum:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     if prescription.total_dose == 50:
       # SIB treatment (47 & 50 Gy):
@@ -60,10 +77,19 @@ class Rectum:
       others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 20, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     if prescription.total_dose == 50:
       # SIB treatment (47 & 50 Gy):
@@ -79,4 +105,3 @@ class Rectum:
       targets.append(OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.05, 50, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  

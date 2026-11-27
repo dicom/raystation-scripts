@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with objective settings for Lung.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
@@ -15,10 +6,18 @@ import structure_set_functions as SSF
 
 
 class Lung:
+  '''Handles the configuration of optimization objectives for Lung cases.'''
 
-  # Creates a Lung objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the Lung optimization objective configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -27,9 +26,18 @@ class Lung:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.is_stereotactic():
       nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
@@ -69,9 +77,18 @@ class Lung:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     if prescription.is_stereotactic():
       nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
@@ -88,10 +105,19 @@ class Lung:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 3, 2, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     if prescription.is_stereotactic():
       nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
@@ -107,4 +133,3 @@ class Lung:
       targets.append(OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  

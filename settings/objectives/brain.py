@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with objective settings for Brain.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import colors as COLORS
 import gui_functions as GUIF
 import margins as MARGINS
@@ -22,10 +13,20 @@ import structure_set_functions as SSF
 
 
 class Brain:
+  '''Handles the configuration of optimization objectives for Brain cases.'''
 
-  # Creates a Brain objectives instance.
   def __init__(self, ss, plan, prescription, pm, examination, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the Brain optimization objective configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      pm (PyScriptObject): A RayStation PatientModel instance.
+      examination (PyScriptObject): A RayStation Examination instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -36,9 +37,20 @@ class Brain:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, pm, examination, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, pm, examination, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      pm (PyScriptObject): A RayStation PatientModel instance.
+      examination (PyScriptObject): A RayStation Examination instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.is_stereotactic():
       # Stereotactic brain:
@@ -55,7 +67,7 @@ class Brain:
         oars.append(OF.max_eud(ss, plan, ROIS.nasal_cavity.name, 14*100, 1, 2, beam_set_index=i))
       else:
         # Partial brain:
-        if prescription.region_code not in RC.brain_whole_codes:  
+        if prescription.region_code not in RC.brain_whole_codes:
           # Objectives for prioritized OARs:
           oars.append(OF.max_dose(ss, plan, ROIS.brainstem_surface.name, (TOL.brainstem_surface_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 60, beam_set_index=i))
           oars.append(OF.max_dose(ss, plan, ROIS.brainstem_core.name, (TOL.brainstem_core_v003_adx.equivalent(prescription.nr_fractions)*100)-50, 80, beam_set_index=i))
@@ -91,9 +103,18 @@ class Brain:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     if prescription.is_stereotactic():
       # Stereotactic brain:
@@ -113,10 +134,21 @@ class Brain:
       others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, pm, examination, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      pm (PyScriptObject): A RayStation PatientModel instance.
+      examination (PyScriptObject): A RayStation Examination instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     if prescription.is_stereotactic():
       # Stereotactic brain:
@@ -163,4 +195,3 @@ class Brain:
           targets.append(OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*0.95, 150, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  

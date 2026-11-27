@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with objective settings for Breast.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
@@ -15,10 +6,19 @@ import structure_set_functions as SSF
 
 
 class Breast:
+  '''Handles the configuration of optimization objectives for Breast cases.'''
 
   # Creates a Breast objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the Breast optimization objective configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -27,9 +27,18 @@ class Breast:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     # Independent objectives:
     oars.append(OF.max_dvh(ss, plan, ROIS.a_lad.name, prescription.total_dose*0.5*100, 2, 2, beam_set_index=i))
@@ -65,9 +74,18 @@ class Breast:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 30, beam_set_index=i))
     if prescription.region_code in RC.breast_partial_codes:
@@ -78,10 +96,19 @@ class Breast:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 5.0, 30, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     if prescription.region_code in RC.breast_r_codes:
       wall_name = 'zCTV_R_Wall'
@@ -156,4 +183,3 @@ class Breast:
         targets.append(OF.max_dose(ss, plan, wall_name, prescription.total_dose*100*1.05, 200, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  

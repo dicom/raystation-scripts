@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with objective settings for Other (palliative) treatments.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
@@ -15,10 +6,18 @@ import structure_set_functions as SSF
 
 
 class Other:
+  '''Handles the configuration of optimization objectives for miscellaneous palliative cases.'''
 
-  # Creates a Other objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the optimization objective configuration instance for miscellaneous palliative cases.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -27,9 +26,18 @@ class Other:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.region_code in RC.palliative_head_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.brain.name, 29*100, 1, 2, beam_set_index=i))
@@ -92,9 +100,18 @@ class Other:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     for index in range(0, nr_targets):
@@ -109,10 +126,19 @@ class Other:
         others.append(OF.fall_off(ss, plan, ROIS.wall_ptv.name, prescription.total_dose*100, prescription.total_dose*0.75*100, 1.0, 2, beam_set_index=index))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     nr_targets = SSF.determine_nr_of_indexed_ptvs(ss)
     if nr_targets == 1:
@@ -140,11 +166,18 @@ class Other:
         targets.append(OF.max_dose(ss, plan, target.replace("C", "P")+str(index+1), prescription.total_dose*100*1.05, 80, beam_set_index=bs_index))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  
-  
-  # Determine the ptv name, based on the prescription target.
-  def ptv(self, ss, target):
-    ptv = target.replace("C", "P")
+
+  def ptv(self, ss, target_name):
+    '''Determines the ptv name, based on the prescription target.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      target_name (str): The name of the prescription target volume (e.g. "CTV").
+
+    Returns:
+      str: The determined name of the PTV for this case.
+    '''
+    ptv = target_name.replace("C", "P")
     if not SSF.has_roi(ss, ptv):
       # Assume cropped volume (PTVc):
       ptv = ptv + "c"

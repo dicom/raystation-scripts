@@ -1,23 +1,22 @@
-# encoding: utf8
-
-# A class with objective settings for OtherSBRT treatments.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
 
 
 class OtherSBRT:
+  '''Handles the configuration of optimization objectives for miscellaneous SBRT cases.'''
 
-  # Creates a OtherSBRT objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the optimization objective configuration instance for miscellaneous SBRT cases.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -26,9 +25,18 @@ class OtherSBRT:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.region_code in RC.palliative_head_codes or prescription.region_code in RC.palliative_neck_codes:
       oars.append(OF.max_eud(ss, plan, ROIS.brain.name, 5*100, 1, 2, beam_set_index=i))
@@ -77,20 +85,37 @@ class OtherSBRT:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*106, 3*100, 3, 3, beam_set_index=i))
     others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.65*prescription.total_dose*100, 0.5, 10, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     targets.append(OF.min_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100, 200, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  

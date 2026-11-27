@@ -1,13 +1,4 @@
-# encoding: utf8
-
-# A class with objective settings for Prostate.
-#
-# Authors:
-# Christoffer Lervåg
-# Helse Møre og Romsdal HF
-#
-# Python 3.6
-
+# Import local files:
 import objective_functions as OF
 import region_codes as RC
 import rois as ROIS
@@ -15,10 +6,18 @@ import structure_set_functions as SSF
 
 
 class Prostate:
+  '''Handles the configuration of optimization objectives for Prostate cases.'''
 
-  # Creates a Prostate objectives instance.
   def __init__(self, ss, plan, prescription, beam_set_index=0):
-    # Database attributes:
+    '''Initializes the Prostate optimization objective configuration instance with the relevant parameters.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      beam_set_index (int): A specification of beam set index (for cases of multiple beam sets).
+        Defaults to 0.
+    '''
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -27,9 +26,18 @@ class Prostate:
     self.others = self.create_other_objectives(ss, plan, prescription, beam_set_index)
     self.oars = self.create_oar_objectives(ss, plan, prescription, beam_set_index)
 
-
-  # Create OAR objectives.
   def create_oar_objectives(self, ss, plan, prescription, i):
+    '''Creates organ at risk optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     oars = []
     if prescription.region_code in RC.prostate_bed_codes:
       # Prostate bed:
@@ -89,7 +97,7 @@ class Prostate:
         oars.append(OF.max_eud(ss, plan, ROIS.anorectum.name, 25*100, 1, 2, beam_set_index=i))
         oars.append(OF.max_dvh(ss, plan, ROIS.anorectum.name, 35*100, 0.1, 50, beam_set_index=i))
         oars.append(OF.max_dvh(ss, plan, ROIS.urethra.name, 42*100, 40, 10, beam_set_index=i))
-        oars.append(OF.max_dose(ss, plan, ROIS.urethra.name, 42*100, 5, beam_set_index=i))   
+        oars.append(OF.max_dose(ss, plan, ROIS.urethra.name, 42*100, 5, beam_set_index=i))
         oars.append(OF.max_eud(ss, plan, ROIS.penile_bulb.name, 36.25*100, 1, 1, beam_set_index=i))
       else:
         # STAMPEDE or palliative:
@@ -102,9 +110,18 @@ class Prostate:
     # Return objectives (filtered for possible None elements):
     return [i for i in oars if i is not None]
 
-
-  # Create other objectives (e.q. External).
   def create_other_objectives(self, ss, plan, prescription, i):
+    '''Creates other (e.g. External) optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     others = []
     if prescription.total_dose == 36.25:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2.8, 20, adapt=True, beam_set_index=i))
@@ -113,7 +130,7 @@ class Prostate:
       others.append(OF.fall_off(ss, plan, ROIS.external.name, prescription.total_dose*100, prescription.total_dose*100/2, 2, 20, adapt=True, beam_set_index=i))
     if prescription.region_code in RC.prostate_bed_codes:
       # Prostate bed:
-      others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 25, beam_set_index=i))   
+      others.append(OF.max_dose(ss, plan, ROIS.external.name, prescription.total_dose*100*1.05, 25, beam_set_index=i))
       if prescription.region_code in RC.prostate_node_codes:
         # With elective nodes:
         others.append(OF.fall_off(ss, plan, ROIS.z_ptv_70_wall.name, prescription.total_dose*100, 56*100, 1, 1, adapt=True, beam_set_index=i))
@@ -144,10 +161,19 @@ class Prostate:
           others.append(OF.fall_off(ss, plan, ROIS.z_ptv_wall.name, prescription.total_dose*100, 0.8*prescription.total_dose*100, 1, 1, adapt=True, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in others if i is not None]
-  
-  
-  # Create target objectives.
+
   def create_target_objectives(self, ss, plan, prescription, i):
+    '''Creates target optimization objectives.
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      plan (PyScriptObject]): A RayStation TreatmentPlan instance.
+      prescription (Prescription): A Prescription instance.
+      i (int): A specification of beam set index (for cases of multiple beam sets).
+
+    Returns:
+      list[PyScriptObject]: A list of optimization objectives (ConstituentFunction instances).
+    '''
     targets = []
     if prescription.region_code in RC.prostate_bed_codes:
       # Prostate bed:
@@ -219,4 +245,3 @@ class Prostate:
         targets.append(OF.max_dose(ss, plan, ROIS.ptv.name, prescription.total_dose*100*1.02, 60, beam_set_index=i))
     # Return objectives (filtered for possible None elements):
     return [i for i in targets if i is not None]
-  
