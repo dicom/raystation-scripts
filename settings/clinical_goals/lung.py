@@ -17,7 +17,6 @@ class Lung:
       plan (PyScriptObject]): A RayStation TreatmentPlan instance.
       prescription (Prescription): A Prescription instance.
     '''
-    # Database attributes:
     self.ss = ss
     self.plan = plan
     self.prescription = prescription

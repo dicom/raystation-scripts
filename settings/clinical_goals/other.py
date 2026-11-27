@@ -19,7 +19,6 @@ class Other:
       prescription (Prescription): A Prescription instance.
       target_nr (int): An optional index for the target volume. Defaults to None.
     '''
-    # Database attributes:
     self.ss = ss
     self.plan = plan
     self.prescription = prescription
@@ -163,17 +162,15 @@ class Other:
         targets.append(CG.ClinicalGoal(ptv, CG.at_least, CG.conformity_index, 0.9, 0.95, 5))
     return targets
 
-
-  # Determine the ptv name, based on the prescription target.
   def ptv(self, ss, target_name):
-    '''Creates target (and external) clinical goals.
+    '''Determines the ptv name, based on the prescription target.
 
     Args:
       ss (PyScriptObject): A RayStation StructureSet instance.
       target_name (str): The name of the prescription target volume (e.g. "CTV").
 
     Returns:
-      list[ClinicalGoal]: A list of target and external clinical goals.
+      str: The determined name of the PTV for this case.
     '''
     ptv = target_name.replace("C", "P")
     if not SSF.has_roi(ss, ptv):
