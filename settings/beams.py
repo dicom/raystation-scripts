@@ -1,5 +1,3 @@
-# encoding: utf8
-
 # Import local files:
 import beam_set_functions as BSF
 import case_functions as CF
@@ -8,8 +6,23 @@ import rois as ROIS
 import structure_set_functions as SSF
 
 
-# Set up beams or arcs, based on region code (i.e. treatment site).
 def setup_beams(ss, examination, beam_set, isocenter, prescription, technique_name, energy_name, iso_index = 1, beam_index=1):
+  '''Sets up beams or arcs, based on region code (i.e. treatment site).
+
+    Args:
+      ss (PyScriptObject): A RayStation StructureSet instance.
+      examination (PyScriptObject): A RayStation Examination instance.
+      beam_set (PyScriptObject]): A RayStation BeamSet instance.
+      isocenter (PyScriptObject): A RayStation Point instance.
+      prescription (Prescription): A Prescription instance.
+      technique_name (str): The treatment technique (e.g. "3D-CRT" or "VMAT").
+      energy_name (Prescription): Beam energy (e.g. "6" or "6 FFF").
+      iso_index (int): Isocenter index. Defaults to 1.
+      beam_index (int): Beam index. Defaults to 1.
+
+    Returns:
+      int: The number of beams created (typically 1 or 2).
+    '''
   bolus = SSF.bolus(ss)
   if technique_name == '3D-CRT':
     # 3D-CRT:

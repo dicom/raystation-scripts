@@ -1,6 +1,9 @@
-# encoding: utf8
+'''Contains classes for isodose lines and collection oc isodose lines as
+well as default isodose setups for the various treatment sites which needs
+specific configuration of isodoses.
+'''
 
-# Import the System.Drawing namespace:
+# Import system libraries:
 import clr
 clr.AddReference('System.Drawing')
 import System.Drawing
@@ -9,54 +12,65 @@ import System.Drawing
 import colors as COLORS
 
 
-# Defines an isodose object (which contains a percentage value and a visualization color).
 class Isodose(object):
+  '''Handles the configuration of an isodose line.'''
 
-    def __init__(self, percent, color):
-      self.percent = percent
-      self.color = color
+  def __init__(self, percent, color):
+    '''Initializes the Isodose instance.
+
+    Args:
+      percent (int): The isodose percentage value (e.g. 100).
+      color (System.Drawing.Color): The isodose visualization color
+        (e.g. System.Drawing.Color.FromArgb(255,160,0,0)).
+    '''
+    self.percent = percent
+    self.color = color
 
 
-# Defines a color table object (which contains a list of isodoses).
 class ColorTable(object):
+  '''Handles the configuration of a collection of isodose lines for a given treatment type.'''
 
-    def __init__(self, isodoses):
-      self.isodoses = isodoses
-    
-    # Applies this color table object to the given case.
-    def apply_to(self, case):
-      # Extract the color table:
-      dct = case.CaseSettings.DoseColorMap.ColorTable
-      # Remove all existing dose lines:
-      dct.clear() 
-      # Set the dose lines of this color table object:
-      for isodose in self.isodoses:
-      	#dct.Add(isodose.percent, isodose.color)
-        dct[isodose.percent] = isodose.color
-      # Set the color table:
-      case.CaseSettings.DoseColorMap.ColorTable = dct
+  def __init__(self, isodoses):
+    '''Initializes the ColorTable instance.
+
+    Args:
+      isodoses (list[Isodose]): A list of isodose lines to be used.
+    '''
+    self.isodoses = isodoses
+
+  def apply_to(self, case):
+    '''Applies this color table object to the given case.
+
+    Args:
+      case (PyScriptObject): A RayStation Case instance.
+    '''
+    # Extract the color table:
+    dct = case.CaseSettings.DoseColorMap.ColorTable
+    # Remove all existing dose lines:
+    dct.clear()
+    # Set the dose lines of this color table object:
+    for isodose in self.isodoses:
+      #dct.Add(isodose.percent, isodose.color)
+      dct[isodose.percent] = isodose.color
+    # Set the color table:
+    case.CaseSettings.DoseColorMap.ColorTable = dct
 
 
 # Colors used for isodose lines:
 grey = System.Drawing.Color.FromArgb(255,64,128,128)
 sea_green = System.Drawing.Color.FromArgb(255,64,128,128)
 white = System.Drawing.Color.FromArgb(255,255,255,255)
-
 red = System.Drawing.Color.FromArgb(255,160,0,0)
-
 orange = System.Drawing.Color.FromArgb(255,255,128,0)
 yellow = System.Drawing.Color.FromArgb(255,255,255,0)
 green = System.Drawing.Color.FromArgb(255,0,255,0)
 blue =  System.Drawing.Color.FromArgb(255,0,0,160)
-
 orange_mid = System.Drawing.Color.FromArgb(255,255,192,0)
 yellow_mid = System.Drawing.Color.FromArgb(255,255,255,128)
 green_mid = System.Drawing.Color.FromArgb(255,0,255,128)
 blue_mid =  System.Drawing.Color.FromArgb(255,0,128,255)
-
 yellow_low = System.Drawing.Color.FromArgb(255,255,255,128)
 green_low = System.Drawing.Color.FromArgb(255,128,255,128)
-
 purple = System.Drawing.Color.FromArgb(255,128,0,255)
 pink = System.Drawing.Color.FromArgb(255,192,0,192)
 purple_low = System.Drawing.Color.FromArgb(255,128,128,255)
@@ -169,6 +183,7 @@ sib_47_50_isodoses.append(Isodose(95, green))
 sib_47_50_isodoses.append(Isodose(100, yellow))
 sib_47_50_isodoses.append(Isodose(105, orange))
 sib_47_50_isodoses.append(Isodose(110, red))
+
 
 # Breast SIB 40.05/48 isodose setup:
 breast_sib_15fx_isodoses = []

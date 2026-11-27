@@ -1,14 +1,17 @@
-# encoding: utf8
+'''Contains a collection of commonly used margins.
+
+The two types of margin objects:
+MARGIN.Expansion(superior, inferior, anterior, posterior, right, left)
+MARGIN.Contraction(superior, inferior, anterior, posterior, right, left)
+
+The various vectors (e.g. inferior, left, etc) are floats given in cm.
+'''
 
 # Import local files:
 import margin as MARGIN
 
-# Examples:
-# MARGIN.Expansion(superior, inferior, anterior, posterior, right, left)
-# MARGIN.Contraction(superior, inferior, anterior, posterior, right, left)
 
-
-# Commonly used margins:
+# Null margin:
 zero = MARGIN.Expansion(0, 0, 0, 0, 0, 0)
 
 
@@ -26,7 +29,7 @@ uniform_15mm_expansion = MARGIN.Expansion(1.5, 1.5, 1.5, 1.5, 1.5, 1.5)
 uniform_20mm_expansion = MARGIN.Expansion(2, 2, 2, 2, 2, 2) # (Brain tumor CTV)
 brain_sbrt_mask_expansion = MARGIN.Expansion(5.5, 5.5, 5.5, 5.5, 5.5, 5.5)
 brain_conv_mask_expansion = MARGIN.Expansion(4, 4, 4, 4, 4, 4)
-# Custom expansion margins:
+# Non-uniform:
 abdomen_near_lung_soft_tissue_expansion = MARGIN.Expansion(1.0, 1.0, 0.7, 0.7, 0.7, 0.7)
 bladder_expansion = MARGIN.Expansion(2, 1.5, 1.5, 1.5, 1.5, 1.5)
 breast_left_robustness = MARGIN.Expansion(0, 0, 1.5, 0, 0, 1.5) # (0.5 + 1.0 cm)
@@ -43,4 +46,4 @@ rectum_ptv_50_expansion = MARGIN.Expansion(0.7, 0.7, 1, 0.7, 0.7, 0.7)
 
 # Contraction margins:
 uniform_5mm_contraction = MARGIN.Contraction(0.5, 0.5, 0.5, 0.5, 0.5, 0.5) # (typically used with external)
-uniform_2mm_contraction = MARGIN.Contraction(0.2, 0.2, 0.2, 0.2, 0.2, 0.2) 
+uniform_2mm_contraction = MARGIN.Contraction(0.2, 0.2, 0.2, 0.2, 0.2, 0.2)

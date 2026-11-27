@@ -1,7 +1,12 @@
-# encoding: utf8
+'''Contains the hierarchy of choices used by the definitions script.
+
+This script configures a patient model based on selections such as treatment region,
+scope/laterality, and other site related specifications.
+'''
 
 # Import local files:
 import property as P
+
 
 # Regions:
 brain = P.Property('Hjerne', 'brain', next_category='omfang', default = True)

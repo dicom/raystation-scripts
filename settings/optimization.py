@@ -1,10 +1,17 @@
-# encoding: utf8
+'''Contains the Optimization class, used for configuring an optimization in RayStation.
+
+Also contains a collection of default optimization settings for various sites,
+and a function for selecting an appropriate Optimization instance based on a
+given prescription.
+'''
 
 # Import local files:
 import region_codes as RC
 
+
 # Optimization parameters class - for setting up an optimization in RayStation.
 class Optimization(object):
+  '''Handles the configuration of optimization parameters.'''
 
   def __init__(self,
     max_number_of_iterations=40,
@@ -18,6 +25,30 @@ class Optimization(object):
     use_max_leaf_travel_distance_per_degree=False,
     use_sliding_window_sequencing=False
   ):
+    '''Initializes the Optimization instance.
+
+    Args:
+      max_number_of_iterations (int): The maximum number of optimization iterations.
+        Defaults to 40.
+      optimality_tolerance (float): The tolerance of optimality.
+        Defaults to 0.000001.
+      compute_final_dose (bool): Whether to compute final (accurate) dose (True).
+        Defaults to True.
+      compute_intermediate_dose (bool): Whether to compute intermediate (accurate) dose (True).
+        Defaults to False.
+      iterations_in_preparations_phase (int): Number of optimization iterations
+        to perform before conversion to segments.
+      final_arc_gantry_spacing (int): Gantry angle between neighbouring segments.
+        Defaults to 4.
+      max_arc_delivery_time (int): The maximum delivery time (in seconds) for an arc.
+        Defaults to 90.
+      max_leaf_travel_distance_per_degree (float): The maximum leaf travel distance per degree (cm/deg).
+        Defaults to 0.
+      use_max_leaf_travel_distance_per_degree (bool): Specifies whether to use
+        maximum leaf travel distance per degree (True). Defaults to False.
+      use_sliding_window_sequencing (bool): If True the VMAT arc is converted
+        using sliding window leaf sequencing. Defaults to False.
+    '''
     self.max_number_of_iterations = max_number_of_iterations
     self.optimality_tolerance = optimality_tolerance
     self.compute_final_dose = compute_final_dose
@@ -29,10 +60,14 @@ class Optimization(object):
     self.use_max_leaf_travel_distance_per_degree = use_max_leaf_travel_distance_per_degree
     self.use_sliding_window_sequencing = use_sliding_window_sequencing
     self.max_arc_mu = None
-  
-  # Applies the parameters of this Optimization object to a RayStation PlanOptimization object.
+
   def apply_to(self, plan_optimization):
-    assert hasattr(plan_optimization, 'OptimizationParameters'), 'plan_optimization lacks OptimizationParameters' 
+    '''Applies the parameters of this Optimization instance to a RayStation PlanOptimization instance.
+
+    Args:
+      plan_optimization (PyScriptObject]): A RayStation PlanOptimization instance.
+    '''
+    assert hasattr(plan_optimization, 'OptimizationParameters'), 'plan_optimization lacks OptimizationParameters'
     assert len(plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].BeamSettings) > 0, "plan_optimization.OptimizationParameters.TreatmentSetupSettings[0] does not contain any BeamSettings"
     plan_optimization.OptimizationParameters.Algorithm.MaxNumberOfIterations = self.max_number_of_iterations
     plan_optimization.OptimizationParameters.Algorithm.OptimalityTolerance = self.optimality_tolerance
@@ -46,24 +81,36 @@ class Optimization(object):
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.MaxLeafTravelDistancePerDegree = self.max_leaf_travel_distance_per_degree
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseMaxLeafTravelDistancePerDegree = self.use_max_leaf_travel_distance_per_degree
     plan_optimization.OptimizationParameters.TreatmentSetupSettings[0].SegmentConversion.ArcConversionProperties.UseSlidingWindowSequencing = self.use_sliding_window_sequencing
-    
-  # Set the max arc mu parameter:
+
   def set_max_arc_mu(self, mu):
+    '''Sets the max arc mu parameter.
+
+    Args:
+      mu (float]): Maximum total MU for the arc.
+    '''
     self.max_arc_mu = mu
 
 
-# Categories of optimization settings:
+# A collection of default optimization settings used for various treatment sites:
 default = Optimization()
 sliding_window = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=120, use_sliding_window_sequencing=True)
 sliding_window_quick = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=70, use_sliding_window_sequencing=True)
 sbrt = Optimization(final_arc_gantry_spacing=2, max_arc_delivery_time=150, use_sliding_window_sequencing=True)
 
 
-# Set up optimization parameters, based on region code (i.e. treatment site) and fraction dose (i.e. fractionated treatment or SBRT).
 def optimization_parameters(prescription):
-  # Set default optimization settings:
+  '''Sets up optimization parameters, based on region code (i.e. treatment site)
+  and fraction dose (i.e. conventionally fractionated radiotherapy or SBRT).
+
+  Args:
+    prescription (Prescription]): A Prescription instance.
+
+  Returns:
+    Optimization: The Optimization instance chosen for the given prescription (case).
+  '''
+  # Set the default optimization settings:
   opt = default
-  # Assign optimization settings based on region code (and in some cases fraction dose):
+  # Assign alternative optimization settings based on region code (and in some cases fraction dose):
   if prescription.region_code in RC.brain_partial_codes:
     # Partial brain:
     if prescription.is_stereotactic():

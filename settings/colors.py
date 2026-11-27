@@ -1,6 +1,4 @@
-# encoding: utf8
-
-# ROI Colors.
+'''Contains default colors used for ROIs and POIs.'''
 
 # Target colors:
 gtv = 'Red'
